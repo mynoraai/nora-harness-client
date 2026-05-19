@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile Current Agent Interaction Wireframe</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #fbf5e8;
+        --panel: #fffaf0;
+        --panel-strong: #fff4d2;
+        --ink: #23211b;
+        --muted: #6f685c;
+        --line: #dfd1b6;
+        --line-strong: #b9a67d;
+        --accent: #c88f16;
+        --accent-soft: #f5d789;
+        --ok: #4a7c59;
+        --warn: #a56b00;
+        --danger: #a3493d;
+        --stale: #626a78;
+        --shadow: 0 12px 34px rgba(75, 61, 32, 0.14);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      a {
+        color: inherit;
+        text-decoration-color: rgba(35, 33, 27, 0.35);
+        text-underline-offset: 3px;
+      }
+
+      header {
+        border-bottom: 1px solid var(--line);
+        background: #fff9ea;
+      }
+
+      .wrap {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 32px 0 24px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 780px;
+        margin-bottom: 12px;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-bottom: 16px;
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin-bottom: 10px;
+        font-size: 17px;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 780px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .meta {
+        min-width: 230px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .meta strong {
+        display: block;
+        color: var(--ink);
+      }
+
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 0 24px;
+      }
+
+      .toc a,
+      .pill,
+      .status {
+        display: inline-flex;
+        min-height: 30px;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      main {
+        padding: 30px 0 64px;
+      }
+
+      section {
+        margin-bottom: 42px;
+      }
+
+      .note-grid,
+      .flow-grid,
+      .state-grid,
+      .screen-grid,
+      .references {
+        display: grid;
+        gap: 16px;
+      }
+
+      .note-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .note,
+      .flow-step,
+      .state-card,
+      .reference-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 2px 0 rgba(185, 166, 125, 0.18);
+      }
+
+      .note,
+      .flow-step,
+      .state-card {
+        padding: 16px;
+      }
+
+      .note p,
+      .flow-step p,
+      .state-card p,
+      .screen-notes p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .flow-grid {
+        grid-template-columns: repeat(6, minmax(150px, 1fr));
+        align-items: stretch;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 142px;
+      }
+
+      .flow-step::after {
+        position: absolute;
+        top: 50%;
+        right: -13px;
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid var(--line-strong);
+        border-right: 2px solid var(--line-strong);
+        content: "";
+        transform: translateY(-50%) rotate(45deg);
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .step-index {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        border: 1px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--panel-strong);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .state-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .status.ok {
+        border-color: rgba(74, 124, 89, 0.38);
+        background: rgba(74, 124, 89, 0.1);
+        color: var(--ok);
+      }
+
+      .status.warn {
+        border-color: rgba(165, 107, 0, 0.35);
+        background: rgba(245, 215, 137, 0.4);
+        color: var(--warn);
+      }
+
+      .status.danger {
+        border-color: rgba(163, 73, 61, 0.35);
+        background: rgba(163, 73, 61, 0.09);
+        color: var(--danger);
+      }
+
+      .status.stale {
+        border-color: rgba(98, 106, 120, 0.35);
+        background: rgba(98, 106, 120, 0.1);
+        color: var(--stale);
+      }
+
+      .screen-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .screen-card {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .phone {
+        width: 260px;
+        min-height: 540px;
+        overflow: hidden;
+        border: 2px solid #24211a;
+        border-radius: 30px;
+        background: #fffaf0;
+        box-shadow: inset 0 0 0 7px #1f1d18;
+      }
+
+      .phone-inner {
+        display: flex;
+        min-height: 536px;
+        flex-direction: column;
+        padding: 14px 14px 12px;
+      }
+
+      .phone-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2px 8px 10px;
+        color: #453d31;
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      .phone-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .phone-title h4 {
+        margin: 0;
+        font-size: 19px;
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .icon-btn,
+      .tiny-btn {
+        display: inline-flex;
+        min-width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff7e0;
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .tiny-btn {
+        min-width: auto;
+        height: 28px;
+        padding: 0 9px;
+      }
+
+      .phone-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .wire-block,
+      .wire-row,
+      .wire-card,
+      .chat-bubble,
+      .input-bar,
+      .tabbar,
+      .sheet {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdf7;
+      }
+
+      .wire-block {
+        min-height: 64px;
+        padding: 12px;
+      }
+
+      .wire-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 48px;
+        padding: 10px;
+      }
+
+      .wire-card {
+        padding: 10px;
+      }
+
+      .wire-card.highlight,
+      .wire-block.highlight,
+      .sheet {
+        background: #fff4d2;
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .small {
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .stack {
+        display: grid;
+        gap: 8px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .primary,
+      .secondary,
+      .danger-btn,
+      .disabled-btn {
+        display: flex;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .primary {
+        border: 1px solid #8c610d;
+        background: #e5ad37;
+        color: #241a08;
+      }
+
+      .secondary {
+        border: 1px solid var(--line);
+        background: #fffaf0;
+        color: var(--ink);
+      }
+
+      .danger-btn {
+        border: 1px solid rgba(163, 73, 61, 0.45);
+        background: rgba(163, 73, 61, 0.08);
+        color: var(--danger);
+      }
+
+      .disabled-btn {
+        border: 1px solid #d5cab7;
+        background: #eee8dd;
+        color: #837a6d;
+      }
+
+      .tabbar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        margin-top: auto;
+        padding: 7px;
+      }
+
+      .tab {
+        min-height: 38px;
+        padding: 4px;
+        border-radius: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+        text-align: center;
+      }
+
+      .tab.active {
+        background: var(--panel-strong);
+        color: var(--ink);
+      }
+
+      .chat-bubble {
+        max-width: 86%;
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .chat-bubble.user {
+        margin-left: auto;
+        background: #fee7a5;
+      }
+
+      .chat-bubble.agent {
+        margin-right: auto;
+      }
+
+      .input-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 42px;
+        margin-top: auto;
+        padding: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .input-bar.disabled {
+        background: #eee8dd;
+      }
+
+      .sheet {
+        padding: 10px;
+      }
+
+      .screen-notes {
+        min-width: 0;
+      }
+
+      .screen-notes ul,
+      .source-list {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .screen-notes li,
+      .source-list li {
+        margin-bottom: 6px;
+      }
+
+      .screen-id {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .references {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .reference-card {
+        overflow: hidden;
+      }
+
+      .reference-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 9 / 19;
+        object-fit: cover;
+        object-position: top;
+        border-bottom: 1px solid var(--line);
+        background: #eee4d1;
+      }
+
+      .reference-card figcaption {
+        padding: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .matrix th,
+      .matrix td {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .matrix th {
+        background: var(--panel-strong);
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      .matrix tr:last-child td {
+        border-bottom: 0;
+      }
+
+      @media (max-width: 1040px) {
+        .screen-grid,
+        .note-grid,
+        .state-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-grid,
+        .references {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .wrap {
+          width: min(100% - 20px, 1180px);
+        }
+
+        .topbar,
+        .screen-card {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          display: block;
+        }
+
+        .meta {
+          margin-top: 18px;
+        }
+
+        .flow-grid,
+        .references {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step::after {
+          top: auto;
+          right: 50%;
+          bottom: -13px;
+          transform: translateX(50%) rotate(135deg);
+        }
+
+        .phone {
+          width: min(100%, 280px);
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Hardware Harness / Mobile UI Contracts</p>
+            <h1>Mobile Current Agent Interaction Wireframe</h1>
+            <p class="lead">
+              第一版线框交互稿：把 Agents、Marketplace、Device、Me 四个底栏入口重新组织，并把
+              current primary-agent binding
+              的技术状态直接映射到手机端页面状态、禁用态、错误态和恢复路径。
+            </p>
+          </div>
+          <aside class="meta">
+            <strong>Artifact</strong>
+            静态 HTML 线框图，不是最终视觉稿。<br />
+            <strong>Scope</strong>
+            手机端交互、用户旅程、状态契约。<br />
+            <strong>Refs</strong>
+            ADR 008, shared contracts, existing screenshots.
+          </aside>
+        </div>
+        <nav class="toc" aria-label="Page sections">
+          <a href="#placement">Placement</a>
+          <a href="#journey">User Journey</a>
+          <a href="#states">Binding States</a>
+          <a href="#screens">Wireframes</a>
+          <a href="#matrix">State Matrix</a>
+          <a href="#references">Screenshots</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="placement">
+        <h2>Placement And Intent</h2>
+        <div class="note-grid">
+          <article class="note">
+            <h3>为什么放这里</h3>
+            <p>
+              这个文件属于手机端交互契约，和现有 onboarding、chat、agents、device 截图同源，所以放在
+              <strong>mobile-ui-contracts</strong> 目录，方便后续实现和验收引用。
+            </p>
+          </article>
+          <article class="note">
+            <h3>不是 sprint 附件</h3>
+            <p>
+              sprint 目录适合任务节奏和当周清单；这里表达的是跨 sprint 仍然有效的 UI flow
+              和状态契约。
+            </p>
+          </article>
+          <article class="note">
+            <h3>技术关联</h3>
+            <p>
+              页面所有可发送、可切换、可卸载的状态，都必须从 desired/reported binding、generation
+              ack 和 runtime readiness 推导，而不是只看 install 是否存在。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="journey">
+        <h2>User Journey</h2>
+        <div class="flow-grid" aria-label="Primary user journey">
+          <article class="flow-step">
+            <span class="step-index">1</span>
+            <h3>登录</h3>
+            <p>onboarding 保留账号登录，确保购买/认领、同步和设备归属有身份基础。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">2</span>
+            <h3>蓝牙配对</h3>
+            <p>保留蓝牙扫描、验证码确认和本机 pairing，让 App 知道当前设备是谁。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">3</span>
+            <h3>可跳过的 Agent 选择</h3>
+            <p>onboarding 可以推荐 Agent，但必须允许跳过并进入 paired + unbound 主界面。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">4</span>
+            <h3>安装并设为当前</h3>
+            <p>如果用户选择 Agent，则创建 desired primary install，进入 pending。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">5</span>
+            <h3>设备确认</h3>
+            <p>Firmware 拉取或收到 binding，应用后回报 matching generation。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">6</span>
+            <h3>进入主界面</h3>
+            <p>已确认 binding 时聊天解锁；跳过 Agent 时进入未绑定态并引导后续选择。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="states">
+        <h2>Binding States</h2>
+        <div class="state-grid">
+          <article class="state-card">
+            <span class="status stale">unbound</span>
+            <h3>已配对，没有 current Agent</h3>
+            <p>Device 可以管理，Chat 入口保留但输入禁用，引导用户去 Marketplace 或 Device 绑定。</p>
+          </article>
+          <article class="state-card">
+            <span class="status warn">binding / pending</span>
+            <h3>desired 已写入，等待 reported</h3>
+            <p>显示进度、禁止重复发送和重复切换；允许取消或查看设备状态。</p>
+          </article>
+          <article class="state-card">
+            <span class="status ok">bound</span>
+            <h3>desired/reported generation 匹配</h3>
+            <p>当前 Agent 成为 Agents tab 主体验；Chat 输入、语音、历史会话正常启用。</p>
+          </article>
+          <article class="state-card">
+            <span class="status danger">failed</span>
+            <h3>安装或绑定失败</h3>
+            <p>不要静默进入 Chat。展示失败原因、重试、换 Agent、查看 Device 诊断。</p>
+          </article>
+          <article class="state-card">
+            <span class="status stale">stale</span>
+            <h3>本地投影旧于设备状态</h3>
+            <p>Chat 降级为只读或禁用输入，触发 refresh binding，避免对旧 runtime 发消息。</p>
+          </article>
+          <article class="state-card">
+            <span class="status danger">reprovision_required</span>
+            <h3>需要重新配置设备</h3>
+            <p>Device tab 提供恢复入口，重新确认网络、pairing 和 desired binding。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="screens">
+        <h2>Wireframes</h2>
+        <div class="screen-grid">
+          <article class="screen-card" id="onb-001">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>LTE 100%</span></div>
+                <div class="phone-title">
+                  <h4>Welcome</h4>
+                  <button class="tiny-btn">Help</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">ONB-001</span>
+                    <strong>Sign in, then pair device</strong>
+                    <p class="small muted">
+                      Sign-in and Bluetooth pairing stay; Agent selection is optional and skippable.
+                    </p>
+                  </div>
+                  <div class="wire-card">
+                    <strong>1. Sign in</strong>
+                    <p class="small muted">Establish account identity, ownership, and sync.</p>
+                  </div>
+                  <div class="wire-card">
+                    <strong>2. Bluetooth pairing</strong>
+                    <p class="small muted">Confirm a nearby device and complete local pairing.</p>
+                  </div>
+                  <div class="primary">Sign in and continue</div>
+                  <div class="secondary">Why sign in?</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">ONB-001</span>
+                <span class="status stale">entry</span>
+              </div>
+              <h3>Onboarding keeps required setup</h3>
+              <p>第一版交互保留登录和蓝牙配对；Agent 选择页可以出现，但不能阻塞用户。</p>
+              <ul>
+                <li>登录负责账号、购买/认领、同步归属。</li>
+                <li>蓝牙配对负责建立手机和设备的本地信任关系。</li>
+                <li>跳过 Agent 后主状态是 paired + unbound，不能误认为有 current install。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="onb-002">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>LTE 100%</span></div>
+                <div class="phone-title">
+                  <h4>Bluetooth Pairing</h4>
+                  <button class="tiny-btn">Help</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">ONB-002</span>
+                    <strong>Find nearby device</strong>
+                    <p class="small muted">
+                      Request Bluetooth permission and scan for Nora devices.
+                    </p>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Nora Dev Kit A14</strong>
+                      <p class="small muted">Nearby · not paired</p>
+                    </div>
+                    <span class="status warn">Pair</span>
+                  </div>
+                  <div class="wire-card">
+                    <span class="label">pairing code</span>
+                    <strong>842 119</strong>
+                    <p class="small muted">Continue only when this matches the device screen.</p>
+                  </div>
+                  <div class="sheet">
+                    <strong>Next step can be skipped</strong>
+                    <p class="small muted">Pairing creates device trust, not a current binding.</p>
+                  </div>
+                  <div class="primary">Confirm pairing</div>
+                  <div class="secondary">Scan again</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">ONB-002</span>
+                <span class="status warn">pairing</span>
+              </div>
+              <h3>Pair first, choose Agent next</h3>
+              <p>这一屏只处理蓝牙权限、扫描、验证码和配对确认。</p>
+              <ul>
+                <li>配对成功后进入可跳过的 Agent 选择页。</li>
+                <li>此时只产生 paired device，current binding 仍为空。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="onb-003">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
+                <div class="phone-title">
+                  <h4>Choose Agent</h4>
+                  <button class="tiny-btn">Skip</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">ONB-003</span>
+                    <strong>Optional: set current Agent</strong>
+                    <p class="small muted">Choose an Agent to install and bind, or skip.</p>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">Adopted · recommended</p>
+                    </div>
+                    <span class="status warn">Use</span>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Workshop Helper</strong>
+                      <p class="small muted">Installed · not current</p>
+                    </div>
+                    <span class="status stale">Use</span>
+                  </div>
+                  <div class="sheet">
+                    <strong>Skipping is allowed</strong>
+                    <p class="small muted">
+                      Continue as paired + unbound; bind later from Marketplace or Device.
+                    </p>
+                  </div>
+                  <div class="primary">Install and use</div>
+                  <div class="secondary">Skip to main app</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">ONB-003</span>
+                <span class="status warn">skippable</span>
+              </div>
+              <h3>Agent choice stays, but it is skippable</h3>
+              <p>这里可以推荐或选择 Agent，但“跳过”必须是清晰主路径之一。</p>
+              <ul>
+                <li>选择 Agent 后进入 install-and-bind，并等待 reported generation。</li>
+                <li>跳过后进入主界面，Agents 显示 no current agent empty state。</li>
+                <li>不允许把 paired device 误显示为已有 current Agent。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="onb-004">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
+                <div class="phone-title">
+                  <h4>Main App</h4>
+                  <button class="tiny-btn">Done</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block">
+                    <span class="label">Paired device</span>
+                    <strong>Nora Dev Kit A14</strong>
+                    <p class="small muted">Paired · no current agent</p>
+                  </div>
+                  <div class="split">
+                    <div class="wire-card">
+                      <span class="label">desired</span>
+                      <strong>empty</strong>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">reported</span>
+                      <strong>empty</strong>
+                    </div>
+                  </div>
+                  <div class="primary">Open Agents</div>
+                  <div class="secondary">Browse Marketplace</div>
+                  <div class="tabbar">
+                    <div class="tab active">Agents</div>
+                    <div class="tab">Marketplace</div>
+                    <div class="tab">Device</div>
+                    <div class="tab">Me</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">ONB-004</span>
+                <span class="status stale">skip result / unbound</span>
+              </div>
+              <h3>Landing after skip</h3>
+              <p>跳过 Agent 选择后，设备仍然已配对，但 current primary-agent binding 为空。</p>
+              <ul>
+                <li>Agents 展示 no current agent empty state。</li>
+                <li>Marketplace 或 Device Configure 负责后续 install-and-bind。</li>
+                <li>Chat 只有在 binding ack 后才解锁。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="mkt-001">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <h4>Marketplace</h4>
+                  <button class="icon-btn">S</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">current device</span>
+                    <strong>No current agent</strong>
+                    <p class="small muted">Install an agent to unlock chat.</p>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">Adopted · ready to install</p>
+                    </div>
+                    <span class="status warn">Install</span>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Care Coach</strong>
+                      <p class="small muted">Buy to use</p>
+                    </div>
+                    <span class="status stale">Buy</span>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Workshop Helper</strong>
+                      <p class="small muted">Installed · not current</p>
+                    </div>
+                    <span class="status stale">Use</span>
+                  </div>
+                  <div class="tabbar">
+                    <div class="tab">Agents</div>
+                    <div class="tab active">Marketplace</div>
+                    <div class="tab">Device</div>
+                    <div class="tab">Me</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">MKT-001</span>
+                <span class="status stale">discover</span>
+              </div>
+              <h3>Marketplace 负责获取和安装</h3>
+              <p>
+                原 Agents/People 的浏览购买能力迁移到 Marketplace，个人账户和偏好入口迁移到 Me。
+              </p>
+              <ul>
+                <li>列表状态必须表达 Not owned、Adopted、Installed、Current。</li>
+                <li>顶部 device banner 告诉用户为什么 Chat 还不能用。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="mkt-002">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <button class="icon-btn">B</button>
+                  <h4>Agent Detail</h4>
+                  <button class="icon-btn">M</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">agent</span>
+                    <strong>Home Companion</strong>
+                    <p class="small muted">Adopted · compatible with Nora Dev Kit</p>
+                  </div>
+                  <div class="wire-card">
+                    <span class="label">install state</span>
+                    <strong>Not installed on this device</strong>
+                    <p class="small muted">Runtime will be created before binding.</p>
+                  </div>
+                  <div class="primary">Install and use</div>
+                  <div class="secondary">Install only</div>
+                  <div class="secondary">View details</div>
+                  <div class="sheet">
+                    <strong>Next</strong>
+                    <p class="small muted">
+                      desired primary install -> firmware ack -> chat enabled.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">MKT-002</span>
+                <span class="status warn">install-and-bind</span>
+              </div>
+              <h3>Install and use 是关键动作</h3>
+              <p>
+                这个按钮发起 runtime 创建、desired binding 和等待 reported matching generation。
+              </p>
+              <ul>
+                <li>Install only 不改变 current primary-agent binding。</li>
+                <li>成功后跳到 Agents chat；失败后停在 detail 或 Device recovery。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="agt-001">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <h4>Agents</h4>
+                  <button class="icon-btn">+</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">current</span>
+                    <strong>Home Companion</strong>
+                    <p class="small muted">Bound to Nora Dev Kit A14 · gen 42</p>
+                  </div>
+                  <div class="split">
+                    <div class="secondary">Chat</div>
+                    <div class="secondary">Switch</div>
+                  </div>
+                  <div class="wire-card">
+                    <span class="label">sessions</span>
+                    <strong>Morning setup</strong>
+                    <p class="small muted">12 messages · device runtime</p>
+                  </div>
+                  <div class="wire-card">
+                    <strong>Kitchen task</strong>
+                    <p class="small muted">Last active yesterday</p>
+                  </div>
+                  <div class="tabbar">
+                    <div class="tab active">Agents</div>
+                    <div class="tab">Marketplace</div>
+                    <div class="tab">Device</div>
+                    <div class="tab">Me</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">AGT-001</span>
+                <span class="status ok">bound</span>
+              </div>
+              <h3>Agents 是 current Agent 工作台</h3>
+              <p>原 Chat tab 改为 Agents，主内容围绕当前绑定 Agent、会话和配置。</p>
+              <ul>
+                <li>只展示一个 current primary agent，但可列出历史会话。</li>
+                <li>Switch 进入 install-and-bind 流，不是纯客户端切换。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="agt-002">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <button class="icon-btn">B</button>
+                  <h4>Chat</h4>
+                  <button class="icon-btn">H</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-row">
+                    <div>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">Current · device runtime ready</p>
+                    </div>
+                    <span class="status ok">bound</span>
+                  </div>
+                  <div class="chat-bubble agent">我已经连上设备，可以帮你检查当前任务。</div>
+                  <div class="chat-bubble user">帮我看一下状态。</div>
+                  <div class="chat-bubble agent">设备在线，当前 Agent generation 匹配。</div>
+                  <div class="input-bar">
+                    <span>Message current agent</span>
+                    <button class="tiny-btn">Send</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">AGT-002</span>
+                <span class="status ok">chat enabled</span>
+              </div>
+              <h3>Chat 只在 verified current 时启用</h3>
+              <p>输入框启用条件：paired device、current binding verified、runtime ready。</p>
+              <ul>
+                <li>模型切换或 binding pending 时发送按钮进入 disabled/pending。</li>
+                <li>stale 或 failed 状态不向旧 runtime 发送消息。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="agt-002-disabled">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <button class="icon-btn">B</button>
+                  <h4>Chat</h4>
+                  <button class="icon-btn">H</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">binding pending</span>
+                    <strong>Switching to Workshop Helper</strong>
+                    <p class="small muted">Waiting for device reported generation 43.</p>
+                  </div>
+                  <div class="chat-bubble agent">当前切换还没有完成，消息会暂时暂停。</div>
+                  <div class="input-bar disabled">
+                    <span>Waiting for device binding</span>
+                    <button class="tiny-btn">...</button>
+                  </div>
+                  <div class="secondary">View device status</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">AGT-002B</span>
+                <span class="status warn">disabled</span>
+              </div>
+              <h3>发送禁用态必须可见</h3>
+              <p>切换模型或切换 current Agent 时，按钮禁用和原因要留在 Chat 表面。</p>
+              <ul>
+                <li>禁用态来源是 pending desired/reported mismatch。</li>
+                <li>提供 Device status 入口，避免用户以为消息卡死。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="agt-003">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                <div class="phone-title">
+                  <button class="icon-btn">B</button>
+                  <h4>History</h4>
+                  <button class="icon-btn">N</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-card highlight">
+                    <span class="label">current agent</span>
+                    <strong>Home Companion sessions</strong>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Morning setup</strong>
+                      <p class="small muted">Current runtime · 12 messages</p>
+                    </div>
+                    <span class="status ok">Open</span>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Old Workshop run</strong>
+                      <p class="small muted">Different agent · read only</p>
+                    </div>
+                    <span class="status stale">Read</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">AGT-003</span>
+                <span class="status stale">history</span>
+              </div>
+              <h3>历史会话和 current 分离</h3>
+              <p>旧 Agent 的历史可以读，但不能偷偷恢复旧 runtime 发送。</p>
+              <ul>
+                <li>Open 表示使用当前 runtime 继续。</li>
+                <li>Read only 表示会话归档，不改变 current binding。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="dev-001">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
+                <div class="phone-title">
+                  <h4>Device</h4>
+                  <button class="icon-btn">G</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">Nora Dev Kit A14</span>
+                    <strong>Online</strong>
+                    <p class="small muted">Paired · cloud manageable</p>
+                  </div>
+                  <div class="split">
+                    <div class="wire-card">
+                      <span class="label">desired</span>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">gen 42</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">reported</span>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">gen 42</p>
+                    </div>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Runtime</strong>
+                      <p class="small muted">Ready for current agent</p>
+                    </div>
+                    <span class="status ok">ready</span>
+                  </div>
+                  <div class="secondary">Configure binding</div>
+                  <div class="tabbar">
+                    <div class="tab">Agents</div>
+                    <div class="tab">Marketplace</div>
+                    <div class="tab active">Device</div>
+                    <div class="tab">Me</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">DEV-001</span>
+                <span class="status ok">device bound</span>
+              </div>
+              <h3>Device 显示绑定真相</h3>
+              <p>Device tab 是 desired/reported、runtime、健康状态和恢复操作的权威入口。</p>
+              <ul>
+                <li>用户能看出 current 是设备承认的，不只是手机缓存。</li>
+                <li>generation mismatch 直接在这里暴露。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="dev-002">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
+                <div class="phone-title">
+                  <button class="icon-btn">B</button>
+                  <h4>Configure</h4>
+                  <button class="icon-btn">R</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-card highlight">
+                    <span class="label">current</span>
+                    <strong>Home Companion</strong>
+                    <p class="small muted">verified on device</p>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Workshop Helper</strong>
+                      <p class="small muted">Installed · compatible</p>
+                    </div>
+                    <span class="status warn">Switch</span>
+                  </div>
+                  <div class="wire-row">
+                    <div>
+                      <strong>Care Coach</strong>
+                      <p class="small muted">Owned · install first</p>
+                    </div>
+                    <span class="status stale">Install</span>
+                  </div>
+                  <div class="danger-btn">Unbind current agent</div>
+                  <div class="sheet">
+                    <strong>Unbind means no current chat</strong>
+                    <p class="small muted">推荐选择 replacement；空绑定会禁用 Agents Chat。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">DEV-002</span>
+                <span class="status warn">switch</span>
+              </div>
+              <h3>切换和解绑都走控制面</h3>
+              <p>Device Configure 负责明确表达 replacement、null desired 和等待 ack。</p>
+              <ul>
+                <li>Switch 是 install-and-bind，而不是本地 session model 更新。</li>
+                <li>Unbind current 后 Agents 回到 unbound empty state。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="screen-card" id="rec-001">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
+                <div class="phone-title">
+                  <h4>Device</h4>
+                  <button class="icon-btn">L</button>
+                </div>
+                <div class="phone-body">
+                  <div class="wire-block highlight">
+                    <span class="label">attention needed</span>
+                    <strong>Reprovision required</strong>
+                    <p class="small muted">Device did not report the requested binding.</p>
+                  </div>
+                  <div class="wire-card">
+                    <span class="label">desired</span>
+                    <strong>Workshop Helper · gen 43</strong>
+                  </div>
+                  <div class="wire-card">
+                    <span class="label">reported</span>
+                    <strong>Home Companion · gen 42</strong>
+                  </div>
+                  <div class="primary">Retry binding</div>
+                  <div class="secondary">Re-run device setup</div>
+                  <div class="secondary">Use previous verified agent</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-notes">
+              <div class="screen-id">
+                <span class="pill">REC-001</span>
+                <span class="status danger">recovery</span>
+              </div>
+              <h3>失败不要伪装成可用</h3>
+              <p>当 firmware binding 失败或 stale 时，用户看到明确恢复路径。</p>
+              <ul>
+                <li>如果 previous verified agent 仍安全可用，文案要说明会回退到旧 generation。</li>
+                <li>否则 Chat 输入保持禁用，直到重新 ack。</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="matrix">
+        <h2>State Matrix</h2>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>State</th>
+              <th>Marketplace</th>
+              <th>Agents</th>
+              <th>Device</th>
+              <th>Me</th>
+              <th>Technical Gate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="status stale">unbound</span></td>
+              <td>推荐 Install and use</td>
+              <td>展示 empty state，Chat 输入禁用</td>
+              <td>显示 paired but no current agent</td>
+              <td>账号、通知、偏好可正常进入</td>
+              <td>No desired current install</td>
+            </tr>
+            <tr>
+              <td><span class="status warn">pending</span></td>
+              <td>按钮进入 installing / switching</td>
+              <td>Chat 暂停发送，显示等待设备</td>
+              <td>展示 desired/reported mismatch</td>
+              <td>不改变 pending，但可查看账户和设置</td>
+              <td>desired generation != reported generation</td>
+            </tr>
+            <tr>
+              <td><span class="status ok">bound</span></td>
+              <td>Agent 标记 Current</td>
+              <td>Chat、语音、history 正常</td>
+              <td>desired/reported/current 一致</td>
+              <td>展示当前账号和 app 设置</td>
+              <td>reported generation ack + runtime ready</td>
+            </tr>
+            <tr>
+              <td><span class="status danger">failed</span></td>
+              <td>Detail 显示失败和重试</td>
+              <td>禁止发送到失败 runtime</td>
+              <td>引导日志、重试、reprovision</td>
+              <td>保留支持、日志导出、账号入口</td>
+              <td>install/binding/runtime failed</td>
+            </tr>
+            <tr>
+              <td><span class="status stale">stale</span></td>
+              <td>保留浏览，避免误标 current</td>
+              <td>只读或禁用输入</td>
+              <td>Refresh binding projection</td>
+              <td>提示可能需要刷新或重新登录</td>
+              <td>local projection older than device/cloud state</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="references">
+        <h2>Existing Screenshot References</h2>
+        <div class="references">
+          <figure class="reference-card">
+            <img
+              src="assets/4-onboarding/4-onboarding-step-4-agents-list.png"
+              alt="Existing onboarding agent list screenshot"
+            />
+            <figcaption>Onboarding agent selection becomes optional and resumable.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="assets/8-agents-page/1-1agents-list.png"
+              alt="Existing agents list screenshot"
+            />
+            <figcaption>Former Agents browse surface maps to Marketplace browse/status.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img src="assets/7-chat/1-pages-chatpage.png" alt="Existing chat page screenshot" />
+            <figcaption>Former Chat tab maps to Agents current-agent chat surface.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="assets/9-device-page/1device-page.png"
+              alt="Existing device page screenshot"
+            />
+            <figcaption>Device page becomes binding status and recovery authority.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <ul class="source-list">
+          <li>
+            ADR 008: current primary-agent binding is explicit; install existence is not enough.
+          </li>
+          <li>
+            Shared binding contracts: desired state, reported state, generation ack, stale/failed
+            handling.
+          </li>
+          <li>
+            Mobile UI todo: bottom nav becomes Agents / Marketplace / Device / Me; onboarding keeps
+            sign-in and Bluetooth pairing, while Agent selection moves to the main app.
+          </li>
+          <li>
+            Existing screenshots: reused only as reference material, not as final visual direction.
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
