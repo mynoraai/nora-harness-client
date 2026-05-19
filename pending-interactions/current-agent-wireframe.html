@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -165,7 +165,6 @@
       .note-grid,
       .flow-grid,
       .state-grid,
-      .screen-grid,
       .references {
         display: grid;
         gap: 16px;
@@ -200,7 +199,7 @@
       }
 
       .flow-grid {
-        grid-template-columns: repeat(6, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
         align-items: stretch;
       }
 
@@ -268,12 +267,66 @@
         color: var(--stale);
       }
 
-      .screen-grid {
+      .source-list {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .source-list li {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdf7;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .screen-journey {
+        margin-bottom: 28px;
+      }
+
+      .screen-journey > h3 {
+        margin-bottom: 6px;
+        font-size: 20px;
+      }
+
+      .screen-intro {
+        max-width: 860px;
+        margin: 0 0 14px;
+        color: var(--muted);
+      }
+
+      .screen-track {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 2px 4px 18px;
+        scroll-padding-inline: 4px;
+        scroll-snap-type: x proximity;
+      }
+
+      .screen-track::-webkit-scrollbar {
+        height: 10px;
+      }
+
+      .screen-track::-webkit-scrollbar-track {
+        border-radius: 999px;
+        background: rgba(223, 209, 182, 0.5);
+      }
+
+      .screen-track::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(185, 166, 125, 0.78);
       }
 
       .screen-card {
         display: grid;
+        flex: 0 0 min(820px, calc(100vw - 56px));
         grid-template-columns: 280px minmax(0, 1fr);
         gap: 16px;
         align-items: start;
@@ -282,6 +335,7 @@
         border-radius: 8px;
         background: var(--panel);
         box-shadow: var(--shadow);
+        scroll-snap-align: start;
       }
 
       .phone {
@@ -380,8 +434,36 @@
         padding: 10px;
       }
 
+      .banner-row {
+        background: #fff1c8;
+      }
+
+      .session-like {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+      }
+
+      .avatar-dot {
+        display: flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: var(--panel-strong);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
       .wire-card {
         padding: 10px;
+      }
+
+      .media-hero {
+        min-height: 128px;
+        align-content: end;
       }
 
       .wire-card.highlight,
@@ -421,8 +503,7 @@
 
       .primary,
       .secondary,
-      .danger-btn,
-      .disabled-btn {
+      .danger-btn {
         display: flex;
         min-height: 40px;
         align-items: center;
@@ -451,12 +532,6 @@
         border: 1px solid rgba(163, 73, 61, 0.45);
         background: rgba(163, 73, 61, 0.08);
         color: var(--danger);
-      }
-
-      .disabled-btn {
-        border: 1px solid #d5cab7;
-        background: #eee8dd;
-        color: #837a6d;
       }
 
       .tabbar {
@@ -507,10 +582,6 @@
         padding: 8px;
         color: var(--muted);
         font-size: 12px;
-      }
-
-      .input-bar.disabled {
-        background: #eee8dd;
       }
 
       .sheet {
@@ -593,9 +664,9 @@
       }
 
       @media (max-width: 1040px) {
-        .screen-grid,
         .note-grid,
-        .state-grid {
+        .state-grid,
+        .source-list {
           grid-template-columns: 1fr;
         }
 
@@ -628,6 +699,17 @@
           grid-template-columns: 1fr;
         }
 
+        .screen-track {
+          margin-right: -10px;
+          margin-left: -10px;
+          padding-right: 10px;
+          padding-left: 10px;
+        }
+
+        .screen-card {
+          flex-basis: min(360px, calc(100vw - 24px));
+        }
+
         .flow-step::after {
           top: auto;
           right: 50%;
@@ -647,770 +729,1074 @@
       <div class="wrap">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Hardware Harness / Mobile UI Contracts</p>
+            <p class="eyebrow">Hardware Harness / Mobile UI Contract</p>
             <h1>Mobile Current Agent Interaction Wireframe</h1>
             <p class="lead">
-              First-pass mobile wireframe: reorganize the four bottom tabs into Agents,
-              Marketplace, Device, and Me, then map current primary-agent binding state directly to
-              mobile page states, disabled controls, errors, and recovery paths.
+              First-pass wireframe: reorganizes the four bottom tabs, Agents, Marketplace, Device,
+              and Me, and maps current primary-agent binding state into mobile page states, header
+              state, error states, and recovery paths.
             </p>
           </div>
           <aside class="meta">
             <strong>Artifact</strong>
             Static HTML wireframe, not final visual design.<br />
             <strong>Scope</strong>
-            Mobile interaction, user journey, and state contracts.<br />
-            <strong>Refs</strong>
+            Mobile interaction, user journeys, and state contracts.<br />
+            <strong>References</strong>
             ADR 008, shared contracts, existing screenshots.
           </aside>
         </div>
         <nav class="toc" aria-label="Page sections">
-          <a href="#placement">Placement</a>
-          <a href="#journey">User Journey</a>
-          <a href="#states">Binding States</a>
+          <a href="#journey">Journeys</a>
+          <a href="#states">Binding State</a>
           <a href="#screens">Wireframes</a>
           <a href="#matrix">State Matrix</a>
-          <a href="#references">Screenshots</a>
+          <a href="#references">Screenshot References</a>
         </nav>
       </div>
     </header>
 
     <main class="wrap">
-      <section id="placement">
-        <h2>Placement And Intent</h2>
-        <div class="note-grid">
-          <article class="note">
-            <h3>Why this lives here</h3>
-            <p>
-              This file is a mobile interaction contract. It lives next to the existing onboarding,
-              chat, agents, and device screenshots in <strong>mobile-ui-contracts</strong> so
-              implementation and acceptance work can reference one place.
-            </p>
-          </article>
-          <article class="note">
-            <h3>Not a sprint attachment</h3>
-            <p>
-              Sprint folders are for weekly task rhythm. This artifact captures UI flows and state
-              contracts that should remain useful across sprints.
-            </p>
-          </article>
-          <article class="note">
-            <h3>Technical linkage</h3>
-            <p>
-              Every send, switch, and uninstall state must derive from desired/reported binding,
-              generation ack, and runtime readiness, not from install existence alone.
-            </p>
-          </article>
-        </div>
-      </section>
-
       <section id="journey">
-        <h2>User Journey</h2>
-        <div class="flow-grid" aria-label="Primary user journey">
+        <h2>User Journeys This Version Must Cover</h2>
+        <div class="flow-grid" aria-label="Current version user journeys">
           <article class="flow-step">
             <span class="step-index">1</span>
-            <h3>Sign In</h3>
-            <p>Onboarding keeps account sign-in so purchases, adoption, sync, and device ownership have an identity base.</p>
+            <h3>Sign In, Then Enter Main App</h3>
+            <p>
+              ONB-001 only handles sign-in. After successful sign-in, the user enters the Agents
+              home and persistent banners continue setup guidance.
+            </p>
           </article>
           <article class="flow-step">
             <span class="step-index">2</span>
-            <h3>Bluetooth Pairing</h3>
-            <p>Keep Bluetooth scanning, pairing-code confirmation, and local pairing so the app knows which device is active.</p>
+            <h3>Complete Device And Agent Setup</h3>
+            <p>
+              Unpaired device and no purchased/adopted Agent are two independent banners. Each
+              disappears when its own condition is met.
+            </p>
           </article>
           <article class="flow-step">
             <span class="step-index">3</span>
-            <h3>Skippable Agent Choice</h3>
-            <p>Onboarding can recommend an Agent, but it must allow skip and land in the paired + unbound main app.</p>
+            <h3>Get Agents From Marketplace</h3>
+            <p>
+              Marketplace must show descriptions and brand images/screenshots. After Purchase/Adopt,
+              return to the Agents session list.
+            </p>
           </article>
           <article class="flow-step">
             <span class="step-index">4</span>
-            <h3>Install And Set Current</h3>
-            <p>If the user chooses an Agent, create the desired primary install and enter pending state.</p>
+            <h3>Agents List To Chat</h3>
+            <p>
+              Agents is a WeChat-style conversation list. Tapping an Agent row opens a clean chat
+              page; state lives in the header only.
+            </p>
           </article>
           <article class="flow-step">
             <span class="step-index">5</span>
-            <h3>Device Acknowledges</h3>
-            <p>Firmware fetches or receives the binding, applies it, and reports the matching generation.</p>
+            <h3>Device Hardware View</h3>
+            <p>
+              The Device tab shows overview, health, and logs; it does not own onboarding reset.
+            </p>
           </article>
           <article class="flow-step">
             <span class="step-index">6</span>
-            <h3>Enter Main App</h3>
-            <p>Chat unlocks after verified binding; skipping Agent lands in unbound state with follow-up prompts.</p>
+            <h3>Me Account Management</h3>
+            <p>The Me page owns account information and sign-out. Sign-out returns to ONB-001.</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">7</span>
+            <h3>Me Agent And Device Management</h3>
+            <p>
+              Me manages installed Agents, delete/uninstall, rename, and device removal. Risky
+              actions require confirmation.
+            </p>
           </article>
         </div>
       </section>
 
       <section id="states">
-        <h2>Binding States</h2>
+        <h2>Core State Principles</h2>
         <div class="state-grid">
           <article class="state-card">
-            <span class="status stale">unbound</span>
-            <h3>Paired, No Current Agent</h3>
-            <p>Device remains manageable. Chat entry stays visible, but input is disabled and points users to Marketplace or Device binding.</p>
+            <span class="status stale">Signed Out</span>
+            <h3>Cannot Pair Device</h3>
+            <p>
+              Sign-in is the prerequisite for pairing and purchase/adoption ownership. After
+              sign-in, enter the main app directly.
+            </p>
           </article>
           <article class="state-card">
-            <span class="status warn">binding / pending</span>
-            <h3>Desired Written, Waiting For Reported</h3>
-            <p>Show progress, block duplicate sends and switches, and allow cancel or device-status inspection.</p>
+            <span class="status warn">Device Not Paired</span>
+            <h3>Show Device Banner</h3>
+            <p>
+              This banner disappears after successful pairing. It does not depend on whether the
+              user has an Agent.
+            </p>
           </article>
           <article class="state-card">
-            <span class="status ok">bound</span>
-            <h3>Desired/Reported Generation Matches</h3>
-            <p>The current Agent becomes the primary Agents tab experience; chat input, voice, and history are enabled.</p>
+            <span class="status warn">No Agent</span>
+            <h3>Show Agent Banner</h3>
+            <p>This banner disappears once the mobile app has purchased or adopted any Agent.</p>
           </article>
           <article class="state-card">
-            <span class="status danger">failed</span>
-            <h3>Install Or Binding Failed</h3>
-            <p>Do not silently enter Chat. Show the failure reason, retry, switch Agent, and Device diagnostics.</p>
+            <span class="status ok">Purchased / Adopted</span>
+            <h3>Phone Chat Enabled</h3>
+            <p>
+              The Agent instance keeps running on the phone. When not installed to hardware, device
+              action entry points are not shown.
+            </p>
           </article>
           <article class="state-card">
-            <span class="status stale">stale</span>
-            <h3>Local Projection Is Older Than Device State</h3>
-            <p>Chat becomes read-only or disables input, then refreshes binding to avoid sending to an old runtime.</p>
+            <span class="status stale">Not Installed To Hardware</span>
+            <h3>Hardware State Lives In Header</h3>
+            <p>
+              The header toolbar shows Not installed. Chat stays clean, with no extra toolbar below
+              the header.
+            </p>
           </article>
           <article class="state-card">
-            <span class="status danger">reprovision_required</span>
-            <h3>Device Reprovision Required</h3>
-            <p>The Device tab provides recovery entry points to recheck network, pairing, and desired binding.</p>
+            <span class="status ok">Installed To Hardware</span>
+            <h3>Binding State Reaches Device Side</h3>
+            <p>
+              After Install to device, Device and Chat header show current binding. Chat remains the
+              same conversation.
+            </p>
           </article>
         </div>
       </section>
 
       <section id="screens">
-        <h2>Wireframes</h2>
-        <div class="screen-grid">
-          <article class="screen-card" id="onb-001">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>LTE 100%</span></div>
-                <div class="phone-title">
-                  <h4>Welcome</h4>
-                  <button class="tiny-btn">Help</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">ONB-001</span>
-                    <strong>Sign in, then pair device</strong>
-                    <p class="small muted">
-                      Sign-in and Bluetooth pairing stay; Agent selection is optional and skippable.
-                    </p>
-                  </div>
-                  <div class="wire-card">
-                    <strong>1. Sign in</strong>
-                    <p class="small muted">Establish account identity, ownership, and sync.</p>
-                  </div>
-                  <div class="wire-card">
-                    <strong>2. Bluetooth pairing</strong>
-                    <p class="small muted">Confirm a nearby device and complete local pairing.</p>
-                  </div>
-                  <div class="primary">Sign in and continue</div>
-                  <div class="secondary">Why sign in?</div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">ONB-001</span>
-                <span class="status stale">entry</span>
-              </div>
-              <h3>Onboarding keeps required setup</h3>
-              <p>First-pass interaction keeps sign-in and Bluetooth pairing; the Agent choice page can appear, but must not block the user.</p>
-              <ul>
-                <li>Sign-in handles account identity, purchase/adoption ownership, and sync.</li>
-                <li>Bluetooth pairing establishes local trust between phone and device.</li>
-                <li>After skipping Agent, the main state is paired + unbound, not current install.</li>
-              </ul>
-            </div>
-          </article>
+        <h2>Horizontally Scrollable Wireframes By Journey</h2>
 
-          <article class="screen-card" id="onb-002">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>LTE 100%</span></div>
-                <div class="phone-title">
-                  <h4>Bluetooth Pairing</h4>
-                  <button class="tiny-btn">Help</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">ONB-002</span>
-                    <strong>Find nearby device</strong>
-                    <p class="small muted">
-                      Request Bluetooth permission and scan for Nora devices.
-                    </p>
+        <div class="screen-journey">
+          <h3>Journey 1: User Onboarding, From Sign-In To Main App</h3>
+          <p class="screen-intro">
+            Only sign-in remains as a blocking onboarding step. After sign-in, go directly to the
+            main app; pairing and Agent acquisition continue through persistent banners.
+          </p>
+          <div class="screen-track" aria-label="onboarding to main app">
+            <article class="screen-card" id="journey-sign-in">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:41</span><span>LTE 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Welcome</h4>
+                    <button class="tiny-btn">Help</button>
                   </div>
-                  <div class="wire-row">
-                    <div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight">
+                      <span class="label">ONB-001</span>
+                      <strong>Sign In To Nora</strong>
+                      <p class="small muted">
+                        Sign-in establishes account identity, purchase/adoption ownership, sync, and
+                        device ownership.
+                      </p>
+                    </div>
+                    <div class="primary">Sign in with Google</div>
+                    <div class="secondary">Sign in with Apple</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ONB-001</span>
+                  <span class="status ok">Sign In</span>
+                </div>
+                <h3>Sign-In And Pairing Are Separate</h3>
+                <p>
+                  ONB-001 only shows sign-in and required copy. After sign-in, go directly to the
+                  main app.
+                </p>
+                <ul>
+                  <li>Do not show second or third onboarding cards.</li>
+                  <li>Do not show device pairing entry points on the sign-in page.</li>
+                  <li>Do not show Agent selection entry points on the sign-in page.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-main-banners">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:42</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Agents</h4>
+                    <button class="icon-btn">+</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-row banner-row">
+                      <div>
+                        <strong>Pair your Nora device</strong>
+                        <p class="small muted">
+                          Hardware install and device controls require pairing first.
+                        </p>
+                      </div>
+                      <span class="status warn">Pair</span>
+                    </div>
+                    <div class="wire-row banner-row">
+                      <div>
+                        <strong>Get your first Agent</strong>
+                        <p class="small muted">Purchase or Adopt to start phone-side chat.</p>
+                      </div>
+                      <span class="status warn">Marketplace</span>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab active">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MAIN-001</span>
+                  <span class="status warn">persistent banners</span>
+                </div>
+                <h3>Two Persistent Banners / Components</h3>
+                <p>
+                  The main app continues guidance instead of putting pairing and Agent choice back
+                  into onboarding.
+                </p>
+                <ul>
+                  <li>Device banner: disappears after successful pairing.</li>
+                  <li>
+                    Agent banner: disappears once the mobile app has purchased or adopted any Agent.
+                  </li>
+                  <li>The two states are independent.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 2: User Pairs A Device</h3>
+          <p class="screen-intro">
+            The user enters pairing from the main app device banner or Device tab. Successful
+            pairing only removes the device banner; it does not automatically purchase, adopt, or
+            install an Agent.
+          </p>
+          <div class="screen-track" aria-label="Device pairing journey">
+            <article class="screen-card" id="journey-pair-device">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:43</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Pair Device</h4>
+                    <button class="tiny-btn">Cancel</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight">
+                      <span class="label">Bluetooth</span>
                       <strong>Nora Dev Kit A14</strong>
-                      <p class="small muted">Nearby · not paired</p>
-                    </div>
-                    <span class="status warn">Pair</span>
-                  </div>
-                  <div class="wire-card">
-                    <span class="label">pairing code</span>
-                    <strong>842 119</strong>
-                    <p class="small muted">Continue only when this matches the device screen.</p>
-                  </div>
-                  <div class="sheet">
-                    <strong>Next step can be skipped</strong>
-                    <p class="small muted">Pairing creates device trust, not a current binding.</p>
-                  </div>
-                  <div class="primary">Confirm pairing</div>
-                  <div class="secondary">Scan again</div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">ONB-002</span>
-                <span class="status warn">pairing</span>
-              </div>
-              <h3>Pair first, choose Agent next</h3>
-              <p>This screen only handles Bluetooth permission, scanning, pairing code, and pairing confirmation.</p>
-              <ul>
-                <li>After pairing succeeds, continue to a skippable Agent choice page.</li>
-                <li>At this point only paired device exists; current binding remains empty.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="onb-003">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
-                <div class="phone-title">
-                  <h4>Choose Agent</h4>
-                  <button class="tiny-btn">Skip</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">ONB-003</span>
-                    <strong>Optional: set current Agent</strong>
-                    <p class="small muted">Choose an Agent to install and bind, or skip.</p>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Home Companion</strong>
-                      <p class="small muted">Adopted · recommended</p>
-                    </div>
-                    <span class="status warn">Use</span>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Workshop Helper</strong>
-                      <p class="small muted">Installed · not current</p>
-                    </div>
-                    <span class="status stale">Use</span>
-                  </div>
-                  <div class="sheet">
-                    <strong>Skipping is allowed</strong>
-                    <p class="small muted">
-                      Continue as paired + unbound; bind later from Marketplace or Device.
-                    </p>
-                  </div>
-                  <div class="primary">Install and use</div>
-                  <div class="secondary">Skip to main app</div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">ONB-003</span>
-                <span class="status warn">skippable</span>
-              </div>
-              <h3>Agent choice stays, but it is skippable</h3>
-              <p>This step can recommend or choose an Agent, but Skip must be a clear primary path.</p>
-              <ul>
-                <li>Choosing an Agent starts install-and-bind and waits for reported generation.</li>
-                <li>Skipping enters the main app and Agents shows a no current agent empty state.</li>
-                <li>Do not present a paired device as if it already has a current Agent.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="onb-004">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
-                <div class="phone-title">
-                  <h4>Main App</h4>
-                  <button class="tiny-btn">Done</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block">
-                    <span class="label">Paired device</span>
-                    <strong>Nora Dev Kit A14</strong>
-                    <p class="small muted">Paired · no current agent</p>
-                  </div>
-                  <div class="split">
-                    <div class="wire-card">
-                      <span class="label">desired</span>
-                      <strong>empty</strong>
+                      <p class="small muted">
+                        Nearby device. Confirm the pairing code shown on the device.
+                      </p>
                     </div>
                     <div class="wire-card">
-                      <span class="label">reported</span>
-                      <strong>empty</strong>
+                      <span class="label">Pairing code</span>
+                      <strong>842 119</strong>
+                      <p class="small muted">Continue only when the codes match.</p>
                     </div>
-                  </div>
-                  <div class="primary">Open Agents</div>
-                  <div class="secondary">Browse Marketplace</div>
-                  <div class="tabbar">
-                    <div class="tab active">Agents</div>
-                    <div class="tab">Marketplace</div>
-                    <div class="tab">Device</div>
-                    <div class="tab">Me</div>
+                    <div class="primary">Confirm pairing</div>
+                    <div class="secondary">Scan again</div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">ONB-004</span>
-                <span class="status stale">skip result / unbound</span>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">PAIR-001</span>
+                  <span class="status warn">Requires Sign-In</span>
+                </div>
+                <h3>Pairing Is A Main-App Journey</h3>
+                <p>
+                  Pairing establishes local trust between phone and hardware; it does not mean an
+                  Agent is installed to hardware.
+                </p>
+                <ul>
+                  <li>Pairing cannot start before sign-in.</li>
+                  <li>Pairing does not create Agent ownership.</li>
+                  <li>Pairing does not create current Agent install.</li>
+                </ul>
               </div>
-              <h3>Landing after skip</h3>
-              <p>After skipping Agent choice, the device is still paired, but current primary-agent binding is empty.</p>
-              <ul>
-                <li>Agents shows a no current agent empty state.</li>
-                <li>Marketplace or Device Configure owns later install-and-bind.</li>
-                <li>Chat unlocks only after binding ack.</li>
-              </ul>
-            </div>
-          </article>
+            </article>
 
-          <article class="screen-card" id="mkt-001">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <h4>Marketplace</h4>
-                  <button class="icon-btn">S</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">current device</span>
-                    <strong>No current agent</strong>
-                    <p class="small muted">Install an agent to unlock chat.</p>
+            <article class="screen-card" id="journey-after-pair">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:44</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Agents</h4>
+                    <button class="icon-btn">+</button>
                   </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Home Companion</strong>
-                      <p class="small muted">Adopted · ready to install</p>
-                    </div>
-                    <span class="status warn">Install</span>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Care Coach</strong>
-                      <p class="small muted">Buy to use</p>
-                    </div>
-                    <span class="status stale">Buy</span>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Workshop Helper</strong>
-                      <p class="small muted">Installed · not current</p>
-                    </div>
-                    <span class="status stale">Use</span>
-                  </div>
-                  <div class="tabbar">
-                    <div class="tab">Agents</div>
-                    <div class="tab active">Marketplace</div>
-                    <div class="tab">Device</div>
-                    <div class="tab">Me</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">MKT-001</span>
-                <span class="status stale">discover</span>
-              </div>
-              <h3>Marketplace Owns Acquire And Install</h3>
-              <p>
-                Former Agents/People browse and purchase capabilities move to Marketplace. Account
-                and preference entry points move to Me.
-              </p>
-              <ul>
-                <li>List states must express Not owned, Adopted, Installed, and Current.</li>
-                <li>The top device banner tells users why Chat is not available yet.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="mkt-002">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <button class="icon-btn">B</button>
-                  <h4>Agent Detail</h4>
-                  <button class="icon-btn">M</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">agent</span>
-                    <strong>Home Companion</strong>
-                    <p class="small muted">Adopted · compatible with Nora Dev Kit</p>
-                  </div>
-                  <div class="wire-card">
-                    <span class="label">install state</span>
-                    <strong>Not installed on this device</strong>
-                    <p class="small muted">Runtime will be created before binding.</p>
-                  </div>
-                  <div class="primary">Install and use</div>
-                  <div class="secondary">Install only</div>
-                  <div class="secondary">View details</div>
-                  <div class="sheet">
-                    <strong>Next</strong>
-                    <p class="small muted">
-                      desired primary install -> firmware ack -> chat enabled.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">MKT-002</span>
-                <span class="status warn">install-and-bind</span>
-              </div>
-              <h3>Install And Use Is The Key Action</h3>
-              <p>
-                This button starts runtime creation, desired binding, and the wait for reported
-                matching generation.
-              </p>
-              <ul>
-                <li>Install only does not change current primary-agent binding.</li>
-                <li>Success opens Agents chat; failure stays on detail or Device recovery.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="agt-001">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <h4>Agents</h4>
-                  <button class="icon-btn">+</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">current</span>
-                    <strong>Home Companion</strong>
-                    <p class="small muted">Bound to Nora Dev Kit A14 · gen 42</p>
-                  </div>
-                  <div class="split">
-                    <div class="secondary">Chat</div>
-                    <div class="secondary">Switch</div>
-                  </div>
-                  <div class="wire-card">
-                    <span class="label">sessions</span>
-                    <strong>Morning setup</strong>
-                    <p class="small muted">12 messages · device runtime</p>
-                  </div>
-                  <div class="wire-card">
-                    <strong>Kitchen task</strong>
-                    <p class="small muted">Last active yesterday</p>
-                  </div>
-                  <div class="tabbar">
-                    <div class="tab active">Agents</div>
-                    <div class="tab">Marketplace</div>
-                    <div class="tab">Device</div>
-                    <div class="tab">Me</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">AGT-001</span>
-                <span class="status ok">bound</span>
-              </div>
-              <h3>Agents Is The Current Agent Workspace</h3>
-              <p>The former Chat tab becomes Agents, centered on the current bound Agent, sessions, and configuration.</p>
-              <ul>
-                <li>Show one current primary agent, while still listing historical sessions.</li>
-                <li>Switch enters install-and-bind, not a client-only change.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="agt-002">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <button class="icon-btn">B</button>
-                  <h4>Chat</h4>
-                  <button class="icon-btn">H</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-row">
-                    <div>
-                      <strong>Home Companion</strong>
-                      <p class="small muted">Current · device runtime ready</p>
-                    </div>
-                    <span class="status ok">bound</span>
-                  </div>
-                  <div class="chat-bubble agent">I am connected to the device and can check the current task.</div>
-                  <div class="chat-bubble user">Please check the status.</div>
-                  <div class="chat-bubble agent">Device is online and the current Agent generation matches.</div>
-                  <div class="input-bar">
-                    <span>Message current agent</span>
-                    <button class="tiny-btn">Send</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">AGT-002</span>
-                <span class="status ok">chat enabled</span>
-              </div>
-              <h3>Chat Is Enabled Only For Verified Current</h3>
-              <p>Input is enabled only when device is paired, current binding is verified, and runtime is ready.</p>
-              <ul>
-                <li>During model switch or binding pending, the send button becomes disabled/pending.</li>
-                <li>Stale or failed state must not send messages to an old runtime.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="agt-002-disabled">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <button class="icon-btn">B</button>
-                  <h4>Chat</h4>
-                  <button class="icon-btn">H</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">binding pending</span>
-                    <strong>Switching to Workshop Helper</strong>
-                    <p class="small muted">Waiting for device reported generation 43.</p>
-                  </div>
-                  <div class="chat-bubble agent">The current switch has not finished, so messages are paused.</div>
-                  <div class="input-bar disabled">
-                    <span>Waiting for device binding</span>
-                    <button class="tiny-btn">...</button>
-                  </div>
-                  <div class="secondary">View device status</div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">AGT-002B</span>
-                <span class="status warn">disabled</span>
-              </div>
-              <h3>Disabled Send State Must Be Visible</h3>
-              <p>When switching model or current Agent, the disabled button and reason must remain visible in Chat.</p>
-              <ul>
-                <li>The disabled state comes from pending desired/reported mismatch.</li>
-                <li>Provide a Device status entry so users do not think messaging is stuck.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="agt-003">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
-                <div class="phone-title">
-                  <button class="icon-btn">B</button>
-                  <h4>History</h4>
-                  <button class="icon-btn">N</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-card highlight">
-                    <span class="label">current agent</span>
-                    <strong>Home Companion sessions</strong>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Morning setup</strong>
-                      <p class="small muted">Current runtime · 12 messages</p>
-                    </div>
-                    <span class="status ok">Open</span>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Old Workshop run</strong>
-                      <p class="small muted">Different agent · read only</p>
-                    </div>
-                    <span class="status stale">Read</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">AGT-003</span>
-                <span class="status stale">history</span>
-              </div>
-              <h3>History Is Separate From Current</h3>
-              <p>Old Agent history can be read, but must not silently restore an old runtime for sending.</p>
-              <ul>
-                <li>Open means continue with the current runtime.</li>
-                <li>Read only means archived conversation and does not change current binding.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="screen-card" id="dev-001">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
-                <div class="phone-title">
-                  <h4>Device</h4>
-                  <button class="icon-btn">G</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">Nora Dev Kit A14</span>
-                    <strong>Online</strong>
-                    <p class="small muted">Paired · cloud manageable</p>
-                  </div>
-                  <div class="split">
-                    <div class="wire-card">
-                      <span class="label">desired</span>
-                      <strong>Home Companion</strong>
-                      <p class="small muted">gen 42</p>
+                  <div class="phone-body">
+                    <div class="wire-row banner-row">
+                      <div>
+                        <strong>Get your first Agent</strong>
+                        <p class="small muted">Purchase or Adopt to start phone-side chat.</p>
+                      </div>
+                      <span class="status warn">Marketplace</span>
                     </div>
                     <div class="wire-card">
-                      <span class="label">reported</span>
+                      <span class="label">Device paired</span>
+                      <strong>Nora Dev Kit A14</strong>
+                      <p class="small muted">
+                        Device banner has disappeared; Agent banner remains.
+                      </p>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab active">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MAIN-002</span>
+                  <span class="status ok">paired</span>
+                </div>
+                <h3>Only The Device Banner Disappears</h3>
+                <p>
+                  After pairing succeeds, the device prompt disappears. If no Agent has been
+                  purchased/adopted, the Agent banner remains.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 3: User Purchases / Adopts An Agent, Then Installs It To Device</h3>
+          <p class="screen-intro">
+            Purchase/Adopt gives the user an Agent on the phone and enables chat. Install to device
+            installs that Agent to hardware. Before install, device action entry points are hidden
+            while phone chat remains available.
+          </p>
+          <div class="screen-track" aria-label="Purchase, adopt, and install Agent journey">
+            <article class="screen-card" id="journey-marketplace-assets">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:45</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Marketplace</h4>
+                    <button class="icon-btn">S</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight media-hero">
+                      <span class="label">Brand Image / Screenshots</span>
                       <strong>Home Companion</strong>
-                      <p class="small muted">gen 42</p>
+                      <p class="small muted">
+                        Home routines, reminders, and device-aware check-ins.
+                      </p>
                     </div>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Runtime</strong>
-                      <p class="small muted">Ready for current agent</p>
+                    <div class="split">
+                      <div class="wire-card">
+                        <span class="label">Screenshot 1</span><strong>Routine</strong>
+                      </div>
+                      <div class="wire-card">
+                        <span class="label">Screenshot 2</span><strong>Device</strong>
+                      </div>
                     </div>
-                    <span class="status ok">ready</span>
-                  </div>
-                  <div class="secondary">Configure binding</div>
-                  <div class="tabbar">
-                    <div class="tab">Agents</div>
-                    <div class="tab">Marketplace</div>
-                    <div class="tab active">Device</div>
-                    <div class="tab">Me</div>
+                    <div class="primary">Purchase</div>
+                    <div class="secondary">View details</div>
+                    <div class="tabbar">
+                      <div class="tab">Agents</div>
+                      <div class="tab active">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">DEV-001</span>
-                <span class="status ok">device bound</span>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MKT-001</span>
+                  <span class="status warn">Display Upgrade</span>
+                </div>
+                <h3>Marketplace Must Show Assets</h3>
+                <p>
+                  Each Agent shows the description, brand image, or screenshots uploaded from the
+                  editor client; mobile must render them too.
+                </p>
+                <ul>
+                  <li>Editor client prompts for a description during upload.</li>
+                  <li>Editor client prompts for screenshots or a brand image during upload.</li>
+                  <li>Mobile Marketplace cards and detail pages reuse these assets.</li>
+                </ul>
               </div>
-              <h3>Device Shows Binding Truth</h3>
-              <p>The Device tab is the authoritative entry for desired/reported state, runtime, health, and recovery.</p>
-              <ul>
-                <li>Users can see that current is acknowledged by the device, not just cached on the phone.</li>
-                <li>Generation mismatch is exposed directly here.</li>
-              </ul>
-            </div>
-          </article>
+            </article>
 
-          <article class="screen-card" id="dev-002">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
-                <div class="phone-title">
-                  <button class="icon-btn">B</button>
-                  <h4>Configure</h4>
-                  <button class="icon-btn">R</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-card highlight">
-                    <span class="label">current</span>
-                    <strong>Home Companion</strong>
-                    <p class="small muted">verified on device</p>
+            <article class="screen-card" id="journey-agent-session-list">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:46</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Agents</h4>
+                    <button class="icon-btn">+</button>
                   </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Workshop Helper</strong>
-                      <p class="small muted">Installed · compatible</p>
+                  <div class="phone-body">
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">HC</div>
+                      <div>
+                        <strong>Home Companion</strong>
+                        <p class="small muted">I am ready to help organize tonight.</p>
+                      </div>
+                      <span class="small muted">09:46</span>
                     </div>
-                    <span class="status warn">Switch</span>
-                  </div>
-                  <div class="wire-row">
-                    <div>
-                      <strong>Care Coach</strong>
-                      <p class="small muted">Owned · install first</p>
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">WH</div>
+                      <div>
+                        <strong>Workshop Helper</strong>
+                        <p class="small muted">Yesterday's device check is complete.</p>
+                      </div>
+                      <span class="small muted">Yesterday</span>
                     </div>
-                    <span class="status stale">Install</span>
-                  </div>
-                  <div class="danger-btn">Unbind current agent</div>
-                  <div class="sheet">
-                    <strong>Unbind means no current chat</strong>
-                    <p class="small muted">Prefer a replacement; empty binding disables Agents Chat.</p>
+                    <div class="tabbar">
+                      <div class="tab active">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">DEV-002</span>
-                <span class="status warn">switch</span>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">AGT-001</span>
+                  <span class="status ok">paired + owned</span>
+                </div>
+                <h3>With Device And Agent, The Page Is A Clean List</h3>
+                <p>
+                  The Agents page behaves like a chat app conversation list. Tap an Agent row to
+                  open its clean chat page.
+                </p>
+                <ul>
+                  <li>After pairing, do not show the device banner.</li>
+                  <li>After Purchase/Adopt, do not show the no-Agent banner.</li>
+                  <li>
+                    First UI: one Agent maps to one session; the data model reserves room for one
+                    Agent with multiple sessions.
+                  </li>
+                </ul>
               </div>
-              <h3>Switch And Unbind Both Use Control Plane</h3>
-              <p>Device Configure must clearly express replacement, null desired, and waiting for ack.</p>
-              <ul>
-                <li>Switch is install-and-bind, not a local session model update.</li>
-                <li>After unbinding current, Agents returns to the unbound empty state.</li>
-              </ul>
-            </div>
-          </article>
+            </article>
 
-          <article class="screen-card" id="rec-001">
-            <div class="phone">
-              <div class="phone-inner">
-                <div class="phone-bar"><span>9:41</span><span>Wi-Fi 100%</span></div>
-                <div class="phone-title">
-                  <h4>Device</h4>
-                  <button class="icon-btn">L</button>
-                </div>
-                <div class="phone-body">
-                  <div class="wire-block highlight">
-                    <span class="label">attention needed</span>
-                    <strong>Reprovision required</strong>
-                    <p class="small muted">Device did not report the requested binding.</p>
+            <article class="screen-card" id="journey-clean-chat-not-installed">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:47</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <div>
+                      <h4>Home Companion</h4>
+                      <span class="status warn">Not installed</span>
+                    </div>
+                    <button class="icon-btn">⋯</button>
                   </div>
-                  <div class="wire-card">
-                    <span class="label">desired</span>
-                    <strong>Workshop Helper · gen 43</strong>
+                  <div class="phone-body">
+                    <div class="chat-bubble agent">
+                      I am already running on the phone and can help organize tonight.
+                    </div>
+                    <div class="chat-bubble user">Help me plan it.</div>
+                    <div class="chat-bubble agent">
+                      Sure. I will start with your routine and reminders.
+                    </div>
+                    <div class="input-bar">
+                      <span>Message Home Companion</span>
+                      <button class="tiny-btn">Send</button>
+                    </div>
                   </div>
-                  <div class="wire-card">
-                    <span class="label">reported</span>
-                    <strong>Home Companion · gen 42</strong>
-                  </div>
-                  <div class="primary">Retry binding</div>
-                  <div class="secondary">Re-run device setup</div>
-                  <div class="secondary">Use previous verified agent</div>
                 </div>
               </div>
-            </div>
-            <div class="screen-notes">
-              <div class="screen-id">
-                <span class="pill">REC-001</span>
-                <span class="status danger">recovery</span>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">AGT-002</span>
+                  <span class="status ok">Phone Chat Enabled</span>
+                </div>
+                <h3>Clean Chat Interaction</h3>
+                <p>
+                  Bound/install state appears only in the header toolbar; there is no extra toolbar
+                  below the header.
+                </p>
+                <ul>
+                  <li>Once the user has purchased/adopted an Agent, phone chat is available.</li>
+                  <li>There is no intermediate state where phone-side sending is locked.</li>
+                  <li>The Agent instance keeps running; Install only installs it to hardware.</li>
+                </ul>
               </div>
-              <h3>Failure Must Not Pretend To Be Usable</h3>
-              <p>When firmware binding fails or becomes stale, users see a clear recovery path.</p>
-              <ul>
-                <li>If the previous verified agent is still safe, copy must explain the fallback to the old generation.</li>
-                <li>Otherwise Chat input stays disabled until a new ack arrives.</li>
-              </ul>
-            </div>
-          </article>
+            </article>
+
+            <article class="screen-card" id="journey-installed-same-chat">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:48</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <div>
+                      <h4>Home Companion</h4>
+                      <span class="status ok">Installed on Nora Dev Kit A14</span>
+                    </div>
+                    <button class="icon-btn">H</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="chat-bubble agent">
+                      I am already running on the phone and can help organize tonight.
+                    </div>
+                    <div class="chat-bubble user">Help me plan it.</div>
+                    <div class="chat-bubble agent">
+                      Install is complete; device-side capabilities are now available.
+                    </div>
+                    <div class="chat-bubble user">Check device status.</div>
+                    <div class="chat-bubble agent">
+                      Device is online and the current Agent generation matches.
+                    </div>
+                    <div class="input-bar">
+                      <span>Message Home Companion</span>
+                      <button class="tiny-btn">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">AGT-003</span>
+                  <span class="status ok">Same Chat</span>
+                </div>
+                <h3>After Install, It Is Still The Same Chat Page</h3>
+                <p>
+                  This is not a separate history page; it shows that messages before and after
+                  hardware install remain in the same Agent conversation.
+                </p>
+                <ul>
+                  <li>Tapping the Agent row opens the same chat conversation.</li>
+                  <li>Install does not create a new chat and does not clear prior messages.</li>
+                  <li>Header state changes from Not installed to Installed.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 4: User Views Device Page And Diagnostics</h3>
+          <p class="screen-intro">
+            This journey comes from MOB-06 and the current `DevicePage` / `DeviceHealthPage` /
+            `DeviceLogsPage`. The Device tab is the hardware state and diagnostics entry point; it
+            does not rerun onboarding. Risky actions live in Me device management.
+          </p>
+          <div class="screen-track" aria-label="Device display and diagnostics journey">
+            <article class="screen-card" id="journey-device-overview">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:49</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Device</h4>
+                    <button class="icon-btn">R</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight media-hero">
+                      <span class="label">Nora Dev Kit A14</span>
+                      <strong>awake</strong>
+                      <p class="small muted">updated just now</p>
+                    </div>
+                    <div class="split">
+                      <div class="wire-card"><span class="status ok">Online</span></div>
+                      <div class="wire-card"><span class="status ok">Agent connected</span></div>
+                    </div>
+                    <div class="split">
+                      <div class="wire-card"><span class="status warn">Battery 82%</span></div>
+                      <div class="wire-card"><span class="status warn">Wi-Fi Good</span></div>
+                    </div>
+                    <div class="wire-row">
+                      <div>
+                        <strong>Recent events</strong>
+                        <p class="small muted">09:48 · Agent installed</p>
+                      </div>
+                      <span class="small muted">Logs</span>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab active">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">DEV-001</span>
+                  <span class="status ok">overview</span>
+                </div>
+                <h3>Device tab Device Tab Starts With Hardware Overview</h3>
+                <p>
+                  Show device identity, online status, Agent connection, battery, Wi-Fi, and logs
+                  stream.
+                </p>
+                <ul>
+                  <li>Tap the device card to open health.</li>
+                  <li>Tap Recent events to open logs.</li>
+                  <li>
+                    Refresh only updates device state; it does not change pair/install
+                    relationships.
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-device-health">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:50</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Device Health</h4>
+                    <button class="icon-btn">R</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <span class="label">Connectivity</span>
+                      <strong>Online</strong>
+                      <p class="small muted">last seen just now</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Runtime</span>
+                      <strong>Agent connected</strong>
+                      <p class="small muted">current binding matches device report</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Signal</span>
+                      <strong>Wi-Fi Good · Battery 82%</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">DEV-002</span>
+                  <span class="status ok">health</span>
+                </div>
+                <h3>Health Is Diagnostic Detail</h3>
+                <p>Open from Device overview; keep current device context when going back.</p>
+                <ul>
+                  <li>Use it to inspect device-level status.</li>
+                  <li>It can show whether current binding matches.</li>
+                  <li>Do not delete devices or rerun setup here.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-device-logs">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:51</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Device Logs</h4>
+                    <button class="icon-btn">R</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <strong>09:48 · Agent installed</strong>
+                      <p class="small muted">Home Companion generation 42 acknowledged.</p>
+                    </div>
+                    <div class="wire-card">
+                      <strong>09:46 · Pair confirmed</strong>
+                      <p class="small muted">Phone trust established for Nora Dev Kit A14.</p>
+                    </div>
+                    <div class="wire-card">
+                      <strong>09:45 · Runtime ready</strong>
+                      <p class="small muted">Log list is scrollable and tied to active device.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">DEV-003</span>
+                  <span class="status ok">logs</span>
+                </div>
+                <h3>Logs Must Be Readable And Scrollable</h3>
+                <p>
+                  Logs explain device state only; they do not change device connection or Agent
+                  chat.
+                </p>
+                <ul>
+                  <li>Scrolling must not reset the device session.</li>
+                  <li>Keep the same active device when returning to Device overview.</li>
+                  <li>Error or stale state should remain in Device diagnostics.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 5: User Signs Out From Me</h3>
+          <p class="screen-intro">
+            This journey comes from MOB-07 Account and `SettingsAccountPage`. In the target
+            navigation, Settings maps to Me; the Account row opens account detail, and successful
+            Sign Out clears the session and returns to ONB-001.
+          </p>
+          <div class="screen-track" aria-label="Me sign-out journey">
+            <article class="screen-card" id="journey-me-home">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:52</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Me</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-row">
+                      <div class="avatar-dot">ZW</div>
+                      <div>
+                        <strong>Account</strong>
+                        <p class="small muted">Google sign-in, session security, sign-out</p>
+                      </div>
+                    </div>
+                    <div class="wire-row">
+                      <div class="avatar-dot">A</div>
+                      <div>
+                        <strong>Agents</strong>
+                        <p class="small muted">Manage owned and installed agents</p>
+                      </div>
+                    </div>
+                    <div class="wire-row">
+                      <div class="avatar-dot">D</div>
+                      <div>
+                        <strong>Device Settings</strong>
+                        <p class="small muted">Rename, pair another, remove device</p>
+                      </div>
+                    </div>
+                    <div class="wire-row">
+                      <div class="avatar-dot">i</div>
+                      <div>
+                        <strong>About</strong>
+                        <p class="small muted">Version, diagnostics, privacy</p>
+                      </div>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab active">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-001</span>
+                  <span class="status ok">hub</span>
+                </div>
+                <h3>Me Is The Settings And Account Hub</h3>
+                <p>The existing Settings home should collapse into the target Me tab.</p>
+                <ul>
+                  <li>Account opens account detail and sign-out.</li>
+                  <li>Agents opens Agent management.</li>
+                  <li>Device Settings owns risky device actions.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-me-account-signout">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:53</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Account</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <div class="avatar-dot">ZW</div>
+                      <strong>zhaowei</strong>
+                      <p class="small muted">zhaowei@example.com</p>
+                    </div>
+                    <div class="wire-card">
+                      <strong>Session safety</strong>
+                      <p class="small muted">This phone is tied to your signed-in account.</p>
+                    </div>
+                    <div class="danger-btn">Sign Out</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-002</span>
+                  <span class="status danger">sign out</span>
+                </div>
+                <h3>Sign Out Returns To ONB-001</h3>
+                <p>
+                  Sign-out clears bearer/session state; on success, root replace to the sign-in
+                  page.
+                </p>
+                <ul>
+                  <li>Do not keep chat-ready state.</li>
+                  <li>After returning to sign-in, do not automatically enter pair.</li>
+                  <li>The sign-in page still only shows sign-in and copy.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 6: User Deletes / Uninstalls Agent From Me</h3>
+          <p class="screen-intro">
+            This journey comes from MOB-07 Agent settings, `SettingsAgentPage`, and
+            `AgentUninstallDialog`. Current code semantics are uninstall from device; the target
+            interaction can place the entry under Me Agents management. Delete/uninstall requires
+            confirmation and failure recovery.
+          </p>
+          <div class="screen-track" aria-label="Me delete Agent journey">
+            <article class="screen-card" id="journey-me-agent-management">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:54</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Agents</h4>
+                    <button class="icon-btn">R</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">HC</div>
+                      <div>
+                        <strong>Home Companion</strong>
+                        <p class="small muted">v0.9.0 · Ready · installed today</p>
+                      </div>
+                      <span class="status danger">Delete</span>
+                    </div>
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">WH</div>
+                      <div>
+                        <strong>Workshop Helper</strong>
+                        <p class="small muted">v0.9.0 · Starting · installed yesterday</p>
+                      </div>
+                      <span class="status danger">Delete</span>
+                    </div>
+                    <div class="secondary">Browse Marketplace</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-003</span>
+                  <span class="status warn">agent manage</span>
+                </div>
+                <h3>Agent Management Is Not The Chat List</h3>
+                <p>
+                  The Agents tab is the chat conversation list; Me / Agents is the management list,
+                  showing version, runtime state, and delete action.
+                </p>
+                <ul>
+                  <li>If there is no active device, guide the user to pair first.</li>
+                  <li>If the list is empty, guide the user to Marketplace.</li>
+                  <li>
+                    Refresh failure stays on this page and does not pollute the main Agents tab.
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-me-agent-delete-confirm">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:55</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Agents</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <strong>Delete Home Companion?</strong>
+                      <p class="small muted">
+                        The Agent will stop running on this device. Owned data remains in cloud
+                        unless the product later adds account-level delete.
+                      </p>
+                    </div>
+                    <div class="split">
+                      <div class="secondary">Cancel</div>
+                      <div class="danger-btn">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-004</span>
+                  <span class="status danger">confirm</span>
+                </div>
+                <h3>Deleting An Agent Requires Confirmation</h3>
+                <p>
+                  The confirmation sheet follows the current uninstall dialog semantics; failures
+                  stay in the sheet for retry.
+                </p>
+                <ul>
+                  <li>Cancel does not change the list.</li>
+                  <li>Delete pending shows progress.</li>
+                  <li>After Delete succeeds, remove that row from the list.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-me-agent-delete-result">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:56</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Agents</h4>
+                    <button class="icon-btn">R</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">WH</div>
+                      <div>
+                        <strong>Workshop Helper</strong>
+                        <p class="small muted">v0.9.0 · Ready · installed yesterday</p>
+                      </div>
+                      <span class="status danger">Delete</span>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Toast</span>
+                      <strong>Home Companion deleted from device</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-005</span>
+                  <span class="status ok">updated</span>
+                </div>
+                <h3>Update Management List After Success</h3>
+                <p>
+                  If this is the user's last Agent, the main Agents page should show the no-Agent
+                  banner again.
+                </p>
+                <ul>
+                  <li>Delete result must not sign the user out.</li>
+                  <li>Delete result must not unpair the device.</li>
+                  <li>
+                    If product later separates owned delete from device uninstall, the copy must
+                    distinguish them.
+                  </li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>Journey 7: User Manages Device From Me</h3>
+          <p class="screen-intro">
+            This journey comes from MOB-07 Device settings and `SettingsDevicePage`. The Device tab
+            is for viewing state; Me / Device Settings owns state-changing actions such as pair
+            another, rename, and remove device.
+          </p>
+          <div class="screen-track" aria-label="Me device management journey">
+            <article class="screen-card" id="journey-me-device-settings">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:57</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Device Settings</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <span class="label">Active device</span>
+                      <strong>Nora Dev Kit A14</strong>
+                      <p class="small muted">Switch device · Pair another</p>
+                    </div>
+                    <div class="wire-row">
+                      <div>
+                        <strong>Rename device</strong>
+                        <p class="small muted">Change local display name</p>
+                      </div>
+                    </div>
+                    <div class="wire-row">
+                      <div>
+                        <strong>Pair another device</strong>
+                        <p class="small muted">Start pair flow from signed-in context</p>
+                      </div>
+                    </div>
+                    <div class="wire-row">
+                      <div>
+                        <strong>Remove device</strong>
+                        <p class="small muted">Disconnect this hardware from this phone</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-006</span>
+                  <span class="status warn">device manage</span>
+                </div>
+                <h3>Device Management Lives In Me</h3>
+                <p>
+                  This page owns actions that change local device state, separated from Device
+                  diagnostics.
+                </p>
+                <ul>
+                  <li>Pair another enters pair flow while keeping sign-in state.</li>
+                  <li>Rename requires explicit save confirmation.</li>
+                  <li>
+                    Remove device requires confirmation. If no devices remain, return to the main
+                    app state that needs pairing.
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-me-device-remove">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:58</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Device Settings</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-card">
+                      <strong>Remove device?</strong>
+                      <p class="small muted">
+                        This removes Nora Dev Kit A14 from this phone. Cloud unpairing is handled
+                        separately.
+                      </p>
+                    </div>
+                    <div class="split">
+                      <div class="secondary">Cancel</div>
+                      <div class="danger-btn">Remove</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-007</span>
+                  <span class="status danger">remove device</span>
+                </div>
+                <h3>After Device Removal, Return To Unpaired State</h3>
+                <p>
+                  If this is the last device, the main Agents page shows the device banner again.
+                </p>
+                <ul>
+                  <li>Remove does not sign the user out.</li>
+                  <li>Remove does not delete purchased/adopted Agents.</li>
+                  <li>If other devices remain, switch to the remaining active device.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -1420,91 +1806,140 @@
           <thead>
             <tr>
               <th>State</th>
-              <th>Marketplace</th>
               <th>Agents</th>
+              <th>Marketplace</th>
               <th>Device</th>
-              <th>Me</th>
-              <th>Technical Gate</th>
+              <th>Chat</th>
+              <th>Exit Condition / Gate</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><span class="status stale">unbound</span></td>
-              <td>Recommend Install and use</td>
-              <td>Show empty state and disable Chat input</td>
-              <td>Show paired but no current agent</td>
-              <td>Account, notifications, and preferences remain available</td>
-              <td>No desired current install</td>
+              <td><span class="status stale">Signed Out</span></td>
+              <td>Return to ONB-001 sign-in page</td>
+              <td>Shown after sign-in</td>
+              <td>Shown after sign-in</td>
+              <td>Enter after sign-in</td>
+              <td>Enter main app after successful sign-in</td>
             </tr>
             <tr>
-              <td><span class="status warn">pending</span></td>
-              <td>Buttons enter installing / switching</td>
-              <td>Chat pauses sending and shows waiting for device</td>
-              <td>Show desired/reported mismatch</td>
-              <td>Does not change pending, but account and settings remain available</td>
-              <td>desired generation != reported generation</td>
+              <td><span class="status warn">Device Not Paired</span></td>
+              <td>Show device banner</td>
+              <td>Can still browse and Purchase / Adopt</td>
+              <td>Provide Pair entry</td>
+              <td>
+                Purchased Agents can still chat on phone; hardware action entry points are hidden
+              </td>
+              <td>Device banner disappears after Pair succeeds</td>
             </tr>
             <tr>
-              <td><span class="status ok">bound</span></td>
-              <td>Agent is marked Current</td>
-              <td>Chat, voice, and history work normally</td>
-              <td>desired/reported/current are consistent</td>
-              <td>Show current account and app settings</td>
-              <td>reported generation ack + runtime ready</td>
+              <td><span class="status warn">No Agent</span></td>
+              <td>Show no-Agent banner; do not render an empty list</td>
+              <td>Show Agents available for Purchase / Adopt</td>
+              <td>Unaffected</td>
+              <td>No Agent session to enter</td>
+              <td>Disappears after purchasing or adopting any Agent</td>
             </tr>
             <tr>
-              <td><span class="status danger">failed</span></td>
-              <td>Detail shows failure and retry</td>
-              <td>Do not send to failed runtime</td>
-              <td>Guide to logs, retry, and reprovision</td>
-              <td>Keep support, log export, and account entry</td>
-              <td>install/binding/runtime failed</td>
+              <td><span class="status ok">Purchased / Adopted</span></td>
+              <td>Agent appears in the session list</td>
+              <td>Show owned state</td>
+              <td>Can choose Install to device</td>
+              <td>Phone-side chat enabled</td>
+              <td>Does not require hardware install</td>
             </tr>
             <tr>
-              <td><span class="status stale">stale</span></td>
-              <td>Allow browsing, but avoid marking current incorrectly</td>
-              <td>Read only or disabled input</td>
-              <td>Refresh binding projection</td>
-              <td>Suggest refresh or re-auth if needed</td>
-              <td>local projection older than device/cloud state</td>
+              <td><span class="status stale">Not Installed To Hardware</span></td>
+              <td>Agents list remains normal</td>
+              <td>Detail page shows Install to device</td>
+              <td>Device and Chat header show Not installed</td>
+              <td>Phone chat is available; no unsendable chat state appears</td>
+              <td>Header updates after Install to device succeeds</td>
+            </tr>
+            <tr>
+              <td><span class="status ok">Installed To Hardware</span></td>
+              <td>Session row shows installed/current</td>
+              <td>Can continue browsing other Agents</td>
+              <td>Show current binding</td>
+              <td>Phone chat and hardware actions are both available</td>
+              <td>Still the same Agent chat conversation</td>
+            </tr>
+            <tr>
+              <td><span class="status warn">Delete Last Agent</span></td>
+              <td>Show no-Agent banner again</td>
+              <td>Continue showing Agents available for Purchase / Adopt</td>
+              <td>Paired device is unaffected</td>
+              <td>No Agent row to enter</td>
+              <td>List returns after purchasing or adopting any Agent</td>
+            </tr>
+            <tr>
+              <td><span class="status warn">Remove Last Device</span></td>
+              <td>Show device banner again</td>
+              <td>Can still browse and Purchase / Adopt</td>
+              <td>No active device; Me can pair again</td>
+              <td>Existing Agents remain on the phone</td>
+              <td>Device overview returns after pairing any device</td>
             </tr>
           </tbody>
         </table>
       </section>
-
       <section id="references">
         <h2>Existing Screenshot References</h2>
         <div class="references">
           <figure class="reference-card">
             <img
-              src="../mobile-ui-contracts/assets/4-onboarding/4-onboarding-step-4-agents-list.png"
-              alt="Existing onboarding agent list screenshot"
+              src="assets/4-onboarding/4-onboarding-step-4-agents-list.png"
+              alt="Existing onboarding Agent list screenshot"
             />
-            <figcaption>Onboarding agent selection becomes optional and resumable.</figcaption>
+            <figcaption>
+              Onboarding no longer owns Agent selection; related entry points move to the main app.
+            </figcaption>
           </figure>
           <figure class="reference-card">
             <img
-              src="../mobile-ui-contracts/assets/8-agents-page/1-1agents-list.png"
-              alt="Existing agents list screenshot"
+              src="assets/8-agents-page/1-1agents-list.png"
+              alt="Existing Agent list screenshot"
             />
-            <figcaption>Former Agents browse surface maps to Marketplace browse/status.</figcaption>
+            <figcaption>
+              Original Agent browse pages map to Marketplace browsing and state pages.
+            </figcaption>
           </figure>
           <figure class="reference-card">
-            <img src="../mobile-ui-contracts/assets/7-chat/1-pages-chatpage.png" alt="Existing chat page screenshot" />
-            <figcaption>Former Chat tab maps to Agents current-agent chat surface.</figcaption>
+            <img src="assets/7-chat/1-pages-chatpage.png" alt="Existing chat page screenshot" />
+            <figcaption>
+              Original chat pages map to the current Agent chat surface inside Agents.
+            </figcaption>
           </figure>
           <figure class="reference-card">
             <img
-              src="../mobile-ui-contracts/assets/9-device-page/1device-page.png"
+              src="assets/9-device-page/1device-page.png"
               alt="Existing device page screenshot"
             />
-            <figcaption>Device page becomes binding status and recovery authority.</figcaption>
+            <figcaption>
+              Device page becomes the authoritative entry for binding state and recovery.
+            </figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="assets/10-setting-page/1settings-home.png"
+              alt="Existing settings home screenshot"
+            />
+            <figcaption>Existing Settings home maps to the target Me tab.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="assets/10-setting-page/3-setting-agent-page.png"
+              alt="Existing Agent settings screenshot"
+            />
+            <figcaption>
+              Agent management, delete/uninstall, and refresh state enter from Me.
+            </figcaption>
           </figure>
         </div>
       </section>
 
       <section id="sources">
-        <h2>Source Notes</h2>
+        <h2>Sources</h2>
         <ul class="source-list">
           <li>
             ADR 008: current primary-agent binding is explicit; install existence is not enough.
@@ -1515,10 +1950,16 @@
           </li>
           <li>
             Mobile UI todo: bottom nav becomes Agents / Marketplace / Device / Me; onboarding keeps
-            sign-in and Bluetooth pairing, while Agent selection moves to the main app.
+            only sign-in, while device pairing and Agent acquisition move to the main app.
           </li>
           <li>
-            Existing screenshots: reused only as reference material, not as final visual direction.
+            Journey sources: MOB-01 through MOB-07 docs plus `App.tsx`, `TabsLayout.tsx`,
+            `DevicePage.tsx`, `SettingsAccountPage.tsx`, `SettingsAgentPage.tsx`, and
+            `SettingsDevicePage.tsx`.
+          </li>
+          <li>
+            Existing screenshots are reference material for state and information architecture, not
+            final visual direction.
           </li>
         </ul>
       </section>
