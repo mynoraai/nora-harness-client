@@ -21,6 +21,11 @@
         --danger: #a3493d;
         --stale: #626a78;
         --shadow: 0 12px 34px rgba(75, 61, 32, 0.14);
+        --phone-width: 390px;
+        --phone-height: 844px;
+        --phone-scale: 0.75;
+        --phone-frame-width: calc(var(--phone-width) * var(--phone-scale));
+        --phone-frame-height: calc(var(--phone-height) * var(--phone-scale));
         font-family:
           Inter,
           ui-sans-serif,
@@ -296,7 +301,7 @@
 
       .screen-intro {
         max-width: 860px;
-        margin: 0 0 14px;
+        margin: 0 0 8px;
         color: var(--muted);
       }
 
@@ -326,8 +331,8 @@
 
       .screen-card {
         display: grid;
-        flex: 0 0 min(820px, calc(100vw - 56px));
-        grid-template-columns: 280px minmax(0, 1fr);
+        flex: 0 0 min(880px, calc(100vw - 56px));
+        grid-template-columns: var(--phone-frame-width) minmax(0, 1fr);
         gap: 16px;
         align-items: start;
         padding: 18px;
@@ -339,29 +344,37 @@
       }
 
       .phone {
-        width: 260px;
-        min-height: 540px;
-        overflow: hidden;
-        border: 2px solid #24211a;
-        border-radius: 30px;
-        background: #fffaf0;
-        box-shadow: inset 0 0 0 7px #1f1d18;
+        position: relative;
+        width: var(--phone-frame-width);
+        height: var(--phone-frame-height);
+        overflow: visible;
       }
 
       .phone-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
         display: flex;
-        min-height: 536px;
+        width: var(--phone-width);
+        height: var(--phone-height);
         flex-direction: column;
-        padding: 14px 14px 12px;
+        overflow: hidden;
+        border: 2px solid #24211a;
+        border-radius: 44px;
+        background: #fffaf0;
+        box-shadow: inset 0 0 0 10px #1f1d18;
+        padding: 38px 26px 20px;
+        transform: scale(var(--phone-scale));
+        transform-origin: top left;
       }
 
       .phone-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 2px 8px 10px;
+        padding: 0 12px 18px;
         color: #453d31;
-        font-size: 11px;
+        font-size: 15px;
         font-weight: 750;
       }
 
@@ -369,13 +382,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 12px;
+        gap: 14px;
+        margin-bottom: 18px;
       }
 
       .phone-title h4 {
         margin: 0;
-        font-size: 19px;
+        font-size: 28px;
         line-height: 1.15;
         letter-spacing: 0;
       }
@@ -383,29 +396,29 @@
       .icon-btn,
       .tiny-btn {
         display: inline-flex;
-        min-width: 30px;
-        height: 30px;
+        min-width: 44px;
+        height: 44px;
         align-items: center;
         justify-content: center;
         border: 1px solid var(--line);
-        border-radius: 8px;
+        border-radius: 12px;
         background: #fff7e0;
         color: var(--ink);
-        font-size: 12px;
+        font-size: 15px;
         font-weight: 800;
       }
 
       .tiny-btn {
         min-width: auto;
-        height: 28px;
-        padding: 0 9px;
+        height: 40px;
+        padding: 0 14px;
       }
 
       .phone-body {
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: 10px;
+        gap: 14px;
       }
 
       .wire-block,
@@ -421,49 +434,203 @@
       }
 
       .wire-block {
-        min-height: 64px;
-        padding: 12px;
+        min-height: 96px;
+        padding: 16px;
       }
 
       .wire-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
-        min-height: 48px;
-        padding: 10px;
+        gap: 12px;
+        min-height: 60px;
+        padding: 12px;
       }
 
       .banner-row {
+        min-height: 78px;
         background: #fff1c8;
+      }
+
+      .banner-row .status {
+        min-height: 32px;
+        padding: 5px 10px;
+        font-size: 13px;
       }
 
       .session-like {
         display: grid;
-        grid-template-columns: 38px minmax(0, 1fr) auto;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+      }
+
+      .settings-row {
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr);
+        justify-content: start;
+        min-height: 78px;
+      }
+
+      .settings-row > div:last-child {
+        min-width: 0;
+        text-align: left;
+      }
+
+      .settings-row strong,
+      .settings-row p {
+        text-align: left;
       }
 
       .avatar-dot {
         display: flex;
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
         align-items: center;
         justify-content: center;
         border: 1px solid var(--line);
         border-radius: 50%;
         background: var(--panel-strong);
         color: var(--accent);
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 900;
       }
 
       .wire-card {
-        padding: 10px;
+        padding: 14px;
       }
 
       .media-hero {
-        min-height: 128px;
+        min-height: 178px;
         align-content: end;
+      }
+
+      .market-card {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        min-height: 72px;
+        padding: 10px 12px;
+      }
+
+      .market-card strong {
+        display: block;
+        overflow: hidden;
+        margin-bottom: 3px;
+        font-size: 17px;
+        line-height: 1.15;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .market-card .small {
+        display: -webkit-box;
+        overflow: hidden;
+        font-size: 14px;
+        line-height: 1.25;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .market-card .status {
+        min-height: 30px;
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+
+      .asset-thumb,
+      .asset-slot {
+        border: 1px dashed var(--line-strong);
+        border-radius: 8px;
+        background: #eee4d1;
+      }
+
+      .asset-thumb {
+        width: 52px;
+        height: 52px;
+      }
+
+      .view-switch {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        padding: 5px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fffdf7;
+      }
+
+      .view-switch span {
+        min-height: 32px;
+        padding: 6px;
+        border-radius: 9px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .view-switch .active {
+        background: var(--panel-strong);
+        color: var(--ink);
+      }
+
+      .masonry-grid {
+        column-count: 2;
+        column-gap: 10px;
+      }
+
+      .masonry-card {
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+        margin: 0 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fffdf7;
+      }
+
+      .masonry-media {
+        border-bottom: 1px dashed var(--line-strong);
+        background: #eee4d1;
+      }
+
+      .masonry-media.tall {
+        height: 158px;
+      }
+
+      .masonry-media.mid {
+        height: 128px;
+      }
+
+      .masonry-media.short {
+        height: 104px;
+      }
+
+      .masonry-copy {
+        padding: 9px;
+      }
+
+      .masonry-copy strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+        line-height: 1.15;
+      }
+
+      .masonry-copy .small {
+        font-size: 12px;
+        line-height: 1.22;
+      }
+
+      .asset-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .asset-slot {
+        min-height: 76px;
+        padding: 10px;
       }
 
       .wire-card.highlight,
@@ -474,8 +641,8 @@
 
       .label {
         display: block;
-        margin-bottom: 3px;
-        font-size: 11px;
+        margin-bottom: 4px;
+        font-size: 13px;
         font-weight: 800;
         color: var(--accent);
         text-transform: uppercase;
@@ -486,7 +653,7 @@
       }
 
       .small {
-        font-size: 12px;
+        font-size: 15px;
         line-height: 1.35;
       }
 
@@ -505,13 +672,13 @@
       .secondary,
       .danger-btn {
         display: flex;
-        min-height: 40px;
+        min-height: 48px;
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 8px 10px;
-        border-radius: 8px;
-        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 16px;
         font-weight: 800;
         text-align: center;
       }
@@ -534,20 +701,26 @@
         color: var(--danger);
       }
 
+      .primary.disabled {
+        border-color: #9f9a91;
+        background: #97938c;
+        color: white;
+      }
+
       .tabbar {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 4px;
+        gap: 6px;
         margin-top: auto;
-        padding: 7px;
+        padding: 9px;
       }
 
       .tab {
-        min-height: 38px;
-        padding: 4px;
-        border-radius: 7px;
+        min-height: 44px;
+        padding: 7px 4px;
+        border-radius: 10px;
         color: var(--muted);
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 750;
         text-align: center;
       }
@@ -559,8 +732,8 @@
 
       .chat-bubble {
         max-width: 86%;
-        padding: 9px 10px;
-        font-size: 12px;
+        padding: 12px 14px;
+        font-size: 16px;
       }
 
       .chat-bubble.user {
@@ -576,16 +749,127 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
-        min-height: 42px;
+        gap: 10px;
+        min-height: 54px;
         margin-top: auto;
-        padding: 8px;
+        padding: 10px;
         color: var(--muted);
-        font-size: 12px;
+        font-size: 15px;
       }
 
       .sheet {
-        padding: 10px;
+        padding: 14px;
+      }
+
+      .setup-header {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 8px;
+      }
+
+      .setup-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .setup-chip {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #f6f0e5;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 750;
+      }
+
+      .setup-progress {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+
+      .setup-progress span {
+        height: 7px;
+        border-radius: 999px;
+        background: #f3eee6;
+      }
+
+      .setup-progress .done {
+        background: #ec5a0a;
+      }
+
+      .setup-title {
+        margin: 0;
+        font-size: 34px;
+        line-height: 1.08;
+      }
+
+      .device-choice {
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr) 52px;
+        align-items: center;
+        gap: 14px;
+        min-height: 92px;
+        padding: 14px;
+        border: 2px solid #f0ae6d;
+        border-radius: 26px;
+        background: #fff0d9;
+      }
+
+      .device-icon {
+        display: grid;
+        width: 58px;
+        height: 58px;
+        place-items: center;
+        border-radius: 16px;
+        background: #fff1bf;
+        color: #ec5a0a;
+        font-size: 26px;
+        font-weight: 900;
+      }
+
+      .check-dot {
+        display: grid;
+        width: 52px;
+        height: 52px;
+        place-items: center;
+        border-radius: 50%;
+        background: #ec5a0a;
+        color: white;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .setup-field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .input-field {
+        min-height: 56px;
+        padding: 14px 16px;
+        border: 1px solid #ddd8cf;
+        border-radius: 8px;
+        background: white;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .setup-alert {
+        padding: 14px;
+        border: 1px solid #f0ae6d;
+        border-radius: 22px;
+        background: #fff1dc;
+        color: #9c4f09;
+      }
+
+      .setup-bottom {
+        margin-top: auto;
       }
 
       .screen-notes {
@@ -718,7 +1002,6 @@
         }
 
         .phone {
-          width: min(100%, 280px);
           margin: 0 auto;
         }
       }
@@ -742,6 +1025,8 @@
             Static HTML wireframe, not final visual design.<br />
             <strong>Scope</strong>
             Mobile interaction, user journeys, and state contracts.<br />
+            <strong>Phone Frame</strong>
+            390 × 844 design pixels, rendered at 75% scale.<br />
             <strong>References</strong>
             ADR 008, shared contracts, existing screenshots.
           </aside>
@@ -770,26 +1055,26 @@
           </article>
           <article class="flow-step">
             <span class="step-index">2</span>
-            <h3>Complete Device And Agent Setup</h3>
+            <h3>Pair Device From Main App</h3>
             <p>
-              Unpaired device and no purchased/adopted Agent are two independent banners. Each
-              disappears when its own condition is met.
+              The device banner and Device tab both enter pairing. Pairing removes only the device
+              banner.
             </p>
           </article>
           <article class="flow-step">
             <span class="step-index">3</span>
-            <h3>Get Agents From Marketplace</h3>
+            <h3>Purchase And Install Agent</h3>
             <p>
-              Marketplace must show descriptions and brand images/screenshots. After Purchase/Adopt,
-              return to the Agents session list.
+              Marketplace list opens Agent detail. Purchase changes the primary action to Install,
+              then Agents shows the purchased or installed Agent.
             </p>
           </article>
           <article class="flow-step">
             <span class="step-index">4</span>
-            <h3>Agents List To Chat</h3>
+            <h3>Message Agent From Agents</h3>
             <p>
-              Agents is a WeChat-style conversation list. Tapping an Agent row opens a clean chat
-              page; state lives in the header only.
+              Agents is the conversation list. Tapping an owned Agent opens chat and sending
+              completes this journey.
             </p>
           </article>
           <article class="flow-step">
@@ -802,14 +1087,14 @@
           <article class="flow-step">
             <span class="step-index">6</span>
             <h3>Me Account Management</h3>
-            <p>The Me page owns account information and sign-out. Sign-out returns to ONB-001.</p>
+            <p>Me owns account information and sign-out. Sign-out returns to ONB-001.</p>
           </article>
           <article class="flow-step">
             <span class="step-index">7</span>
-            <h3>Me Agent And Device Management</h3>
+            <h3>Me Device Settings</h3>
             <p>
-              Me manages installed Agents, delete/uninstall, rename, and device removal. Risky
-              actions require confirmation.
+              Me owns device settings, pairing another device, and rename. Device removal is out of
+              this pass.
             </p>
           </article>
         </div>
@@ -975,51 +1260,207 @@
         <div class="screen-journey">
           <h3>Journey 2: User Pairs A Device</h3>
           <p class="screen-intro">
-            The user enters pairing from the main app device banner or Device tab. Successful
-            pairing only removes the device banner; it does not automatically purchase, adopt, or
-            install an Agent.
+            The user starts from MAIN-001 and taps Pair. Setup scans a device, accepts a pairing
+            code, sends Wi-Fi credentials over BLE, then returns to the main app with only the
+            device banner removed.
           </p>
           <div class="screen-track" aria-label="Device pairing journey">
+            <article class="screen-card" id="journey-pair-entry-main">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:42</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <h4>Agents</h4>
+                    <button class="icon-btn">+</button>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-row banner-row">
+                      <div>
+                        <strong>Pair your Nora device</strong>
+                        <p class="small muted">
+                          Hardware install and device controls require pairing first.
+                        </p>
+                      </div>
+                      <span class="status warn">Pair</span>
+                    </div>
+                    <div class="wire-row banner-row">
+                      <div>
+                        <strong>Get your first Agent</strong>
+                        <p class="small muted">Purchase or Adopt to start phone-side chat.</p>
+                      </div>
+                      <span class="status warn">Marketplace</span>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab active">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MAIN-001</span>
+                  <span class="status warn">tap Pair</span>
+                </div>
+                <h3>Pairing Entry Is MAIN-001</h3>
+                <p>
+                  The user starts on Agents with two persistent banners. Tapping Pair enters the
+                  device setup flow.
+                </p>
+                <ul>
+                  <li>Both banners can coexist before setup is complete.</li>
+                  <li>Only successful device pairing removes the Pair banner.</li>
+                </ul>
+              </div>
+            </article>
+
             <article class="screen-card" id="journey-pair-device">
               <div class="phone">
                 <div class="phone-inner">
-                  <div class="phone-bar"><span>9:43</span><span>5G 100%</span></div>
-                  <div class="phone-title">
-                    <h4>Pair Device</h4>
-                    <button class="tiny-btn">Cancel</button>
+                  <div class="phone-bar"><span>12:16</span><span>5G 100%</span></div>
+                  <div class="setup-header">
+                    <div class="setup-nav">
+                      <button class="icon-btn">B</button>
+                      <span class="setup-chip">Bluetooth · Device setup</span>
+                    </div>
+                    <span class="muted">Step 2 of 6</span>
+                    <div class="setup-progress">
+                      <span class="done"></span><span class="done"></span><span></span><span></span
+                      ><span></span><span></span>
+                    </div>
                   </div>
+                  <h4 class="setup-title">Choose your device</h4>
                   <div class="phone-body">
-                    <div class="wire-block highlight">
-                      <span class="label">Bluetooth</span>
-                      <strong>Nora Dev Kit A14</strong>
-                      <p class="small muted">
-                        Nearby device. Confirm the pairing code shown on the device.
-                      </p>
+                    <p class="muted">Choose the device you want to provision.</p>
+                    <div class="device-choice">
+                      <div class="device-icon">□</div>
+                      <div>
+                        <strong>HH-SIMULATOR01</strong>
+                        <p class="small muted">hh-dev-mock-core-s3 · Nearby</p>
+                      </div>
+                      <div class="check-dot">✓</div>
                     </div>
-                    <div class="wire-card">
-                      <span class="label">Pairing code</span>
-                      <strong>842 119</strong>
-                      <p class="small muted">Continue only when the codes match.</p>
-                    </div>
-                    <div class="primary">Confirm pairing</div>
-                    <div class="secondary">Scan again</div>
+                    <div class="primary setup-bottom">Continue</div>
                   </div>
                 </div>
               </div>
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">PAIR-001</span>
-                  <span class="status warn">Requires Sign-In</span>
+                  <span class="status warn">scanned device</span>
                 </div>
-                <h3>Pairing Is A Main-App Journey</h3>
+                <h3>Scanned Device Selection</h3>
                 <p>
-                  Pairing establishes local trust between phone and hardware; it does not mean an
-                  Agent is installed to hardware.
+                  Pairing starts with the scanned nearby device list. The user chooses the device to
+                  provision and continues.
                 </p>
                 <ul>
-                  <li>Pairing cannot start before sign-in.</li>
-                  <li>Pairing does not create Agent ownership.</li>
-                  <li>Pairing does not create current Agent install.</li>
+                  <li>PAIR-001 is the first screen inside setup.</li>
+                  <li>The selected hardware identity is carried into the next steps.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-pair-code">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>12:18</span><span>5G 100%</span></div>
+                  <div class="setup-header">
+                    <div class="setup-nav">
+                      <button class="icon-btn">B</button>
+                      <span class="setup-chip">Bluetooth · Device setup</span>
+                    </div>
+                    <span class="muted">Step 3 of 6</span>
+                    <div class="setup-progress">
+                      <span class="done"></span><span class="done"></span><span class="done"></span
+                      ><span></span><span></span><span></span>
+                    </div>
+                  </div>
+                  <h4 class="setup-title">Enter proof of possession</h4>
+                  <div class="phone-body">
+                    <p class="muted">Enter the code shown on the device to finish pairing.</p>
+                    <span class="setup-chip">▣ HH-SIMULATOR01</span>
+                    <div class="setup-field">
+                      <strong>Proof of possession</strong>
+                      <div class="input-field">Please Enter your pairing code</div>
+                      <p class="small muted">Use the six-digit code from the device display.</p>
+                    </div>
+                    <div class="primary disabled setup-bottom">Continue</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">PAIR-002</span>
+                  <span class="status warn">pairing code</span>
+                </div>
+                <h3>Enter Pairing Code</h3>
+                <p>The user enters the six-digit proof-of-possession code shown on the device.</p>
+                <ul>
+                  <li>Only the pairing code input is shown in this first pass.</li>
+                  <li>Continue stays disabled until the code is valid.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-pair-wifi">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>12:41</span><span>5G 100%</span></div>
+                  <div class="setup-header">
+                    <div class="setup-nav">
+                      <button class="icon-btn">B</button>
+                      <span class="setup-chip">Bluetooth · Device setup</span>
+                    </div>
+                    <span class="muted">Step 5 of 6</span>
+                    <div class="setup-progress">
+                      <span class="done"></span><span class="done"></span><span class="done"></span
+                      ><span class="done"></span><span class="done"></span><span></span>
+                    </div>
+                  </div>
+                  <h4 class="setup-title">Send Wi-Fi to device</h4>
+                  <div class="phone-body">
+                    <div class="setup-alert">
+                      Runtime ready. Wi-Fi will be sent after cloud setup.
+                    </div>
+                    <div class="wire-card">
+                      <strong>Install runtime</strong>
+                      <p class="small muted">install_agt_id6v16pwtsp2n6hg_device_simulator_h</p>
+                      <strong>Resolved device endpoint</strong>
+                      <p class="small muted">ws://127.0.0.1:19001/device/ws</p>
+                      <p class="small muted">Device token ready: yes</p>
+                    </div>
+                    <div class="setup-field">
+                      <strong>Network name</strong>
+                      <div class="input-field">lili_house_24G</div>
+                      <p class="small muted">
+                        Enter the visible 2.4 GHz Wi-Fi network the device should join.
+                      </p>
+                    </div>
+                    <div class="secondary">Scan device Wi-Fi</div>
+                    <div class="setup-field">
+                      <strong>Password</strong>
+                      <div class="input-field">••••••••</div>
+                    </div>
+                    <div class="primary setup-bottom">Continue</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">PAIR-003</span>
+                  <span class="status warn">BLE Wi-Fi send</span>
+                </div>
+                <h3>Send Wi-Fi Credentials Over BLE</h3>
+                <p>
+                  After code verification and runtime readiness, the phone sends Wi-Fi credentials
+                  to the selected hardware over BLE.
+                </p>
+                <ul>
+                  <li>Use a visible 2.4 GHz network.</li>
+                  <li>Continue completes setup and returns to MAIN-002.</li>
                 </ul>
               </div>
             </article>
@@ -1079,32 +1520,39 @@
             while phone chat remains available.
           </p>
           <div class="screen-track" aria-label="Purchase, adopt, and install Agent journey">
-            <article class="screen-card" id="journey-marketplace-assets">
+            <article class="screen-card" id="journey-marketplace-list">
               <div class="phone">
                 <div class="phone-inner">
                   <div class="phone-bar"><span>9:45</span><span>5G 100%</span></div>
                   <div class="phone-title">
                     <h4>Marketplace</h4>
-                    <button class="icon-btn">S</button>
+                    <button class="icon-btn">⌕</button>
                   </div>
                   <div class="phone-body">
-                    <div class="wire-block highlight media-hero">
-                      <span class="label">Brand Image / Screenshots</span>
-                      <strong>Home Companion</strong>
-                      <p class="small muted">
-                        Home routines, reminders, and device-aware check-ins.
-                      </p>
-                    </div>
-                    <div class="split">
-                      <div class="wire-card">
-                        <span class="label">Screenshot 1</span><strong>Routine</strong>
+                    <div class="wire-row market-card">
+                      <div class="asset-thumb"></div>
+                      <div>
+                        <strong>Home Companion</strong>
+                        <p class="small muted">Routines, reminders, and device-aware check-ins.</p>
                       </div>
-                      <div class="wire-card">
-                        <span class="label">Screenshot 2</span><strong>Device</strong>
-                      </div>
+                      <span class="status warn">Purchase</span>
                     </div>
-                    <div class="primary">Purchase</div>
-                    <div class="secondary">View details</div>
+                    <div class="wire-row market-card">
+                      <div class="asset-thumb"></div>
+                      <div>
+                        <strong>Workshop Helper</strong>
+                        <p class="small muted">Parts lookup, task steps, and repair notes.</p>
+                      </div>
+                      <span class="status warn">Adopt</span>
+                    </div>
+                    <div class="wire-row market-card">
+                      <div class="asset-thumb"></div>
+                      <div>
+                        <strong>Kitchen Planner</strong>
+                        <p class="small muted">Meal planning and kitchen inventory help.</p>
+                      </div>
+                      <span class="status stale">Owned</span>
+                    </div>
                     <div class="tabbar">
                       <div class="tab">Agents</div>
                       <div class="tab active">Marketplace</div>
@@ -1117,17 +1565,114 @@
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">MKT-001</span>
-                  <span class="status warn">Display Upgrade</span>
+                  <span class="status warn">list entry</span>
                 </div>
-                <h3>Marketplace Must Show Assets</h3>
+                <h3>Marketplace Entry Is The List</h3>
                 <p>
-                  Each Agent shows the description, brand image, or screenshots uploaded from the
-                  editor client; mobile must render them too.
+                  Journey 3 starts in Marketplace. The user browses the list, then taps an Agent row
+                  to open detail.
                 </p>
                 <ul>
-                  <li>Editor client prompts for a description during upload.</li>
-                  <li>Editor client prompts for screenshots or a brand image during upload.</li>
-                  <li>Mobile Marketplace cards and detail pages reuse these assets.</li>
+                  <li>
+                    Each row has room for a 52px visual, title, two-line description, and action.
+                  </li>
+                  <li>Purchase and Adopt are the only acquisition labels.</li>
+                  <li>Tap the row or visual area to open detail.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-marketplace-detail-purchase">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:46</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Home Companion</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight media-hero">
+                      <span class="label">Cover / brand image · 1 required</span>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">Large visual used on detail and list fallback.</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Description · required</span>
+                      <p class="small muted">
+                        Home routines, reminders, and device-aware check-ins.
+                      </p>
+                    </div>
+                    <div class="asset-grid">
+                      <div class="asset-slot">
+                        <span class="label">Icon · 1 optional</span>
+                        <strong>Square</strong>
+                      </div>
+                      <div class="asset-slot">
+                        <span class="label">Screenshots · 0-5</span>
+                        <strong>9:16 images</strong>
+                      </div>
+                    </div>
+                    <div class="primary">Purchase</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MKT-002</span>
+                  <span class="status warn">purchase detail</span>
+                </div>
+                <h3>Agent Detail Before Purchase</h3>
+                <p>
+                  Detail shows the asset contract and lets the user purchase or adopt the Agent.
+                </p>
+                <ul>
+                  <li>Required: short description and one cover or brand image.</li>
+                  <li>Optional: one square icon/avatar for list rows and headers.</li>
+                  <li>Optional screenshots: zero to five 9:16 images; display in upload order.</li>
+                  <li>After purchase, the primary action changes to Install.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card" id="journey-marketplace-detail-install">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:47</span><span>5G 100%</span></div>
+                  <div class="phone-title">
+                    <button class="icon-btn">B</button>
+                    <h4>Home Companion</h4>
+                  </div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight media-hero">
+                      <span class="label">Owned Agent</span>
+                      <strong>Home Companion</strong>
+                      <p class="small muted">Purchased. Phone chat is available now.</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Install target</span>
+                      <strong>Nora Dev Kit A14</strong>
+                      <p class="small muted">
+                        Install sends the purchased Agent runtime to the paired hardware.
+                      </p>
+                    </div>
+                    <div class="primary">Install</div>
+                    <div class="secondary">Chat on phone</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">MKT-003</span>
+                  <span class="status ok">purchased</span>
+                </div>
+                <h3>After Purchase, Button Becomes Install</h3>
+                <p>
+                  Purchase creates the phone-side Agent instance. Install is a separate hardware
+                  action for the paired device.
+                </p>
+                <ul>
+                  <li>Phone chat is available after purchase.</li>
+                  <li>Install does not create a new Agent record.</li>
                 </ul>
               </div>
             </article>
@@ -1145,9 +1690,9 @@
                       <div class="avatar-dot">HC</div>
                       <div>
                         <strong>Home Companion</strong>
-                        <p class="small muted">I am ready to help organize tonight.</p>
+                        <p class="small muted">Purchased · installed on Nora Dev Kit A14.</p>
                       </div>
-                      <span class="small muted">09:46</span>
+                      <span class="status ok">Installed</span>
                     </div>
                     <div class="wire-row session-like">
                       <div class="avatar-dot">WH</div>
@@ -1169,47 +1714,60 @@
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">AGT-001</span>
-                  <span class="status ok">paired + owned</span>
+                  <span class="status ok">final list</span>
                 </div>
-                <h3>With Device And Agent, The Page Is A Clean List</h3>
+                <h3>Final State Is Agents List With Purchased Agent</h3>
                 <p>
-                  The Agents page behaves like a chat app conversation list. Tap an Agent row to
-                  open its clean chat page.
+                  After purchase and install, the user returns to Agents and sees the purchased or
+                  installed Agent in the list.
                 </p>
                 <ul>
                   <li>After pairing, do not show the device banner.</li>
                   <li>After Purchase/Adopt, do not show the no-Agent banner.</li>
-                  <li>
-                    First UI: one Agent maps to one session; the data model reserves room for one
-                    Agent with multiple sessions.
-                  </li>
+                  <li>This completes the purchase/install journey.</li>
                 </ul>
               </div>
             </article>
+          </div>
+        </div>
 
-            <article class="screen-card" id="journey-clean-chat-not-installed">
+        <div class="screen-journey">
+          <h3>Journey 4: User Sends A Message To An Agent</h3>
+          <p class="screen-intro">
+            The user starts from the Agents conversation list, opens an Agent, sends a message, and
+            sees the message in the clean chat page.
+          </p>
+          <div class="screen-track" aria-label="Agent messaging journey">
+            <article class="screen-card" id="journey-chat-agent-list">
               <div class="phone">
                 <div class="phone-inner">
-                  <div class="phone-bar"><span>9:47</span><span>5G 100%</span></div>
+                  <div class="phone-bar"><span>9:48</span><span>5G 100%</span></div>
                   <div class="phone-title">
-                    <button class="icon-btn">B</button>
-                    <div>
-                      <h4>Home Companion</h4>
-                      <span class="status warn">Not installed</span>
-                    </div>
-                    <button class="icon-btn">⋯</button>
+                    <h4>Agents</h4>
+                    <button class="icon-btn">+</button>
                   </div>
                   <div class="phone-body">
-                    <div class="chat-bubble agent">
-                      I am already running on the phone and can help organize tonight.
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">HC</div>
+                      <div>
+                        <strong>Home Companion</strong>
+                        <p class="small muted">Purchased · ready to chat.</p>
+                      </div>
+                      <span class="small muted">Now</span>
                     </div>
-                    <div class="chat-bubble user">Help me plan it.</div>
-                    <div class="chat-bubble agent">
-                      Sure. I will start with your routine and reminders.
+                    <div class="wire-row session-like">
+                      <div class="avatar-dot">WH</div>
+                      <div>
+                        <strong>Workshop Helper</strong>
+                        <p class="small muted">Yesterday's device check is complete.</p>
+                      </div>
+                      <span class="small muted">Yesterday</span>
                     </div>
-                    <div class="input-bar">
-                      <span>Message Home Companion</span>
-                      <button class="tiny-btn">Send</button>
+                    <div class="tabbar">
+                      <div class="tab active">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab">Me</div>
                     </div>
                   </div>
                 </div>
@@ -1217,45 +1775,30 @@
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">AGT-002</span>
-                  <span class="status ok">Phone Chat Enabled</span>
+                  <span class="status ok">tap Agent</span>
                 </div>
-                <h3>Clean Chat Interaction</h3>
+                <h3>Messaging Entry Is Agents List</h3>
                 <p>
-                  Bound/install state appears only in the header toolbar; there is no extra toolbar
-                  below the header.
+                  The Agents tab is a chat-style list. Tapping a purchased Agent opens the chat.
                 </p>
-                <ul>
-                  <li>Once the user has purchased/adopted an Agent, phone chat is available.</li>
-                  <li>There is no intermediate state where phone-side sending is locked.</li>
-                  <li>The Agent instance keeps running; Install only installs it to hardware.</li>
-                </ul>
               </div>
             </article>
 
-            <article class="screen-card" id="journey-installed-same-chat">
+            <article class="screen-card" id="journey-chat-send-message">
               <div class="phone">
                 <div class="phone-inner">
-                  <div class="phone-bar"><span>9:48</span><span>5G 100%</span></div>
+                  <div class="phone-bar"><span>9:49</span><span>5G 100%</span></div>
                   <div class="phone-title">
                     <button class="icon-btn">B</button>
                     <div>
                       <h4>Home Companion</h4>
                       <span class="status ok">Installed on Nora Dev Kit A14</span>
                     </div>
-                    <button class="icon-btn">H</button>
+                    <button class="icon-btn">⋯</button>
                   </div>
                   <div class="phone-body">
-                    <div class="chat-bubble agent">
-                      I am already running on the phone and can help organize tonight.
-                    </div>
-                    <div class="chat-bubble user">Help me plan it.</div>
-                    <div class="chat-bubble agent">
-                      Install is complete; device-side capabilities are now available.
-                    </div>
-                    <div class="chat-bubble user">Check device status.</div>
-                    <div class="chat-bubble agent">
-                      Device is online and the current Agent generation matches.
-                    </div>
+                    <div class="chat-bubble agent">I am ready. What should we work on first?</div>
+                    <div class="chat-bubble user">Help me plan tonight.</div>
                     <div class="input-bar">
                       <span>Message Home Companion</span>
                       <button class="tiny-btn">Send</button>
@@ -1266,25 +1809,20 @@
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">AGT-003</span>
-                  <span class="status ok">Same Chat</span>
+                  <span class="status ok">message sent</span>
                 </div>
-                <h3>After Install, It Is Still The Same Chat Page</h3>
+                <h3>Clean Chat Ends With Message Sent</h3>
                 <p>
-                  This is not a separate history page; it shows that messages before and after
-                  hardware install remain in the same Agent conversation.
+                  The chat page stays clean. Binding/install state appears in the header only, and
+                  the sent message appears in the thread.
                 </p>
-                <ul>
-                  <li>Tapping the Agent row opens the same chat conversation.</li>
-                  <li>Install does not create a new chat and does not clear prior messages.</li>
-                  <li>Header state changes from Not installed to Installed.</li>
-                </ul>
               </div>
             </article>
           </div>
         </div>
 
         <div class="screen-journey">
-          <h3>Journey 4: User Views Device Page And Diagnostics</h3>
+          <h3>Journey 5: User Views Device Page And Diagnostics</h3>
           <p class="screen-intro">
             This journey comes from MOB-06 and the current `DevicePage` / `DeviceHealthPage` /
             `DeviceLogsPage`. The Device tab is the hardware state and diagnostics entry point; it
@@ -1385,9 +1923,9 @@
                 <h3>Health Is Diagnostic Detail</h3>
                 <p>Open from Device overview; keep current device context when going back.</p>
                 <ul>
-                  <li>Use it to inspect device-level status.</li>
+                  <li>This page inspects device-level status.</li>
                   <li>It can show whether current binding matches.</li>
-                  <li>Do not delete devices or rerun setup here.</li>
+                  <li>Do not change device binding or rerun setup here.</li>
                 </ul>
               </div>
             </article>
@@ -1438,7 +1976,7 @@
         </div>
 
         <div class="screen-journey">
-          <h3>Journey 5: User Signs Out From Me</h3>
+          <h3>Journey 6: User Signs Out From Me</h3>
           <p class="screen-intro">
             This journey comes from MOB-07 Account and `SettingsAccountPage`. In the target
             navigation, Settings maps to Me; the Account row opens account detail, and successful
@@ -1451,28 +1989,21 @@
                   <div class="phone-bar"><span>9:52</span><span>5G 100%</span></div>
                   <div class="phone-title"><h4>Me</h4></div>
                   <div class="phone-body">
-                    <div class="wire-row">
+                    <div class="wire-row settings-row">
                       <div class="avatar-dot">ZW</div>
                       <div>
                         <strong>Account</strong>
                         <p class="small muted">Google sign-in, session security, sign-out</p>
                       </div>
                     </div>
-                    <div class="wire-row">
-                      <div class="avatar-dot">A</div>
-                      <div>
-                        <strong>Agents</strong>
-                        <p class="small muted">Manage owned and installed agents</p>
-                      </div>
-                    </div>
-                    <div class="wire-row">
+                    <div class="wire-row settings-row">
                       <div class="avatar-dot">D</div>
                       <div>
                         <strong>Device Settings</strong>
-                        <p class="small muted">Rename, pair another, remove device</p>
+                        <p class="small muted">Rename or pair another device</p>
                       </div>
                     </div>
-                    <div class="wire-row">
+                    <div class="wire-row settings-row">
                       <div class="avatar-dot">i</div>
                       <div>
                         <strong>About</strong>
@@ -1497,8 +2028,8 @@
                 <p>The existing Settings home should collapse into the target Me tab.</p>
                 <ul>
                   <li>Account opens account detail and sign-out.</li>
-                  <li>Agents opens Agent management.</li>
-                  <li>Device Settings owns risky device actions.</li>
+                  <li>Device Settings owns device binding, rename, and pairing another device.</li>
+                  <li>Agent ownership management is intentionally out of this first pass.</li>
                 </ul>
               </div>
             </article>
@@ -1546,161 +2077,62 @@
         </div>
 
         <div class="screen-journey">
-          <h3>Journey 6: User Deletes / Uninstalls Agent From Me</h3>
-          <p class="screen-intro">
-            This journey comes from MOB-07 Agent settings, `SettingsAgentPage`, and
-            `AgentUninstallDialog`. Current code semantics are uninstall from device; the target
-            interaction can place the entry under Me Agents management. Delete/uninstall requires
-            confirmation and failure recovery.
-          </p>
-          <div class="screen-track" aria-label="Me delete Agent journey">
-            <article class="screen-card" id="journey-me-agent-management">
-              <div class="phone">
-                <div class="phone-inner">
-                  <div class="phone-bar"><span>9:54</span><span>5G 100%</span></div>
-                  <div class="phone-title">
-                    <button class="icon-btn">B</button>
-                    <h4>Agents</h4>
-                    <button class="icon-btn">R</button>
-                  </div>
-                  <div class="phone-body">
-                    <div class="wire-row session-like">
-                      <div class="avatar-dot">HC</div>
-                      <div>
-                        <strong>Home Companion</strong>
-                        <p class="small muted">v0.9.0 · Ready · installed today</p>
-                      </div>
-                      <span class="status danger">Delete</span>
-                    </div>
-                    <div class="wire-row session-like">
-                      <div class="avatar-dot">WH</div>
-                      <div>
-                        <strong>Workshop Helper</strong>
-                        <p class="small muted">v0.9.0 · Starting · installed yesterday</p>
-                      </div>
-                      <span class="status danger">Delete</span>
-                    </div>
-                    <div class="secondary">Browse Marketplace</div>
-                  </div>
-                </div>
-              </div>
-              <div class="screen-notes">
-                <div class="screen-id">
-                  <span class="pill">ME-003</span>
-                  <span class="status warn">agent manage</span>
-                </div>
-                <h3>Agent Management Is Not The Chat List</h3>
-                <p>
-                  The Agents tab is the chat conversation list; Me / Agents is the management list,
-                  showing version, runtime state, and delete action.
-                </p>
-                <ul>
-                  <li>If there is no active device, guide the user to pair first.</li>
-                  <li>If the list is empty, guide the user to Marketplace.</li>
-                  <li>
-                    Refresh failure stays on this page and does not pollute the main Agents tab.
-                  </li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="screen-card" id="journey-me-agent-delete-confirm">
-              <div class="phone">
-                <div class="phone-inner">
-                  <div class="phone-bar"><span>9:55</span><span>5G 100%</span></div>
-                  <div class="phone-title">
-                    <button class="icon-btn">B</button>
-                    <h4>Agents</h4>
-                  </div>
-                  <div class="phone-body">
-                    <div class="wire-card">
-                      <strong>Delete Home Companion?</strong>
-                      <p class="small muted">
-                        The Agent will stop running on this device. Owned data remains in cloud
-                        unless the product later adds account-level delete.
-                      </p>
-                    </div>
-                    <div class="split">
-                      <div class="secondary">Cancel</div>
-                      <div class="danger-btn">Delete</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="screen-notes">
-                <div class="screen-id">
-                  <span class="pill">ME-004</span>
-                  <span class="status danger">confirm</span>
-                </div>
-                <h3>Deleting An Agent Requires Confirmation</h3>
-                <p>
-                  The confirmation sheet follows the current uninstall dialog semantics; failures
-                  stay in the sheet for retry.
-                </p>
-                <ul>
-                  <li>Cancel does not change the list.</li>
-                  <li>Delete pending shows progress.</li>
-                  <li>After Delete succeeds, remove that row from the list.</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="screen-card" id="journey-me-agent-delete-result">
-              <div class="phone">
-                <div class="phone-inner">
-                  <div class="phone-bar"><span>9:56</span><span>5G 100%</span></div>
-                  <div class="phone-title">
-                    <button class="icon-btn">B</button>
-                    <h4>Agents</h4>
-                    <button class="icon-btn">R</button>
-                  </div>
-                  <div class="phone-body">
-                    <div class="wire-row session-like">
-                      <div class="avatar-dot">WH</div>
-                      <div>
-                        <strong>Workshop Helper</strong>
-                        <p class="small muted">v0.9.0 · Ready · installed yesterday</p>
-                      </div>
-                      <span class="status danger">Delete</span>
-                    </div>
-                    <div class="wire-card">
-                      <span class="label">Toast</span>
-                      <strong>Home Companion deleted from device</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="screen-notes">
-                <div class="screen-id">
-                  <span class="pill">ME-005</span>
-                  <span class="status ok">updated</span>
-                </div>
-                <h3>Update Management List After Success</h3>
-                <p>
-                  If this is the user's last Agent, the main Agents page should show the no-Agent
-                  banner again.
-                </p>
-                <ul>
-                  <li>Delete result must not sign the user out.</li>
-                  <li>Delete result must not unpair the device.</li>
-                  <li>
-                    If product later separates owned delete from device uninstall, the copy must
-                    distinguish them.
-                  </li>
-                </ul>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="screen-journey">
           <h3>Journey 7: User Manages Device From Me</h3>
           <p class="screen-intro">
             This journey comes from MOB-07 Device settings and `SettingsDevicePage`. The Device tab
             is for viewing state; Me / Device Settings owns state-changing actions such as pair
-            another, rename, and remove device.
+            another and rename. Removing a device is out of this pass.
           </p>
           <div class="screen-track" aria-label="Me device management journey">
+            <article class="screen-card" id="journey-device-management-entry-me">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:56</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Me</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-row settings-row">
+                      <div class="avatar-dot">ZW</div>
+                      <div>
+                        <strong>Account</strong>
+                        <p class="small muted">Google sign-in, session security, sign-out</p>
+                      </div>
+                    </div>
+                    <div class="wire-row settings-row">
+                      <div class="avatar-dot">D</div>
+                      <div>
+                        <strong>Device Settings</strong>
+                        <p class="small muted">Rename or pair another device</p>
+                      </div>
+                    </div>
+                    <div class="wire-row settings-row">
+                      <div class="avatar-dot">i</div>
+                      <div>
+                        <strong>About</strong>
+                        <p class="small muted">Version, diagnostics, privacy</p>
+                      </div>
+                    </div>
+                    <div class="tabbar">
+                      <div class="tab">Agents</div>
+                      <div class="tab">Marketplace</div>
+                      <div class="tab">Device</div>
+                      <div class="tab active">Me</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">ME-001</span>
+                  <span class="status warn">tap Device Settings</span>
+                </div>
+                <h3>Device Management Starts From Me</h3>
+                <p>
+                  This is the page before Device Settings. The user taps the Device Settings row to
+                  manage the phone's device binding.
+                </p>
+              </div>
+            </article>
+
             <article class="screen-card" id="journey-me-device-settings">
               <div class="phone">
                 <div class="phone-inner">
@@ -1727,18 +2159,12 @@
                         <p class="small muted">Start pair flow from signed-in context</p>
                       </div>
                     </div>
-                    <div class="wire-row">
-                      <div>
-                        <strong>Remove device</strong>
-                        <p class="small muted">Disconnect this hardware from this phone</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
               <div class="screen-notes">
                 <div class="screen-id">
-                  <span class="pill">ME-006</span>
+                  <span class="pill">ME-003</span>
                   <span class="status warn">device manage</span>
                 </div>
                 <h3>Device Management Lives In Me</h3>
@@ -1749,50 +2175,7 @@
                 <ul>
                   <li>Pair another enters pair flow while keeping sign-in state.</li>
                   <li>Rename requires explicit save confirmation.</li>
-                  <li>
-                    Remove device requires confirmation. If no devices remain, return to the main
-                    app state that needs pairing.
-                  </li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="screen-card" id="journey-me-device-remove">
-              <div class="phone">
-                <div class="phone-inner">
-                  <div class="phone-bar"><span>9:58</span><span>5G 100%</span></div>
-                  <div class="phone-title">
-                    <button class="icon-btn">B</button>
-                    <h4>Device Settings</h4>
-                  </div>
-                  <div class="phone-body">
-                    <div class="wire-card">
-                      <strong>Remove device?</strong>
-                      <p class="small muted">
-                        This removes Nora Dev Kit A14 from this phone. Cloud unpairing is handled
-                        separately.
-                      </p>
-                    </div>
-                    <div class="split">
-                      <div class="secondary">Cancel</div>
-                      <div class="danger-btn">Remove</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="screen-notes">
-                <div class="screen-id">
-                  <span class="pill">ME-007</span>
-                  <span class="status danger">remove device</span>
-                </div>
-                <h3>After Device Removal, Return To Unpaired State</h3>
-                <p>
-                  If this is the last device, the main Agents page shows the device banner again.
-                </p>
-                <ul>
-                  <li>Remove does not sign the user out.</li>
-                  <li>Remove does not delete purchased/adopted Agents.</li>
-                  <li>If other devices remain, switch to the remaining active device.</li>
+                  <li>Device removal is intentionally not included in this pass.</li>
                 </ul>
               </div>
             </article>
@@ -1864,22 +2247,6 @@
               <td>Phone chat and hardware actions are both available</td>
               <td>Still the same Agent chat conversation</td>
             </tr>
-            <tr>
-              <td><span class="status warn">Delete Last Agent</span></td>
-              <td>Show no-Agent banner again</td>
-              <td>Continue showing Agents available for Purchase / Adopt</td>
-              <td>Paired device is unaffected</td>
-              <td>No Agent row to enter</td>
-              <td>List returns after purchasing or adopting any Agent</td>
-            </tr>
-            <tr>
-              <td><span class="status warn">Remove Last Device</span></td>
-              <td>Show device banner again</td>
-              <td>Can still browse and Purchase / Adopt</td>
-              <td>No active device; Me can pair again</td>
-              <td>Existing Agents remain on the phone</td>
-              <td>Device overview returns after pairing any device</td>
-            </tr>
           </tbody>
         </table>
       </section>
@@ -1935,7 +2302,8 @@
               alt="Existing Agent settings screenshot"
             />
             <figcaption>
-              Agent management, delete/uninstall, and refresh state enter from Me.
+              Existing Agent settings informs installed/current state, while ownership management
+              stays out of this first pass.
             </figcaption>
           </figure>
         </div>
