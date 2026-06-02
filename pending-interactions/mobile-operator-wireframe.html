@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NoraHarness Mobile Operator Interaction Wireframe</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #fbf5e8;
+        --panel: #fffaf0;
+        --panel-strong: #fff4d2;
+        --ink: #23211b;
+        --muted: #6f685c;
+        --line: #dfd1b6;
+        --line-strong: #b9a67d;
+        --accent: #c88f16;
+        --accent-soft: #f5d789;
+        --ok: #4a7c59;
+        --warn: #a56b00;
+        --danger: #a3493d;
+        --stale: #626a78;
+        --shadow: 0 12px 34px rgba(75, 61, 32, 0.14);
+        --phone-width: 390px;
+        --phone-height: 844px;
+        --phone-scale: 0.75;
+        --phone-frame-width: calc(var(--phone-width) * var(--phone-scale));
+        --phone-frame-height: calc(var(--phone-height) * var(--phone-scale));
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      a {
+        color: inherit;
+        text-decoration-color: rgba(35, 33, 27, 0.35);
+        text-underline-offset: 3px;
+      }
+
+      header {
+        border-bottom: 1px solid var(--line);
+        background: #fff9ea;
+      }
+
+      .wrap {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 32px 0 24px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 780px;
+        margin-bottom: 12px;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-bottom: 16px;
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin-bottom: 10px;
+        font-size: 17px;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 780px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .meta {
+        min-width: 250px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .meta strong {
+        display: block;
+        color: var(--ink);
+      }
+
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 0 24px;
+      }
+
+      .toc a,
+      .pill,
+      .status {
+        display: inline-flex;
+        min-height: 30px;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      main {
+        padding: 30px 0 64px;
+      }
+
+      section {
+        margin-bottom: 42px;
+      }
+
+      .note-grid,
+      .flow-grid,
+      .references,
+      .dependency-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .note-grid,
+      .dependency-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .note,
+      .flow-step,
+      .reference-card,
+      .dependency-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 2px 0 rgba(185, 166, 125, 0.18);
+      }
+
+      .note,
+      .flow-step,
+      .dependency-card {
+        padding: 16px;
+      }
+
+      .note p,
+      .flow-step p,
+      .dependency-card p,
+      .screen-notes p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .flow-grid {
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        align-items: stretch;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 142px;
+      }
+
+      .flow-step::after {
+        position: absolute;
+        top: 50%;
+        right: -13px;
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid var(--line-strong);
+        border-right: 2px solid var(--line-strong);
+        content: "";
+        transform: translateY(-50%) rotate(45deg);
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .step-index {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        border: 1px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--panel-strong);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .screen-journey {
+        margin-bottom: 28px;
+      }
+
+      .screen-journey > h3 {
+        margin-bottom: 6px;
+        font-size: 20px;
+      }
+
+      .screen-intro {
+        max-width: 860px;
+        margin: 0 0 8px;
+        color: var(--muted);
+      }
+
+      .screen-track {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 2px 4px 18px;
+        scroll-padding-inline: 4px;
+        scroll-snap-type: x proximity;
+      }
+
+      .screen-track::-webkit-scrollbar {
+        height: 10px;
+      }
+
+      .screen-track::-webkit-scrollbar-track {
+        border-radius: 999px;
+        background: rgba(223, 209, 182, 0.5);
+      }
+
+      .screen-track::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(185, 166, 125, 0.78);
+      }
+
+      .screen-card {
+        display: grid;
+        flex: 0 0 min(880px, calc(100vw - 56px));
+        grid-template-columns: var(--phone-frame-width) minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        scroll-snap-align: start;
+      }
+
+      .phone {
+        position: relative;
+        width: var(--phone-frame-width);
+        height: var(--phone-frame-height);
+        overflow: visible;
+      }
+
+      .phone-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        width: var(--phone-width);
+        height: var(--phone-height);
+        flex-direction: column;
+        overflow: hidden;
+        border: 2px solid #24211a;
+        border-radius: 44px;
+        background: #fffaf0;
+        box-shadow: inset 0 0 0 10px #1f1d18;
+        padding: 38px 26px 20px;
+        transform: scale(var(--phone-scale));
+        transform-origin: top left;
+      }
+
+      .phone-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px 18px;
+        color: #453d31;
+        font-size: 15px;
+        font-weight: 750;
+      }
+
+      .phone-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .phone-title h4 {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .icon-btn,
+      .tiny-btn {
+        display: inline-flex;
+        min-width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff7e0;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .tiny-btn {
+        min-width: auto;
+        height: 36px;
+        padding: 0 12px;
+      }
+
+      .phone-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .wire-block,
+      .wire-row,
+      .wire-card,
+      .chat-bubble,
+      .input-bar,
+      .tool-card,
+      .tabbar {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdf7;
+      }
+
+      .wire-block {
+        min-height: 96px;
+        padding: 16px;
+      }
+
+      .wire-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 60px;
+        padding: 12px;
+      }
+
+      .row-main {
+        min-width: 0;
+      }
+
+      .row-state {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .spinner {
+        width: 15px;
+        height: 15px;
+        border: 2px solid rgba(166, 118, 29, 0.25);
+        border-top-color: var(--accent);
+        border-radius: 999px;
+        animation: spin 900ms linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .banner-row {
+        min-height: 76px;
+        background: #fff1c8;
+      }
+
+      .wire-card {
+        padding: 14px;
+      }
+
+      .wire-card.highlight,
+      .wire-block.highlight,
+      .wire-row.highlight {
+        background: #fff4d2;
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .small {
+        font-size: 15px;
+        line-height: 1.35;
+      }
+
+      .stack {
+        display: grid;
+        gap: 8px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .primary,
+      .secondary,
+      .danger-btn {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .primary {
+        border: 1px solid #8c610d;
+        background: #e5ad37;
+        color: #241a08;
+      }
+
+      .secondary {
+        border: 1px solid var(--line);
+        background: #fffaf0;
+        color: var(--ink);
+      }
+
+      .danger-btn {
+        border: 1px solid rgba(163, 73, 61, 0.45);
+        background: rgba(163, 73, 61, 0.08);
+        color: var(--danger);
+      }
+
+      .primary.disabled,
+      .input-bar.disabled {
+        border-color: #9f9a91;
+        background: #e4ded2;
+        color: var(--muted);
+      }
+
+      .tabbar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-top: auto;
+        padding: 9px;
+      }
+
+      .tab {
+        min-height: 44px;
+        padding: 7px 4px;
+        border-radius: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 750;
+        text-align: center;
+      }
+
+      .tab.active {
+        background: var(--panel-strong);
+        color: var(--ink);
+      }
+
+      .chat-bubble {
+        max-width: 86%;
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+
+      .chat-bubble.user {
+        margin-left: auto;
+        background: #fee7a5;
+      }
+
+      .chat-bubble.agent {
+        margin-right: auto;
+      }
+
+      .input-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 54px;
+        margin-top: auto;
+        padding: 10px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .tool-card {
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .screen-notes {
+        min-width: 0;
+      }
+
+      .screen-notes ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .screen-notes li {
+        margin-bottom: 6px;
+      }
+
+      .screen-id {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .status.ok {
+        border-color: rgba(74, 124, 89, 0.38);
+        background: rgba(74, 124, 89, 0.1);
+        color: var(--ok);
+      }
+
+      .status.warn {
+        border-color: rgba(165, 107, 0, 0.35);
+        background: rgba(245, 215, 137, 0.4);
+        color: var(--warn);
+      }
+
+      .status.danger {
+        border-color: rgba(163, 73, 61, 0.35);
+        background: rgba(163, 73, 61, 0.09);
+        color: var(--danger);
+      }
+
+      .status.stale {
+        border-color: rgba(98, 106, 120, 0.35);
+        background: rgba(98, 106, 120, 0.1);
+        color: var(--stale);
+      }
+
+      .hotspot {
+        outline: 3px solid #e54b3f;
+        outline-offset: 3px;
+      }
+
+      .references {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .reference-card {
+        overflow: hidden;
+      }
+
+      .reference-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 9 / 19;
+        object-fit: cover;
+        object-position: top;
+        border-bottom: 1px solid var(--line);
+        background: #eee4d1;
+      }
+
+      .reference-card figcaption {
+        padding: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 1040px) {
+        .note-grid,
+        .dependency-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-grid,
+        .references {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .wrap {
+          width: min(100% - 20px, 1180px);
+        }
+
+        .topbar,
+        .screen-card {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          display: block;
+        }
+
+        .meta {
+          margin-top: 18px;
+        }
+
+        .flow-grid,
+        .references {
+          grid-template-columns: 1fr;
+        }
+
+        .screen-track {
+          margin-right: -10px;
+          margin-left: -10px;
+          padding-right: 10px;
+          padding-left: 10px;
+        }
+
+        .screen-card {
+          flex-basis: min(360px, calc(100vw - 24px));
+        }
+
+        .phone {
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Hardware Harness / Mobile UI Contract</p>
+            <h1>Mobile Operator Interaction Wireframe</h1>
+            <p class="lead">
+              Low-fidelity HTML wireframe for the phone-side operator surface. Phone screens are
+              drawn at 390 × 844 design pixels and rendered at 75% scale for review.
+            </p>
+          </div>
+          <aside class="meta">
+            <strong>Artifact</strong>
+            Static HTML interaction wireframe.<br />
+            <strong>Scope</strong>
+            Pair, list sessions, switch session, observe, stop, send after idle, reconnect.<br />
+            <strong>Phone frame</strong>
+            390 × 844 design pixels, rendered at 75% scale.
+          </aside>
+        </div>
+        <nav class="toc" aria-label="Page sections">
+          <a href="#journey">Journeys</a>
+          <a href="#screens">Wireframes</a>
+          <a href="#references">References</a>
+          <a href="#dependencies">Dependencies</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="journey">
+        <h2>Journey Summary</h2>
+        <div class="flow-grid" aria-label="Mobile Operator user journeys">
+          <article class="flow-step">
+            <span class="step-index">1</span>
+            <h3>Pair phone</h3>
+            <p>Scan or paste setup code, wait for Gateway approval, then open the session list.</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">2</span>
+            <h3>Choose session</h3>
+            <p>Open session list, mark desktop focus, and switch the mobile selected session.</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">3</span>
+            <h3>Observe or stop</h3>
+            <p>Running sessions show stream and tool cards. Stop is the only run action.</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-index">4</span>
+            <h3>Send when idle</h3>
+            <p>After terminal state and history refresh, the composer returns for normal send.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="screens">
+        <h2>Horizontally Scrollable Wireframes By Journey</h2>
+
+        <div class="screen-journey">
+          <h3>MOP-01 Pair And Connect</h3>
+          <p class="screen-intro">
+            Mobile requests scoped operator access. Endpoint reachability does not grant read or
+            write scope until Gateway pairing succeeds.
+          </p>
+          <div class="screen-track" aria-label="Pair and connect journey">
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:41</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Connect</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight">
+                      <span class="label">CONN-001</span>
+                      <strong>Connect to NoraHarness</strong>
+                      <p class="small muted">Scan the desktop setup code to request operator access.</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Access path</span>
+                      <strong>Tailscale Serve</strong>
+                      <p class="small muted">Private tailnet endpoint, still requires pairing.</p>
+                    </div>
+                    <div class="split">
+                      <div class="primary hotspot">Scan</div>
+                      <div class="secondary">Paste</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">CONN-001</span>
+                  <span class="status warn">pairing required</span>
+                </div>
+                <h3>Scan Or Paste Setup Code</h3>
+                <p>Primary entry is Scan. Paste is a fallback for manual setup-code entry.</p>
+                <ul>
+                  <li>Requested scopes: operator read and write.</li>
+                  <li>Do not expose provider configuration or admin scope.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:42</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>Connect</h4><span></span></div>
+                  <div class="phone-body">
+                    <div class="wire-block">
+                      <span class="label">CONN-002</span>
+                      <strong>Approve this phone on desktop</strong>
+                      <p class="small muted">The phone remains locked until Gateway approves it.</p>
+                    </div>
+                    <div class="wire-row">
+                      <div><strong>Operator phone</strong><p class="small muted">No admin scope</p></div>
+                      <span class="status warn">Waiting</span>
+                    </div>
+                    <div class="secondary">Cancel request</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">CONN-002</span>
+                  <span class="status warn">approval pending</span>
+                </div>
+                <h3>Waiting For Gateway Approval</h3>
+                <p>Mobile does not load sessions, history, or events until approval completes.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:43</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Sessions</h4><span class="tiny-btn">Focus</span></div>
+                  <div class="phone-body">
+                    <div class="wire-row banner-row hotspot">
+                      <div class="row-main"><span class="label">Desktop focus</span><strong>firmware-display</strong><p class="small muted">Idle · gpt-5.5 · updated 2 min ago</p></div>
+                      <span class="status ok">Idle</span>
+                    </div>
+                    <div class="wire-row">
+                      <div class="row-main"><span class="label">Other session</span><strong>gateway reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
+                      <span class="row-state"><span class="spinner" aria-hidden="true"></span><span class="status warn">Run</span></span>
+                    </div>
+                    <div class="wire-row">
+                      <div class="row-main"><span class="label">Other session</span><strong>provider cleanup</strong><p class="small muted">Idle · last reply ready</p></div>
+                      <span class="status ok">Idle</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">LIST-001</span>
+                  <span class="status ok">approved</span>
+                </div>
+                <h3>Land On Session List</h3>
+                <p>After approval, Mobile opens the session list first. The desktop focus is highlighted, and any desktop agent that is returning shows a spinner.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>MOP-03 / MOP-04 Session List And Switching</h3>
+          <p class="screen-intro">
+            The phone can choose its own selected session. Switching Mobile selection does not
+            mutate desktop focus.
+          </p>
+          <div class="screen-track" aria-label="Session list and switching journey">
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:44</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>Sessions</h4><span></span></div>
+                  <div class="phone-body">
+                    <div class="wire-row banner-row">
+                      <div class="row-main"><span class="label">Current focus</span><strong>firmware-display</strong><p class="small muted">Idle · gpt-5.5 · 2 min ago</p></div>
+                      <span class="status ok">Idle</span>
+                    </div>
+                    <div class="wire-row">
+                      <div class="row-main"><span class="label">Other session</span><strong>gateway reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
+                      <span class="row-state"><span class="spinner" aria-hidden="true"></span><span class="status warn">Run</span></span>
+                    </div>
+                    <div class="wire-row hotspot">
+                      <div class="row-main"><span class="label">Other session</span><strong>provider cleanup</strong><p class="small muted">Idle · last reply ready</p></div>
+                      <span class="status ok">Idle</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">LIST-001</span>
+                  <span class="status ok">sessions.list</span>
+                </div>
+                <h3>Load Session List</h3>
+                <p>Rows include focus marker, run state, last activity, and enough identity to choose a target.</p>
+                <ul>
+                  <li>Composer remains disabled until selected active-run state is known.</li>
+                  <li>Gateway active runs are scoped by session, so idle rows remain enterable while another session is running.</li>
+                  <li>Tap provider cleanup to change Mobile selection.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:45</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>provider cleanup</h4><span></span></div>
+                  <div class="phone-body">
+                    <div class="wire-card highlight">
+                      <span class="label">Mobile selected session</span>
+                      <strong>provider cleanup</strong>
+                      <p class="small muted">Desktop focus remains firmware-display.</p>
+                    </div>
+                    <div class="chat-bubble agent">The stale provider entry is ready to remove.</div>
+                    <div class="input-bar hotspot"><span>Send into provider cleanup</span><strong>↑</strong></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">IDLE-002</span>
+                  <span class="status ok">selected idle</span>
+                </div>
+                <h3>Switch Session And Chat</h3>
+                <p>History, active-run query, send, stop, and patch now use the selected session key.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>MOP-05 / MOP-06 / MOP-07 Running, Stop, Then Send</h3>
+          <p class="screen-intro">
+            While running, Mobile observes stream output and tool cards. It cannot steer or queue a
+            new message.
+          </p>
+          <div class="screen-track" aria-label="Running stop and send journey">
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:46</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-body">
+                    <span class="status warn">Running</span>
+                    <div class="chat-bubble user">Fix the mobile reconnection flow.</div>
+                    <div class="chat-bubble agent">Checking Gateway event stream and active run query...</div>
+                    <div class="tool-card"><strong>Tool call</strong><br />Read mobile transport contract.</div>
+                    <div class="input-bar disabled"><span>Stop before sending a new message.</span></div>
+                    <div class="danger-btn hotspot">Stop</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">RUN-001</span>
+                  <span class="status warn">running</span>
+                </div>
+                <h3>Observe Active Run</h3>
+                <p>Send is disabled. Stop is the only run-control action.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:47</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-body">
+                    <span class="status danger">Stopping</span>
+                    <div class="wire-card">
+                      <span class="label">Abort requested</span>
+                      <strong>Waiting for terminal event</strong>
+                      <p class="small muted">Composer stays disabled until history refresh completes.</p>
+                    </div>
+                    <div class="input-bar disabled"><span>History refresh pending.</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">RUN-002</span>
+                  <span class="status danger">stopping</span>
+                </div>
+                <h3>Stop Active Run</h3>
+                <p>Mobile waits for aborted, completed, error, or no-active-run snapshot.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:48</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-body">
+                    <span class="status ok">Idle</span>
+                    <div class="chat-bubble agent">Stopped. I refreshed the canonical history.</div>
+                    <div class="input-bar hotspot"><span>Type the next message</span><strong>↑</strong></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">IDLE-003</span>
+                  <span class="status ok">send enabled</span>
+                </div>
+                <h3>Send After Idle</h3>
+                <p>Send returns only after terminal state and history refresh.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="screen-journey">
+          <h3>MOP-08 / MOP-09 / MOP-10 / MOP-11 Secondary States</h3>
+          <p class="screen-intro">
+            Session settings, reconnect, notifications, and build/deploy monitoring stay bounded by
+            the same selected-session contract.
+          </p>
+          <div class="screen-track" aria-label="Secondary states journey">
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:49</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>Session</h4><span></span></div>
+                  <div class="phone-body">
+                    <div class="wire-row hotspot"><strong>Model</strong><span>gpt-5.5</span></div>
+                    <div class="wire-row"><strong>Thinking</strong><span>Medium</span></div>
+                    <div class="wire-card"><p class="small muted">No provider credentials, catalog, or config editor.</p></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">SET-001</span>
+                  <span class="status ok">session scoped</span>
+                </div>
+                <h3>Change Session Settings</h3>
+                <p>Only Gateway-provided session model and thinking choices are mutable.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:50</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Reconnecting</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight">
+                      <span class="label">Snapshot refresh</span>
+                      <strong>Restoring selected session</strong>
+                      <p class="small muted">Focus → sessions → selected history → active run → events.</p>
+                    </div>
+                    <div class="secondary hotspot">Retry now</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">RECON-001</span>
+                  <span class="status stale">reconnecting</span>
+                </div>
+                <h3>Recover After Reconnect</h3>
+                <p>The composer stays disabled until selected-session active-run state is known.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:51</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Notification</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-row highlight hotspot">
+                      <div><strong>gateway reconnect finished</strong><p class="small muted">Tap to open this session after snapshot reload.</p></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">NOTE-001</span>
+                  <span class="status ok">notification</span>
+                </div>
+                <h3>Open Notification</h3>
+                <p>Notification opens the referenced session only after reloading snapshot state.</p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:52</span><span>5G 100%</span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>Build</h4><span></span></div>
+                  <div class="phone-body">
+                    <div class="wire-block">
+                      <span class="label">Firmware build</span>
+                      <strong>Running</strong>
+                      <p class="small muted">Read-only status. No build, deploy, or publish action.</p>
+                    </div>
+                    <div class="tool-card"><strong>Last event</strong><br />Compile step 4 of 8.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">BUILD-001</span>
+                  <span class="status stale">later</span>
+                </div>
+                <h3>Observe Build Or Deploy Status</h3>
+                <p>This is a discussion point and remains read-only in the mobile MVP.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="references">
+        <h2>Reference Screens Used As Input</h2>
+        <div class="references">
+          <figure class="reference-card">
+            <img
+              src="../../../nora-docs/hardware_harness/mobile-ui-contracts/assets/7-chat/1-pages-chatpage.png"
+              alt="Existing mobile chat list screenshot"
+            />
+            <figcaption>Existing chat list screenshot.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="../../../nora-docs/hardware_harness/mobile-ui-contracts/assets/7-chat/2-1chat-send-message.png"
+              alt="Existing mobile chat detail screenshot"
+            />
+            <figcaption>Existing chat detail and composer screenshot.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="../../../nora-docs/hardware_harness/mobile-ui-contracts/assets/4-onboarding/3-onboarding-step-3-enter-pairing-code.png"
+              alt="Existing pairing step screenshot"
+            />
+            <figcaption>Existing pairing code flow screenshot.</figcaption>
+          </figure>
+          <figure class="reference-card">
+            <img
+              src="../../../nora-docs/hardware_harness/mobile-ui-contracts/assets/1-home/1-home-default.png"
+              alt="Existing home setup screenshot"
+            />
+            <figcaption>Existing warm setup/home screenshot.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="dependencies">
+        <h2>API And State Dependencies</h2>
+        <div class="dependency-grid">
+          <article class="dependency-card">
+            <h3>Pairing</h3>
+            <p>Setup code, endpoint metadata, operator credential, scoped read/write role.</p>
+          </article>
+          <article class="dependency-card">
+            <h3>Sessions</h3>
+            <p>`operator.focus.get`, `sessions.list`, selected `sessionKey`, focus marker.</p>
+          </article>
+          <article class="dependency-card">
+            <h3>Chat</h3>
+            <p>`chat.history`, active run query, event stream, `chat.send`, `chat.abort`.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
