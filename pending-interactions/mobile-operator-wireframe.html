@@ -298,6 +298,454 @@
         scroll-snap-align: start;
       }
 
+      .desktop-canvas {
+        --electron-width: 1200px;
+        --electron-height: 940px;
+        --electron-scale: 0.6;
+        position: relative;
+        width: calc(var(--electron-width) * var(--electron-scale));
+        height: calc(var(--electron-height) * var(--electron-scale));
+        overflow: visible;
+      }
+
+      .electron-artboard {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: grid;
+        width: var(--electron-width);
+        height: var(--electron-height);
+        grid-template-columns: 218px minmax(0, 1fr) 344px;
+        grid-template-rows: 42px minmax(0, 1fr) 36px;
+        overflow: hidden;
+        border: 1px solid #d9d0c0;
+        border-radius: 12px;
+        background: #f7f4ef;
+        box-shadow: var(--shadow);
+        color: #26231f;
+        font-size: 14px;
+        transform: scale(var(--electron-scale));
+        transform-origin: top left;
+      }
+
+      .electron-chrome {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 218px minmax(0, 1fr) 344px;
+        align-items: center;
+        border-bottom: 1px solid #ddd6cc;
+        background: #f6f1e8;
+      }
+
+      .traffic {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-left: 14px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+      }
+
+      .dot.red {
+        background: #ff5f57;
+      }
+
+      .dot.yellow {
+        background: #ffbd2e;
+      }
+
+      .dot.green {
+        background: #28c840;
+      }
+
+      .electron-tabs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 100%;
+      }
+
+      .electron-tab,
+      .electron-chip,
+      .phone-icon-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ded6ca;
+        border-radius: 8px;
+        background: #fffaf2;
+        font-weight: 650;
+      }
+
+      .electron-tab {
+        height: 28px;
+        padding: 0 14px;
+      }
+
+      .electron-tab.active {
+        background: #ffffff;
+        color: #111;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      }
+
+      .electron-chip {
+        height: 28px;
+        padding: 0 12px;
+        justify-self: end;
+        margin-right: 14px;
+        color: #6b6258;
+      }
+
+      .electron-sidebar {
+        grid-row: 2 / 4;
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        border-right: 1px solid #ddd6cc;
+        background: #f4efe6;
+      }
+
+      .sidebar-search {
+        margin: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: #fff;
+        color: #837a70;
+      }
+
+      .sidebar-list {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        padding: 6px 10px;
+      }
+
+      .sidebar-row {
+        display: flex;
+        min-height: 38px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 8px;
+        border-radius: 8px;
+        color: #2b2925;
+      }
+
+      .sidebar-row.active {
+        background: #efe4d6;
+      }
+
+      .sidebar-row .time {
+        margin-left: auto;
+        color: #91887d;
+        font-size: 12px;
+      }
+
+      .electron-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-top: 1px solid #ddd6cc;
+      }
+
+      .phone-icon-button {
+        width: 34px;
+        height: 34px;
+        border-color: #d8cfc2;
+        background: #fffaf2;
+        position: relative;
+      }
+
+      .phone-icon-button::before {
+        width: 13px;
+        height: 21px;
+        border: 2px solid #625a50;
+        border-radius: 4px;
+        content: "";
+      }
+
+      .phone-icon-button::after {
+        position: absolute;
+        bottom: 7px;
+        width: 4px;
+        height: 4px;
+        border-radius: 999px;
+        background: #625a50;
+        content: "";
+      }
+
+      .electron-main {
+        grid-column: 2;
+        grid-row: 2;
+        display: grid;
+        align-content: start;
+        gap: 18px;
+        padding: 28px;
+        background: #fbf8f1;
+      }
+
+      .nora-mobile-panel {
+        display: grid;
+        gap: 18px;
+      }
+
+      .nora-mobile-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .nora-mobile-header h3 {
+        margin: 0 0 8px;
+        color: #28241e;
+        font-size: 28px;
+        line-height: 1.15;
+        font-weight: 760;
+      }
+
+      .nora-mobile-header p {
+        max-width: 520px;
+        margin: 0;
+        color: #756b60;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+
+      .desktop-primary {
+        display: inline-flex;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+        border: 1px solid #c98c2f;
+        border-radius: 8px;
+        background: #e8b84d;
+        color: #211b12;
+        font-weight: 760;
+      }
+
+      .pairing-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 238px;
+        gap: 18px;
+      }
+
+      .qr-shell {
+        display: grid;
+        justify-items: center;
+        min-height: 520px;
+        padding: 28px;
+        border: 1px solid #ded3c2;
+        border-radius: 10px;
+        background: #fffdf7;
+      }
+
+      .platform-tabs {
+        display: grid;
+        width: 236px;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 26px;
+        padding: 4px;
+        border: 1px solid #dfd5c5;
+        border-radius: 10px;
+        background: #f7f1e8;
+        color: #766d62;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .platform-tabs span {
+        display: grid;
+        height: 34px;
+        place-items: center;
+        border-radius: 7px;
+      }
+
+      .platform-tabs .active {
+        background: #ffffff;
+        color: #24211c;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      }
+
+      .qr-large {
+        position: relative;
+        width: 292px;
+        height: 292px;
+        border: 12px solid #fff7e6;
+        border-radius: 22px;
+        background: #fffdf7;
+        box-shadow: inset 0 0 0 1px #e1d3be;
+      }
+
+      .qr-large::before {
+        position: absolute;
+        inset: 34px;
+        border-radius: 14px;
+        background:
+          radial-gradient(circle at 12px 12px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 36px 12px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 60px 12px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 12px 36px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 60px 36px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 12px 60px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 36px 60px, #2a251e 0 4px, transparent 5px),
+          radial-gradient(circle at 60px 60px, #2a251e 0 4px, transparent 5px);
+        background-size: 72px 72px;
+        content: "";
+        opacity: 0.96;
+      }
+
+      .qr-finder {
+        position: absolute;
+        width: 58px;
+        height: 58px;
+        border: 10px solid #2a251e;
+        border-radius: 13px;
+        background: #fffdf7;
+      }
+
+      .qr-finder::after {
+        position: absolute;
+        inset: 11px;
+        border-radius: 999px;
+        background: #2a251e;
+        content: "";
+      }
+
+      .qr-finder.tl {
+        top: 28px;
+        left: 28px;
+      }
+
+      .qr-finder.tr {
+        top: 28px;
+        right: 28px;
+      }
+
+      .qr-finder.bl {
+        bottom: 28px;
+        left: 28px;
+      }
+
+      .qr-badge {
+        position: absolute;
+        top: 124px;
+        left: 124px;
+        display: grid;
+        width: 58px;
+        height: 58px;
+        place-items: center;
+        border: 3px solid #fffdf7;
+        border-radius: 16px;
+        background: #2f7be8;
+        color: #fff;
+        font-size: 21px;
+        font-weight: 800;
+      }
+
+      .manage-link {
+        margin-top: 22px;
+        color: #8a6427;
+        font-size: 15px;
+        font-weight: 720;
+      }
+
+      .pairing-side {
+        display: grid;
+        align-content: start;
+        gap: 12px;
+      }
+
+      .pairing-card {
+        padding: 16px;
+        border: 1px solid #ded3c2;
+        border-radius: 9px;
+        background: #fffdf7;
+      }
+
+      .pairing-card strong {
+        display: block;
+        margin-bottom: 7px;
+        color: #2b251d;
+        font-size: 15px;
+      }
+
+      .pairing-card p {
+        margin: 0;
+        color: #776c5f;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .connection-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid #ded3c2;
+        border-radius: 9px;
+        background: #fffdf7;
+      }
+
+      .connection-row span {
+        color: #74695d;
+        font-size: 12px;
+      }
+
+      .connection-row b {
+        color: #2b251d;
+        font-size: 14px;
+      }
+
+      .electron-files {
+        grid-column: 3;
+        grid-row: 2;
+        border-left: 1px solid #ddd6cc;
+        background: #f3efe8;
+      }
+
+      .files-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        border-bottom: 1px solid #ddd6cc;
+      }
+
+      .files-tabs span {
+        padding: 7px 12px;
+        border-radius: 8px;
+        color: #6c6258;
+      }
+
+      .files-tabs .active {
+        background: #fff;
+        color: #171717;
+      }
+
+      .file-tree {
+        padding: 12px 18px;
+        color: #6c6258;
+      }
+
+      .electron-terminal {
+        grid-column: 2 / 4;
+        grid-row: 3;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 0 14px;
+        border-top: 1px solid #ddd6cc;
+        background: #faf7f0;
+        color: #5f574e;
+      }
+
       .phone {
         position: relative;
         width: var(--phone-frame-width);
@@ -720,6 +1168,7 @@
         <nav class="toc" aria-label="Page sections">
           <a href="#journey">Journeys</a>
           <a href="#screens">Wireframes</a>
+          <a href="#electron">Electron</a>
           <a href="#references">References</a>
           <a href="#dependencies">Dependencies</a>
         </nav>
@@ -732,8 +1181,8 @@
         <div class="flow-grid" aria-label="Mobile Operator user journeys">
           <article class="flow-step">
             <span class="step-index">1</span>
-            <h3>Pair phone</h3>
-            <p>Scan or paste setup code, wait for Gateway approval, then open the session list.</p>
+            <h3>Sign in and pair</h3>
+            <p>Sign in to Nora, scan or paste setup code, wait for Dispatcher approval, then open the session list.</p>
           </article>
           <article class="flow-step">
             <span class="step-index">2</span>
@@ -759,10 +1208,40 @@
         <div class="screen-journey">
           <h3>MOP-01 Pair And Connect</h3>
           <p class="screen-intro">
-            Mobile requests scoped operator access. Endpoint reachability does not grant read or
-            write scope until Gateway pairing succeeds.
+            Mobile signs in first, then requests scoped operator access. Endpoint reachability does
+            not grant read or write scope until Harness Dispatcher Host pairing succeeds.
           </p>
           <div class="screen-track" aria-label="Pair and connect journey">
+            <article class="screen-card">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="phone-bar"><span>9:40</span><span>5G 100%</span></div>
+                  <div class="phone-title"><h4>Welcome</h4></div>
+                  <div class="phone-body">
+                    <div class="wire-block highlight">
+                      <span class="label">AUTH-001</span>
+                      <strong>Sign in to Nora</strong>
+                      <p class="small muted">Account sign-in is required before pairing a desktop.</p>
+                    </div>
+                    <div class="wire-card">
+                      <span class="label">Access boundary</span>
+                      <strong>Sign-in is not pairing</strong>
+                      <p class="small muted">Desktop approval still grants Host operator scope.</p>
+                    </div>
+                    <div class="primary hotspot">Continue</div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen-notes">
+                <div class="screen-id">
+                  <span class="pill">AUTH-001</span>
+                  <span class="status warn">signed out</span>
+                </div>
+                <h3>Sign In Before Pairing</h3>
+                <p>Mobile cannot submit a pairing request until a Nora account session exists.</p>
+              </div>
+            </article>
+
             <article class="screen-card">
               <div class="phone">
                 <div class="phone-inner">
@@ -809,7 +1288,7 @@
                     <div class="wire-block">
                       <span class="label">CONN-002</span>
                       <strong>Approve this phone on desktop</strong>
-                      <p class="small muted">The phone remains locked until Gateway approves it.</p>
+                      <p class="small muted">The phone remains locked until Dispatcher approves it.</p>
                     </div>
                     <div class="wire-row">
                       <div><strong>Operator phone</strong><p class="small muted">No admin scope</p></div>
@@ -824,7 +1303,7 @@
                   <span class="pill">CONN-002</span>
                   <span class="status warn">approval pending</span>
                 </div>
-                <h3>Waiting For Gateway Approval</h3>
+                <h3>Waiting For Harness Dispatcher Host Approval</h3>
                 <p>Mobile does not load sessions, history, or events until approval completes.</p>
               </div>
             </article>
@@ -840,7 +1319,7 @@
                       <span class="status ok">Idle</span>
                     </div>
                     <div class="wire-row">
-                      <div class="row-main"><span class="label">Other session</span><strong>gateway reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
+                      <div class="row-main"><span class="label">Other session</span><strong>dispatcher reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
                       <span class="row-state"><span class="spinner" aria-hidden="true"></span><span class="status warn">Run</span></span>
                     </div>
                     <div class="wire-row">
@@ -880,7 +1359,7 @@
                       <span class="status ok">Idle</span>
                     </div>
                     <div class="wire-row">
-                      <div class="row-main"><span class="label">Other session</span><strong>gateway reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
+                      <div class="row-main"><span class="label">Other session</span><strong>dispatcher reconnect</strong><p class="small muted">Desktop agent is returning</p></div>
                       <span class="row-state"><span class="spinner" aria-hidden="true"></span><span class="status warn">Run</span></span>
                     </div>
                     <div class="wire-row hotspot">
@@ -893,13 +1372,13 @@
               <div class="screen-notes">
                 <div class="screen-id">
                   <span class="pill">LIST-001</span>
-                  <span class="status ok">sessions.list</span>
+                  <span class="status ok">Dispatcher snapshot</span>
                 </div>
                 <h3>Load Session List</h3>
                 <p>Rows include focus marker, run state, last activity, and enough identity to choose a target.</p>
                 <ul>
                   <li>Composer remains disabled until selected active-run state is known.</li>
-                  <li>Gateway active runs are scoped by session, so idle rows remain enterable while another session is running.</li>
+                  <li>Host run state is treated as selected-session scoped until a global lock is defined.</li>
                   <li>Tap provider cleanup to change Mobile selection.</li>
                 </ul>
               </div>
@@ -944,11 +1423,11 @@
               <div class="phone">
                 <div class="phone-inner">
                   <div class="phone-bar"><span>9:46</span><span>5G 100%</span></div>
-                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>dispatcher reconnect</h4><span></span></div>
                   <div class="phone-body">
                     <span class="status warn">Running</span>
                     <div class="chat-bubble user">Fix the mobile reconnection flow.</div>
-                    <div class="chat-bubble agent">Checking Gateway event stream and active run query...</div>
+                    <div class="chat-bubble agent">Checking dispatcher event stream and active run state...</div>
                     <div class="tool-card"><strong>Tool call</strong><br />Read mobile transport contract.</div>
                     <div class="input-bar disabled"><span>Stop before sending a new message.</span></div>
                     <div class="danger-btn hotspot">Stop</div>
@@ -969,7 +1448,7 @@
               <div class="phone">
                 <div class="phone-inner">
                   <div class="phone-bar"><span>9:47</span><span>5G 100%</span></div>
-                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>dispatcher reconnect</h4><span></span></div>
                   <div class="phone-body">
                     <span class="status danger">Stopping</span>
                     <div class="wire-card">
@@ -995,7 +1474,7 @@
               <div class="phone">
                 <div class="phone-inner">
                   <div class="phone-bar"><span>9:48</span><span>5G 100%</span></div>
-                  <div class="phone-title"><span class="icon-btn">‹</span><h4>gateway reconnect</h4><span></span></div>
+                  <div class="phone-title"><span class="icon-btn">‹</span><h4>dispatcher reconnect</h4><span></span></div>
                   <div class="phone-body">
                     <span class="status ok">Idle</span>
                     <div class="chat-bubble agent">Stopped. I refreshed the canonical history.</div>
@@ -1040,7 +1519,7 @@
                   <span class="status ok">session scoped</span>
                 </div>
                 <h3>Change Session Settings</h3>
-                <p>Only Gateway-provided session model and thinking choices are mutable.</p>
+                <p>Only Host-projected session model and thinking choices are mutable.</p>
               </div>
             </article>
 
@@ -1076,7 +1555,7 @@
                   <div class="phone-title"><h4>Notification</h4></div>
                   <div class="phone-body">
                     <div class="wire-row highlight hotspot">
-                      <div><strong>gateway reconnect finished</strong><p class="small muted">Tap to open this session after snapshot reload.</p></div>
+                      <div><strong>dispatcher reconnect finished</strong><p class="small muted">Tap to open this session after snapshot reload.</p></div>
                     </div>
                   </div>
                 </div>
@@ -1115,6 +1594,107 @@
                 <p>This is a discussion point and remains read-only in the mobile MVP.</p>
               </div>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="electron">
+        <h2>Electron Pairing And Approval Wireframes</h2>
+        <p class="screen-intro">
+          Drawn as a 1200 × 940 Electron app artboard and rendered at 60% scale. The phone icon is
+          added to the sidebar footer; clicking it replaces the main area with the mobile QR setup.
+        </p>
+        <div class="desktop-canvas" aria-label="Electron pairing and approval desktop surface">
+          <div class="electron-artboard">
+            <div class="electron-chrome">
+              <div class="traffic">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="electron-tabs">
+                <span class="electron-tab">Chat</span>
+                <span class="electron-tab active">Code</span>
+                <span style="margin-left: 18px; color: #655d55">/Users/zhaowei/workspace/noraclaw-demos/ntt11</span>
+              </div>
+              <span class="electron-chip">Edit Agent</span>
+            </div>
+
+            <aside class="electron-sidebar">
+              <div class="sidebar-search">Search conversations...</div>
+              <div class="sidebar-list">
+                <div class="sidebar-row"><strong>Workspaces</strong></div>
+                <div class="sidebar-row active">▾ ntt11 <span class="time">1</span></div>
+                <div class="sidebar-row">基于图中的形象，创建...</div>
+                <div class="sidebar-row">▸ ntt10 <span class="time">1</span></div>
+                <div class="sidebar-row">▸ ntt9 <span class="time">1</span></div>
+                <div class="sidebar-row">▸ ntt8 <span class="time">1</span></div>
+                <div class="sidebar-row">▸ openclaw <span class="time">1mo</span></div>
+                <div class="sidebar-row">▸ New project 2</div>
+                <div class="sidebar-row">▸ New project</div>
+              </div>
+              <div class="electron-footer">
+                <span>⚙ Settings</span>
+                <button class="phone-icon-button hotspot" aria-label="Open Mobile setup"></button>
+              </div>
+            </aside>
+
+            <main class="electron-main">
+              <section class="nora-mobile-panel">
+                <div class="nora-mobile-header">
+                  <div>
+                    <h3>Mobile Operator</h3>
+                    <p>Pair a signed-in phone with this desktop runtime. The phone receives limited operator access for session viewing, idle sends, and active run stop.</p>
+                  </div>
+                  <button class="desktop-primary">New setup code</button>
+                </div>
+                <div class="pairing-grid">
+                  <div class="qr-shell">
+                    <div class="platform-tabs"><span class="active">iOS</span><span>Android</span></div>
+                    <div class="qr-large">
+                      <span class="qr-finder tl"></span>
+                      <span class="qr-finder tr"></span>
+                      <span class="qr-finder bl"></span>
+                      <span class="qr-badge">›_</span>
+                    </div>
+                    <div class="manage-link">Manage connections</div>
+                  </div>
+                  <aside class="pairing-side">
+                    <div class="pairing-card">
+                      <strong>Scan setup code</strong>
+                      <p>Open NoraHarness Mobile Operator, sign in, then scan this code to request access.</p>
+                    </div>
+                    <div class="pairing-card">
+                      <strong>Desktop approval required</strong>
+                      <p>The desktop owner must approve before the phone can read sessions or send messages.</p>
+                    </div>
+                    <div class="connection-row">
+                      <div><b>wei's iPhone</b><br /><span>Pending approval</span></div>
+                      <span>Review</span>
+                    </div>
+                    <div class="connection-row">
+                      <div><b>Testnet iPad</b><br /><span>Last seen 4 min ago</span></div>
+                      <span>Revoke</span>
+                    </div>
+                  </aside>
+                </div>
+              </section>
+            </main>
+
+            <aside class="electron-files">
+              <div class="files-tabs"><span class="active">All Files</span><span>Changes</span><span>Device</span><span>Preview</span></div>
+              <div class="file-tree">› wall-e-chat</div>
+            </aside>
+
+            <footer class="electron-terminal"><span>Terminal</span><span>Device Log</span></footer>
+          </div>
+          <div class="screen-notes" style="margin-top: 16px">
+            <div class="screen-id">
+              <span class="pill">ELEC-001</span>
+              <span class="status ok">1200 x 940 @ 60%</span>
+            </div>
+            <h3>Sidebar Phone Button Opens QR Setup</h3>
+            <p>The added phone button lives in the Electron sidebar footer. The main area displays the QR setup screen; manage connections handles existing paired phones.</p>
           </div>
         </div>
       </section>
@@ -1162,11 +1742,11 @@
           </article>
           <article class="dependency-card">
             <h3>Sessions</h3>
-            <p>`operator.focus.get`, `sessions.list`, selected `sessionKey`, focus marker.</p>
+            <p>Harness Dispatcher Host focus capability, session list snapshot, selected session, focus marker.</p>
           </article>
           <article class="dependency-card">
             <h3>Chat</h3>
-            <p>`chat.history`, active run query, event stream, `chat.send`, `chat.abort`.</p>
+            <p>Harness Dispatcher Host history snapshot, active run state, event stream, send, stop.</p>
           </article>
         </div>
       </section>
