@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journey 1 First Launch And Base Setup Wireframe</title>
+    <style>
+      :root {
+        --bg: #f3f4f6;
+        --grid: rgba(17, 24, 39, 0.055);
+        --panel: #ffffff;
+        --panel-soft: #f8fafc;
+        --line: #d6dbe3;
+        --line-strong: #111827;
+        --text: #1f2937;
+        --muted: #667085;
+        --soft: #98a2b3;
+        --accent: #475467;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+        --green: #047857;
+        --green-bg: #d1fae5;
+        --amber: #a16207;
+        --amber-bg: #fef3c7;
+        --red: #b42318;
+        --red-bg: #fee4e2;
+        --yellow: #fff3cd;
+        --shadow: 0 20px 50px rgba(17, 24, 39, 0.12);
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 1440px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          var(--bg);
+        background-size: 24px 24px;
+        color: var(--text);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.2;
+        letter-spacing: 0;
+      }
+
+      .header p {
+        max-width: 900px;
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .control {
+        min-width: 42px;
+        height: 32px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .control:hover {
+        border-color: var(--line-strong);
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 270px;
+        gap: 18px;
+      }
+
+      .viewport {
+        position: relative;
+        height: calc(100vh - 118px);
+        min-height: 760px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          #eef1f5;
+        background-size: 20px 20px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        cursor: grab;
+      }
+
+      .viewport.dragging {
+        cursor: grabbing;
+      }
+
+      .canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2260px;
+        height: 1720px;
+        transform-origin: 0 0;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 24px;
+        height: calc(100vh - 48px);
+        min-height: 760px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar-section {
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sidebar h2 {
+        margin: 0 0 10px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .jump {
+        display: block;
+        width: 100%;
+        margin: 6px 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel-soft);
+        padding: 8px 10px;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .jump:hover {
+        border-color: var(--line-strong);
+        background: #fff;
+      }
+
+      .legend {
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .legend-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .swatch {
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+
+      .mini {
+        position: relative;
+        width: 232px;
+        height: 176px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #eef1f5;
+      }
+
+      .mini-dot {
+        position: absolute;
+        border: 1px solid var(--line-strong);
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .frame {
+        position: absolute;
+        width: 340px;
+        min-height: 230px;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .frame.large {
+        width: 430px;
+        min-height: 270px;
+      }
+
+      .frame.wide {
+        width: 520px;
+        min-height: 250px;
+      }
+
+      .frame.tall {
+        min-height: 330px;
+      }
+
+      .frame-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px 10px;
+      }
+
+      .frame-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .frame-subtitle {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .frame-body {
+        padding: 14px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 22px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .pill.required {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      .pill.optional {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+
+      .pill.done {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+
+      .pill.warn {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+
+      .ui-shell {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fbfcfe;
+        overflow: hidden;
+      }
+
+      .top-status {
+        display: flex;
+        justify-content: center;
+        padding: 8px;
+        border-bottom: 1px solid var(--line);
+        background: #f3f4f6;
+      }
+
+      .banner {
+        width: 220px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: #111827;
+        padding: 7px 9px;
+        color: #fff;
+        font-size: 10px;
+      }
+
+      .screen {
+        padding: 13px;
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mock-h1 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        line-height: 1.08;
+      }
+
+      .mock-copy {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+        min-width: 86px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 0 10px;
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .btn.primary {
+        border-color: #111827;
+        background: #111827;
+        color: #fff;
+      }
+
+      .btn.disabled {
+        opacity: 0.38;
+      }
+
+      .choice-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+        margin: 10px 0;
+      }
+
+      .choice {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 8px;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .choice.active {
+        border-color: #111827;
+        box-shadow: inset 0 0 0 1px #111827;
+      }
+
+      .field {
+        margin: 8px 0;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 650;
+      }
+
+      .input {
+        height: 30px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 8px;
+        color: var(--soft);
+        font-size: 11px;
+      }
+
+      .log {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel-soft);
+        padding: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .caption {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .callout {
+        border: 1px solid #e0c36b;
+        border-radius: 7px;
+        background: var(--yellow);
+        padding: 10px;
+        color: #4f3b00;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .callout.blocking {
+        border-color: #f1a1a1;
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      .list {
+        display: grid;
+        gap: 7px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .list li {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        gap: 8px;
+        align-items: start;
+        min-height: 26px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .num {
+        display: grid;
+        width: 22px;
+        height: 22px;
+        place-items: center;
+        border-radius: 999px;
+        background: #eef2f7;
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .table {
+        display: grid;
+        gap: 7px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 132px 1fr;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 8px;
+        font-size: 11px;
+      }
+
+      .row strong {
+        font-size: 11px;
+      }
+
+      .arrow {
+        position: absolute;
+        height: 0;
+        border-top: 2px solid #475467;
+      }
+
+      .arrow::after {
+        position: absolute;
+        right: -1px;
+        top: -6px;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 8px solid #475467;
+        content: "";
+      }
+
+      .arrow-label {
+        position: absolute;
+        top: -28px;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        padding: 4px 8px;
+        color: var(--muted);
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .band {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        height: 34px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .band span {
+        display: inline-block;
+        background: #eef1f5;
+        padding-right: 12px;
+      }
+
+      .state-machine {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .state {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 7px 8px;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .state-arrow {
+        color: var(--soft);
+      }
+
+      .coverage {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .coverage-box {
+        min-height: 92px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 9px;
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .coverage-box strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div>
+          <h1>Journey 1: First Launch And Base Setup</h1>
+          <p>
+            PM wireframe for first-time NoraHarness setup: local connection status, Welcome,
+            required Provider setup, optional Personality, optional Notifications, Completion, and
+            handoff into Chat.
+          </p>
+        </div>
+        <div class="controls" aria-label="Canvas controls">
+          <button class="control" id="zoomOut" type="button">-</button>
+          <button class="control" id="zoomIn" type="button">+</button>
+          <button class="control" id="fit" type="button">Fit</button>
+          <button class="control" id="reset" type="button">100%</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="viewport" id="viewport" aria-label="Wireframe canvas viewport">
+          <div class="canvas" id="canvas">
+            <div class="band" style="top: 28px"><span>Main Happy Path</span></div>
+            <div class="band" style="top: 460px"><span>Detail Frames</span></div>
+            <div class="band" style="top: 920px"><span>State Language And PM Decisions</span></div>
+            <div class="band" style="top: 1320px"><span>Error And Recovery</span></div>
+
+            <section class="frame large" id="boot" style="left: 40px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">1. First Launch Gate</h3>
+                  <p class="frame-subtitle">Fresh install enters setup before the normal app.</p>
+                </div>
+                <span class="pill done">current</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell">
+                  <div class="top-status">
+                    <div class="banner">
+                      <strong>Gateway unavailable</strong><br />
+                      Trying to restore the local connection.
+                    </div>
+                  </div>
+                  <div class="screen">
+                    <div class="eyebrow">Welcome</div>
+                    <h4 class="mock-h1">Your AI assistant</h4>
+                    <p class="mock-copy">
+                      Introduce the app and move the user into base setup.
+                    </p>
+                    <div class="button-row">
+                      <span class="btn primary">Get started</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="caption">
+                  The local connection banner is visible when needed, but it does not block the
+                  first setup actions.
+                </p>
+              </div>
+            </section>
+
+            <section class="frame large tall" id="provider" style="left: 520px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">2. Connect AI Provider</h3>
+                  <p class="frame-subtitle">Only hard blocker before first usable Chat.</p>
+                </div>
+                <span class="pill required">required</span>
+              </div>
+              <div class="frame-body">
+                <div class="choice-grid">
+                  <div class="choice active">Anthropic</div>
+                  <div class="choice">OpenAI</div>
+                  <div class="choice">Gemini</div>
+                  <div class="choice">More Models</div>
+                </div>
+                <div class="field">
+                  <label>API key or local service address</label>
+                  <div class="input">Paste your key</div>
+                </div>
+                <div class="field">
+                  <label>Default model</label>
+                  <div class="input">Claude Sonnet 4.6</div>
+                </div>
+                <div class="button-row">
+                  <span class="btn">Back</span>
+                  <span class="btn">Verify key</span>
+                  <span class="btn disabled">Continue</span>
+                </div>
+                <p class="caption">
+                  Continue unlocks only after verified input or an explicit skip-verification
+                  choice.
+                </p>
+              </div>
+            </section>
+
+            <section class="frame large" id="personality" style="left: 1000px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">3. Personality</h3>
+                  <p class="frame-subtitle">Customize voice and behavior, or skip.</p>
+                </div>
+                <span class="pill optional">optional</span>
+              </div>
+              <div class="frame-body">
+                <div class="choice-grid">
+                  <div class="choice">Professional</div>
+                  <div class="choice active">Friendly</div>
+                  <div class="choice">Witty</div>
+                  <div class="choice">Concise</div>
+                </div>
+                <div class="field">
+                  <label>Custom instructions</label>
+                  <div class="input">Optional text</div>
+                </div>
+                <div class="log">Preview shows how the assistant will sound.</div>
+                <div class="button-row" style="margin-top: 10px">
+                  <span class="btn">Skip</span>
+                  <span class="btn primary">Save & Continue</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame" id="notifications" style="left: 1480px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">4. Notifications</h3>
+                  <p class="frame-subtitle">Permission request is not a setup blocker.</p>
+                </div>
+                <span class="pill optional">optional</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell">
+                  <div class="screen">
+                    <div class="eyebrow">Notifications</div>
+                    <h4 class="mock-h1">Stay in the loop</h4>
+                    <p class="mock-copy">Ask for timely reply alerts.</p>
+                    <div class="button-row">
+                      <span class="btn">Maybe later</span>
+                      <span class="btn primary">Turn on notifications</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="caption">Either choice advances to Completion.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="completion" style="left: 1880px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">5. Ready</h3>
+                  <p class="frame-subtitle">Confirm setup and enter Chat.</p>
+                </div>
+                <span class="pill done">handoff</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell">
+                  <div class="screen">
+                    <div class="eyebrow">Ready</div>
+                    <h4 class="mock-h1">You're all set</h4>
+                    <p class="mock-copy">Connected to Anthropic with a default model.</p>
+                    <span class="btn primary">Start chatting</span>
+                  </div>
+                </div>
+                <p class="caption">
+                  If there is no existing session, the app creates the first Chat draft.
+                </p>
+              </div>
+            </section>
+
+            <div class="arrow" style="left: 470px; top: 190px; width: 50px">
+              <span class="arrow-label">Get started</span>
+            </div>
+            <div class="arrow" style="left: 950px; top: 190px; width: 50px">
+              <span class="arrow-label">Provider saved</span>
+            </div>
+            <div class="arrow" style="left: 1430px; top: 190px; width: 50px">
+              <span class="arrow-label">Save or skip</span>
+            </div>
+            <div class="arrow" style="left: 1820px; top: 190px; width: 60px">
+              <span class="arrow-label">Allow or skip</span>
+            </div>
+
+            <section class="frame wide" id="provider-detail" style="left: 40px; top: 510px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Provider Detail</h3>
+                  <p class="frame-subtitle">What PM should evaluate in the required step.</p>
+                </div>
+                <span class="pill required">required</span>
+              </div>
+              <div class="frame-body">
+                <ul class="list">
+                  <li><span class="num">1</span><span>Select primary provider or reveal more providers.</span></li>
+                  <li><span class="num">2</span><span>Enter key or local service address with inline format guidance.</span></li>
+                  <li><span class="num">3</span><span>Pick default model from known choices or verified result.</span></li>
+                  <li><span class="num">4</span><span>Verify connection, or intentionally skip verification.</span></li>
+                  <li><span class="num">5</span><span>Save provider and advance to optional customization.</span></li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="frame wide" id="optional-detail" style="left: 600px; top: 510px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Optional Steps</h3>
+                  <p class="frame-subtitle">Lightweight setup choices that should not delay first chat.</p>
+                </div>
+                <span class="pill optional">review</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row">
+                    <strong>Personality</strong>
+                    <span>Tone cards, optional instructions, preview, Skip, Save & Continue.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Notifications</strong>
+                    <span>Maybe later and Turn on notifications both lead to Completion.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Completion</strong>
+                    <span>Summarizes provider/model and sends user into Chat.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="coverage-detail" style="left: 1160px; top: 510px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Engineering Readiness</h3>
+                  <p class="frame-subtitle">Current behavior exists; automated proof is uneven.</p>
+                </div>
+                <span class="pill warn">coverage gap</span>
+              </div>
+              <div class="frame-body">
+                <div class="coverage">
+                  <div class="coverage-box">
+                    <strong>Guarded now</strong>
+                    Welcome paints, Get started opens Provider, default provider selected, Continue disabled, Back returns.
+                  </div>
+                  <div class="coverage-box">
+                    <strong>Needs stronger guard</strong>
+                    Full provider save, personality skip/save, notification skip/allow, final Chat handoff.
+                  </div>
+                  <div class="coverage-box">
+                    <strong>PM impact</strong>
+                    The product flow exists, but release confidence should account for unguarded recovery states.
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="state-language" style="left: 40px; top: 970px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">State Language</h3>
+                  <p class="frame-subtitle">Recommended PM vocabulary for the setup path.</p>
+                </div>
+                <span class="pill done">proposed copy</span>
+              </div>
+              <div class="frame-body">
+                <div class="state-machine">
+                  <span class="state">Welcome</span>
+                  <span class="state-arrow">-></span>
+                  <span class="state">Provider idle</span>
+                  <span class="state-arrow">-></span>
+                  <span class="state">Verifying</span>
+                  <span class="state-arrow">-></span>
+                  <span class="state">Verified</span>
+                  <span class="state-arrow">-></span>
+                  <span class="state">Ready for Chat</span>
+                </div>
+                <p class="caption">
+                  Alternate provider path: valid input -> skip verification -> provider saved -> optional steps.
+                </p>
+              </div>
+            </section>
+
+            <section class="frame wide" id="pm-decisions" style="left: 600px; top: 970px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">PM Decisions</h3>
+                  <p class="frame-subtitle">Choices this artifact is meant to unblock.</p>
+                </div>
+                <span class="pill warn">PM review</span>
+              </div>
+              <div class="frame-body">
+                <div class="callout blocking">
+                  <strong>Blocking:</strong> Is Provider setup the only required step before Chat, or can users enter Chat without it?
+                </div>
+                <div class="callout" style="margin-top: 8px">
+                  <strong>Decision:</strong> Should Skip verification stay visible, move behind help, or be limited to local/network-constrained cases?
+                </div>
+                <div class="callout" style="margin-top: 8px">
+                  <strong>Decision:</strong> Should Completion always go to Chat, or offer Chat / Code entry?
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="boundaries" style="left: 1160px; top: 970px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Discussion Boundaries</h3>
+                  <p class="frame-subtitle">Keep PM review focused.</p>
+                </div>
+                <span class="pill optional">scope</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row">
+                    <strong>Discuss</strong>
+                    <span>Required versus optional steps, banner visibility, skip-verification copy, Chat handoff.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Do not discuss</strong>
+                    <span>Main app IA, Voice, Channels, Advanced settings, provider API internals.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Fixed</strong>
+                    <span>Notifications are not a hard blocker; users can customize later.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="errors-provider" style="left: 40px; top: 1370px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Provider Failure Recovery</h3>
+                  <p class="frame-subtitle">Failures should keep the user in context.</p>
+                </div>
+                <span class="pill required">important</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row">
+                    <strong>Key rejected</strong>
+                    <span>Tell user to check copied key; keep fields editable.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Network failure</strong>
+                    <span>Ask user to check connection and retry; show skip only when input is valid.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Local unreachable</strong>
+                    <span>Ask user to confirm the local service address and retry.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="errors-optional" style="left: 600px; top: 1370px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Optional Step Recovery</h3>
+                  <p class="frame-subtitle">Optional steps should never trap the user.</p>
+                </div>
+                <span class="pill optional">recovery</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row">
+                    <strong>Personality save fails</strong>
+                    <span>Show retry and keep Skip available.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Notification denied</strong>
+                    <span>Continue to Completion and explain it can be changed later.</span>
+                  </div>
+                  <div class="row">
+                    <strong>Local banner visible</strong>
+                    <span>Do not block setup unless the required Provider save cannot finish.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="success" style="left: 1160px; top: 1370px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Definition Of Success</h3>
+                  <p class="frame-subtitle">What "ready" should mean for Journey 1.</p>
+                </div>
+                <span class="pill done">success</span>
+              </div>
+              <div class="frame-body">
+                <ul class="list">
+                  <li><span class="num">1</span><span>At least one provider/model is saved or intentionally accepted as unverified.</span></li>
+                  <li><span class="num">2</span><span>Personality and notification choices do not block first chat.</span></li>
+                  <li><span class="num">3</span><span>Completion leads to a usable Chat draft instead of an empty app state.</span></li>
+                  <li><span class="num">4</span><span>Known coverage gaps are tracked before release-critical signoff.</span></li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <aside class="sidebar" aria-label="Wireframe navigation">
+          <div class="sidebar-section">
+            <h2>Jump List</h2>
+            <button class="jump" data-jump="boot">Main path</button>
+            <button class="jump" data-jump="provider-detail">Detail frames</button>
+            <button class="jump" data-jump="state-language">State and decisions</button>
+            <button class="jump" data-jump="errors-provider">Errors and recovery</button>
+          </div>
+          <div class="sidebar-section">
+            <h2>Mini Map</h2>
+            <div class="mini">
+              <div class="mini-dot" style="left: 4px; top: 8px; width: 42px; height: 28px"></div>
+              <div class="mini-dot" style="left: 54px; top: 8px; width: 42px; height: 36px"></div>
+              <div class="mini-dot" style="left: 103px; top: 8px; width: 42px; height: 31px"></div>
+              <div class="mini-dot" style="left: 153px; top: 8px; width: 34px; height: 28px"></div>
+              <div class="mini-dot" style="left: 193px; top: 8px; width: 34px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 140px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 140px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 140px; width: 53px; height: 28px"></div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <h2>Legend</h2>
+            <div class="legend">
+              <div class="legend-row"><span class="swatch" style="background: var(--red-bg)"></span>Required or blocking decision</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--blue-bg)"></span>Optional user choice</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--yellow)"></span>PM decision callout</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--green-bg)"></span>Ready or current success state</div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const viewport = document.getElementById('viewport')
+      const canvas = document.getElementById('canvas')
+      let scale = 0.68
+      let offsetX = 24
+      let offsetY = 18
+      let dragging = false
+      let dragStartX = 0
+      let dragStartY = 0
+      let dragOffsetX = 0
+      let dragOffsetY = 0
+
+      function applyTransform() {
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
+      }
+
+      function fit() {
+        const nextScale = Math.min(
+          (viewport.clientWidth - 48) / canvas.offsetWidth,
+          (viewport.clientHeight - 48) / canvas.offsetHeight
+        )
+        scale = Math.max(0.35, Math.min(1, nextScale))
+        offsetX = 24
+        offsetY = 18
+        applyTransform()
+      }
+
+      document.getElementById('zoomOut').addEventListener('click', () => {
+        scale = Math.max(0.3, scale - 0.08)
+        applyTransform()
+      })
+
+      document.getElementById('zoomIn').addEventListener('click', () => {
+        scale = Math.min(1.4, scale + 0.08)
+        applyTransform()
+      })
+
+      document.getElementById('fit').addEventListener('click', fit)
+
+      document.getElementById('reset').addEventListener('click', () => {
+        scale = 1
+        offsetX = 24
+        offsetY = 18
+        applyTransform()
+      })
+
+      viewport.addEventListener('pointerdown', (event) => {
+        dragging = true
+        viewport.classList.add('dragging')
+        dragStartX = event.clientX
+        dragStartY = event.clientY
+        dragOffsetX = offsetX
+        dragOffsetY = offsetY
+        viewport.setPointerCapture(event.pointerId)
+      })
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!dragging) {
+          return
+        }
+        offsetX = dragOffsetX + event.clientX - dragStartX
+        offsetY = dragOffsetY + event.clientY - dragStartY
+        applyTransform()
+      })
+
+      viewport.addEventListener('pointerup', (event) => {
+        dragging = false
+        viewport.classList.remove('dragging')
+        viewport.releasePointerCapture(event.pointerId)
+      })
+
+      document.querySelectorAll('[data-jump]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const frame = document.getElementById(button.dataset.jump)
+          if (!frame) {
+            return
+          }
+          const left = Number.parseFloat(frame.style.left || '0')
+          const top = Number.parseFloat(frame.style.top || '0')
+          scale = Math.max(0.58, Math.min(scale, 0.78))
+          offsetX = 24 - left * scale
+          offsetY = 18 - top * scale
+          applyTransform()
+        })
+      })
+
+      fit()
+      window.addEventListener('resize', fit)
+    </script>
+  </body>
+</html>
