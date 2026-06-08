@@ -24,7 +24,7 @@
       .tool-btn:hover { background: var(--panel-2); }
       .viewport { position: fixed; inset: 64px 0 0 0; overflow: hidden; background: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; cursor: grab; }
       .viewport.dragging { cursor: grabbing; }
-      .canvas { position: absolute; left: 0; top: 0; width: 3100px; height: 2500px; transform-origin: 0 0; }
+      .canvas { position: absolute; left: 0; top: 0; width: 3100px; height: 3050px; transform-origin: 0 0; }
 
       .frame { position: absolute; width: 470px; padding: 18px; border: 1px solid #111111; border-radius: 16px; background: var(--panel); box-shadow: var(--shadow); }
       .frame.large { width: 560px; }
@@ -80,6 +80,11 @@
       .result-banner.err { border-color: rgba(138,47,47,0.35); background: #f9efef; color: var(--red); }
       .logbox { margin-top: 6px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; background: #f7f7f4; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; line-height: 1.5; color: #444; white-space: pre-wrap; }
       .code-tag { display: inline-block; margin-top: 6px; padding: 2px 7px; border: 1px solid rgba(138,47,47,0.35); border-radius: 6px; color: var(--red); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+      .errtab { margin-top: 10px; display: grid; grid-template-columns: 320px minmax(0,1fr); gap: 6px 18px; font-size: 11px; align-items: baseline; }
+      .errtab .grp { grid-column: 1 / -1; margin-top: 10px; font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink); font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 3px; }
+      .errtab .grp:first-child { margin-top: 0; }
+      .errtab .ec { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; color: var(--red); }
+      .errtab .when { color: var(--muted); }
       .legend-grid { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 8px 12px; margin-top: 8px; font-size: 11px; color: var(--muted); align-items: center; }
 
       .track-head { display: grid; grid-template-columns: 110px 1fr 24px 1fr auto; gap: 8px; padding: 0 8px; margin-top: 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
@@ -136,7 +141,7 @@
     <header class="topbar">
       <div class="title">
         <strong>Unified Publish Flow — end to end (decided)</strong>
-        <span>Author → publish to Test → validate on test mobile → Promote → review/approve → live for public · ADR 056 + 057</span>
+        <span>Author → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
       </div>
       <div class="toolbar" aria-label="Canvas controls">
         <button class="tool-btn" data-zoom="-">Zoom out</button>
@@ -149,10 +154,9 @@
       <section class="canvas" id="canvas">
 
         <!-- ============ THE CHAIN (spine) ============ -->
-        <div class="lane-label hero" style="left: 60px; top: 116px">The chain · author to live</div>
+        <div class="lane-label hero" style="left: 60px; top: 116px">The chain · submit → review → approve → publish → live</div>
 
-        <!-- 1 Author & Publish -->
-        <article class="frame spine" id="s1-ide" style="left: 60px; top: 152px">
+        <article class="frame spine" id="s1-author" style="left: 60px; top: 152px">
           <h2><span class="step-no">1</span>Author &amp; Publish</h2>
           <div class="wire-ui">
             <div class="wire-header">
@@ -163,101 +167,81 @@
               </div>
             </div>
             <div class="content">
-              <div class="caption">One Publish entry. No peer buttons. It opens the Release hub.</div>
+              <div class="caption">One Publish entry opens the Release hub. Local edits stay <strong>draft</strong> until submitted.</div>
             </div>
           </div>
         </article>
 
-        <!-- 2 Release hub -> Test -->
         <article class="frame large spine" id="s2-hub" style="left: 580px; top: 152px">
-          <h2><span class="step-no">2</span>Release hub → Test track</h2>
+          <h2><span class="step-no">2</span>Release hub → Submit for review</h2>
           <div class="wire-ui">
             <div class="wire-header">
               <span class="wire-title">Publish · Weather Station · app_8f3a2c</span>
-              <span class="chip">● targeting Test</span>
+              <span class="chip">● to review</span>
             </div>
             <div class="content">
               <div class="artifact-row"><span class="rownum">1</span><div><strong>App record</strong><div class="meta">app_8f3a2c</div></div><span class="status-pill ok">created</span></div>
               <div class="artifact-row"><span class="rownum">2</span><div><strong>Icon &amp; screenshots</strong><div class="meta">optional</div></div><span class="status-pill muted">optional</span></div>
-              <div class="artifact-row"><span class="rownum">3</span><div><strong>Agent package</strong><div class="meta">v1.4.0 · from manifest</div></div><span class="status-pill muted">draft · on test</span></div>
-              <div class="artifact-row"><span class="rownum">4</span><div><strong>Firmware</strong><div class="meta">v0.9.4 · beta</div></div><span class="status-pill muted">beta</span></div>
+              <div class="artifact-row"><span class="rownum">3</span><div><strong>Agent package</strong><div class="meta">v1.4.0 · from manifest</div></div><span class="status-pill muted">draft · local</span></div>
+              <div class="artifact-row"><span class="rownum">4</span><div><strong>Firmware</strong><div class="meta">v0.9.4 · beta</div></div><span class="status-pill muted">draft · local</span></div>
               <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px">
-                <span class="caption" style="margin:0">Each step submits to the <strong>Test track</strong>.</span>
-                <button class="mini-btn primary hotspot" data-jump="lane-detail">Submit to Test</button>
+                <span class="caption" style="margin:0">Submit sends the version to <strong>pending_review</strong>.</span>
+                <button class="mini-btn primary hotspot" data-jump="lane-detail">Submit for review</button>
               </div>
             </div>
           </div>
         </article>
 
-        <!-- 3 Test mobile -->
-        <article class="phone" id="s3-testmobile" style="left: 1190px; top: 152px">
-          <div class="notch"></div>
-          <div class="screen">
-            <div class="phead"><span class="pstep"><span class="step-no">3</span></span><span class="build-badge test">test build</span></div>
-            <div class="caption" style="margin-top:6px"><strong>Test mobile validates.</strong> Sees latest via gated prerelease flag.</div>
-            <div class="app-card">
-              <div class="ico">▦</div>
-              <div class="nm">Weather Station</div>
-              <div class="vr">v1.4.0 · pre-release</div>
-              <div class="check">✓ install &amp; test on device</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 4 Promote -->
-        <article class="frame spine" id="s4-promote" style="left: 1480px; top: 152px">
-          <h2><span class="step-no">4</span>Promote → Production</h2>
-          <div class="wire-ui">
-            <div class="wire-header"><span class="wire-title">Promote · Weather Station</span></div>
-            <div class="content">
-              <div class="field"><label>Same build tested on Test</label><div class="val readonly">v1.4.0 · SHA a1b2…9f3c</div></div>
-              <div class="check">✓ Tested on test build</div>
-              <div class="kv"><span>Public consumers</span><span>v1.3.2 → v1.4.0</span></div>
-              <div style="display:flex; justify-content:flex-end; margin-top:8px"><button class="mini-btn primary hotspot" data-jump="s5-review">Request production</button></div>
-              <div class="caption">The explicit <strong>draft → pending_review</strong> submit. Promotes the exact tested artifact; no rebuild.</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 5 Review / approve -->
-        <article class="frame spine" id="s5-review" style="left: 2000px; top: 152px">
-          <h2><span class="step-no">5</span>Review → approve</h2>
+        <article class="frame spine" id="s4-review" style="left: 1190px; top: 152px">
+          <h2><span class="step-no">3</span>Review → approve</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Reviewer console (backend)</span></div>
             <div class="content">
-              <div class="artifact-row"><span class="rownum">▸</span><div><strong>Agent package v1.4.0</strong><div class="meta">submitted for production</div></div><button class="mini-btn primary">Approve</button></div>
-              <div class="result-banner" style="margin-top:10px">✓ Approved → liveVersionId moves to v1.4.0</div>
-              <div class="caption">Approve re-points live. Rejected versions are never overwritten.</div>
+              <div class="artifact-row"><span class="rownum">▸</span><div><strong>Agent package v1.4.0</strong><div class="meta">in_review</div></div><span style="display:flex; gap:5px"><button class="mini-btn">Reject</button><button class="mini-btn primary">Approve</button></span></div>
+              <div class="phase-line"><span class="dot done">✓</span> Download the exact build · sha256 verified</div>
+              <div class="phase-line"><span class="dot done">✓</span> Flash to a bench device · boot · connect</div>
+              <div class="logbox">flash cores3 ✓   boot ✓   wifi + ws ✓   soak 10m ✓   → all checks passed</div>
+              <div class="result-banner warn" style="margin-top:10px">✓ Approved → status = approved (not live yet)</div>
+              <div class="caption">The reviewer downloads the exact content-addressed artifact, <strong>flashes it to a real device</strong>, and runs the hardware-in-the-loop checks (flash · boot · connect · soak) before deciding. Tested bytes = shipped bytes (sha256). Approve makes it eligible; it does <strong>not</strong> set live.</div>
             </div>
           </div>
         </article>
 
-        <!-- 6 Production mobile -->
-        <article class="phone" id="s6-prodmobile" style="left: 2520px; top: 152px">
+        <article class="frame spine" id="s5-release" style="left: 1710px; top: 152px">
+          <h2><span class="step-no">4</span>Publish to production</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish to production · Weather Station</span></div>
+            <div class="content">
+              <div class="kv"><span>Transition</span><span>approved → published</span><span>Public consumers</span><span>v1.3.2 → v1.4.0</span></div>
+              <div class="check">✓ Reviewed and approved · same build, no rebuild</div>
+              <div style="display:flex; justify-content:flex-end; margin-top:8px"><button class="mini-btn primary hotspot" data-jump="s6-prod">Publish to production</button></div>
+              <div class="caption">Author releases: <strong>approved → published</strong> and sets <code>liveVersionId</code>.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="phone" id="s6-prod" style="left: 2230px; top: 152px">
           <div class="notch"></div>
           <div class="screen">
-            <div class="phead"><span class="pstep"><span class="step-no">6</span></span><span class="build-badge prod">public build</span></div>
-            <div class="caption" style="margin-top:6px"><strong>Production mobile.</strong> Sees only live (approved).</div>
+            <div class="phead"><span class="pstep"><span class="step-no">5</span></span><span class="build-badge prod">public build</span></div>
+            <div class="caption" style="margin-top:6px"><strong>Production mobile.</strong> Sees only <strong>published</strong> (the liveVersionId version).</div>
             <div class="app-card">
               <div class="ico">▦</div>
               <div class="nm">Weather Station</div>
-              <div class="vr">v1.4.0 · live</div>
+              <div class="vr">v1.4.0 · published · live</div>
               <div class="check">✓ public update delivered</div>
             </div>
           </div>
         </article>
 
-        <!-- spine arrows -->
         <div class="connector thick" style="left: 532px; top: 250px; width: 46px"></div>
         <div class="connector thick" style="left: 1142px; top: 250px; width: 46px"></div>
-        <div class="connector thick" style="left: 1422px; top: 250px; width: 56px"></div>
-        <div class="connector thick" style="left: 1952px; top: 250px; width: 46px"></div>
-        <div class="connector thick" style="left: 2472px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 1662px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 2182px; top: 250px; width: 46px"></div>
         <div class="arrow-label" style="left: 512px; top: 224px">Publish</div>
-        <div class="arrow-label" style="left: 1118px; top: 224px">submit to Test</div>
-        <div class="arrow-label" style="left: 1402px; top: 224px">validate → promote</div>
-        <div class="arrow-label" style="left: 1928px; top: 224px">request</div>
-        <div class="arrow-label" style="left: 2440px; top: 224px">on approve → live</div>
+        <div class="arrow-label" style="left: 1064px; top: 224px">submit for review</div>
+        <div class="arrow-label" style="left: 1596px; top: 224px">approved → release</div>
+        <div class="arrow-label" style="left: 2104px; top: 224px">published → live</div>
 
         <div class="band-rule" style="left: 40px; top: 700px; width: 2760px"></div>
 
@@ -277,7 +261,7 @@
               <div class="field"><label>Display name</label><div class="val">Weather Station</div></div>
               <div class="field"><label>Description</label><div class="val" style="min-height:40px; align-items:flex-start; padding-top:7px; color:var(--muted)">Desk weather companion for m5stack-cores3.</div></div>
               <div class="field"><label>Agent package version</label><div class="val readonly">1.0.0</div></div>
-              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Save draft</button><button class="mini-btn primary">Submit</button></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn primary">Submit</button></div>
             </div>
           </div>
         </article>
@@ -304,7 +288,7 @@
               <div class="kv"><span>App id</span><span>app_8f3a2c</span><span>Live version</span><span>v1.3.2</span></div>
               <div class="field" style="margin-top:8px"><label>New version · read from manifest</label><div style="display:flex; align-items:center; gap:8px"><div class="val readonly" style="flex:1">v1.4.0</div><span class="seg"><span class="on">patch</span><span>minor</span><span>major</span></span></div></div>
               <div class="field"><label>Review notes · what changed, what to verify (optional)</label><div class="val" style="min-height:40px; align-items:flex-start; padding-top:7px; color:var(--muted)">Fixed humidity read; verify display refresh on cold boot.</div></div>
-              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Save draft</button><button class="mini-btn primary">Submit for review</button></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn primary">Submit for review</button></div>
             </div>
           </div>
         </article>
@@ -332,7 +316,7 @@
 
         <article class="frame wide" id="b-board" style="left: 60px; top: 1388px">
           <h2>Test and Production side by side</h2>
-          <p>One catalog. Promote re-points production to the tested version (same SHA, no rebuild).</p>
+          <p>One catalog. Publishing to production re-points to the tested version (same SHA, no rebuild).</p>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Release · Weather Station · app_8f3a2c</span></div>
             <div class="content">
@@ -340,20 +324,20 @@
               <div class="track-grid">
                 <div class="track-row">
                   <strong>Agent package</strong>
-                  <div class="track-cell test"><span class="v">v1.4.0</span><span class="s">latest · draft (on test)</span></div>
+                  <div class="track-cell test"><span class="v">v1.4.0</span><span class="s">latest · in review</span></div>
                   <div class="to">→</div>
                   <div class="track-cell prod"><span class="v">v1.3.2</span><span class="s">live · <span class="marker">● liveVersionId</span></span></div>
-                  <button class="mini-btn primary hotspot" data-jump="s4-promote">Promote →</button>
+                  <button class="mini-btn primary hotspot" data-jump="s5-release">Publish to prod →</button>
                 </div>
                 <div class="track-row">
                   <strong>Firmware</strong>
                   <div class="track-cell test"><span class="v">v0.9.4</span><span class="s">beta · m5stack-cores3</span></div>
                   <div class="to">→</div>
                   <div class="track-cell prod"><span class="v">v0.9.3</span><span class="s">stable · <span class="marker">● latest for device</span></span></div>
-                  <button class="mini-btn primary hotspot" data-jump="s4-promote">Promote →</button>
+                  <button class="mini-btn primary hotspot" data-jump="s5-release">Publish to prod →</button>
                 </div>
               </div>
-              <div class="caption">Agent: promote sets liveVersionId. Firmware: stable-channel release of the same binary. The test track keeps the version after promote.</div>
+              <div class="caption">Publish to production: approved → published, sets liveVersionId. Firmware: stable-channel release of the same binary. The test track keeps the version after release.</div>
             </div>
           </div>
         </article>
@@ -362,10 +346,11 @@
           <h2>Status language</h2>
           <p>Pills are the backend review states. Visibility is a separate overlay, not a status.</p>
           <div class="legend-grid">
-            <span><span class="status-pill muted">Draft</span></span><span>On test — testers install it; not yet in production review.</span>
-            <span><span class="status-pill warn">Pending review</span></span><span>Requested production — awaiting a reviewer.</span>
+            <span><span class="status-pill muted">Draft</span></span><span>Local in the IDE; not submitted.</span>
+            <span><span class="status-pill warn">Pending review</span></span><span>Submitted; in the review queue.</span>
             <span><span class="status-pill warn">In review</span></span><span>A reviewer has opened it.</span>
-            <span><span class="status-pill ok">Published</span></span><span>Approved and eligible.</span>
+            <span><span class="status-pill" style="border-color: rgba(47,93,140,0.4); color: var(--blue)">Approved</span></span><span>Passed review, not live yet — awaiting the author's Publish to production.</span>
+            <span><span class="status-pill ok">Published</span></span><span>Live to the public (liveVersionId points here).</span>
             <span><span class="status-pill block">Rejected</span></span><span>Terminal; create a new version.</span>
             <span><span class="status-pill block">Revoked</span></span><span>Was published, then removed.</span>
           </div>
@@ -378,23 +363,25 @@
 
         <article class="frame large" id="b-states" style="left: 1500px; top: 1388px">
           <h2>Review state machine · per version</h2>
-          <p>No new states. <code>draft</code> is on-test; Request production is the <code>draft → pending_review</code> submit (today auto at create).</p>
+          <p>Adds one state — <code>approved</code> (passed review, not live). Approve and release are separate steps.</p>
           <div class="wire-ui">
             <div class="content">
               <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:11px">
-                <span class="status-pill muted">draft · on test</span>
-                <span style="color:var(--muted)">— Request production →</span>
+                <span class="status-pill muted">draft · local</span>
+                <span style="color:var(--muted)">— Submit for review →</span>
                 <span class="status-pill warn">pending_review</span>
                 <span style="color:var(--muted)">— open →</span>
                 <span class="status-pill warn">in_review</span>
                 <span style="color:var(--muted)">— approve →</span>
+                <span class="status-pill" style="border-color: rgba(47,93,140,0.4); color: var(--blue)">approved</span>
+                <span style="color:var(--muted)">— Publish to production →</span>
                 <span class="status-pill ok">published · live</span>
               </div>
               <div style="margin-top:8px; font-size:11px; color:var(--muted)">
-                in_review — reject → <span class="status-pill block">rejected</span> &nbsp;·&nbsp; published — revoke → <span class="status-pill block">revoked</span>
+                in_review — reject → <span class="status-pill block">rejected</span> &nbsp;·&nbsp; published — revoke → <span class="status-pill block">revoked</span> &nbsp;·&nbsp; Publish to production sets <code>liveVersionId</code>
               </div>
               <div class="caption" style="margin-top:8px; border-top:1px dashed var(--line); padding-top:8px">
-                Test track has no review (draft — testers install directly). The single production gate is pending_review → in_review → published, entered by Request production. Review off: draft → published directly, still explicit.
+                <code>draft</code> = local (not submitted). Test build sees pending_review / in_review / approved; public build sees <code>published</code> (liveVersionId). <code>approved</code> = passed review, awaiting the author's Publish to production.
               </div>
             </div>
           </div>
@@ -403,16 +390,16 @@
         <div class="band-rule" style="left: 40px; top: 1800px; width: 2760px"></div>
 
         <!-- ============ ERROR STATES ============ -->
-        <div class="lane-label" style="left: 60px; top: 1824px">Errors · surfaced in the relevant dialog (no id conflict — app_id is auto-assigned)</div>
+        <div class="lane-label" style="left: 60px; top: 1824px">Errors · in-dialog states + complete error reference (no id conflict — app_id is auto-assigned)</div>
 
         <article class="frame large" id="e-version" style="left: 60px; top: 1868px">
-          <h2>Error · version exists <span class="status-pill block">VERSION_CONFLICT</span></h2>
+          <h2>Error · version exists</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Publish update · Weather Station</span></div>
             <div class="content">
               <div class="result-banner err">⚠ Version v1.4.0 already in the catalog</div>
               <div class="caption" style="margin-top:8px">Bump the version in the agent manifest, then rebuild and publish again.</div>
-              <span class="code-tag">Code: VERSION_CONFLICT</span>
+              <span class="code-tag">VERSION_CONFLICT</span>
               <div class="kv" style="margin-top:10px"><span>Tried</span><span>v1.4.0 (already exists)</span><span>Suggested</span><span>v1.4.1</span></div>
               <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Ask agent to bump</button><button class="mini-btn primary">Rebuild and retry</button></div>
             </div>
@@ -420,7 +407,7 @@
         </article>
 
         <article class="frame large" id="e-build" style="left: 660px; top: 1868px">
-          <h2>Error · build failed <span class="status-pill block">build</span></h2>
+          <h2>Error · build failed</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Publish firmware · Weather Station</span></div>
             <div class="content">
@@ -435,18 +422,95 @@
           </div>
         </article>
 
+        <article class="frame large" id="e-upload" style="left: 1260px; top: 1868px">
+          <h2>Error · upload failed</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Submit · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Artifact upload failed — nothing submitted</div>
+              <div class="caption" style="margin-top:8px">The package / firmware built locally, but the cloud could not store or finalize the uploaded object. Retry; metadata, version, and build are preserved.</div>
+              <div class="kv" style="margin-top:8px">
+                <span>Agent package</span><span><span class="code-tag">BLOB_UPLOAD_FAILED</span> <span class="code-tag">PACKAGE_BLOB_NOT_FOUND</span></span>
+                <span>Firmware</span><span><span class="code-tag">FIRMWARE_UPLOAD_FAILED</span> <span class="code-tag">FIRMWARE_PENDING_OBJECT_NOT_FOUND</span></span>
+                <span>Storage down</span><span><span class="code-tag">FIRMWARE_STORAGE_UNAVAILABLE</span></span>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">View details</button><button class="mini-btn primary">Retry upload</button></div>
+              <div class="caption" style="margin-top:8px; border-top:1px dashed var(--line); padding-top:8px">Repeats → check S3 perms (pending read, release write, copy, cleanup).</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="e-auth" style="left: 1860px; top: 1868px">
+          <h2>Error · signed out</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Sign in to publish</div>
+              <div class="caption" style="margin-top:8px">The session is missing or expired. Sign in; the hub returns to where you were with the draft and build preserved.</div>
+              <span class="code-tag">AUTH_REQUIRED</span>
+              <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px"><button class="mini-btn primary">Sign in</button></div>
+            </div>
+          </div>
+        </article>
+
+        <div class="lane-label" style="left: 60px; top: 2320px">Publish error reference · every failure by stage, with recovery</div>
+        <article class="frame" id="e-catalog" style="left: 60px; top: 2356px; width: 1180px">
+          <h2>Publish error reference</h2>
+          <p>Every failure a developer can hit while publishing, by stage. Each row: code → when → recovery. Grounded in cloud-catalog-client.ts guidance + noracloud route codes.</p>
+          <div class="errtab">
+            <div class="grp">Auth</div>
+            <span><span class="ec">AUTH_REQUIRED</span></span><span class="when">session missing / expired → sign in; hub state, draft, and build preserved</span>
+
+            <div class="grp">Build / export (local, before submit)</div>
+            <span><span class="ec">export-blocked</span></span><span class="when">package export blocked (invalid or missing files) → fix the flagged package surface</span>
+            <span><span class="ec">PACKAGE_INVALID</span> <span class="ec">MANIFEST_INVALID</span></span><span class="when">server rejects the package / manifest → fix the manifest, re-export</span>
+            <span><span class="ec">build failed</span></span><span class="when">firmware source compile error → fix source and rebuild (build runs before upload)</span>
+            <span><span class="ec">HH_FIRMWARE_VERSION</span> <span class="ec">HH_DEVICE_MODEL</span></span><span class="when">macros unreadable → set them in app_config.h / platformio.ini</span>
+
+            <div class="grp">Version</div>
+            <span><span class="ec">VERSION_CONFLICT</span></span><span class="when">agent version already in catalog → bump the manifest version, rebuild</span>
+            <span><span class="ec">FIRMWARE_VERSION_EXISTS</span></span><span class="when">firmware version exists → change HH_FIRMWARE_VERSION, rebuild</span>
+            <span><span class="ec">FIRMWARE_VERSION_INCOMPATIBLE</span></span><span class="when">firmware not compatible with the target → fix compatibility metadata</span>
+
+            <div class="grp">Upload (artifact → storage)</div>
+            <span><span class="ec">BLOB_UPLOAD_FAILED</span> <span class="ec">PACKAGE_BLOB_NOT_FOUND</span></span><span class="when">package upload / store failed → retry; metadata kept</span>
+            <span><span class="ec">FIRMWARE_UPLOAD_FAILED</span> <span class="ec">FIRMWARE_PENDING_OBJECT_NOT_FOUND</span></span><span class="when">firmware finalize / staged read failed → retry; check S3 perms</span>
+            <span><span class="ec">FIRMWARE_TOO_LARGE</span></span><span class="when">binary over the OTA limit → shrink the image</span>
+            <span><span class="ec">FIRMWARE_STORAGE_UNAVAILABLE</span></span><span class="when">storage down → retry later</span>
+            <span><span class="ec">BLOB_UPLOAD_FORBIDDEN</span></span><span class="when">not allowed to upload → re-auth / check ownership</span>
+
+            <div class="grp">Identity / ownership</div>
+            <span><span class="ec">APP_NOT_FOUND</span></span><span class="when">stored app_id does not resolve for this account → relink / deploy the workspace</span>
+            <span><span class="ec">APP_FORBIDDEN</span> <span class="ec">APP_OWNERSHIP_REQUIRED</span></span><span class="when">not the app owner → sign in as the owner</span>
+            <span><span class="ec">(no SLUG_CONFLICT)</span></span><span class="when">app_id is auto-assigned — first publish has no id conflict (retired)</span>
+
+            <div class="grp">Media (icon / screenshots)</div>
+            <span><span class="ec">MEDIA_CONTENT_TYPE_INVALID</span></span><span class="when">unsupported type → use PNG / JPEG / WebP</span>
+            <span><span class="ec">MEDIA_TOO_LARGE</span></span><span class="when">image too big → shrink it</span>
+            <span><span class="ec">MEDIA_DECODE_FAILED</span></span><span class="when">image can not be decoded → re-export the image</span>
+            <span><span class="ec">MEDIA_PENDING_NOT_FOUND</span></span><span class="when">staged media missing → re-upload</span>
+            <span><span class="ec">alt text required</span></span><span class="when">client validation → add alt text before save</span>
+
+            <div class="grp">Network / service</div>
+            <span><span class="ec">API_UNAVAILABLE</span> <span class="ec">TRANSPORT_ERROR</span></span><span class="when">offline or cloud unreachable → retry; export preserved</span>
+            <span><span class="ec">INTERNAL_SERVER_ERROR</span></span><span class="when">server 500 → retry; if it persists, report</span>
+
+            <div class="grp">Review outcome (post-submit)</div>
+            <span><span class="ec">rejected (+ notes)</span></span><span class="when">reviewer declined this version (terminal) → read notes, submit a NEW version, never overwrite</span>
+          </div>
+        </article>
+
       </section>
     </main>
 
     <aside class="mini-map" aria-label="Canvas navigation">
       <strong>Jump to frame</strong>
-      <button class="head" data-jump="s1-ide">The chain</button>
-      <button data-jump="s1-ide">1 · Author &amp; Publish</button>
-      <button data-jump="s2-hub">2 · Release hub → Test</button>
-      <button data-jump="s3-testmobile">3 · Test mobile</button>
-      <button data-jump="s4-promote">4 · Promote</button>
-      <button data-jump="s5-review">5 · Review → approve</button>
-      <button data-jump="s6-prodmobile">6 · Production mobile</button>
+      <button class="head" data-jump="s1-author">The chain</button>
+      <button data-jump="s1-author">1 · Author &amp; Publish</button>
+      <button data-jump="s2-hub">2 · Submit for review</button>
+      <button data-jump="s4-review">3 · Review → approve (flash &amp; test)</button>
+      <button data-jump="s5-release">4 · Publish to production</button>
+      <button data-jump="s6-prod">5 · Production mobile</button>
       <button class="head" data-jump="d-create">Detail · dialogs</button>
       <button data-jump="d-create">Submit app record</button>
       <button data-jump="d-media">Add media</button>
@@ -458,6 +522,9 @@
       <button data-jump="b-states">Review state machine</button>
       <button data-jump="e-version">Version conflict</button>
       <button data-jump="e-build">Build failed</button>
+      <button data-jump="e-upload">Upload failed</button>
+      <button data-jump="e-auth">Signed out</button>
+      <button data-jump="e-catalog">Error reference (all)</button>
     </aside>
 
     <script>
