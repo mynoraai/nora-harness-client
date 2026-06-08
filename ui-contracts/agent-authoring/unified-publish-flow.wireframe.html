@@ -141,7 +141,7 @@
     <header class="topbar">
       <div class="title">
         <strong>Unified Publish Flow — end to end (decided)</strong>
-        <span>Author → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
+        <span>Edit agent in the IDE → Publish → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
       </div>
       <div class="toolbar" aria-label="Canvas controls">
         <button class="tool-btn" data-zoom="-">Zoom out</button>
@@ -156,24 +156,39 @@
         <!-- ============ THE CHAIN (spine) ============ -->
         <div class="lane-label hero" style="left: 60px; top: 116px">The chain · submit → review → approve → publish → live</div>
 
-        <article class="frame spine" id="s1-author" style="left: 60px; top: 152px">
-          <h2><span class="step-no">1</span>Author &amp; Publish</h2>
+        <article class="frame spine" id="s0-ide" style="left: 60px; top: 152px">
+          <h2><span class="step-no">1</span>Open in the IDE</h2>
           <div class="wire-ui">
             <div class="wire-header">
-              <span class="wire-title">Agent · Weather Station</span>
+              <span class="wire-title">noraharness · My agents</span>
               <div class="wire-actions">
-                <button class="mini-btn ghost">Preview</button>
-                <button class="mini-btn primary hotspot" data-jump="s2-hub">Publish</button>
+                <button class="mini-btn primary hotspot" data-jump="s1-author">Edit agent</button>
               </div>
             </div>
             <div class="content">
-              <div class="caption">One Publish entry opens the Release hub. Local edits stay <strong>draft</strong> until submitted.</div>
+              <div class="artifact-row"><span class="rownum">▦</span><div><strong>Weather Station</strong><div class="meta">agent · m5stack-cores3</div></div><span class="status-pill muted">local</span></div>
+              <div class="caption" style="margin-top:8px">The entry point. Pick the agent in the IDE and open it with <strong>Edit agent</strong> — that lands on the agent authoring tab.</div>
             </div>
           </div>
         </article>
 
-        <article class="frame large spine" id="s2-hub" style="left: 580px; top: 152px">
-          <h2><span class="step-no">2</span>Release hub → Submit for review</h2>
+        <article class="frame spine" id="s1-author" style="left: 580px; top: 152px">
+          <h2><span class="step-no">2</span>Author &amp; Publish</h2>
+          <div class="wire-ui">
+            <div class="wire-header">
+              <span class="wire-title">Agent · Weather Station</span>
+              <div class="wire-actions">
+                <button class="mini-btn primary hotspot" data-jump="s2-hub">Publish</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="caption">The agent authoring tab. One <strong>Publish</strong> entry opens the Release hub — no peer publish buttons. Local edits stay <strong>draft</strong> until submitted.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large spine" id="s2-hub" style="left: 1100px; top: 152px">
+          <h2><span class="step-no">3</span>Release hub → Submit for review</h2>
           <div class="wire-ui">
             <div class="wire-header">
               <span class="wire-title">Publish · Weather Station · app_8f3a2c</span>
@@ -192,8 +207,8 @@
           </div>
         </article>
 
-        <article class="frame spine" id="s4-review" style="left: 1190px; top: 152px">
-          <h2><span class="step-no">3</span>Review → approve</h2>
+        <article class="frame spine" id="s4-review" style="left: 1710px; top: 152px">
+          <h2><span class="step-no">4</span>Review → approve</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Reviewer console (backend)</span></div>
             <div class="content">
@@ -207,8 +222,8 @@
           </div>
         </article>
 
-        <article class="frame spine" id="s5-release" style="left: 1710px; top: 152px">
-          <h2><span class="step-no">4</span>Publish to production</h2>
+        <article class="frame spine" id="s5-release" style="left: 2230px; top: 152px">
+          <h2><span class="step-no">5</span>Publish to production</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Publish to production · Weather Station</span></div>
             <div class="content">
@@ -220,10 +235,10 @@
           </div>
         </article>
 
-        <article class="phone" id="s6-prod" style="left: 2230px; top: 152px">
+        <article class="phone" id="s6-prod" style="left: 2750px; top: 152px">
           <div class="notch"></div>
           <div class="screen">
-            <div class="phead"><span class="pstep"><span class="step-no">5</span></span><span class="build-badge prod">public build</span></div>
+            <div class="phead"><span class="pstep"><span class="step-no">6</span></span><span class="build-badge prod">public build</span></div>
             <div class="caption" style="margin-top:6px"><strong>Production mobile.</strong> Sees only <strong>published</strong> (the liveVersionId version).</div>
             <div class="app-card">
               <div class="ico">▦</div>
@@ -235,22 +250,24 @@
         </article>
 
         <div class="connector thick" style="left: 532px; top: 250px; width: 46px"></div>
-        <div class="connector thick" style="left: 1142px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 1052px; top: 250px; width: 46px"></div>
         <div class="connector thick" style="left: 1662px; top: 250px; width: 46px"></div>
         <div class="connector thick" style="left: 2182px; top: 250px; width: 46px"></div>
-        <div class="arrow-label" style="left: 512px; top: 224px">Publish</div>
-        <div class="arrow-label" style="left: 1064px; top: 224px">submit for review</div>
-        <div class="arrow-label" style="left: 1596px; top: 224px">approved → release</div>
-        <div class="arrow-label" style="left: 2104px; top: 224px">published → live</div>
+        <div class="connector thick" style="left: 2702px; top: 250px; width: 46px"></div>
+        <div class="arrow-label" style="left: 498px; top: 224px">Edit agent</div>
+        <div class="arrow-label" style="left: 1018px; top: 224px">Publish</div>
+        <div class="arrow-label" style="left: 1576px; top: 224px">submit for review</div>
+        <div class="arrow-label" style="left: 2096px; top: 224px">approved → release</div>
+        <div class="arrow-label" style="left: 2628px; top: 224px">published → live</div>
 
-        <div class="band-rule" style="left: 40px; top: 700px; width: 2760px"></div>
+        <div class="band-rule" style="left: 40px; top: 700px; width: 2960px"></div>
 
         <!-- ============ DETAIL: hub steps open these dialogs ============ -->
         <div class="lane-label" style="left: 60px; top: 724px" id="lane-detail">Detail · what each hub step opens (reused dialogs)</div>
         <!-- rail from hub down to detail band -->
-        <div class="vrail" style="left: 860px; top: 660px; height: 100px"></div>
-        <div class="connector" style="left: 860px; top: 760px; width: 1px"></div>
-        <div class="arrow-label soft" style="left: 700px; top: 672px">each step → its dialog</div>
+        <div class="vrail" style="left: 1380px; top: 660px; height: 100px"></div>
+        <div class="connector" style="left: 1380px; top: 760px; width: 1px"></div>
+        <div class="arrow-label soft" style="left: 1220px; top: 672px">each step → its dialog</div>
 
         <article class="frame large" id="d-create" style="left: 60px; top: 768px">
           <h2>Step 1 · Submit app record</h2>
@@ -309,7 +326,7 @@
           </div>
         </article>
 
-        <div class="band-rule" style="left: 40px; top: 1320px; width: 2760px"></div>
+        <div class="band-rule" style="left: 40px; top: 1320px; width: 2960px"></div>
 
         <!-- ============ STATE: two-track board + status language ============ -->
         <div class="lane-label" style="left: 60px; top: 1344px">State · two tracks and status language</div>
@@ -387,7 +404,7 @@
           </div>
         </article>
 
-        <div class="band-rule" style="left: 40px; top: 1800px; width: 2760px"></div>
+        <div class="band-rule" style="left: 40px; top: 1800px; width: 2960px"></div>
 
         <!-- ============ ERROR STATES ============ -->
         <div class="lane-label" style="left: 60px; top: 1824px">Errors · in-dialog states + complete error reference (no id conflict — app_id is auto-assigned)</div>
@@ -441,7 +458,7 @@
         </article>
 
         <article class="frame large" id="e-auth" style="left: 1860px; top: 1868px">
-          <h2>Error · signed out</h2>
+          <h2>Error · auth required</h2>
           <div class="wire-ui">
             <div class="wire-header"><span class="wire-title">Publish · Weather Station</span></div>
             <div class="content">
@@ -506,11 +523,12 @@
     <aside class="mini-map" aria-label="Canvas navigation">
       <strong>Jump to frame</strong>
       <button class="head" data-jump="s1-author">The chain</button>
-      <button data-jump="s1-author">1 · Author &amp; Publish</button>
-      <button data-jump="s2-hub">2 · Submit for review</button>
-      <button data-jump="s4-review">3 · Review → approve (flash &amp; test)</button>
-      <button data-jump="s5-release">4 · Publish to production</button>
-      <button data-jump="s6-prod">5 · Production mobile</button>
+      <button data-jump="s0-ide">1 · Open in the IDE (Edit agent)</button>
+      <button data-jump="s1-author">2 · Author &amp; Publish</button>
+      <button data-jump="s2-hub">3 · Submit for review</button>
+      <button data-jump="s4-review">4 · Review → approve (flash &amp; test)</button>
+      <button data-jump="s5-release">5 · Publish to production</button>
+      <button data-jump="s6-prod">6 · Production mobile</button>
       <button class="head" data-jump="d-create">Detail · dialogs</button>
       <button data-jump="d-create">Submit app record</button>
       <button data-jump="d-media">Add media</button>
