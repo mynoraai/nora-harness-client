@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journey 4 Create Code Workspace And Start Session Wireframe</title>
+    <style>
+      :root {
+        --bg: #f2f4f7;
+        --grid: rgba(17, 24, 39, 0.055);
+        --panel: #ffffff;
+        --panel-soft: #f8fafc;
+        --line: #d7dde6;
+        --line-strong: #111827;
+        --text: #1f2937;
+        --muted: #667085;
+        --soft: #98a2b3;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+        --green: #047857;
+        --green-bg: #d1fae5;
+        --amber: #a16207;
+        --amber-bg: #fef3c7;
+        --red: #b42318;
+        --red-bg: #fee4e2;
+        --yellow: #fff3cd;
+        --shadow: 0 20px 50px rgba(17, 24, 39, 0.12);
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-width: 1440px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          var(--bg);
+        background-size: 24px 24px;
+        color: var(--text);
+      }
+
+      button { font: inherit; }
+
+      .page { min-height: 100vh; padding: 24px; }
+
+      .header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      h1 { margin: 0; font-size: 24px; line-height: 1.2; letter-spacing: 0; }
+
+      .header p {
+        max-width: 930px;
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .control {
+        min-width: 42px;
+        height: 32px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .control:hover { border-color: var(--line-strong); }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 270px;
+        gap: 18px;
+      }
+
+      .viewport {
+        position: relative;
+        height: calc(100vh - 118px);
+        min-height: 760px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          #eef1f5;
+        background-size: 20px 20px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        cursor: grab;
+      }
+
+      .viewport.dragging { cursor: grabbing; }
+
+      .canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2540px;
+        height: 1780px;
+        transform-origin: 0 0;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 24px;
+        height: calc(100vh - 48px);
+        min-height: 760px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar-section { padding: 14px; border-bottom: 1px solid var(--line); }
+
+      .sidebar h2 {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .jump {
+        display: block;
+        width: 100%;
+        margin: 6px 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel-soft);
+        padding: 8px 10px;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .jump:hover { border-color: var(--line-strong); background: #fff; }
+
+      .legend { display: grid; gap: 8px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+      .legend-row { display: flex; gap: 8px; align-items: center; }
+      .swatch { width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 4px; }
+
+      .mini {
+        position: relative;
+        width: 232px;
+        height: 176px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #eef1f5;
+      }
+
+      .mini-dot {
+        position: absolute;
+        border: 1px solid var(--line-strong);
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .band {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        height: 34px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .band span { display: inline-block; background: #eef1f5; padding-right: 12px; }
+
+      .frame {
+        position: absolute;
+        width: 340px;
+        min-height: 230px;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .frame.large { width: 430px; min-height: 280px; }
+      .frame.wide { width: 520px; min-height: 250px; }
+      .frame.tall { min-height: 340px; }
+
+      .frame-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px 10px;
+      }
+
+      .frame-title { margin: 0; font-size: 15px; font-weight: 700; }
+      .frame-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+      .frame-body { padding: 14px; }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .pill.required { background: var(--red-bg); color: var(--red); }
+      .pill.optional { background: var(--blue-bg); color: var(--blue); }
+      .pill.done { background: var(--green-bg); color: var(--green); }
+      .pill.warn { background: var(--amber-bg); color: var(--amber); }
+
+      .ui-shell {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fbfcfe;
+        overflow: hidden;
+      }
+
+      .app-grid { display: grid; grid-template-columns: 82px 1fr; min-height: 160px; }
+      .mock-sidebar { border-right: 1px solid var(--line); background: #f8fafc; padding: 8px; }
+      .mock-main { padding: 10px; }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 3px;
+        background: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .segmented span { border-radius: 5px; padding: 4px 3px; color: var(--muted); }
+      .segmented .active { background: #111827; color: #fff; }
+
+      .side-line {
+        height: 18px;
+        margin-top: 7px;
+        border-radius: 5px;
+        background: #e8edf5;
+      }
+
+      .empty {
+        display: grid;
+        place-items: center;
+        min-height: 110px;
+        border: 1px dashed var(--line);
+        border-radius: 7px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+        min-width: 84px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 0 10px;
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .btn.primary { border-color: #111827; background: #111827; color: #fff; }
+      .btn.disabled { opacity: 0.38; }
+      .button-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+      .field { margin: 8px 0; }
+      .field label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 10px; font-weight: 650; }
+      .input { height: 30px; border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 8px; color: var(--soft); font-size: 11px; }
+
+      .tabbar { display: flex; gap: 6px; border-bottom: 1px solid var(--line); padding: 6px; }
+      .tab { border: 1px solid var(--line); border-radius: 6px; background: #fff; padding: 5px 9px; font-size: 11px; font-weight: 650; }
+      .workbar { display: flex; gap: 6px; align-items: center; border-bottom: 1px solid var(--line); padding: 6px; color: var(--muted); font-size: 11px; }
+      .composer { margin-top: 24px; border: 1px solid var(--line); border-radius: 16px; background: #fff; padding: 10px; }
+      .composer-text { min-height: 42px; color: var(--muted); font-size: 12px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+      .chip { border: 1px solid var(--line); border-radius: 999px; background: #fff; padding: 5px 8px; font-size: 10px; font-weight: 650; }
+      .chip.active { border-color: #111827; background: #111827; color: #fff; }
+
+      .log {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel-soft);
+        padding: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .caption { margin-top: 10px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+      .callout {
+        border: 1px solid #e0c36b;
+        border-radius: 7px;
+        background: var(--yellow);
+        padding: 10px;
+        color: #4f3b00;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .callout.blocking { border-color: #f1a1a1; background: var(--red-bg); color: var(--red); }
+
+      .list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+      .list li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; min-height: 26px; color: var(--muted); font-size: 12px; line-height: 1.35; }
+      .num { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 999px; background: #eef2f7; color: var(--text); font-size: 11px; font-weight: 700; }
+
+      .table { display: grid; gap: 7px; }
+      .row { display: grid; grid-template-columns: 132px 1fr; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 8px; font-size: 11px; }
+      .row strong { font-size: 11px; }
+
+      .arrow { position: absolute; height: 0; border-top: 2px solid #475467; }
+      .arrow::after { position: absolute; right: -1px; top: -6px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #475467; content: ""; }
+      .arrow-label { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); border: 1px solid var(--line); border-radius: 999px; background: #fff; padding: 4px 8px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+      .state-machine { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .state { border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 7px 8px; font-size: 11px; font-weight: 650; }
+      .state-arrow { color: var(--soft); }
+      .coverage { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .coverage-box { min-height: 96px; border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 9px; font-size: 11px; line-height: 1.35; }
+      .coverage-box strong { display: block; margin-bottom: 4px; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div>
+          <h1>Journey 4: Create A Code Workspace And Start A Code Session</h1>
+          <p>
+            PM wireframe for first Code-mode adoption: switch to Code, create a local workspace,
+            open a New Conversation tab, choose or accept runtime/model, and send the first task.
+          </p>
+        </div>
+        <div class="controls" aria-label="Canvas controls">
+          <button class="control" id="zoomOut" type="button">-</button>
+          <button class="control" id="zoomIn" type="button">+</button>
+          <button class="control" id="fit" type="button">Fit</button>
+          <button class="control" id="reset" type="button">100%</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="viewport" id="viewport" aria-label="Wireframe canvas viewport">
+          <div class="canvas" id="canvas">
+            <div class="band" style="top: 28px"><span>Main Happy Path</span></div>
+            <div class="band" style="top: 470px"><span>Detail Frames</span></div>
+            <div class="band" style="top: 930px"><span>State Language And PM Decisions</span></div>
+            <div class="band" style="top: 1330px"><span>Error And Recovery</span></div>
+
+            <section class="frame large" id="start" style="left: 40px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">1. Start In Main App</h3>
+                  <p class="frame-subtitle">Returning user starts in Chat after onboarding.</p>
+                </div>
+                <span class="pill done">current</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell app-grid">
+                  <div class="mock-sidebar">
+                    <div class="segmented"><span class="active">Chat</span><span>Code</span></div>
+                    <div class="side-line"></div>
+                    <div class="side-line"></div>
+                  </div>
+                  <div class="mock-main">
+                    <div class="log">Chat surface is visible. Code is a mode switch, not a separate app.</div>
+                  </div>
+                </div>
+                <p class="caption">PM review starts at the mode switch, not first-launch onboarding.</p>
+              </div>
+            </section>
+
+            <section class="frame large" id="empty" style="left: 520px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">2. Switch To Code</h3>
+                  <p class="frame-subtitle">No workspace yet means the empty state is the entry.</p>
+                </div>
+                <span class="pill required">entry</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell app-grid">
+                  <div class="mock-sidebar">
+                    <div class="segmented"><span>Chat</span><span class="active">Code</span></div>
+                    <div class="empty">No workspaces yet<br /><br /><span class="btn primary">Create Workspace</span></div>
+                  </div>
+                  <div class="mock-main">
+                    <div class="workbar">Select working directory...</div>
+                    <div class="empty">No tab open yet</div>
+                  </div>
+                </div>
+                <p class="caption">The first product promise is "choose a local project, then assign a task."</p>
+              </div>
+            </section>
+
+            <section class="frame large" id="dialog" style="left: 1000px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">3. Create Workspace</h3>
+                  <p class="frame-subtitle">Pick a folder and optionally edit the name.</p>
+                </div>
+                <span class="pill required">local folder</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell" style="padding: 12px">
+                  <strong>Create New Workspace</strong>
+                  <div class="field"><label>Directory</label><div class="input">Select a directory...</div></div>
+                  <div class="field"><label>Name (optional)</label><div class="input">Auto-filled from directory</div></div>
+                  <div class="button-row"><span class="btn">Cancel</span><span class="btn disabled">Create</span></div>
+                </div>
+                <p class="caption">Folder selection is explicit because the agent will operate inside this local project.</p>
+              </div>
+            </section>
+
+            <section class="frame large tall" id="new-convo" style="left: 1480px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">4. Workspace Created</h3>
+                  <p class="frame-subtitle">App opens a draft conversation and composer.</p>
+                </div>
+                <span class="pill done">ready to type</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell">
+                  <div class="workbar">.../my-hardware-project <span class="pill optional">Claude Code</span></div>
+                  <div class="tabbar"><span class="tab">New Conversation</span></div>
+                  <div class="mock-main">
+                    <div class="composer">
+                      <div class="composer-text">Assign a task or ask any question</div>
+                      <div class="chips">
+                        <span class="chip active">Claude Code</span>
+                        <span class="chip">Model</span>
+                        <span class="chip">Attach</span>
+                        <span class="chip">Send</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="caption">PM should confirm whether active tab is enough, or sidebar should also show a draft row.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="send" style="left: 1960px; top: 70px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">5. Send First Task</h3>
+                  <p class="frame-subtitle">Draft becomes a runtime-backed code session.</p>
+                </div>
+                <span class="pill done">first turn</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell" style="padding: 12px">
+                  <div class="log"><strong>User:</strong> Build the firmware UI and run checks.</div>
+                  <div class="log" style="margin-top: 8px">Runtime starts for selected workspace and sends the task once.</div>
+                </div>
+                <p class="caption">Streaming reply details are a separate journey; this one proves first-send handoff.</p>
+              </div>
+            </section>
+
+            <div class="arrow" style="left: 470px; top: 190px; width: 50px"><span class="arrow-label">Click Code</span></div>
+            <div class="arrow" style="left: 950px; top: 190px; width: 50px"><span class="arrow-label">Create Workspace</span></div>
+            <div class="arrow" style="left: 1430px; top: 190px; width: 50px"><span class="arrow-label">Folder selected</span></div>
+            <div class="arrow" style="left: 1910px; top: 190px; width: 50px"><span class="arrow-label">Type + Send</span></div>
+
+            <section class="frame wide" id="workspace-detail" style="left: 40px; top: 520px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Workspace Creation Detail</h3>
+                  <p class="frame-subtitle">The required local project step.</p>
+                </div>
+                <span class="pill required">required</span>
+              </div>
+              <div class="frame-body">
+                <ul class="list">
+                  <li><span class="num">1</span><span>Code empty state invites the user to create a workspace.</span></li>
+                  <li><span class="num">2</span><span>Native folder picker returns a local directory or cancel.</span></li>
+                  <li><span class="num">3</span><span>Name auto-fills from the folder and remains editable.</span></li>
+                  <li><span class="num">4</span><span>Create stays disabled until a directory is selected.</span></li>
+                  <li><span class="num">5</span><span>Workspace becomes active and owns the first code conversation.</span></li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="frame wide" id="runtime-detail" style="left: 600px; top: 520px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Runtime Choice Detail</h3>
+                  <p class="frame-subtitle">Runtime is flexible, but first draft has a default.</p>
+                </div>
+                <span class="pill optional">choice</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row"><strong>Default</strong><span>New Code draft starts on Claude Code.</span></div>
+                  <div class="row"><strong>Choices</strong><span>OpenClaw, Claude Code, and Codex are selectable in the composer.</span></div>
+                  <div class="row"><strong>Lock rule</strong><span>After a native runtime identity exists, casual switching is blocked.</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="coverage-detail" style="left: 1160px; top: 520px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Engineering Readiness</h3>
+                  <p class="frame-subtitle">Happy path is guarded through first-send handoff.</p>
+                </div>
+                <span class="pill done">covered</span>
+              </div>
+              <div class="frame-body">
+                <div class="coverage">
+                  <div class="coverage-box"><strong>Guarded now</strong>Chat to Code toggle, empty state, dialog, folder selection, workspace create, active tab, composer, first user message.</div>
+                  <div class="coverage-box"><strong>Boundary proof</strong>First Code send starts selected runtime once and avoids the normal Chat send path.</div>
+                  <div class="coverage-box"><strong>Out of scope</strong>Assistant streaming reply and full workbench panels are covered by adjacent journeys.</div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="state-language" style="left: 40px; top: 980px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">State Language</h3>
+                  <p class="frame-subtitle">Recommended PM vocabulary for Journey 4.</p>
+                </div>
+                <span class="pill done">proposed copy</span>
+              </div>
+              <div class="frame-body">
+                <div class="state-machine">
+                  <span class="state">Chat mode</span><span class="state-arrow">-></span>
+                  <span class="state">Code empty</span><span class="state-arrow">-></span>
+                  <span class="state">Folder selected</span><span class="state-arrow">-></span>
+                  <span class="state">Draft conversation</span><span class="state-arrow">-></span>
+                  <span class="state">Runtime running</span>
+                </div>
+                <p class="caption">Alternate path: existing workspace -> new session button -> draft conversation -> send.</p>
+              </div>
+            </section>
+
+            <section class="frame wide" id="pm-decisions" style="left: 600px; top: 980px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">PM Decisions</h3>
+                  <p class="frame-subtitle">Choices this artifact is meant to unblock.</p>
+                </div>
+                <span class="pill warn">PM review</span>
+              </div>
+              <div class="frame-body">
+                <div class="callout blocking">
+                  <strong>Blocking:</strong> Should Code mode require workspace selection before first send, or allow task-first entry?
+                </div>
+                <div class="callout" style="margin-top: 8px">
+                  <strong>Decision:</strong> Should Claude Code remain the default runtime, or should first-time users choose explicitly?
+                </div>
+                <div class="callout" style="margin-top: 8px">
+                  <strong>Decision:</strong> Should the draft conversation be visible in the workspace group before first send?
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="boundaries" style="left: 1160px; top: 980px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Discussion Boundaries</h3>
+                  <p class="frame-subtitle">Keep the review on first Code adoption.</p>
+                </div>
+                <span class="pill optional">scope</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row"><strong>Discuss</strong><span>Workspace-first flow, runtime default, visible draft state, readiness cards, recovery copy.</span></div>
+                  <div class="row"><strong>Do not discuss</strong><span>File tree, diff, terminal, Agent Authoring, device panels, provider setup.</span></div>
+                  <div class="row"><strong>Fixed</strong><span>Runtime sessions use the same Chat UI, not a second prompt surface.</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="errors-workspace" style="left: 40px; top: 1380px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Workspace Recovery</h3>
+                  <p class="frame-subtitle">Folder failures should not create dead state.</p>
+                </div>
+                <span class="pill required">important</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row"><strong>Picker canceled</strong><span>Keep dialog open with Create disabled, or return to empty state if user closes.</span></div>
+                  <div class="row"><strong>No directory</strong><span>Before send, ask user to choose a working directory.</span></div>
+                  <div class="row"><strong>Bad folder</strong><span>Show folder unavailable state without deleting draft work.</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="errors-runtime" style="left: 600px; top: 1380px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Runtime Recovery</h3>
+                  <p class="frame-subtitle">First-send failures need clear ownership.</p>
+                </div>
+                <span class="pill warn">recovery</span>
+              </div>
+              <div class="frame-body">
+                <div class="table">
+                  <div class="row"><strong>Model unavailable</strong><span>Prompt user to select an enabled model before sending.</span></div>
+                  <div class="row"><strong>Runtime missing</strong><span>Show install or configure guidance tied to selected runtime.</span></div>
+                  <div class="row"><strong>Auth required</strong><span>Keep task text and show retry after sign-in/auth fix.</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="success" style="left: 1160px; top: 1380px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Definition Of Success</h3>
+                  <p class="frame-subtitle">What "started a Code session" means.</p>
+                </div>
+                <span class="pill done">success</span>
+              </div>
+              <div class="frame-body">
+                <ul class="list">
+                  <li><span class="num">1</span><span>User has an active local workspace.</span></li>
+                  <li><span class="num">2</span><span>A New Conversation tab and composer are visible.</span></li>
+                  <li><span class="num">3</span><span>Runtime and model are selected or clearly blocked.</span></li>
+                  <li><span class="num">4</span><span>First task is handed to the selected code runtime exactly once.</span></li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <aside class="sidebar" aria-label="Wireframe navigation">
+          <div class="sidebar-section">
+            <h2>Jump List</h2>
+            <button class="jump" data-jump="start">Main path</button>
+            <button class="jump" data-jump="workspace-detail">Detail frames</button>
+            <button class="jump" data-jump="state-language">State and decisions</button>
+            <button class="jump" data-jump="errors-workspace">Errors and recovery</button>
+          </div>
+          <div class="sidebar-section">
+            <h2>Mini Map</h2>
+            <div class="mini">
+              <div class="mini-dot" style="left: 4px; top: 8px; width: 42px; height: 31px"></div>
+              <div class="mini-dot" style="left: 53px; top: 8px; width: 42px; height: 31px"></div>
+              <div class="mini-dot" style="left: 102px; top: 8px; width: 42px; height: 31px"></div>
+              <div class="mini-dot" style="left: 151px; top: 8px; width: 42px; height: 36px"></div>
+              <div class="mini-dot" style="left: 200px; top: 8px; width: 34px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 54px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 100px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 4px; top: 140px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 62px; top: 140px; width: 53px; height: 28px"></div>
+              <div class="mini-dot" style="left: 120px; top: 140px; width: 53px; height: 28px"></div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <h2>Legend</h2>
+            <div class="legend">
+              <div class="legend-row"><span class="swatch" style="background: var(--red-bg)"></span>Required or blocking decision</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--blue-bg)"></span>Optional user choice</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--yellow)"></span>PM decision callout</div>
+              <div class="legend-row"><span class="swatch" style="background: var(--green-bg)"></span>Ready or current success state</div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const viewport = document.getElementById('viewport')
+      const canvas = document.getElementById('canvas')
+      let scale = 0.64
+      let offsetX = 24
+      let offsetY = 18
+      let dragging = false
+      let dragStartX = 0
+      let dragStartY = 0
+      let dragOffsetX = 0
+      let dragOffsetY = 0
+
+      function applyTransform() {
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
+      }
+
+      function fit() {
+        const nextScale = Math.min(
+          (viewport.clientWidth - 48) / canvas.offsetWidth,
+          (viewport.clientHeight - 48) / canvas.offsetHeight
+        )
+        scale = Math.max(0.32, Math.min(1, nextScale))
+        offsetX = 24
+        offsetY = 18
+        applyTransform()
+      }
+
+      document.getElementById('zoomOut').addEventListener('click', () => {
+        scale = Math.max(0.3, scale - 0.08)
+        applyTransform()
+      })
+
+      document.getElementById('zoomIn').addEventListener('click', () => {
+        scale = Math.min(1.4, scale + 0.08)
+        applyTransform()
+      })
+
+      document.getElementById('fit').addEventListener('click', fit)
+
+      document.getElementById('reset').addEventListener('click', () => {
+        scale = 1
+        offsetX = 24
+        offsetY = 18
+        applyTransform()
+      })
+
+      viewport.addEventListener('pointerdown', (event) => {
+        dragging = true
+        viewport.classList.add('dragging')
+        dragStartX = event.clientX
+        dragStartY = event.clientY
+        dragOffsetX = offsetX
+        dragOffsetY = offsetY
+        viewport.setPointerCapture(event.pointerId)
+      })
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!dragging) { return }
+        offsetX = dragOffsetX + event.clientX - dragStartX
+        offsetY = dragOffsetY + event.clientY - dragStartY
+        applyTransform()
+      })
+
+      viewport.addEventListener('pointerup', (event) => {
+        dragging = false
+        viewport.classList.remove('dragging')
+        viewport.releasePointerCapture(event.pointerId)
+      })
+
+      document.querySelectorAll('[data-jump]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const frame = document.getElementById(button.dataset.jump)
+          if (!frame) { return }
+          const left = Number.parseFloat(frame.style.left || '0')
+          const top = Number.parseFloat(frame.style.top || '0')
+          scale = Math.max(0.56, Math.min(scale, 0.76))
+          offsetX = 24 - left * scale
+          offsetY = 18 - top * scale
+          applyTransform()
+        })
+      })
+
+      fit()
+      window.addEventListener('resize', fit)
+    </script>
+  </body>
+</html>
