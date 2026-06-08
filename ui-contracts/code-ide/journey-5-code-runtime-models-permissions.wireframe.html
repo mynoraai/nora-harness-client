@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journey 5 Code Runtime Models And Permissions Wireframe</title>
+    <style>
+      :root {
+        --bg: #f2f4f7;
+        --grid: rgba(17, 24, 39, 0.055);
+        --panel: #ffffff;
+        --panel-soft: #f8fafc;
+        --line: #d7dde6;
+        --line-strong: #111827;
+        --text: #1f2937;
+        --muted: #667085;
+        --soft: #98a2b3;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+        --green: #047857;
+        --green-bg: #d1fae5;
+        --amber: #a16207;
+        --amber-bg: #fef3c7;
+        --red: #b42318;
+        --red-bg: #fee4e2;
+        --yellow: #fff3cd;
+        --shadow: 0 20px 50px rgba(17, 24, 39, 0.12);
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-width: 1440px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          var(--bg);
+        background-size: 24px 24px;
+        color: var(--text);
+      }
+
+      button { font: inherit; }
+
+      .page { min-height: 100vh; padding: 24px; }
+
+      .header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      h1 { margin: 0; font-size: 24px; line-height: 1.2; letter-spacing: 0; }
+
+      .header p {
+        max-width: 980px;
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .control {
+        min-width: 42px;
+        height: 32px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .control:hover { border-color: var(--line-strong); }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 270px;
+        gap: 18px;
+      }
+
+      .viewport {
+        position: relative;
+        height: calc(100vh - 118px);
+        min-height: 760px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          #eef1f5;
+        background-size: 20px 20px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        cursor: grab;
+      }
+
+      .viewport.dragging { cursor: grabbing; }
+
+      .canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2780px;
+        height: 1880px;
+        transform-origin: 0 0;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 24px;
+        height: calc(100vh - 48px);
+        min-height: 760px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar-section { padding: 14px; border-bottom: 1px solid var(--line); }
+
+      .sidebar h2 {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .jump {
+        display: block;
+        width: 100%;
+        margin: 6px 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--panel-soft);
+        padding: 8px 10px;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .jump:hover { border-color: var(--line-strong); background: #fff; }
+
+      .legend { display: grid; gap: 8px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+      .legend-row { display: flex; gap: 8px; align-items: center; }
+      .swatch { width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 4px; }
+
+      .mini {
+        position: relative;
+        width: 232px;
+        height: 176px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #eef1f5;
+      }
+
+      .mini-dot {
+        position: absolute;
+        border: 1px solid var(--line-strong);
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .band {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        height: 34px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .band span { display: inline-block; background: #eef1f5; padding-right: 12px; }
+
+      .frame {
+        position: absolute;
+        width: 340px;
+        min-height: 230px;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .frame.large { width: 430px; min-height: 286px; }
+      .frame.wide { width: 520px; min-height: 250px; }
+      .frame.extra-wide { width: 620px; min-height: 280px; }
+      .frame.tall { min-height: 360px; }
+      .frame.decision { background: var(--yellow); }
+      .frame.blocking { background: #fff1f0; border-color: var(--red); }
+
+      .frame-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+        border-bottom: 1px solid var(--line);
+        padding: 12px 14px 10px;
+      }
+
+      .frame-title { margin: 0; font-size: 15px; font-weight: 700; }
+      .frame-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+      .frame-body { padding: 14px; }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .pill.current { background: var(--blue-bg); color: var(--blue); }
+      .pill.proposed { background: var(--amber-bg); color: var(--amber); }
+      .pill.done { background: var(--green-bg); color: var(--green); }
+      .pill.warn { background: var(--amber-bg); color: var(--amber); }
+      .pill.danger { background: var(--red-bg); color: var(--red); }
+      .pill.lock { background: #ede9fe; color: #5b21b6; }
+
+      .ui-shell {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fbfcfe;
+        overflow: hidden;
+      }
+
+      .app-grid { display: grid; grid-template-columns: 82px 1fr; min-height: 178px; }
+      .mock-sidebar { border-right: 1px solid var(--line); background: #f8fafc; padding: 8px; }
+      .mock-main { padding: 10px; }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 3px;
+        background: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .segmented span { border-radius: 5px; padding: 4px 3px; color: var(--muted); }
+      .segmented .active { background: var(--line-strong); color: #fff; }
+
+      .bar {
+        height: 26px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        margin-bottom: 8px;
+      }
+
+      .composer {
+        margin-top: 10px;
+        border: 1px solid #e7dccc;
+        border-radius: 18px;
+        background: #fffdfa;
+        padding: 10px;
+        box-shadow: 0 14px 30px rgba(135, 107, 74, 0.12);
+      }
+
+      .textarea {
+        min-height: 46px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .composer-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 24px;
+        border: 1px solid #eee3d6;
+        border-radius: 999px;
+        background: #fff;
+        padding: 3px 8px;
+        color: #2f2923;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .chip.disabled { color: var(--soft); background: #f5f6f8; }
+      .send { margin-left: auto; width: 28px; height: 28px; border-radius: 50%; background: var(--line-strong); color: #fff; display: grid; place-items: center; font-size: 12px; }
+
+      .select-menu {
+        display: grid;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 10px;
+      }
+
+      .select-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .select-row.active { border-color: var(--line-strong); background: #f8fafc; }
+      .select-row.warn { border-color: #facc15; background: #fffbeb; }
+      .select-name { font-weight: 700; }
+      .select-note { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+      .message-list { display: grid; gap: 8px; }
+
+      .message {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 9px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .message.user { background: #f8fafc; }
+      .message.status { background: #eef6ff; border-color: #bfdbfe; }
+      .message.permission { background: #fffbeb; border-color: #facc15; }
+      .message.error { background: #fff5f5; border-color: #fecaca; }
+      .message .top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 5px; font-weight: 700; }
+
+      .actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+      .btn {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        padding: 5px 8px;
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .btn.primary { background: var(--line-strong); color: #fff; border-color: var(--line-strong); }
+      .btn.danger { background: var(--red-bg); color: var(--red); border-color: #fecaca; }
+
+      .list { display: grid; gap: 8px; }
+      .row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .row-title { font-weight: 700; }
+      .row-copy { margin-top: 3px; color: var(--muted); line-height: 1.35; }
+
+      .matrix {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .state-card {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        padding: 9px;
+        min-height: 98px;
+      }
+
+      .state-card h4 { margin: 0 0 5px; font-size: 12px; }
+      .state-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+
+      .caption {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .callout {
+        border: 1px solid #e9d100;
+        border-radius: 7px;
+        background: var(--yellow);
+        padding: 10px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .callout.blocking { border-color: #fca5a5; background: #fff1f0; }
+
+      .arrow {
+        position: absolute;
+        height: 2px;
+        background: var(--line-strong);
+        transform-origin: 0 50%;
+      }
+
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: -5px;
+        width: 0;
+        height: 0;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 9px solid var(--line-strong);
+      }
+
+      .arrow-label {
+        position: absolute;
+        transform: translate(-50%, -100%);
+        background: #eef1f5;
+        color: var(--muted);
+        padding: 2px 6px;
+        border-radius: 999px;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .muted { color: var(--muted); }
+      .small { font-size: 11px; line-height: 1.35; }
+      .strong { font-weight: 750; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div>
+          <h1>Journey 5: Code Mode Runtime, Models, And Permissions</h1>
+          <p>
+            PM wireframe for choosing OpenClaw, Claude Code, or Codex inside a Code conversation,
+            selecting a compatible model, sending a task, and recovering from runtime readiness or
+            permission pauses without creating a second chat surface.
+          </p>
+        </div>
+        <div class="controls" aria-label="Canvas controls">
+          <button class="control" id="zoomOut" type="button">-</button>
+          <button class="control" id="zoomIn" type="button">+</button>
+          <button class="control" id="fit" type="button">Fit</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="viewport" id="viewport">
+          <div class="canvas" id="canvas">
+            <div class="band" style="top: 34px"><span>Main user chain</span></div>
+            <div class="band" style="top: 500px"><span>Detail frames</span></div>
+            <div class="band" style="top: 990px"><span>State language and lifecycle</span></div>
+            <div class="band" style="top: 1450px"><span>Readiness, errors, and PM decisions</span></div>
+
+            <section class="frame large" id="start" style="left: 50px; top: 80px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">1. Code conversation is open</h3>
+                  <p class="frame-subtitle">Today: one Code tab uses the shared conversation surface.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="ui-shell">
+                  <div class="app-grid">
+                    <div class="mock-sidebar">
+                      <div class="segmented"><span>Chat</span><span class="active">Code</span></div>
+                      <div class="bar" style="margin-top: 10px"></div>
+                      <div class="bar" style="width: 80%"></div>
+                    </div>
+                    <div class="mock-main">
+                      <div class="bar" style="width: 55%"></div>
+                      <div class="message-list">
+                        <div class="message user">User task appears in this transcript.</div>
+                        <div class="message">Assistant, tools, status, and permissions render here.</div>
+                      </div>
+                      <div class="composer">
+                        <div class="textarea">Assign a task or ask any question</div>
+                        <div class="composer-row">
+                          <span class="chip">Claude Code</span>
+                          <span class="chip">Claude Sonnet 4.6</span>
+                          <span class="send">^</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="caption">The runtime choice sits in the composer, not in a separate terminal or side chat.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="runtime" style="left: 540px; top: 94px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">2. Select runtime</h3>
+                  <p class="frame-subtitle">OpenClaw, Claude Code, and Codex are peer choices.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="select-menu">
+                  <div class="select-row">
+                    <div><div class="select-name">OpenClaw</div><div class="select-note">OpenClaw runtime path</div></div>
+                    <span class="pill"> </span>
+                  </div>
+                  <div class="select-row active">
+                    <div><div class="select-name">Claude Code</div><div class="select-note">Local code runtime</div></div>
+                    <span class="pill done">selected</span>
+                  </div>
+                  <div class="select-row">
+                    <div><div class="select-name">Codex</div><div class="select-note">Local code runtime</div></div>
+                    <span class="pill"> </span>
+                  </div>
+                </div>
+                <p class="caption">PM decision: keep this compact, or add a visible runtime readiness panel.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="models" style="left: 940px; top: 94px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">3. Load models</h3>
+                  <p class="frame-subtitle">Model list changes after runtime selection.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="select-menu">
+                  <div class="select-row active">
+                    <div><div class="select-name">Claude Sonnet 4.6</div><div class="select-note">Default for Claude Code</div></div>
+                    <span class="pill done">ready</span>
+                  </div>
+                  <div class="select-row">
+                    <div><div class="select-name">Claude Opus 4.6</div><div class="select-note">Available for this runtime</div></div>
+                  </div>
+                  <div class="select-row warn">
+                    <div><div class="select-name">Previous model</div><div class="select-note">Not available after runtime switch</div></div>
+                    <span class="pill warn">review</span>
+                  </div>
+                </div>
+                <p class="caption">Model state needs clear copy for loading, retry, no models, and unavailable stored model.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="send" style="left: 1340px; top: 94px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">4. Send task</h3>
+                  <p class="frame-subtitle">Code workspace and selected model gate the send.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="composer">
+                  <div class="textarea">"Refactor the device status panel and show me the diff."</div>
+                  <div class="composer-row">
+                    <span class="chip">Attach image</span>
+                    <span class="chip">Claude Code</span>
+                    <span class="chip">Sonnet 4.6</span>
+                    <span class="send">^</span>
+                  </div>
+                </div>
+                <div class="list" style="margin-top: 10px">
+                  <div class="row"><div><div class="row-title">Text or supported image</div><div class="row-copy">Empty prompts do not send.</div></div><span class="pill done">ok</span></div>
+                  <div class="row"><div><div class="row-title">Workspace selected</div><div class="row-copy">Code runtime has a directory to work in.</div></div><span class="pill done">ok</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame large" id="stream" style="left: 1740px; top: 80px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">5. One message stream</h3>
+                  <p class="frame-subtitle">Runtime output uses shared message blocks.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="message-list">
+                  <div class="message user"><div class="top"><span>User</span><span>now</span></div>Refactor the panel.</div>
+                  <div class="message status"><div class="top"><span>Status</span><span>running</span></div>Claude Code started and is reading files.</div>
+                  <div class="message"><div class="top"><span>Tool</span><span>read</span></div>File activity appears as normal tool blocks.</div>
+                  <div class="message"><div class="top"><span>Assistant</span><span>streaming</span></div>I found the panel and will update the loading state.</div>
+                </div>
+                <p class="caption">No separate runtime transcript, no terminal-only status, no hidden permission pause.</p>
+              </div>
+            </section>
+
+            <section class="frame" id="locked" style="left: 2220px; top: 94px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">6. Runtime locks</h3>
+                  <p class="frame-subtitle">Existing sessions keep their runtime owner.</p>
+                </div>
+                <span class="pill proposed">copy TBD</span>
+              </div>
+              <div class="frame-body">
+                <div class="composer">
+                  <div class="textarea">Continue the existing task</div>
+                  <div class="composer-row">
+                    <span class="chip disabled">Claude Code locked</span>
+                    <span class="chip">Sonnet 4.6</span>
+                    <span class="send">^</span>
+                  </div>
+                </div>
+                <div class="callout" style="margin-top: 10px">
+                  PM decision: disabled tooltip only, or persistent explanation with "start new session with another runtime"?
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="runtime-detail" style="left: 60px; top: 550px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Runtime picker detail</h3>
+                  <p class="frame-subtitle">Proposed copy keeps readiness understandable before send.</p>
+                </div>
+                <span class="pill proposed">proposed</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row">
+                    <div><div class="row-title">OpenClaw</div><div class="row-copy">Use when the OpenClaw runtime is ready.</div></div>
+                    <span class="pill warn">check setup</span>
+                  </div>
+                  <div class="row">
+                    <div><div class="row-title">Claude Code</div><div class="row-copy">Best default for local Code sessions when installed and signed in.</div></div>
+                    <span class="pill done">ready</span>
+                  </div>
+                  <div class="row">
+                    <div><div class="row-title">Codex</div><div class="row-copy">Use when Codex is installed and authenticated.</div></div>
+                    <span class="pill warn">sign in</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="model-detail" style="left: 650px; top: 550px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Model selector detail</h3>
+                  <p class="frame-subtitle">Today: each runtime supplies a matching model list.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="matrix">
+                  <div class="state-card"><h4>Loading</h4><p>Show "Loading..." and keep Send blocked until a model is selected.</p></div>
+                  <div class="state-card"><h4>Retry</h4><p>Model list took too long or failed; trigger reload from the picker.</p></div>
+                  <div class="state-card"><h4>No models</h4><p>User cannot send until one model exists for the selected runtime.</p></div>
+                  <div class="state-card"><h4>Unavailable</h4><p>Stored model no longer matches selected runtime catalog.</p></div>
+                  <div class="state-card"><h4>Default</h4><p>Pick the runtime default when no session model exists.</p></div>
+                  <div class="state-card"><h4>Saved</h4><p>Saved sessions update selected model before the next send.</p></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="permission-detail" style="left: 1240px; top: 550px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Permission prompt</h3>
+                  <p class="frame-subtitle">Today: protected work pauses in the transcript.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="message permission">
+                  <div class="top"><span>Permission needed</span><span>paused</span></div>
+                  Claude Code wants to edit <span class="strong">DeviceTab.tsx</span>.
+                  <div class="actions">
+                    <button class="btn primary">Allow</button>
+                    <button class="btn danger">Deny</button>
+                    <button class="btn">View details</button>
+                  </div>
+                </div>
+                <p class="caption">PM decision: expose one allow/deny pair, or preserve once/always variants when available.</p>
+              </div>
+            </section>
+
+            <section class="frame wide" id="recovery-detail" style="left: 1830px; top: 550px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Recovery detail panel</h3>
+                  <p class="frame-subtitle">Proposed: only opens when compact copy is not enough.</p>
+                </div>
+                <span class="pill proposed">proposed</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">Install runtime</div><div class="row-copy">Command was not found or cannot be resolved.</div></div><button class="btn">Configure</button></div>
+                  <div class="row"><div><div class="row-title">Sign in</div><div class="row-copy">Runtime is installed but needs authentication.</div></div><button class="btn">Open help</button></div>
+                  <div class="row"><div><div class="row-title">Fix workspace</div><div class="row-copy">Selected project is missing or inaccessible.</div></div><button class="btn">Choose folder</button></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame extra-wide" id="state-language" style="left: 60px; top: 1040px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">User-visible readiness language</h3>
+                  <p class="frame-subtitle">Map technical diagnosis to plain product copy.</p>
+                </div>
+                <span class="pill proposed">PM wording</span>
+              </div>
+              <div class="frame-body">
+                <div class="matrix">
+                  <div class="state-card"><h4>Install</h4><p>"Runtime is not installed or cannot be found."</p></div>
+                  <div class="state-card"><h4>Sign in</h4><p>"Runtime needs authentication before it can run."</p></div>
+                  <div class="state-card"><h4>Startup</h4><p>"Runtime did not finish starting."</p></div>
+                  <div class="state-card"><h4>Permission</h4><p>"Runtime is waiting for a decision or operation was denied."</p></div>
+                  <div class="state-card"><h4>Workspace</h4><p>"Runtime cannot access this workspace."</p></div>
+                  <div class="state-card"><h4>OpenClaw readiness</h4><p>"OpenClaw is not ready."</p></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="lifecycle" style="left: 760px; top: 1040px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Run lifecycle</h3>
+                  <p class="frame-subtitle">Keep each state visible in the same message surface.</p>
+                </div>
+                <span class="pill current">today</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">Ready</div><div class="row-copy">Composer accepts a task after model and workspace gates pass.</div></div><span class="pill done">send</span></div>
+                  <div class="row"><div><div class="row-title">Starting</div><div class="row-copy">Runtime session starts or resumes for the selected workspace.</div></div><span class="pill warn">wait</span></div>
+                  <div class="row"><div><div class="row-title">Running</div><div class="row-copy">Text, tool, status, permission, and file-change blocks stream.</div></div><span class="pill current">live</span></div>
+                  <div class="row"><div><div class="row-title">Complete or error</div><div class="row-copy">History refreshes, Send returns, and recovery remains visible.</div></div><span class="pill">done</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="readiness" style="left: 1350px; top: 1040px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Engineering readiness</h3>
+                  <p class="frame-subtitle">Separate shipped behavior from PM copy choices.</p>
+                </div>
+                <span class="pill warn">partial</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">Implemented</div><div class="row-copy">Runtime picker, model list, send path, status blocks, permission cards, history recovery.</div></div><span class="pill done">exists</span></div>
+                  <div class="row"><div><div class="row-title">Needs PM wording</div><div class="row-copy">Pre-send readiness, locked runtime explanation, denial recovery language.</div></div><span class="pill proposed">review</span></div>
+                  <div class="row"><div><div class="row-title">Dependent on user setup</div><div class="row-copy">Installed binaries, sign-in, workspace access, selected runtime capabilities.</div></div><span class="pill warn">external</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame blocking" id="blocking-decision" style="left: 1960px; top: 1040px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Blocking PM decision</h3>
+                  <p class="frame-subtitle">Pre-send readiness model changes user friction.</p>
+                </div>
+                <span class="pill danger">blocking</span>
+              </div>
+              <div class="frame-body">
+                <div class="callout blocking">
+                  Should runtime readiness failures block Send before the user composes, or appear only after the first failed send/retry?
+                </div>
+                <p class="caption">Blocking earlier is safer. Blocking later keeps exploration fast but can waste a written task.</p>
+              </div>
+            </section>
+
+            <section class="frame wide" id="errors" style="left: 60px; top: 1500px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Error and recovery states</h3>
+                  <p class="frame-subtitle">Every failure needs a user action or clear stop.</p>
+                </div>
+                <span class="pill proposed">proposed</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">No model</div><div class="row-copy">Select an enabled model before sending.</div></div><button class="btn">Open models</button></div>
+                  <div class="row"><div><div class="row-title">Workspace missing</div><div class="row-copy">Choose a project folder before this runtime can start.</div></div><button class="btn">Choose folder</button></div>
+                  <div class="row"><div><div class="row-title">Permission denied</div><div class="row-copy">The protected operation did not run.</div></div><button class="btn">Retry task</button></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame decision" id="pm-decisions" style="left: 650px; top: 1500px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">PM decision set</h3>
+                  <p class="frame-subtitle">Review choices, not implementation details.</p>
+                </div>
+                <span class="pill proposed">review</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">Runtime placement</div><div class="row-copy">Compact composer control or larger readiness panel?</div></div></div>
+                  <div class="row"><div><div class="row-title">Failure vocabulary</div><div class="row-copy">Which plain words should users see for readiness failures?</div></div></div>
+                  <div class="row"><div><div class="row-title">Locked sessions</div><div class="row-copy">Tooltip only or persistent explanation plus new-session escape?</div></div></div>
+                  <div class="row"><div><div class="row-title">Permission recovery</div><div class="row-copy">Retry, edit task, or change permission defaults?</div></div></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="non-goals" style="left: 1180px; top: 1500px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Non-goals</h3>
+                  <p class="frame-subtitle">Keep this PM review narrow.</p>
+                </div>
+                <span class="pill">scope</span>
+              </div>
+              <div class="frame-body">
+                <div class="list">
+                  <div class="row"><div><div class="row-title">No second chat UI</div><div class="row-copy">Runtime output stays in the same conversation.</div></div></div>
+                  <div class="row"><div><div class="row-title">No protocol review</div><div class="row-copy">Internal runtime and event contracts are fixed constraints.</div></div></div>
+                  <div class="row"><div><div class="row-title">No release-unit expansion</div><div class="row-copy">No Mobile, Firmware, NoraCloud, or Application Harness dependency for this wireframe.</div></div></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="frame wide" id="outcome" style="left: 1770px; top: 1500px">
+              <div class="frame-header">
+                <div>
+                  <h3 class="frame-title">Target outcome</h3>
+                  <p class="frame-subtitle">A user can recover without reading logs.</p>
+                </div>
+                <span class="pill done">goal</span>
+              </div>
+              <div class="frame-body">
+                <div class="message status">
+                  <div class="top"><span>Visible state</span><span>ready</span></div>
+                  Runtime and model are ready, permission pauses are resolved, and the next task can be sent.
+                </div>
+                <p class="caption">PM output: agreed placement and wording for runtime readiness, model availability, permissions, and locked sessions.</p>
+              </div>
+            </section>
+
+            <div class="arrow" style="left: 482px; top: 220px; width: 46px"></div>
+            <div class="arrow-label" style="left: 506px; top: 214px">choose</div>
+            <div class="arrow" style="left: 884px; top: 220px; width: 46px"></div>
+            <div class="arrow-label" style="left: 908px; top: 214px">models</div>
+            <div class="arrow" style="left: 1284px; top: 220px; width: 46px"></div>
+            <div class="arrow-label" style="left: 1308px; top: 214px">send</div>
+            <div class="arrow" style="left: 1684px; top: 220px; width: 46px"></div>
+            <div class="arrow-label" style="left: 1708px; top: 214px">stream</div>
+            <div class="arrow" style="left: 2172px; top: 220px; width: 36px"></div>
+            <div class="arrow-label" style="left: 2190px; top: 214px">bind</div>
+          </div>
+        </div>
+
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <h2>Jump List</h2>
+            <button class="jump" data-jump="start">Main chain</button>
+            <button class="jump" data-jump="runtime-detail">Runtime details</button>
+            <button class="jump" data-jump="permission-detail">Permissions</button>
+            <button class="jump" data-jump="state-language">State language</button>
+            <button class="jump" data-jump="blocking-decision">PM decision</button>
+            <button class="jump" data-jump="errors">Errors</button>
+          </div>
+          <div class="sidebar-section">
+            <h2>Mini Map</h2>
+            <div class="mini" aria-hidden="true">
+              <div class="mini-dot" style="left: 5px; top: 8px; width: 36px; height: 28px"></div>
+              <div class="mini-dot" style="left: 45px; top: 9px; width: 30px; height: 25px"></div>
+              <div class="mini-dot" style="left: 78px; top: 9px; width: 30px; height: 25px"></div>
+              <div class="mini-dot" style="left: 111px; top: 9px; width: 30px; height: 25px"></div>
+              <div class="mini-dot" style="left: 146px; top: 8px; width: 36px; height: 28px"></div>
+              <div class="mini-dot" style="left: 187px; top: 9px; width: 30px; height: 25px"></div>
+              <div class="mini-dot" style="left: 5px; top: 55px; width: 44px; height: 26px"></div>
+              <div class="mini-dot" style="left: 55px; top: 55px; width: 44px; height: 26px"></div>
+              <div class="mini-dot" style="left: 104px; top: 55px; width: 44px; height: 26px"></div>
+              <div class="mini-dot" style="left: 154px; top: 55px; width: 44px; height: 26px"></div>
+              <div class="mini-dot" style="left: 5px; top: 103px; width: 52px; height: 28px"></div>
+              <div class="mini-dot" style="left: 63px; top: 103px; width: 44px; height: 28px"></div>
+              <div class="mini-dot" style="left: 113px; top: 103px; width: 44px; height: 28px"></div>
+              <div class="mini-dot" style="left: 166px; top: 103px; width: 36px; height: 28px; background: #fff1f0"></div>
+              <div class="mini-dot" style="left: 5px; top: 150px; width: 44px; height: 22px"></div>
+              <div class="mini-dot" style="left: 55px; top: 150px; width: 44px; height: 22px; background: #fff3cd"></div>
+              <div class="mini-dot" style="left: 104px; top: 150px; width: 44px; height: 22px"></div>
+              <div class="mini-dot" style="left: 153px; top: 150px; width: 44px; height: 22px"></div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <h2>Legend</h2>
+            <div class="legend">
+              <div class="legend-row"><span class="swatch" style="background: #fff"></span> Existing surface</div>
+              <div class="legend-row"><span class="swatch" style="background: #fff3cd"></span> PM decision</div>
+              <div class="legend-row"><span class="swatch" style="background: #fff1f0"></span> Blocking decision</div>
+              <div class="legend-row"><span class="swatch" style="background: #fffbeb"></span> Proposed copy/state</div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const viewport = document.getElementById('viewport')
+      const canvas = document.getElementById('canvas')
+      let scale = 0.54
+      let offsetX = 18
+      let offsetY = 12
+      let dragging = false
+      let lastX = 0
+      let lastY = 0
+
+      function applyTransform() {
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
+      }
+
+      function fitCanvas() {
+        const sx = (viewport.clientWidth - 40) / canvas.offsetWidth
+        const sy = (viewport.clientHeight - 40) / canvas.offsetHeight
+        scale = Math.max(0.28, Math.min(0.72, Math.min(sx, sy)))
+        offsetX = 20
+        offsetY = 20
+        applyTransform()
+      }
+
+      function zoom(delta) {
+        scale = Math.max(0.25, Math.min(1.2, scale + delta))
+        applyTransform()
+      }
+
+      function jumpTo(id) {
+        const target = document.getElementById(id)
+        if (!target) return
+        scale = Math.max(scale, 0.58)
+        offsetX = 28 - target.offsetLeft * scale
+        offsetY = 34 - target.offsetTop * scale
+        applyTransform()
+      }
+
+      document.getElementById('zoomOut').addEventListener('click', () => zoom(-0.08))
+      document.getElementById('zoomIn').addEventListener('click', () => zoom(0.08))
+      document.getElementById('fit').addEventListener('click', fitCanvas)
+      document.querySelectorAll('[data-jump]').forEach((button) => {
+        button.addEventListener('click', () => jumpTo(button.dataset.jump))
+      })
+
+      viewport.addEventListener('pointerdown', (event) => {
+        dragging = true
+        lastX = event.clientX
+        lastY = event.clientY
+        viewport.classList.add('dragging')
+        viewport.setPointerCapture(event.pointerId)
+      })
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!dragging) return
+        offsetX += event.clientX - lastX
+        offsetY += event.clientY - lastY
+        lastX = event.clientX
+        lastY = event.clientY
+        applyTransform()
+      })
+
+      viewport.addEventListener('pointerup', (event) => {
+        dragging = false
+        viewport.classList.remove('dragging')
+        viewport.releasePointerCapture(event.pointerId)
+      })
+
+      viewport.addEventListener('wheel', (event) => {
+        event.preventDefault()
+        zoom(event.deltaY > 0 ? -0.05 : 0.05)
+      }, { passive: false })
+
+      fitCanvas()
+      window.addEventListener('resize', fitCanvas)
+    </script>
+  </body>
+</html>
