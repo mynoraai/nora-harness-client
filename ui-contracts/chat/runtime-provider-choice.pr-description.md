@@ -6,9 +6,9 @@
 
 ## PM Links
 
-- PM doc: `https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.pm.md`
-- Wireframe preview: `https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.wireframe.html`
-- Wireframe source: `https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.wireframe.html`
+- PM doc: [runtime-provider-choice.pm.md](https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.pm.md)
+- Wireframe preview: [htmlpreview runtime-provider-choice.wireframe.html](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.wireframe.html)
+- Wireframe source: [runtime-provider-choice.wireframe.html](https://github.com/mynoraai/nora-harness-client/blob/pm/runtime-provider-choice-wireframe/ui-contracts/chat/runtime-provider-choice.wireframe.html)
 
 ## Alignment Check
 
