@@ -33,6 +33,7 @@ Code-mode chat tabs reuse some components, but Code-specific tab and workspace b
 
 - `chat-runtime.md` covers the Chat layout, visible controls, history load, composer states, send/stop/reconnect behavior, and message rendering.
 - `client-state-machine.md` explains how `useChat`, `DualStreamHandler`, snapshot reconciliation, slash-command output, draft session saving, and stop-reason normalization make the visible message list change.
+- `composer-runtime-entry.pm.md` and `composer-runtime-entry.wireframe.html` cover PM discussion for the composer runtime/model entry shown in the bottom input surface.
 
 ## Transport And State Dependencies
 
