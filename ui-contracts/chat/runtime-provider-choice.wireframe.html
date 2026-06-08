@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NoraHarness Runtime Provider Choice Wireframe</title>
+    <style>
+      :root {
+        --bg: #f3f4f2;
+        --grid: rgba(37, 43, 39, 0.075);
+        --ink: #242926;
+        --muted: #66706a;
+        --line: #252b27;
+        --frame: #fffefd;
+        --soft: #eef1ef;
+        --ok: #d9ead3;
+        --warn: #fff3cd;
+        --bad: #f8d7da;
+        --blue: #dbeafe;
+        --shadow: rgba(38, 45, 40, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px), var(--bg);
+        background-size: 28px 28px;
+        overflow: hidden;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 5;
+        top: 16px;
+        left: 18px;
+        right: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid rgba(37, 43, 39, 0.16);
+        background: rgba(255, 254, 253, 0.95);
+        box-shadow: 0 18px 38px var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+
+      .subtitle {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      button {
+        min-height: 30px;
+        border: 1px solid rgba(37, 43, 39, 0.18);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 12px;
+        border-radius: 6px;
+        padding: 6px 9px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #f7f8f6;
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        cursor: grab;
+      }
+
+      .stage:active {
+        cursor: grabbing;
+      }
+
+      .canvas {
+        position: absolute;
+        width: 4300px;
+        height: 2500px;
+        transform-origin: 0 0;
+      }
+
+      .frame {
+        position: absolute;
+        border: 1.5px solid var(--line);
+        background: var(--frame);
+        box-shadow: 0 18px 35px var(--shadow);
+        padding: 18px;
+        border-radius: 8px;
+      }
+
+      .frame h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+
+      .caption {
+        margin: 8px 0 14px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .pill,
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 24px;
+        padding: 4px 8px;
+        border: 1px solid rgba(37, 43, 39, 0.18);
+        border-radius: 999px;
+        background: #fff;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .tag {
+        border-radius: 5px;
+        background: var(--soft);
+      }
+
+      .today {
+        background: var(--ok);
+      }
+
+      .proposed {
+        background: var(--blue);
+      }
+
+      .decision {
+        background: var(--warn);
+      }
+
+      .blocking {
+        background: var(--bad);
+      }
+
+      .composer {
+        border: 1px solid #d7ded9;
+        background: #fffefd;
+        border-radius: 22px;
+        padding: 16px;
+        box-shadow: 0 24px 45px rgba(70, 82, 73, 0.14);
+      }
+
+      .textarea {
+        height: 78px;
+        color: #909a94;
+        font-size: 17px;
+        padding: 8px 4px;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-top: 1px dashed rgba(37, 43, 39, 0.18);
+        padding-top: 12px;
+      }
+
+      .tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .icon {
+        width: 34px;
+        height: 34px;
+        border: 1px solid #dce3df;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        font-weight: 700;
+      }
+
+      .send {
+        background: #e7eee9;
+      }
+
+      .list,
+      .state-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 38px;
+        border: 1px solid rgba(37, 43, 39, 0.14);
+        background: #fff;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+
+      .row small {
+        color: var(--muted);
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .box {
+        border: 1px solid rgba(37, 43, 39, 0.16);
+        background: #fff;
+        border-radius: 6px;
+        padding: 12px;
+        min-height: 66px;
+      }
+
+      .box h3 {
+        margin: 0 0 8px;
+        font-size: 13px;
+      }
+
+      .box p,
+      li {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      .arrow {
+        position: absolute;
+        height: 2px;
+        background: var(--line);
+        transform-origin: left center;
+      }
+
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: -5px;
+        width: 0;
+        height: 0;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 10px solid var(--line);
+      }
+
+      .arrow-label {
+        position: absolute;
+        padding: 4px 7px;
+        border: 1px solid rgba(37, 43, 39, 0.16);
+        background: #fff;
+        border-radius: 5px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 11px;
+        color: #44504a;
+      }
+
+      .minimap {
+        position: fixed;
+        z-index: 5;
+        right: 18px;
+        bottom: 18px;
+        width: 240px;
+        border: 1px solid rgba(37, 43, 39, 0.16);
+        background: rgba(255, 254, 253, 0.95);
+        box-shadow: 0 18px 38px var(--shadow);
+        padding: 10px;
+      }
+
+      .minimap h3 {
+        margin: 0 0 8px;
+        font-size: 12px;
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .mini-grid button {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div>
+        <h1>NoraHarness runtime / provider 选择 PM 线框</h1>
+        <div class="subtitle">
+          讨论截图区域：是否暴露 OpenClaw 名称，以及如何让用户区分 coding runtime、provider account 和 model。
+        </div>
+      </div>
+      <div class="controls">
+        <button id="zoomOut">-</button>
+        <button id="fit">Fit</button>
+        <button id="zoomIn">+</button>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <main class="canvas" id="canvas">
+        <section class="frame" id="start" style="left: 120px; top: 120px; width: 560px">
+          <span class="tag today">Today: partial implementation</span>
+          <h2>1. 用户从 composer 开始</h2>
+          <div class="caption">
+            当前截图区域已经是统一 ChatComposer。用户先输入任务，然后在同一行选择 runtime 和 model。
+          </div>
+          <div class="composer">
+            <div class="textarea">Assign a task or ask any question</div>
+            <div class="footer">
+              <div class="tools">
+                <span class="icon">+</span>
+                <span class="pill">OpenClaw</span>
+                <span class="pill">Claude Sonnet 4.6</span>
+              </div>
+              <span class="icon send">↑</span>
+            </div>
+          </div>
+          <p class="caption code">Evidence: ChatComposer.tsx:169, :831, :868, :981</p>
+        </section>
+
+        <section class="frame" id="runtime" style="left: 840px; top: 120px; width: 620px">
+          <span class="tag blocking">Blocking PM decision</span>
+          <h2>2. Runtime 名称</h2>
+          <div class="caption">
+            工程上 `openclaw`、`claude`、`codex` 是 peer runtime。PM 要决定用户是否也看到 OpenClaw。
+          </div>
+          <div class="split">
+            <div class="box">
+              <h3>Option A: expose</h3>
+              <div class="list">
+                <div class="row"><span>OpenClaw</span><small>Gateway-backed</small></div>
+                <div class="row"><span>Claude Code</span><small>ACP stdio</small></div>
+                <div class="row"><span>Codex</span><small>ACP stdio</small></div>
+              </div>
+            </div>
+            <div class="box">
+              <h3>Option B: hide backend name</h3>
+              <div class="list">
+                <div class="row"><span>NoraHarness Default</span><small>recommended</small></div>
+                <div class="row"><span>Claude Code</span><small>requires CLI auth</small></div>
+                <div class="row"><span>Codex</span><small>requires Codex setup</small></div>
+              </div>
+            </div>
+          </div>
+          <p class="caption code">Evidence: runtime-control-plane.ts:41, :49, :72; runtime-types.ts:11</p>
+        </section>
+
+        <section class="frame" id="provider" style="left: 1580px; top: 120px; width: 620px">
+          <span class="tag decision">PM decision</span>
+          <h2>3. Provider 不是 runtime</h2>
+          <div class="caption">
+            Provider 是账号/API/model 来源；runtime 是谁执行 coding session。用户需要能理解这两层。
+          </div>
+          <div class="split">
+            <div class="box">
+              <h3>Runtime layer</h3>
+              <ul>
+                <li>NoraHarness Default / OpenClaw</li>
+                <li>Claude Code</li>
+                <li>Codex</li>
+              </ul>
+            </div>
+            <div class="box">
+              <h3>Provider/model layer</h3>
+              <ul>
+                <li>Anthropic, OpenAI, Google</li>
+                <li>OpenRouter, MiniMax, Local</li>
+                <li>Enabled models in Settings</li>
+              </ul>
+            </div>
+          </div>
+          <p class="caption code">Evidence: ProvidersTab.tsx:65, :316, :716; model-catalog.ts:9, :30</p>
+        </section>
+
+        <section class="frame" id="model" style="left: 2320px; top: 120px; width: 620px">
+          <span class="tag today">Today: implemented</span>
+          <h2>4. Model follows runtime</h2>
+          <div class="caption">
+            Composer already reloads models after runtime change. PM decision is whether this remains two pills or becomes one nested picker.
+          </div>
+          <div class="list">
+            <div class="row"><span>NoraHarness Default</span><small>models from enabled providers</small></div>
+            <div class="row"><span>Claude Code</span><small>Claude runtime catalog</small></div>
+            <div class="row"><span>Codex</span><small>Codex runtime catalog</small></div>
+            <div class="row"><span>No enabled models</span><small>link to Settings Providers</small></div>
+          </div>
+          <p class="caption code">Evidence: ChatComposer.tsx:424, :430, :891, :897</p>
+        </section>
+
+        <section class="frame" id="send" style="left: 3060px; top: 120px; width: 600px">
+          <span class="tag proposed">Proposed</span>
+          <h2>5. Send gate explains the layer</h2>
+          <div class="caption">
+            Disabled send should say whether the missing piece is runtime setup, provider credentials, model availability, or workspace.
+          </div>
+          <div class="state-list">
+            <div class="row"><span>Runtime unavailable</span><small>install / login / retry</small></div>
+            <div class="row"><span>Provider missing</span><small>open Settings Providers</small></div>
+            <div class="row"><span>Model unavailable</span><small>choose another model</small></div>
+            <div class="row"><span>Workspace required</span><small>pick folder</small></div>
+          </div>
+          <p class="caption code">Evidence: runtime-types.ts:33; ChatComposer.tsx:418, :981</p>
+        </section>
+
+        <section class="frame" id="detail-copy" style="left: 120px; top: 780px; width: 720px">
+          <span class="tag decision">PM decision</span>
+          <h2>可见文案对比</h2>
+          <div class="split">
+            <div class="box">
+              <h3>Expose OpenClaw</h3>
+              <ul>
+                <li>Pros: exact match to engineering registry.</li>
+                <li>Pros: easier support/debug mapping.</li>
+                <li>Risk: exposes inherited backend as product brand.</li>
+              </ul>
+            </div>
+            <div class="box">
+              <h3>NoraHarness Default</h3>
+              <ul>
+                <li>Pros: keeps NoraHarness as product center.</li>
+                <li>Pros: avoids implying OpenClaw is another vendor app.</li>
+                <li>Risk: needs secondary support copy for logs/debug.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="frame" id="detail-picker" style="left: 980px; top: 780px; width: 720px">
+          <span class="tag proposed">Picker structure</span>
+          <h2>推荐交互结构</h2>
+          <div class="box">
+            <h3>Composer row</h3>
+            <p>Keep two compact controls: runtime pill first, model pill second. The model pill label changes after runtime selection.</p>
+          </div>
+          <div class="box" style="margin-top: 10px">
+            <h3>Runtime menu row copy</h3>
+            <div class="list">
+              <div class="row"><span>NoraHarness Default</span><small>Best for hardware apps</small></div>
+              <div class="row"><span>Claude Code</span><small>Use your Claude Code install</small></div>
+              <div class="row"><span>Codex</span><small>Use your Codex setup</small></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="frame" id="detail-settings" style="left: 1840px; top: 780px; width: 720px">
+          <span class="tag today">Settings relation</span>
+          <h2>Provider 设置页关系</h2>
+          <div class="caption">
+            Settings Providers remains the place for API keys, base URLs, regions, and enabled model lists.
+          </div>
+          <div class="split">
+            <div class="box">
+              <h3>Composer asks</h3>
+              <ul>
+                <li>Which runtime?</li>
+                <li>Which available model?</li>
+                <li>Can I send now?</li>
+              </ul>
+            </div>
+            <div class="box">
+              <h3>Settings owns</h3>
+              <ul>
+                <li>Provider key / base URL.</li>
+                <li>Enabled model list.</li>
+                <li>Default model.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="frame" id="states" style="left: 2700px; top: 780px; width: 720px">
+          <span class="tag proposed">State language</span>
+          <h2>状态语言</h2>
+          <div class="split">
+            <div class="box">
+              <h3>User-visible</h3>
+              <ul>
+                <li>Ready</li>
+                <li>Setup needed</li>
+                <li>Login required</li>
+                <li>No enabled models</li>
+                <li>Session locked</li>
+              </ul>
+            </div>
+            <div class="box">
+              <h3>Engineering state</h3>
+              <ul>
+                <li>binary-missing</li>
+                <li>auth-required</li>
+                <li>handshake</li>
+                <li>workspace</li>
+                <li>gateway</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="frame" id="readiness" style="left: 120px; top: 1460px; width: 820px">
+          <span class="tag proposed">Engineering readiness</span>
+          <h2>实现就绪度</h2>
+          <div class="split">
+            <div class="box">
+              <h3>Already in code</h3>
+              <ul>
+                <li>Runtime registry has three entries.</li>
+                <li>Composer has runtime and model controls.</li>
+                <li>Model catalog is runtime scoped.</li>
+                <li>Settings Providers manages keys and enabled models.</li>
+              </ul>
+            </div>
+            <div class="box">
+              <h3>Likely changes</h3>
+              <ul>
+                <li>Change user-visible label for openclaw option.</li>
+                <li>Add helper copy for runtime vs provider.</li>
+                <li>Add direct Settings recovery links.</li>
+                <li>Add tests for label and blocked-send states.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="frame" id="pm" style="left: 1080px; top: 1460px; width: 820px">
+          <span class="tag decision">PM needs to decide</span>
+          <h2>PM 拍板清单</h2>
+          <div class="list">
+            <div class="row"><span>OpenClaw 是否可见</span><small>blocking</small></div>
+            <div class="row"><span>默认 runtime 名称</span><small>NoraHarness Default / Local Agent / OpenClaw</small></div>
+            <div class="row"><span>选择模型</span><small>separate pill or nested under runtime</small></div>
+            <div class="row"><span>不可用 runtime</span><small>show disabled setup rows or hide</small></div>
+            <div class="row"><span>推荐默认</span><small>hardware app work starts where?</small></div>
+          </div>
+        </section>
+
+        <section class="frame" id="scope" style="left: 2040px; top: 1460px; width: 760px">
+          <span class="tag today">Scope boundary</span>
+          <h2>不在本稿内</h2>
+          <ul>
+            <li>不改变 OpenClaw Gateway 和 ACP stdio 的工程边界。</li>
+            <li>不新建第二个 prompt panel。</li>
+            <li>不定义新的 backend error code。</li>
+            <li>不重做 Settings Providers 的完整页面信息架构。</li>
+            <li>不重做消息、工具、权限卡片。</li>
+          </ul>
+        </section>
+
+        <div class="arrow" style="left: 700px; top: 345px; width: 115px"></div>
+        <div class="arrow-label" style="left: 715px; top: 314px">choose runtime</div>
+        <div class="arrow" style="left: 1480px; top: 345px; width: 75px"></div>
+        <div class="arrow-label" style="left: 1488px; top: 314px">separate layers</div>
+        <div class="arrow" style="left: 2220px; top: 345px; width: 75px"></div>
+        <div class="arrow-label" style="left: 2228px; top: 314px">load models</div>
+        <div class="arrow" style="left: 2960px; top: 345px; width: 75px"></div>
+        <div class="arrow-label" style="left: 2970px; top: 314px">send gate</div>
+      </main>
+    </div>
+
+    <aside class="minimap">
+      <h3>Jump list</h3>
+      <div class="mini-grid">
+        <button data-jump="start">1 Start</button>
+        <button data-jump="runtime">2 Runtime</button>
+        <button data-jump="provider">3 Provider</button>
+        <button data-jump="model">4 Model</button>
+        <button data-jump="send">5 Send</button>
+        <button data-jump="pm">PM</button>
+      </div>
+    </aside>
+
+    <script>
+      const stage = document.getElementById("stage");
+      const canvas = document.getElementById("canvas");
+      let scale = 0.72;
+      let offsetX = 42;
+      let offsetY = 90;
+      let dragStart = null;
+
+      function render() {
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+      }
+
+      function fit() {
+        scale = Math.min((window.innerWidth - 80) / 3800, (window.innerHeight - 140) / 2000, 0.9);
+        offsetX = 40;
+        offsetY = 92;
+        render();
+      }
+
+      document.getElementById("zoomOut").addEventListener("click", () => {
+        scale = Math.max(0.35, scale - 0.1);
+        render();
+      });
+
+      document.getElementById("zoomIn").addEventListener("click", () => {
+        scale = Math.min(1.25, scale + 0.1);
+        render();
+      });
+
+      document.getElementById("fit").addEventListener("click", fit);
+
+      stage.addEventListener("pointerdown", (event) => {
+        dragStart = { x: event.clientX, y: event.clientY, offsetX, offsetY };
+        stage.setPointerCapture(event.pointerId);
+      });
+
+      stage.addEventListener("pointermove", (event) => {
+        if (!dragStart) return;
+        offsetX = dragStart.offsetX + event.clientX - dragStart.x;
+        offsetY = dragStart.offsetY + event.clientY - dragStart.y;
+        render();
+      });
+
+      stage.addEventListener("pointerup", () => {
+        dragStart = null;
+      });
+
+      document.querySelectorAll("[data-jump]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = document.getElementById(button.dataset.jump);
+          const left = Number.parseFloat(target.style.left);
+          const top = Number.parseFloat(target.style.top);
+          offsetX = 80 - left * scale;
+          offsetY = 110 - top * scale;
+          render();
+        });
+      });
+
+      window.addEventListener("resize", fit);
+      fit();
+    </script>
+  </body>
+</html>
