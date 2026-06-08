@@ -87,6 +87,16 @@
       .errtab .when { color: var(--muted); }
       .legend-grid { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 8px 12px; margin-top: 8px; font-size: 11px; color: var(--muted); align-items: center; }
 
+      .ide-tabs { display: flex; gap: 4px; margin-bottom: 6px; font-size: 10px; }
+      .ide-tabs .tab { padding: 3px 8px; border: 1px solid var(--line); border-bottom: 0; border-radius: 7px 7px 0 0; color: var(--muted); background: #f4f4f1; }
+      .ide-tabs .tab.on { color: #111; font-weight: 650; background: #fff; border-bottom: 2px solid #111; }
+      .ide-mock { display: grid; grid-template-columns: 84px minmax(0,1fr) 88px; gap: 6px; margin-top: 2px; }
+      .ide-pane { border: 1px solid var(--line); border-radius: 8px; padding: 7px; font-size: 10px; color: var(--muted); background: #fafafa; }
+      .ide-pane.editor { background: #fff; }
+      .ide-pane .h { color: #111; font-weight: 650; margin-bottom: 4px; font-size: 10px; }
+      .ide-pane .row { padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .ide-pane .row.on { color: var(--ink); font-weight: 650; }
+
       .track-head { display: grid; grid-template-columns: 110px 1fr 24px 1fr auto; gap: 8px; padding: 0 8px; margin-top: 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
       .track-head span:nth-child(2) { color: var(--yellow); }
       .track-head span:nth-child(4) { color: var(--green); }
@@ -141,7 +151,7 @@
     <header class="topbar">
       <div class="title">
         <strong>Unified Publish Flow — end to end (decided)</strong>
-        <span>Edit agent in the IDE → Publish → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
+        <span>Edit Agent in the IDE → Publish → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
       </div>
       <div class="toolbar" aria-label="Canvas controls">
         <button class="tool-btn" data-zoom="-">Zoom out</button>
@@ -160,14 +170,38 @@
           <h2><span class="step-no">1</span>Open in the IDE</h2>
           <div class="wire-ui">
             <div class="wire-header">
-              <span class="wire-title">noraharness · My agents</span>
+              <span class="wire-title"><span class="seg"><span>Chat</span><span class="on">Code</span></span> &nbsp;·&nbsp; …/weather-station</span>
               <div class="wire-actions">
-                <button class="mini-btn primary hotspot" data-jump="s1-author">Edit agent</button>
+                <button class="mini-btn primary hotspot" data-jump="s1-author">Edit Agent</button>
               </div>
             </div>
             <div class="content">
-              <div class="artifact-row"><span class="rownum">▦</span><div><strong>Weather Station</strong><div class="meta">agent · m5stack-cores3</div></div><span class="status-pill muted">local</span></div>
-              <div class="caption" style="margin-top:8px">The entry point. Pick the agent in the IDE and open it with <strong>Edit agent</strong> — that lands on the agent authoring tab.</div>
+              <div class="ide-tabs"><span class="tab on">Agent · Weather Station</span><span class="tab">hello</span><span class="tab">+</span></div>
+              <div class="ide-mock">
+                <div class="ide-pane">
+                  <div class="h">Agent</div>
+                  <div class="row on">Soul</div>
+                  <div class="row">Style</div>
+                  <div class="row">Tools</div>
+                  <div class="row">Heartbeat</div>
+                  <div class="row">Skills</div>
+                  <div class="row">Capabilities</div>
+                </div>
+                <div class="ide-pane editor">
+                  <div class="h">agent/SOUL.md</div>
+                  <div class="row">CoreS3 Assistant</div>
+                  <div class="row">Identity · Personality</div>
+                  <div class="row">Communication Style</div>
+                </div>
+                <div class="ide-pane">
+                  <div class="h">Files</div>
+                  <div class="row">▸ agent/</div>
+                  <div class="row">▸ build/</div>
+                  <div class="row">▸ docs/</div>
+                  <div class="row">SOUL.md</div>
+                </div>
+              </div>
+              <div class="caption" style="margin-top:8px">The project open in the IDE (Code view, agent authoring tab). Click <strong>Edit Agent</strong> (top-right) to open the authoring surface — that is where the single Publish entry lives.</div>
             </div>
           </div>
         </article>
@@ -254,7 +288,7 @@
         <div class="connector thick" style="left: 1662px; top: 250px; width: 46px"></div>
         <div class="connector thick" style="left: 2182px; top: 250px; width: 46px"></div>
         <div class="connector thick" style="left: 2702px; top: 250px; width: 46px"></div>
-        <div class="arrow-label" style="left: 498px; top: 224px">Edit agent</div>
+        <div class="arrow-label" style="left: 498px; top: 224px">Edit Agent</div>
         <div class="arrow-label" style="left: 1018px; top: 224px">Publish</div>
         <div class="arrow-label" style="left: 1576px; top: 224px">submit for review</div>
         <div class="arrow-label" style="left: 2096px; top: 224px">approved → release</div>
@@ -523,7 +557,7 @@
     <aside class="mini-map" aria-label="Canvas navigation">
       <strong>Jump to frame</strong>
       <button class="head" data-jump="s1-author">The chain</button>
-      <button data-jump="s0-ide">1 · Open in the IDE (Edit agent)</button>
+      <button data-jump="s0-ide">1 · Open in the IDE (Edit Agent)</button>
       <button data-jump="s1-author">2 · Author &amp; Publish</button>
       <button data-jump="s2-hub">3 · Submit for review</button>
       <button data-jump="s4-review">4 · Review → approve (flash &amp; test)</button>
