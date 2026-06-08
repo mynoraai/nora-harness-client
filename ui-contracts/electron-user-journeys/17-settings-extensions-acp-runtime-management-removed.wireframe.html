@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Journey 17 - Settings - Extensions And ACP Runtime Management Removed</title>
+<style>
+:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#eceff1; color:var(--ink); letter-spacing:0; }
+.header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid #c9cdd2; background:rgba(255,255,255,.96); backdrop-filter: blur(8px); }
+.header h1 { margin:0 0 6px; font-size:22px; line-height:1.15; font-weight:760; }
+.header p { margin:0; max-width:920px; color:#494d52; font-size:13px; line-height:1.45; }
+.controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; min-width:286px; }
+button { height:32px; border:1px solid #aeb4bb; background:#fff; color:#222; border-radius:6px; padding:0 10px; font-weight:650; font-size:12px; cursor:pointer; }
+button:hover { background:#f2f5f8; }
+.meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.pill { display:inline-flex; align-items:center; gap:6px; min-height:24px; border:1px solid #c5cbd1; border-radius:999px; padding:3px 9px; background:#fff; font-size:11px; font-weight:700; color:#394047; }
+.pill.partial { background:var(--yellow); border-color:#e5cf81; }
+.pill.implemented { background:var(--green); border-color:#9cd8b2; }
+.pill.not { background:var(--purple); border-color:#c8b7ec; }
+.layout { display:grid; grid-template-columns: 222px 1fr; height:calc(100vh - 95px); min-height:640px; }
+.nav { border-right:1px solid #c9cdd2; background:#f8f9fa; padding:14px; overflow:auto; }
+.nav h2 { margin:0 0 10px; font-size:12px; text-transform:uppercase; color:#626970; }
+.nav button { width:100%; text-align:left; margin:0 0 8px; height:auto; min-height:34px; line-height:1.25; white-space:normal; }
+.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image: linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; }
+.stage { position:absolute; left:28px; top:28px; width:1480px; min-height:1040px; transform-origin:0 0; transition:transform .12s ease; padding:18px 18px 80px; }
+.band { margin:0 0 28px; }
+.band-title { display:flex; align-items:center; gap:10px; margin:0 0 12px; }
+.band-title h3 { margin:0; font-size:15px; }
+.band-title span { color:#60666d; font-size:12px; }
+.flow { display:flex; flex-wrap:wrap; gap:16px; align-items:stretch; }
+.card { width:266px; min-height:172px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:13px; position:relative; }
+.card.main { border-top:6px solid #8bbce8; }
+.card.detail { border-top:6px solid #91d6a6; }
+.card.error { border-top:6px solid #e7be55; }
+.card.decision { background:#fff8dd; border-color:#b58a00; border-top:6px solid #e0b832; }
+.card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
+.card h4 { margin:0 0 8px; font-size:14px; line-height:1.2; }
+.card p { margin:0 0 10px; color:#3e444a; font-size:12px; line-height:1.42; }
+ul { margin:0; padding-left:17px; }
+li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
+.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-4px; margin-right:-4px; }
+.arrow:after { content:""; position:absolute; right:-1px; top:-4px; width:8px; height:8px; border-right:1px solid #7d858c; border-top:1px solid #7d858c; transform:rotate(45deg); background:transparent; }
+.note-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
+.note { border:1px solid #c9cdd2; border-radius:8px; background:#fff; padding:13px; min-height:118px; }
+.note strong { display:block; margin-bottom:7px; font-size:12px; }
+.note p { margin:0; color:#50565c; font-size:12px; line-height:1.42; }
+.footer-space { height:80px; }
+@media (max-width: 900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns: 1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:720px; } }
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <h1>Journey 17 - Settings - Extensions And ACP Runtime Management Removed</h1>
+    <p>The Extensions/ACP runtime management journey is intentionally excluded because the docs and code are marked for removal from this review scope.</p>
+    <div class="meta"><span class="pill not">Maturity: not implemented yet</span><span class="pill">PM decision: Confirm this runtime-management settings journey should stay removed from PM review.</span></div>
+  </div>
+  <div class="controls" aria-label="Canvas controls">
+    <button onclick="zoom(-0.1)">Zoom out</button>
+    <button onclick="zoom(0.1)">Zoom in</button>
+    <button onclick="fit()">Fit</button>
+    <button onclick="scale=1;x=0;y=0;apply()">Reset</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="nav"><h2>Jump list</h2><button onclick="jump('band-0')">Removal path</button><button onclick="jump('band-1')">PM decision</button><button onclick="jump('band-2')">Success state</button><button onclick="jump('band-notes')">Review notes</button></aside>
+  <section class="viewport" aria-label="Wireframe canvas">
+    <div class="stage"><section class="band" id="band-0">
+  <div class="band-title"><h3>Removal path</h3><span>3 frames</span></div>
+  <div class="flow"><article class="card detail"><h4>Journey placeholder</h4><p>This page exists so journey 17 is accounted for while the surface is removed.</p><ul><li>Not an active flow</li><li>No new settings UI</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card detail"><h4>Settings cleanup</h4><p>Any settings navigation item or copy that promises extension/runtime management should be removed or hidden.</p><ul><li>Cleanup target</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card main"><h4>Future brief</h4><p>A future runtime management experience needs a separate scope with owner, safety, and support model.</p><ul><li>New review later</li></ul></article></div>
+</section><section class="band" id="band-1">
+  <div class="band-title"><h3>PM decision</h3><span>2 frames</span></div>
+  <div class="flow"><article class="card blocking"><h4>Do not review as UX</h4><p>PM confirms this is an exclusion marker, not a proposed runtime-management UI.</p><ul><li>Blocking decision</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card decision"><h4>Residual wording</h4><p>Decide whether user-facing language should say plugins, integrations, or omit the concept entirely for now.</p><ul><li>Decision</li></ul></article></div>
+</section><section class="band" id="band-2">
+  <div class="band-title"><h3>Success state</h3><span>2 frames</span></div>
+  <div class="flow"><article class="card detail"><h4>After removal</h4><p>Users no longer see a partially promised management surface in Settings.</p><ul><li>No broken expectation</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card detail"><h4>If reintroduced</h4><p>A new PM package defines install, update, disable, safety, and support states.</p><ul><li>Separate artifact</li></ul></article></div>
+</section><section class="band" id="band-notes">
+  <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
+  <div class="note-row">
+    <div class="note"><strong>Benefits</strong><p>Avoids reviewing a removed management surface. Makes the journey list complete without implying current product commitment.</p></div>
+    <div class="note"><strong>Tradeoffs</strong><p>The placeholder may invite questions about future extensibility. Cleanup may touch several pieces of settings copy.</p></div>
+    <div class="note"><strong>Open questions</strong><p>Should any user-facing plugin wording remain in Settings for the current release?</p></div>
+  </div>
+</section><div class="footer-space"></div></div>
+  </section>
+</main>
+<script>
+let scale = 0.78;
+let x = 0;
+let y = 0;
+const stage = document.querySelector('.stage');
+const viewport = document.querySelector('.viewport');
+function apply() { stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+function fit() {
+  const vw = viewport.clientWidth - 56;
+  const vh = viewport.clientHeight - 56;
+  scale = Math.max(0.35, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 1));
+  x = 0; y = 0; apply();
+}
+function zoom(delta) { scale = Math.max(0.35, Math.min(1.4, scale + delta)); apply(); }
+function jump(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  x = -el.offsetLeft * scale + 22;
+  y = -el.offsetTop * scale + 18;
+  apply();
+}
+let drag = null;
+viewport.addEventListener('pointerdown', (e) => { drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.setPointerCapture(e.pointerId); });
+viewport.addEventListener('pointermove', (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
+viewport.addEventListener('pointerup', () => { drag = null; });
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>

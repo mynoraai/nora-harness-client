@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Journey 06 - Code Workspace Files, Diff, Terminal, Right Panel</title>
+<style>
+:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#eceff1; color:var(--ink); letter-spacing:0; }
+.header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid #c9cdd2; background:rgba(255,255,255,.96); backdrop-filter: blur(8px); }
+.header h1 { margin:0 0 6px; font-size:22px; line-height:1.15; font-weight:760; }
+.header p { margin:0; max-width:920px; color:#494d52; font-size:13px; line-height:1.45; }
+.controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; min-width:286px; }
+button { height:32px; border:1px solid #aeb4bb; background:#fff; color:#222; border-radius:6px; padding:0 10px; font-weight:650; font-size:12px; cursor:pointer; }
+button:hover { background:#f2f5f8; }
+.meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.pill { display:inline-flex; align-items:center; gap:6px; min-height:24px; border:1px solid #c5cbd1; border-radius:999px; padding:3px 9px; background:#fff; font-size:11px; font-weight:700; color:#394047; }
+.pill.partial { background:var(--yellow); border-color:#e5cf81; }
+.pill.implemented { background:var(--green); border-color:#9cd8b2; }
+.pill.not { background:var(--purple); border-color:#c8b7ec; }
+.layout { display:grid; grid-template-columns: 222px 1fr; height:calc(100vh - 95px); min-height:640px; }
+.nav { border-right:1px solid #c9cdd2; background:#f8f9fa; padding:14px; overflow:auto; }
+.nav h2 { margin:0 0 10px; font-size:12px; text-transform:uppercase; color:#626970; }
+.nav button { width:100%; text-align:left; margin:0 0 8px; height:auto; min-height:34px; line-height:1.25; white-space:normal; }
+.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image: linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; }
+.stage { position:absolute; left:28px; top:28px; width:1480px; min-height:1040px; transform-origin:0 0; transition:transform .12s ease; padding:18px 18px 80px; }
+.band { margin:0 0 28px; }
+.band-title { display:flex; align-items:center; gap:10px; margin:0 0 12px; }
+.band-title h3 { margin:0; font-size:15px; }
+.band-title span { color:#60666d; font-size:12px; }
+.flow { display:flex; flex-wrap:wrap; gap:16px; align-items:stretch; }
+.card { width:266px; min-height:172px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:13px; position:relative; }
+.card.main { border-top:6px solid #8bbce8; }
+.card.detail { border-top:6px solid #91d6a6; }
+.card.error { border-top:6px solid #e7be55; }
+.card.decision { background:#fff8dd; border-color:#b58a00; border-top:6px solid #e0b832; }
+.card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
+.card h4 { margin:0 0 8px; font-size:14px; line-height:1.2; }
+.card p { margin:0 0 10px; color:#3e444a; font-size:12px; line-height:1.42; }
+ul { margin:0; padding-left:17px; }
+li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
+.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-4px; margin-right:-4px; }
+.arrow:after { content:""; position:absolute; right:-1px; top:-4px; width:8px; height:8px; border-right:1px solid #7d858c; border-top:1px solid #7d858c; transform:rotate(45deg); background:transparent; }
+.note-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
+.note { border:1px solid #c9cdd2; border-radius:8px; background:#fff; padding:13px; min-height:118px; }
+.note strong { display:block; margin-bottom:7px; font-size:12px; }
+.note p { margin:0; color:#50565c; font-size:12px; line-height:1.42; }
+.footer-space { height:80px; }
+@media (max-width: 900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns: 1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:720px; } }
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <h1>Journey 06 - Code Workspace Files, Diff, Terminal, Right Panel</h1>
+    <p>The code workspace gives users one place to inspect files, changes, terminal output, device work, preview output, and session context.</p>
+    <div class="meta"><span class="pill partial">Maturity: partial</span><span class="pill">PM decision: Confirm the right-panel information hierarchy for repeated code review and hardware work.</span></div>
+  </div>
+  <div class="controls" aria-label="Canvas controls">
+    <button onclick="zoom(-0.1)">Zoom out</button>
+    <button onclick="zoom(0.1)">Zoom in</button>
+    <button onclick="fit()">Fit</button>
+    <button onclick="scale=1;x=0;y=0;apply()">Reset</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="nav"><h2>Jump list</h2><button onclick="jump('band-0')">Main path</button><button onclick="jump('band-1')">Detail states</button><button onclick="jump('band-2')">PM decisions</button><button onclick="jump('band-notes')">Review notes</button></aside>
+  <section class="viewport" aria-label="Wireframe canvas">
+    <div class="stage"><section class="band" id="band-0">
+  <div class="band-title"><h3>Main path</h3><span>5 frames</span></div>
+  <div class="flow"><article class="card detail"><h4>Workspace shell</h4><p>Top bar shows current workspace, branch/status if available, and the active code session.</p><ul><li>Stable layout</li><li>No jumpy resizing</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card main"><h4>Files tab</h4><p>User browses changed and relevant files without leaving the session.</p><ul><li>Open file</li><li>Search/filter</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card main"><h4>Diff tab</h4><p>Changed files show readable before/after context and review actions.</p><ul><li>File chips</li><li>Change summary</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card detail"><h4>Terminal band</h4><p>Commands and logs are grouped at the bottom with clear running/finished status.</p><ul><li>Stop command</li><li>Copy output</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card detail"><h4>Right panel</h4><p>Device, preview, and session details live in predictable tabs rather than separate windows.</p><ul><li>Resizable</li><li>Remember last tab</li></ul></article></div>
+</section><section class="band" id="band-1">
+  <div class="band-title"><h3>Detail states</h3><span>3 frames</span></div>
+  <div class="flow"><article class="card error"><h4>No active workspace</h4><p>Panel explains why file and terminal tools are unavailable and points to workspace creation.</p><ul><li>Actionable empty state</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card main"><h4>Many changes</h4><p>Diff list groups changes by purpose and lets users jump to important files first.</p><ul><li>Scannable review</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card main"><h4>Terminal history</h4><p>Recent commands remain accessible without flooding the transcript.</p><ul><li>Compact logs</li></ul></article></div>
+</section><section class="band" id="band-2">
+  <div class="band-title"><h3>PM decisions</h3><span>2 frames</span></div>
+  <div class="flow"><article class="card decision"><h4>Default tab</h4><p>Decide whether Files, Diff, or Device should be the first right-panel tab.</p><ul><li>Decision</li></ul></article>
+<div class="arrow" aria-hidden="true"></div>
+<article class="card decision"><h4>Terminal visibility</h4><p>Decide whether the terminal is always visible, collapsed by default, or shown only during commands.</p><ul><li>Decision</li></ul></article></div>
+</section><section class="band" id="band-notes">
+  <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
+  <div class="note-row">
+    <div class="note"><strong>Benefits</strong><p>Review and runtime context stay in one workspace. Users can audit what changed without losing the conversation.</p></div>
+    <div class="note"><strong>Tradeoffs</strong><p>A dense workspace needs disciplined spacing. Too many tabs can hide important hardware status.</p></div>
+    <div class="note"><strong>Open questions</strong><p>Should PM separate software-only and hardware-enabled workspace defaults?</p></div>
+  </div>
+</section><div class="footer-space"></div></div>
+  </section>
+</main>
+<script>
+let scale = 0.78;
+let x = 0;
+let y = 0;
+const stage = document.querySelector('.stage');
+const viewport = document.querySelector('.viewport');
+function apply() { stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+function fit() {
+  const vw = viewport.clientWidth - 56;
+  const vh = viewport.clientHeight - 56;
+  scale = Math.max(0.35, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 1));
+  x = 0; y = 0; apply();
+}
+function zoom(delta) { scale = Math.max(0.35, Math.min(1.4, scale + delta)); apply(); }
+function jump(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  x = -el.offsetLeft * scale + 22;
+  y = -el.offsetTop * scale + 18;
+  apply();
+}
+let drag = null;
+viewport.addEventListener('pointerdown', (e) => { drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.setPointerCapture(e.pointerId); });
+viewport.addEventListener('pointermove', (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
+viewport.addEventListener('pointerup', () => { drag = null; });
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>
