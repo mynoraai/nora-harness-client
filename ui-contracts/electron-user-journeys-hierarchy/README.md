@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-09
 
-This folder reorganizes the flat 20-file journey set into level 1 user-goal journeys and level 2 interaction journeys. Journey 21 is a newly identified missing login/account journey. The original flat folder is intentionally left untouched; a backup copy exists at `../electron-user-journeys-flat-backup-2026-06-09`.
+This folder is the canonical Electron user journey workspace. It reorganizes the original flat journey set into level 1 user-goal journeys and level 2 interaction journeys. Journey 21 is a newly identified missing login/account journey.
 
 ## Structure
 
