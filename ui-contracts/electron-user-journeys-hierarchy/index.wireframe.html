@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Electron User Journeys - Hierarchical Map</title>
+<style>
+:root { color-scheme: light; --ink:#191919; --muted:#5a626a; --line:#c9cdd2; --grid:#d9dee3; --bg:#eef1f4; --current:#dff3e8; --verify:#fff3cd; --future:#eee7ff; --removed:#f8d7da; --blue:#dceeff; }
+* { box-sizing:border-box; }
+body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#eceff1; color:var(--ink); letter-spacing:0; }
+.header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.96); backdrop-filter:blur(8px); }
+.header h1 { margin:0 0 6px; font-size:22px; line-height:1.15; }
+.header p { margin:0; max-width:980px; color:#494d52; font-size:13px; line-height:1.45; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; min-width:286px; justify-content:flex-end; }
+button { height:32px; border:1px solid #aeb4bb; background:#fff; color:#222; border-radius:6px; padding:0 10px; font-weight:650; font-size:12px; cursor:pointer; }
+button:hover { background:#f2f5f8; }
+.layout { display:grid; grid-template-columns:250px 1fr; height:calc(100vh - 96px); min-height:660px; }
+.nav { border-right:1px solid var(--line); background:#f8f9fa; padding:14px; overflow:auto; }
+.nav h2 { margin:0 0 10px; font-size:12px; color:#626970; text-transform:uppercase; }
+.nav button { display:block; width:100%; height:auto; min-height:34px; margin:0 0 8px; text-align:left; white-space:normal; line-height:1.25; }
+.viewport { position:relative; overflow:hidden; background-color:var(--bg); background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size:24px 24px; cursor:grab; user-select:none; touch-action:none; overscroll-behavior:contain; }
+.viewport.dragging { cursor:grabbing; }
+.stage { position:absolute; left:28px; top:28px; width:2400px; min-height:1500px; transform-origin:0 0; padding:18px 18px 120px; will-change:transform; }
+.grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:22px; align-items:start; }
+.l1-card { min-height:220px; border:1px solid #2d3339; border-radius:8px; background:#fff; box-shadow:0 8px 18px rgba(30,38,48,.1); padding:16px; border-top:7px solid #8bbce8; }
+.l1-card.current { border-top-color:#8fd2a7; }
+.l1-card.verify { border-top-color:#e4c053; }
+.l1-card.future { border-top-color:#b9a5ef; }
+.l1-card.removed { border-top-color:#df7373; }
+.l1-head { display:grid; grid-template-columns:52px 1fr; gap:14px; align-items:start; }
+.l1-head > span { display:grid; place-items:center; width:52px; height:52px; border-radius:12px; background:#f1f3f4; font-weight:850; font-size:20px; }
+h2 { margin:0 0 6px; font-size:20px; }
+p { margin:0; color:#4e555c; font-size:13px; line-height:1.42; }
+.status { display:inline-flex; margin:14px 0 12px; border:1px solid #c5cbd1; border-radius:999px; padding:4px 10px; background:#fff; font-size:12px; font-weight:750; color:#374047; }
+.l2-list { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; }
+.l2-card { display:block; min-height:72px; border:1px solid #d8dde2; border-radius:7px; background:#fbfcfd; padding:11px; color:inherit; text-decoration:none; }
+.l2-card:hover { border-color:#8bbce8; background:#f4f9ff; }
+.l2-card strong { display:block; margin-bottom:7px; font-size:13px; line-height:1.25; }
+.l2-card span { display:inline-flex; color:#59616a; font-size:11px; font-weight:700; }
+@media (max-width: 900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns:1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid var(--line); max-height:220px; } .viewport { height:760px; } }
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <h1>Electron User Journeys - Hierarchical Map</h1>
+    <p>Level 1 journeys are user goals or product areas. Level 2 journeys preserve the original 20 numbered inventory items under those goals. Journey 21 is a newly identified missing login/account journey.</p>
+  </div>
+  <div class="controls" aria-label="Canvas controls">
+    <button onclick="zoom(-0.1)">Zoom out</button>
+    <button onclick="zoom(0.1)">Zoom in</button>
+    <button onclick="fit()">Fit</button>
+    <button onclick="scale=1;x=0;y=0;apply()">Reset</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="nav"><h2>Level 1 Journeys</h2><button onclick="jump('l1-01')">01. First Launch</button>
+<button onclick="jump('l1-02')">02. Main App Startup</button>
+<button onclick="jump('l1-03')">03. Account Login</button>
+<button onclick="jump('l1-04')">04. Chat</button>
+<button onclick="jump('l1-05')">05. Code Workspace</button>
+<button onclick="jump('l1-06')">06. Agent Authoring</button>
+<button onclick="jump('l1-07')">07. Publish And Release</button>
+<button onclick="jump('l1-08')">08. Hardware Device Work</button>
+<button onclick="jump('l1-09')">09. Settings</button>
+<button onclick="jump('l1-10')">10. Scheduled Tasks / Automations</button>
+<button onclick="jump('l1-11')">11. Removed / Historical Surfaces</button></aside>
+  <section class="viewport" aria-label="Journey hierarchy canvas"><div class="stage"><div class="grid">
+<section class="l1-card current" id="l1-01">
+  <div class="l1-head"><span>01</span><div><h2>First Launch</h2><p>A new user completes onboarding before the normal Chat/Code shell appears.</p></div></div>
+  <div class="status">current</div>
+  <div class="l2-list">
+    <a class="l2-card" href="01-first-launch/01-first-launch-and-base-setup.wireframe.html"><strong>01. First Launch Onboarding</strong><span>current</span></a>
+  </div>
+</section>
+
+<section class="l1-card current" id="l1-02">
+  <div class="l1-head"><span>02</span><div><h2>Main App Startup</h2><p>A returning user opens the app, sees gateway health, and resumes the last useful mode.</p></div></div>
+  <div class="status">current</div>
+  <div class="l2-list">
+    <a class="l2-card" href="02-main-app-startup/02-main-app-startup-gateway-status.wireframe.html"><strong>02. Startup And Gateway Status</strong><span>current</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-03">
+  <div class="l1-head"><span>03</span><div><h2>Account Login</h2><p>A user signs in, creates an account, restores authenticated state, and recovers when authentication is interrupted.</p></div></div>
+  <div class="status">current screenshot reference</div>
+  <div class="l2-list">
+    <a class="l2-card" href="03-account-login/21-account-login-and-session.wireframe.html"><strong>21. Account Login And Session</strong><span>current screenshot reference</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-04">
+  <div class="l1-head"><span>04</span><div><h2>Chat</h2><p>A user creates or resumes a conversation, chooses model/runtime, sends messages, and recovers from blocked states.</p></div></div>
+  <div class="status">current / needs visual verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="03-chat/03-chat-mode-conversation.wireframe.html"><strong>03. Chat Mode Conversation</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-05">
+  <div class="l1-head"><span>05</span><div><h2>Code Workspace</h2><p>A developer opens a local workspace, starts code sessions, manages runtime/model/permission state, and reviews files, diffs, terminal output, and panels.</p></div></div>
+  <div class="status">current / needs visual verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="04-code-workspace/04-create-code-workspace-and-start-code-session.wireframe.html"><strong>04. Create Code Workspace And Start Code Session</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="04-code-workspace/05-code-mode-runtime-models-permissions.wireframe.html"><strong>05. Code Mode Runtime, Models, And Permissions</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="04-code-workspace/06-code-workspace-files-diff-terminal-right-panel.wireframe.html"><strong>06. Code Workspace Files, Diff, Terminal, Right Panel</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-06">
+  <div class="l1-head"><span>06</span><div><h2>Agent Authoring</h2><p>A developer edits agent/package content and reaches a publish-ready state.</p></div></div>
+  <div class="status">current / needs visual verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="05-agent-authoring/07-agent-authoring.wireframe.html"><strong>07. Agent Authoring</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-07">
+  <div class="l1-head"><span>07</span><div><h2>Publish And Release</h2><p>An author publishes package metadata and manages firmware release artifacts where applicable.</p></div></div>
+  <div class="status">needs verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="06-publish-preview-release/08-publish-agent-review-edit-catalog-info.wireframe.html"><strong>08. Publish Agent, Review, Edit Catalog Info</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="06-publish-preview-release/10-firmware-publish.wireframe.html"><strong>10. Firmware Publish</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-08">
+  <div class="l1-head"><span>08</span><div><h2>Hardware Device Work</h2><p>A hardware developer checks device readiness, logs, PlatformIO state, and LVGL preview behavior.</p></div></div>
+  <div class="status">needs verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="07-hardware-device/12-device-status-platformio-device-logs.wireframe.html"><strong>12. Device Status, PlatformIO, Device Logs</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="07-hardware-device/13-lvgl-preview.wireframe.html"><strong>13. LVGL Preview</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card verify" id="l1-09">
+  <div class="l1-head"><span>09</span><div><h2>Settings</h2><p>A user manages app settings, workspace files, providers/default models, permissions, and updates.</p></div></div>
+  <div class="status">current / needs visual verification</div>
+  <div class="l2-list">
+    <a class="l2-card" href="08-settings/14-settings-general.wireframe.html"><strong>14. Settings - General</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="08-settings/15-settings-workspace-files.wireframe.html"><strong>15. Settings - Workspace Files</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="08-settings/16-settings-providers-default-model.wireframe.html"><strong>16. Settings - Providers And Default Model</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="08-settings/18-settings-permissions.wireframe.html"><strong>18. Settings - Permissions</strong><span>needs visual verification</span></a>
+    <a class="l2-card" href="08-settings/19-settings-about-and-updates.wireframe.html"><strong>19. Settings - About And Updates</strong><span>needs visual verification</span></a>
+  </div>
+</section>
+
+<section class="l1-card future" id="l1-10">
+  <div class="l1-head"><span>10</span><div><h2>Scheduled Tasks / Automations</h2><p>A priority concept for reminders, recurring jobs, and conversation-derived task drafts; not yet a confirmed current UI surface.</p></div></div>
+  <div class="status">not current surface</div>
+  <div class="l2-list">
+    <a class="l2-card" href="09-scheduled-tasks/20-scheduled-tasks-cron-jobs.wireframe.html"><strong>20. Scheduled Tasks / Cron Jobs</strong><span>not current surface</span></a>
+  </div>
+</section>
+
+<section class="l1-card removed" id="l1-11">
+  <div class="l1-head"><span>11</span><div><h2>Removed / Historical Surfaces</h2><p>Numbered slots retained to show removed surfaces that should not be drawn as active journeys.</p></div></div>
+  <div class="status">removed</div>
+  <div class="l2-list">
+    <a class="l2-card" href="06-publish-preview-release/09-mobile-preview.wireframe.html"><strong>09. Mobile Preview</strong><span>document hidden; code retained</span></a>
+    <a class="l2-card" href="10-removed-historical/11-cloud-deploy-removed.wireframe.html"><strong>11. Cloud Deploy</strong><span>removed</span></a>
+    <a class="l2-card" href="10-removed-historical/17-settings-extensions-acp-runtime-management-removed.wireframe.html"><strong>17. Settings - Extensions / ACP Runtime Management</strong><span>removed</span></a>
+  </div>
+</section></div></div></section>
+</main>
+<script>
+let scale = 0.72;
+let x = 0;
+let y = 0;
+const stage = document.querySelector('.stage');
+const viewport = document.querySelector('.viewport');
+function apply() { stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+function clampScale(next) { return Math.max(0.35, Math.min(1.4, next)); }
+function fit() {
+  const vw = viewport.clientWidth - 56;
+  const vh = viewport.clientHeight - 56;
+  scale = Math.max(0.35, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 1));
+  x = 0; y = 0; apply();
+}
+function zoom(delta) { scale = clampScale(scale + delta); apply(); }
+function zoomAt(clientX, clientY, factor) {
+  const rect = viewport.getBoundingClientRect();
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  const canvasX = (localX - x) / scale;
+  const canvasY = (localY - y) / scale;
+  scale = clampScale(scale * factor);
+  x = localX - canvasX * scale;
+  y = localY - canvasY * scale;
+  apply();
+}
+function jump(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  x = -el.offsetLeft * scale + 22;
+  y = -el.offsetTop * scale + 18;
+  apply();
+}
+let drag = null;
+viewport.addEventListener('pointerdown', (e) => { e.preventDefault(); drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.classList.add('dragging'); viewport.setPointerCapture(e.pointerId); });
+viewport.addEventListener('pointermove', (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
+function endDrag(e) { drag = null; viewport.classList.remove('dragging'); if (e && viewport.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId); }
+viewport.addEventListener('pointerup', endDrag);
+viewport.addEventListener('pointercancel', endDrag);
+viewport.addEventListener('wheel', (e) => { e.preventDefault(); if (e.ctrlKey || e.metaKey) { zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.002)); return; } x -= e.deltaX; y -= e.deltaY; apply(); }, { passive:false });
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>
