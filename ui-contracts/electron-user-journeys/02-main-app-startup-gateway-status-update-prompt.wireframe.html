@@ -5,49 +5,127 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Journey 02 - Main App Startup, Gateway Status, Update Prompt</title>
 <style>
-:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; }
+:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; --accent:#2f6fa3; --warn:#a56b00; --danger:#a3493d; --ok:#347a4d; }
 * { box-sizing: border-box; }
 body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#eceff1; color:var(--ink); letter-spacing:0; }
-.header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid #c9cdd2; background:rgba(255,255,255,.96); backdrop-filter: blur(8px); }
+.header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid #c9cdd2; background:rgba(255,255,255,.96); backdrop-filter:blur(8px); }
 .header h1 { margin:0 0 6px; font-size:22px; line-height:1.15; font-weight:760; }
-.header p { margin:0; max-width:920px; color:#494d52; font-size:13px; line-height:1.45; }
+.header p { margin:0; max-width:980px; color:#494d52; font-size:13px; line-height:1.45; }
 .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; min-width:286px; }
 button { height:32px; border:1px solid #aeb4bb; background:#fff; color:#222; border-radius:6px; padding:0 10px; font-weight:650; font-size:12px; cursor:pointer; }
 button:hover { background:#f2f5f8; }
 .meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .pill { display:inline-flex; align-items:center; gap:6px; min-height:24px; border:1px solid #c5cbd1; border-radius:999px; padding:3px 9px; background:#fff; font-size:11px; font-weight:700; color:#394047; }
 .pill.partial { background:var(--yellow); border-color:#e5cf81; }
-.pill.implemented { background:var(--green); border-color:#9cd8b2; }
-.pill.not { background:var(--purple); border-color:#c8b7ec; }
-.layout { display:grid; grid-template-columns: 222px 1fr; height:calc(100vh - 95px); min-height:640px; }
+.layout { display:grid; grid-template-columns:222px 1fr; height:calc(100vh - 95px); min-height:640px; }
 .nav { border-right:1px solid #c9cdd2; background:#f8f9fa; padding:14px; overflow:auto; }
 .nav h2 { margin:0 0 10px; font-size:12px; text-transform:uppercase; color:#626970; }
 .nav button { width:100%; text-align:left; margin:0 0 8px; height:auto; min-height:34px; line-height:1.25; white-space:normal; }
-.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image: linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; }
-.stage { position:absolute; left:28px; top:28px; width:1480px; min-height:1040px; transform-origin:0 0; transition:transform .12s ease; padding:18px 18px 80px; }
-.band { margin:0 0 28px; }
+.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image:linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; cursor:grab; user-select:none; touch-action:none; overscroll-behavior:contain; }
+.viewport.dragging { cursor:grabbing; }
+.stage { position:absolute; left:28px; top:28px; width:3100px; min-height:1740px; transform-origin:0 0; padding:18px 18px 120px; will-change:transform; }
+.band { margin:0 0 34px; }
 .band-title { display:flex; align-items:center; gap:10px; margin:0 0 12px; }
 .band-title h3 { margin:0; font-size:15px; }
 .band-title span { color:#60666d; font-size:12px; }
-.flow { display:flex; flex-wrap:wrap; gap:16px; align-items:stretch; }
-.card { width:266px; min-height:172px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:13px; position:relative; }
-.card.main { border-top:6px solid #8bbce8; }
-.card.detail { border-top:6px solid #91d6a6; }
-.card.error { border-top:6px solid #e7be55; }
-.card.decision { background:#fff8dd; border-color:#b58a00; border-top:6px solid #e0b832; }
-.card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
-.card h4 { margin:0 0 8px; font-size:14px; line-height:1.2; }
-.card p { margin:0 0 10px; color:#3e444a; font-size:12px; line-height:1.42; }
-ul { margin:0; padding-left:17px; }
-li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
-.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-4px; margin-right:-4px; }
+.flow { display:flex; flex-wrap:wrap; gap:28px; align-items:stretch; }
+.wire-card { width:680px; min-height:690px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:16px; position:relative; }
+.wire-card.main { border-top:6px solid #8bbce8; }
+.wire-card.detail { border-top:6px solid #91d6a6; }
+.wire-card.error { border-top:6px solid #e7be55; }
+.wire-card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
+.wire-card h4 { margin:0 0 8px; font-size:18px; line-height:1.2; }
+.wire-card > p { margin:0 0 12px; color:#4b5157; font-size:14px; line-height:1.4; }
+.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-6px; margin-right:-6px; }
 .arrow:after { content:""; position:absolute; right:-1px; top:-4px; width:8px; height:8px; border-right:1px solid #7d858c; border-top:1px solid #7d858c; transform:rotate(45deg); background:transparent; }
-.note-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
+.mini-app { width:648px; height:508px; border:1px solid #c7ccd1; border-radius:8px; overflow:hidden; background:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.8); }
+.desktop-screen { width:1200px; height:940px; transform:scale(.54); transform-origin:top left; background:#f7f2ea; overflow:hidden; }
+.traffic { display:flex; gap:8px; align-items:center; }
+.traffic span { width:13px; height:13px; border-radius:50%; background:#ff5f57; }
+.traffic span:nth-child(2) { background:#ffbd2e; }
+.traffic span:nth-child(3) { background:#28c840; }
+.app-shell { height:940px; background:#f7f2ea; color:#202124; }
+.chat-shell { display:grid; grid-template-columns:270px 1fr; }
+.code-shell { display:grid; grid-template-columns:250px 1fr 310px; }
+.side { border-right:1px solid #ddd7cf; background:#efe8de; padding:14px 14px 0; display:flex; flex-direction:column; min-width:0; }
+.side-top { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px; min-height:44px; margin-bottom:10px; }
+.mode-tabs { justify-self:center; display:flex; gap:4px; padding:3px; border-radius:10px; background:#e7ded2; }
+.mode-tab { min-height:34px; display:flex; align-items:center; justify-content:center; padding:0 16px; border-radius:8px; color:#5b5752; font-size:16px; font-weight:800; }
+.mode-tab.active { background:#fff; color:#151515; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+.icon-btn { display:grid; place-items:center; width:30px; height:30px; border-radius:7px; color:#4b4742; font-size:18px; font-weight:800; }
+.search { height:42px; display:flex; align-items:center; gap:10px; border:1px solid #e5ddd2; border-radius:12px; background:#fff; padding:0 14px; color:#6d6963; font-size:17px; margin-bottom:18px; }
+.side-section { margin:14px 10px 8px; color:#6f6961; font-size:13px; font-weight:850; text-transform:uppercase; }
+.session-row { min-height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-radius:9px; padding:0 12px; color:#242424; font-size:16px; }
+.session-row.active { background:#e3d4c4; }
+.session-row .time { color:#6f6961; font-size:14px; }
+.side-footer { margin-top:auto; border-top:1px solid #ddd7cf; padding:14px 10px 18px; display:grid; gap:14px; color:#4e4a45; font-size:16px; font-weight:750; }
+.footer-row { display:flex; align-items:center; gap:12px; }
+.content { position:relative; min-width:0; background:#f8f4ed; display:flex; flex-direction:column; }
+.chat-head { min-height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; color:#111; font-size:20px; font-weight:850; }
+.model-pill { display:inline-flex; align-items:center; gap:8px; min-height:34px; border:1px solid #ded8cc; border-radius:999px; background:#fdfaf5; padding:0 14px; color:#3d3934; font-size:15px; font-weight:800; }
+.gateway-strip { min-height:46px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 20px; border:1px solid #ded8cc; border-radius:12px; background:#fffdf8; padding:0 14px; color:#4c4842; font-size:15px; }
+.gateway-strip.warn { border-color:rgba(165,107,0,.35); background:#fff4dd; }
+.gateway-strip.danger { border-color:rgba(163,73,61,.35); background:#fff0ef; }
+.gateway-strip.info { border-color:rgba(47,111,163,.28); background:#eef6ff; }
+.gateway-strip.ok { border-color:rgba(52,122,77,.34); background:#effaf3; }
+.chat-work { flex:1; min-height:0; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 34px 140px; }
+.hero-icon { display:grid; place-items:center; width:78px; height:78px; border-radius:22px; background:#ead8c4; color:#9d6638; font-size:34px; margin-bottom:28px; box-shadow:0 12px 36px rgba(91,63,36,.14); }
+.hero-title { margin:0; max-width:760px; text-align:center; font-size:34px; line-height:1.12; font-weight:900; }
+.hero-copy { margin:20px 0 0; max-width:720px; color:#56524d; text-align:center; font-size:18px; line-height:1.45; }
+.suggestions { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:34px; }
+.suggestion { min-height:48px; border:1px solid #ded8cc; border-radius:16px; background:#fffdf8; padding:0 20px; display:flex; align-items:center; font-size:16px; font-weight:760; }
+.composer { position:absolute; left:32px; right:32px; bottom:26px; min-height:92px; border:1px solid #ded8cc; border-radius:22px; background:#fffdf8; box-shadow:0 12px 38px rgba(66,48,30,.10); padding:16px 18px; display:grid; grid-template-rows:1fr auto; gap:12px; color:#77716b; font-size:17px; }
+.composer-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.composer-tools { display:flex; align-items:center; gap:10px; }
+.send { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:#c99a69; color:#fff; font-weight:900; }
+.send.disabled { background:#cfc6ba; }
+.toast { position:absolute; right:28px; top:82px; width:350px; border:1px solid #ded8cc; border-radius:16px; background:#fffdf8; padding:18px; box-shadow:0 18px 42px rgba(28,36,48,.18); z-index:2; }
+.toast h5 { margin:10px 0 8px; font-size:20px; }
+.toast p { margin:0; color:#5f5a54; font-size:15px; line-height:1.4; }
+.toast-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
+.btn { display:inline-flex; justify-content:center; align-items:center; min-height:38px; border:1px solid #cfc8bc; border-radius:10px; background:#fffdf8; padding:0 16px; font-size:14px; font-weight:800; }
+.btn.primary { border-color:#8a571f; background:#c77a2f; color:#fff; }
+.btn.disabled { border-color:#b9b4ad; background:#aaa49a; color:#fff; }
+.status-card { border:1px solid #ded8cc; border-radius:14px; background:#fffdf8; padding:18px; }
+.status-card h5 { margin:0 0 8px; font-size:20px; }
+.status-card p { margin:0; color:#5f5a54; font-size:16px; line-height:1.4; }
+.code-center { min-width:0; border-right:1px solid #ddd7cf; background:#f8f4ed; display:grid; grid-template-rows:56px 1fr 106px; }
+.code-tabs { display:flex; align-items:end; gap:0; padding:0 12px; border-bottom:1px solid #ddd7cf; }
+.code-tab { min-width:220px; min-height:42px; border:1px solid #ddd7cf; border-bottom:0; border-radius:8px 8px 0 0; background:#f4eee6; padding:12px 16px; font-size:15px; }
+.code-tab.active { background:#f8f4ed; font-weight:850; }
+.code-body { position:relative; padding:24px 36px; overflow:hidden; }
+.code-card { border:1px solid #ddd7cf; border-radius:10px; background:#fffdf8; padding:18px; margin-bottom:18px; }
+.code-card h5 { margin:0 0 12px; font-size:22px; }
+.code-card p { margin:0; color:#55514c; font-size:16px; line-height:1.4; }
+.tool-row { display:flex; align-items:center; justify-content:space-between; min-height:48px; border:1px solid #d9d4cd; border-radius:8px; background:#fff; padding:0 14px; font-size:16px; font-weight:800; }
+.code-composer { margin:0 22px 18px; border:1px solid #ded8cc; border-radius:22px; background:#fffdf8; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; color:#77716b; font-size:17px; }
+.right-panel { background:#ede3d8; display:grid; grid-template-rows:56px 1fr 42px; min-width:0; }
+.right-tabs { display:flex; align-items:end; gap:6px; padding:0 12px; border-bottom:1px solid #d7cbbd; }
+.right-tab { min-height:36px; display:flex; align-items:center; padding:0 14px; border-radius:9px 9px 0 0; color:#5b554f; font-size:15px; font-weight:800; }
+.right-tab.active { background:#fffdf8; color:#151515; }
+.file-list { padding:16px; display:grid; align-content:start; gap:10px; }
+.file-row { min-height:42px; display:flex; align-items:center; gap:10px; border-radius:8px; background:#e6dbcf; padding:0 12px; font-size:15px; }
+.terminal-bar { display:flex; align-items:center; gap:24px; padding:0 16px; border-top:1px solid #d7cbbd; background:#f8f4ed; font-size:14px; font-weight:800; }
+.row { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.grid2 { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
+.grid3 { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+.status { display:inline-flex; align-items:center; min-height:30px; border:1px solid #c5cbd1; border-radius:99px; padding:4px 12px; font-size:13px; font-weight:800; white-space:nowrap; }
+.status.ok { border-color:rgba(52,122,77,.35); background:rgba(52,122,77,.1); color:#347a4d; }
+.status.warn { border-color:rgba(154,101,0,.32); background:rgba(244,215,186,.7); color:#9a6500; }
+.status.info { border-color:rgba(47,111,163,.3); background:rgba(47,111,163,.09); color:#2f6fa3; }
+.status.danger { border-color:rgba(163,73,61,.35); background:rgba(163,73,61,.08); color:#a3493d; }
+.progress { height:10px; border-radius:99px; background:#e7e3db; overflow:hidden; }
+.progress span { display:block; height:100%; width:62%; background:#2f6fa3; }
+.skeleton { height:58px; padding:14px; border:1px solid #ded8cc; border-radius:10px; background:#fffdf8; }
+.skeleton span { display:block; height:13px; border-radius:99px; background:#e8e9ea; margin-bottom:10px; }
+.card-notes { margin:12px 0 0; padding-left:18px; color:#555b61; font-size:13px; line-height:1.35; }
+.card-notes li { margin-bottom:4px; }
+.note-row { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
 .note { border:1px solid #c9cdd2; border-radius:8px; background:#fff; padding:13px; min-height:118px; }
 .note strong { display:block; margin-bottom:7px; font-size:12px; }
 .note p { margin:0; color:#50565c; font-size:12px; line-height:1.42; }
-.footer-space { height:80px; }
-@media (max-width: 900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns: 1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:720px; } }
+.footer-space { height:120px; }
+@media (max-width:900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns:1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:740px; } }
 </style>
 </head>
 <body>
@@ -67,51 +145,155 @@ li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
 <main class="layout">
   <aside class="nav"><h2>Jump list</h2><button onclick="jump('band-0')">Main path</button><button onclick="jump('band-1')">Detail states</button><button onclick="jump('band-2')">Error recovery</button><button onclick="jump('band-notes')">Review notes</button></aside>
   <section class="viewport" aria-label="Wireframe canvas">
-    <div class="stage"><section class="band" id="band-0">
-  <div class="band-title"><h3>Main path</h3><span>4 frames</span></div>
-  <div class="flow"><article class="card detail"><h4>Launch shell</h4><p>The app opens directly to the last useful mode instead of a marketing or splash page.</p><ul><li>Restores window state</li><li>Loads recent sessions</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card blocking"><h4>Health banner</h4><p>A compact banner reports whether local app services are ready, starting, degraded, or offline.</p><ul><li>Non-blocking by default</li><li>Retry action when needed</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card error"><h4>Mode restore</h4><p>The saved mode and selected workspace return with clear fallbacks when the previous context is gone.</p><ul><li>Chat or Code</li><li>Workspace missing state</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card main"><h4>Update prompt</h4><p>Updates appear as a small prompt with release notes, later, and restart actions.</p><ul><li>Once per version</li><li>Install progress visible</li></ul></article></div>
-</section><section class="band" id="band-1">
-  <div class="band-title"><h3>Detail states</h3><span>3 frames</span></div>
-  <div class="flow"><article class="card blocking"><h4>Startup priority</h4><p>Critical work-blocking problems outrank optional update prompts.</p><ul><li>Health first</li><li>Update second</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card detail"><h4>Returning sessions</h4><p>Recent conversations and code sessions are visible before background checks finish.</p><ul><li>Skeleton state</li><li>No blank sidebar</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card error"><h4>Offline work</h4><p>When connection is unavailable, local navigation remains usable and disabled actions explain why.</p><ul><li>Read-only allowed</li><li>Send disabled with reason</li></ul></article></div>
-</section><section class="band" id="band-2">
-  <div class="band-title"><h3>Error recovery</h3><span>2 frames</span></div>
-  <div class="flow"><article class="card error"><h4>Update failed</h4><p>The prompt keeps the current version usable and gives retry plus open release notes.</p><ul><li>No forced loop</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card main"><h4>Service degraded</h4><p>Users can retry, open diagnostics, or continue with limited features.</p><ul><li>Clear severity label</li></ul></article></div>
-</section><section class="band" id="band-notes">
-  <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
-  <div class="note-row">
-    <div class="note"><strong>Benefits</strong><p>Startup feels dependable even when health checks are still running. Update messaging is visible without hijacking the session.</p></div>
-    <div class="note"><strong>Tradeoffs</strong><p>More visible health states require careful copy. Too many startup prompts can compete for attention.</p></div>
-    <div class="note"><strong>Open questions</strong><p>Should update prompts be hidden during active code sessions until the session is idle?</p></div>
-  </div>
-</section><div class="footer-space"></div></div>
+    <div class="stage">
+      <section class="band" id="band-0">
+        <div class="band-title"><h3>Main path</h3><span>4 product wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card main"><h4>Launch shell</h4><p>App opens directly to the last useful mode with sessions visible while checks start.</p><div class="mini-app" data-screen="launch"></div><ul class="card-notes"><li>No marketing or splash page.</li><li>Recent sessions appear before checks finish.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main"><h4>Health banner</h4><p>A compact health banner reports starting, ready, degraded, or offline without blocking navigation.</p><div class="mini-app" data-screen="health"></div><ul class="card-notes"><li>Health is above update prompts.</li><li>Retry and diagnostics are visible.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main"><h4>Mode restore</h4><p>Saved mode and selected workspace return with clear fallbacks when context is missing.</p><div class="mini-app" data-screen="mode"></div><ul class="card-notes"><li>Chat or Code state is explicit.</li><li>Missing workspace is recoverable.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main"><h4>Update prompt</h4><p>Update availability appears as a small prompt with release notes, later, and restart actions.</p><div class="mini-app" data-screen="update"></div><ul class="card-notes"><li>Once per version.</li><li>Does not hijack active work.</li></ul></article>
+        </div>
+      </section>
+      <section class="band" id="band-1">
+        <div class="band-title"><h3>Detail states</h3><span>3 product wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card detail"><h4>Startup priority</h4><p>Critical work-blocking health problems outrank optional update prompts.</p><div class="mini-app" data-screen="priority"></div><ul class="card-notes"><li>Health first, update second.</li><li>Critical states get the primary action.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card detail"><h4>Returning sessions</h4><p>Recent conversations and code sessions are visible while background checks run.</p><div class="mini-app" data-screen="sessions"></div><ul class="card-notes"><li>Skeleton rows avoid blank sidebar.</li><li>Content becomes interactive as it loads.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card detail"><h4>Offline work</h4><p>When local service is unavailable, local navigation remains usable and disabled actions explain why.</p><div class="mini-app" data-screen="offline"></div><ul class="card-notes"><li>Read-only work stays available.</li><li>Send is disabled with a reason.</li></ul></article>
+        </div>
+      </section>
+      <section class="band" id="band-2">
+        <div class="band-title"><h3>Error recovery</h3><span>2 product wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card error"><h4>Update failed</h4><p>The update prompt keeps the current version usable and offers retry plus release notes.</p><div class="mini-app" data-screen="update-failed"></div><ul class="card-notes"><li>No forced loop.</li><li>Current app remains usable.</li></ul></article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card error"><h4>Service degraded</h4><p>Users can retry, open diagnostics, or continue with limited features.</p><div class="mini-app" data-screen="degraded"></div><ul class="card-notes"><li>Severity label is clear.</li><li>Limited mode is explicit.</li></ul></article>
+        </div>
+      </section>
+      <section class="band" id="band-notes">
+        <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
+        <div class="note-row">
+          <div class="note"><strong>Benefits</strong><p>Startup feels dependable even when health checks are still running. Update messaging is visible without hijacking the session.</p></div>
+          <div class="note"><strong>Tradeoffs</strong><p>More visible health states require careful copy. Too many startup prompts can compete for attention.</p></div>
+          <div class="note"><strong>Open questions</strong><p>Should update prompts be hidden during active code sessions until the session is idle?</p></div>
+        </div>
+      </section>
+      <div class="footer-space"></div>
+    </div>
   </section>
 </main>
 <script>
-let scale = 0.78;
+const screens = {
+  launch: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Checking", healthClass:"info", gateway:"Restoring workspace and checking local service", gatewayClass:"info", heroTitle:"Start a focused conversation", heroCopy:"Recent conversations are visible while local service, model readiness, and update checks finish.", composer:"Assign a task or ask any question", send:"disabled", sessions:[["heartbeat","21m","active"],["New Conversation","1d",""]], suggestions:["Plan and implement a feature in this project","Review this codebase and explain the architecture","Find the root cause of this error message"] },
+  health: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Starting", healthClass:"warn", gateway:"Local service is starting. Messages will unlock when it is ready.", gatewayClass:"warn", heroTitle:"Chat is almost ready", heroCopy:"You can browse sessions and keep a draft while NoraHarness connects to the local service.", composer:"Message draft is preserved...", send:"disabled", sessions:[["heartbeat","21m","active"],["Agent draft","2h",""]], suggestions:["Retry local service","Open Settings","Continue reading history"] },
+  mode: { variant:"code", active:"Code", health:"Ready", healthClass:"ok", gateway:"Workspace folder needs attention", gatewayClass:"warn", workspace:"Workspace session", title:"Code session", subtitle:"The last Code session opens with history visible while the missing folder is resolved.", composer:"Assign a task or ask any question", send:"disabled", rows:[["Workspace session","","active"],["Workspace A","1",""],["Code session","3d",""],["Workspace B","1",""],["Workspace C","0",""]] },
+  update: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Ready", healthClass:"ok", gateway:"All systems ready", gatewayClass:"ok", heroTitle:"Start a focused conversation", heroCopy:"The app remains usable while an update waits for the user to restart.", composer:"Assign a task or ask any question", send:"ready", sessions:[["heartbeat","21m","active"],["New Conversation","1d",""]], suggestions:["Plan and implement a feature in this project","Review this codebase","Summarize recent work"], toast:{ status:"Update available", statusClass:"info", title:"Version 1.8.2 is ready", copy:"Includes reliability fixes and publish preview improvements.", actions:["Later","Notes","Restart"] } },
+  priority: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Offline", healthClass:"danger", gateway:"Gateway unavailable. Chat and Code actions are paused.", gatewayClass:"danger", heroTitle:"Local service needs attention", heroCopy:"Read existing work while the app reconnects. Startup fixes appear before optional update prompts.", composer:"Message disabled until service reconnects.", send:"disabled", sessions:[["heartbeat","21m","active"],["Agent draft","2h",""]], suggestions:["Retry service","Open Settings","View status"], toast:{ status:"Update available", statusClass:"info", title:"Queued behind health", copy:"Update choices return after the app can work again.", actions:["Dismiss"] } },
+  sessions: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"Loading model", health:"Checking", healthClass:"info", gateway:"Loading recent work", gatewayClass:"info", heroTitle:"Start a focused conversation", heroCopy:"The sidebar shows saved sessions and loading rows instead of a blank shell.", composer:"Composer loads after model check...", send:"disabled", loading:true, sessions:[["heartbeat","21m","active"],["Pairing notes","Yesterday",""],["Agent draft","Loading","skeleton"]], suggestions:["Plan and implement a feature in this project","Review this codebase and explain the architecture"] },
+  offline: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Offline", healthClass:"danger", gateway:"Cannot reach local service. Reconnecting...", gatewayClass:"danger", heroTitle:"Read-only mode", heroCopy:"Existing conversations and Settings remain available. Sending is disabled until the service reconnects.", composer:"Message disabled until service reconnects.", send:"disabled", sessions:[["heartbeat","21m","active"],["New Conversation","1d",""]], suggestions:["Retry service","Open Settings","Read recent conversation"] },
+  "update-failed": { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Ready", healthClass:"ok", gateway:"All systems ready", gatewayClass:"ok", heroTitle:"Start a focused conversation", heroCopy:"The current version remains usable after an update failure.", composer:"Assign a task or ask any question", send:"ready", sessions:[["heartbeat","21m","active"],["New Conversation","1d",""]], suggestions:["Plan and implement a feature in this project","Review this codebase"], toast:{ status:"Update failed", statusClass:"danger", title:"Could not install 1.8.2", copy:"Your current version is still usable. Retry or open release notes.", actions:["Release notes","Retry"] } },
+  degraded: { variant:"chat", active:"Chat", sessionTitle:"heartbeat", model:"MiniMax-M2.7", health:"Degraded", healthClass:"warn", gateway:"Some features are limited", gatewayClass:"warn", heroTitle:"Keep working where available", heroCopy:"Chat can continue, but code execution and device preview may be temporarily unavailable.", composer:"Assign a task or ask any question", send:"ready", sessions:[["heartbeat","21m","active"],["Agent draft","2h",""]], suggestions:["Open diagnostics","Continue chat","Review saved work"], cards:[["Chat","Available with selected model"],["Device work","Temporarily unavailable"]] }
+};
+function traffic() {
+  return `<div class="traffic"><span></span><span></span><span></span></div>`;
+}
+function sideRows(screen) {
+  return (screen.sessions || screen.rows || []).map(([title, meta, state]) => {
+    if (state === "skeleton") return `<div class="skeleton"><span></span><span style="width:70%"></span></div>`;
+    return `<div class="session-row ${state || ""}"><span>${title}</span><span class="time">${meta}</span></div>`;
+  }).join("");
+}
+function sidebar(screen) {
+  const label = screen.active === "Code" ? "Workspaces" : "TODAY";
+  return `<aside class="side">
+    <div class="side-top">${traffic()}<div class="mode-tabs"><span class="mode-tab ${screen.active === "Chat" ? "active" : ""}">Chat</span><span class="mode-tab ${screen.active === "Code" ? "active" : ""}">Code</span></div><span class="icon-btn">+</span></div>
+    <div class="search">⌕ <span>Search conversations...</span></div>
+    <div class="side-section">${label}</div>
+    ${sideRows(screen)}
+    <div class="side-footer"><div class="footer-row">⚙ <span>Settings</span></div><div class="footer-row">↪ <span>Log in</span></div></div>
+  </aside>`;
+}
+function gateway(screen) {
+  return `<div class="gateway-strip ${screen.gatewayClass}"><span>${screen.gateway}</span><span class="status ${screen.healthClass}">${screen.health}</span></div>`;
+}
+function toast(screen) {
+  if (!screen.toast) return "";
+  const actions = screen.toast.actions.map((action, index) => `<button class="btn ${index === screen.toast.actions.length - 1 ? "primary" : ""}">${action}</button>`).join("");
+  return `<div class="toast"><span class="status ${screen.toast.statusClass}">${screen.toast.status}</span><h5>${screen.toast.title}</h5><p>${screen.toast.copy}</p><div class="toast-actions">${actions}</div></div>`;
+}
+function chatShell(screen) {
+  const suggestions = (screen.suggestions || []).map((text) => `<div class="suggestion">${text}</div>`).join("");
+  const cards = (screen.cards || []).map(([title, copy]) => `<div class="status-card"><h5>${title}</h5><p>${copy}</p></div>`).join("");
+  return `<div class="desktop-screen"><div class="app-shell chat-shell">
+    ${sidebar(screen)}
+    <section class="content">
+      <div class="chat-head"><span>${screen.sessionTitle}</span><span class="model-pill">◒ ${screen.model}</span></div>
+      ${gateway(screen)}
+      <main class="chat-work">
+        ${toast(screen)}
+        <div class="hero-icon">⌘</div>
+        <h5 class="hero-title">${screen.heroTitle}</h5>
+        <p class="hero-copy">${screen.heroCopy}</p>
+        ${cards ? `<div class="grid2" style="width:680px;margin-top:28px">${cards}</div>` : ""}
+        <div class="suggestions">${suggestions}</div>
+        <div class="composer"><div>${screen.composer}</div><div class="composer-bar"><div class="composer-tools"><span class="icon-btn">+</span><span class="model-pill">◒ ${screen.model}</span><span class="model-pill">● medium</span></div><span class="send ${screen.send === "disabled" ? "disabled" : ""}">↑</span></div></div>
+      </main>
+    </section>
+  </div></div>`;
+}
+function codeShell(screen) {
+  return `<div class="desktop-screen"><div class="app-shell code-shell">
+    ${sidebar(screen)}
+    <section class="code-center">
+      <div class="code-tabs"><div class="code-tab">Code conversation</div><div class="code-tab active">${screen.title}</div><span style="margin-left:auto;padding:0 18px 14px;font-size:24px">+</span></div>
+      <main class="code-body">
+        ${gateway(screen)}
+        <div class="code-card" style="margin-top:18px"><h5>${screen.title}</h5><p>${screen.subtitle}</p></div>
+        <div class="tool-row"><span>🔧 hw_application_harness_deploy</span><span class="status ok">Completed</span></div>
+        <div class="code-card" style="margin-top:28px"><h5>Workspace folder missing</h5><p>Relink the folder to continue code work. Transcript and files remain visible in read-only mode.</p><div class="row" style="margin-top:16px"><button class="btn">Choose folder</button><button class="btn primary">Relink</button></div></div>
+      </main>
+      <div class="code-composer"><span>${screen.composer}</span><span class="send disabled">↑</span></div>
+    </section>
+    <aside class="right-panel"><div class="right-tabs"><span class="right-tab active">All Files</span><span class="right-tab">Changes</span><span class="right-tab">Device</span></div><div class="file-list"><div class="file-row">▸ 📁 project-root</div><div class="file-row">▸ 📁 firmware-app</div><div class="file-row">▸ 📁 logs</div></div><div class="terminal-bar"><span>Terminal</span><span>Device Log</span></div></aside>
+  </div></div>`;
+}
+function shellFor(screen) {
+  return screen.variant === "code" ? codeShell(screen) : chatShell(screen);
+}
+document.querySelectorAll("[data-screen]").forEach((el) => { el.innerHTML = shellFor(screens[el.dataset.screen]); });
+let scale = 0.72;
 let x = 0;
 let y = 0;
-const stage = document.querySelector('.stage');
-const viewport = document.querySelector('.viewport');
-function apply() { stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+const stage = document.querySelector(".stage");
+const viewport = document.querySelector(".viewport");
+let frame = null;
+function applyNow() { frame = null; stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+function apply() { if (frame) return; frame = requestAnimationFrame(applyNow); }
 function fit() {
   const vw = viewport.clientWidth - 56;
   const vh = viewport.clientHeight - 56;
-  scale = Math.max(0.35, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 1));
+  scale = Math.max(0.24, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 0.82));
   x = 0; y = 0; apply();
 }
-function zoom(delta) { scale = Math.max(0.35, Math.min(1.4, scale + delta)); apply(); }
+function clampScale(value) { return Math.max(0.28, Math.min(1.4, value)); }
+function zoom(delta) { scale = clampScale(scale + delta); apply(); }
+function zoomAt(clientX, clientY, factor) {
+  const rect = viewport.getBoundingClientRect();
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  const canvasX = (localX - x) / scale;
+  const canvasY = (localY - y) / scale;
+  scale = clampScale(scale * factor);
+  x = localX - canvasX * scale;
+  y = localY - canvasY * scale;
+  apply();
+}
 function jump(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -120,11 +302,14 @@ function jump(id) {
   apply();
 }
 let drag = null;
-viewport.addEventListener('pointerdown', (e) => { drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.setPointerCapture(e.pointerId); });
-viewport.addEventListener('pointermove', (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
-viewport.addEventListener('pointerup', () => { drag = null; });
-window.addEventListener('resize', fit);
-fit();
+viewport.addEventListener("pointerdown", (e) => { e.preventDefault(); drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.classList.add("dragging"); viewport.setPointerCapture(e.pointerId); });
+viewport.addEventListener("pointermove", (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
+function endDrag(e) { drag = null; viewport.classList.remove("dragging"); if (e && viewport.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId); }
+viewport.addEventListener("pointerup", endDrag);
+viewport.addEventListener("pointercancel", endDrag);
+viewport.addEventListener("wheel", (e) => { e.preventDefault(); if (e.ctrlKey || e.metaKey) { zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.002)); return; } x -= e.deltaX; y -= e.deltaY; apply(); }, { passive:false });
+window.addEventListener("resize", () => apply());
+apply();
 </script>
 </body>
 </html>

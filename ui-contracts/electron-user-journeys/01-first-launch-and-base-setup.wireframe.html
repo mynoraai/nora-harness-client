@@ -5,49 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Journey 01 - First Launch And Base Setup</title>
 <style>
-:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; }
+:root { color-scheme: light; --ink:#191919; --muted:#666; --line:#d8d8d8; --soft:#f6f7f8; --panel:#fff; --blue:#dceeff; --green:#ddf7e9; --yellow:#fff3cd; --red:#f8d7da; --purple:#eee7ff; --orange:#f4d8bd; --accent:#bf6b21; }
 * { box-sizing: border-box; }
 body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#eceff1; color:var(--ink); letter-spacing:0; }
 .header { position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 22px; border-bottom:1px solid #c9cdd2; background:rgba(255,255,255,.96); backdrop-filter: blur(8px); }
 .header h1 { margin:0 0 6px; font-size:22px; line-height:1.15; font-weight:760; }
-.header p { margin:0; max-width:920px; color:#494d52; font-size:13px; line-height:1.45; }
+.header p { margin:0; max-width:980px; color:#494d52; font-size:13px; line-height:1.45; }
 .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; min-width:286px; }
 button { height:32px; border:1px solid #aeb4bb; background:#fff; color:#222; border-radius:6px; padding:0 10px; font-weight:650; font-size:12px; cursor:pointer; }
 button:hover { background:#f2f5f8; }
 .meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .pill { display:inline-flex; align-items:center; gap:6px; min-height:24px; border:1px solid #c5cbd1; border-radius:999px; padding:3px 9px; background:#fff; font-size:11px; font-weight:700; color:#394047; }
 .pill.partial { background:var(--yellow); border-color:#e5cf81; }
-.pill.implemented { background:var(--green); border-color:#9cd8b2; }
-.pill.not { background:var(--purple); border-color:#c8b7ec; }
-.layout { display:grid; grid-template-columns: 222px 1fr; height:calc(100vh - 95px); min-height:640px; }
+.layout { display:grid; grid-template-columns:222px 1fr; height:calc(100vh - 95px); min-height:640px; }
 .nav { border-right:1px solid #c9cdd2; background:#f8f9fa; padding:14px; overflow:auto; }
 .nav h2 { margin:0 0 10px; font-size:12px; text-transform:uppercase; color:#626970; }
 .nav button { width:100%; text-align:left; margin:0 0 8px; height:auto; min-height:34px; line-height:1.25; white-space:normal; }
-.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image: linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; }
-.stage { position:absolute; left:28px; top:28px; width:1480px; min-height:1040px; transform-origin:0 0; transition:transform .12s ease; padding:18px 18px 80px; }
-.band { margin:0 0 28px; }
+.viewport { position:relative; overflow:hidden; background-color:#eef1f4; background-image:linear-gradient(#d9dee3 1px, transparent 1px), linear-gradient(90deg, #d9dee3 1px, transparent 1px); background-size:24px 24px; cursor:grab; user-select:none; touch-action:none; overscroll-behavior:contain; }
+.viewport.dragging { cursor:grabbing; }
+.stage { position:absolute; left:28px; top:28px; width:3700px; min-height:2260px; transform-origin:0 0; padding:18px 18px 120px; will-change:transform; }
+.band { margin:0 0 34px; }
 .band-title { display:flex; align-items:center; gap:10px; margin:0 0 12px; }
 .band-title h3 { margin:0; font-size:15px; }
 .band-title span { color:#60666d; font-size:12px; }
-.flow { display:flex; flex-wrap:wrap; gap:16px; align-items:stretch; }
-.card { width:266px; min-height:172px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:13px; position:relative; }
-.card.main { border-top:6px solid #8bbce8; }
-.card.detail { border-top:6px solid #91d6a6; }
-.card.error { border-top:6px solid #e7be55; }
-.card.decision { background:#fff8dd; border-color:#b58a00; border-top:6px solid #e0b832; }
-.card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
-.card h4 { margin:0 0 8px; font-size:14px; line-height:1.2; }
-.card p { margin:0 0 10px; color:#3e444a; font-size:12px; line-height:1.42; }
-ul { margin:0; padding-left:17px; }
-li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
-.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-4px; margin-right:-4px; }
+.flow { display:flex; flex-wrap:wrap; gap:28px; align-items:stretch; }
+.wire-card { width:680px; min-height:690px; border:1px solid #222; border-radius:8px; background:#fff; box-shadow:0 6px 14px rgba(30,38,48,.10); padding:16px; position:relative; }
+.wire-card.main { border-top:6px solid #8bbce8; }
+.wire-card.detail { border-top:6px solid #91d6a6; }
+.wire-card.error { border-top:6px solid #e7be55; }
+.wire-card.decision { background:#fff8dd; border-color:#b58a00; border-top:6px solid #e0b832; }
+.wire-card.blocking { background:#ffe8e8; border-color:#b94747; border-top:6px solid #d85b5b; }
+.wire-card h4 { margin:0 0 8px; font-size:18px; line-height:1.2; }
+.wire-card > p { margin:0 0 12px; color:#4b5157; font-size:14px; line-height:1.4; }
+.arrow { align-self:center; width:22px; height:1px; background:#7d858c; position:relative; margin-left:-6px; margin-right:-6px; }
 .arrow:after { content:""; position:absolute; right:-1px; top:-4px; width:8px; height:8px; border-right:1px solid #7d858c; border-top:1px solid #7d858c; transform:rotate(45deg); background:transparent; }
-.note-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
+.mini-app { width:648px; height:508px; border:1px solid #c7ccd1; border-radius:8px; overflow:hidden; background:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.8); }
+.desktop-screen { width:1200px; height:940px; transform:scale(.54); transform-origin:top left; background:#fff; }
+.mini-window { height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; border-bottom:1px solid #dfe3e7; background:#f1f3f4; color:#5d6267; font-size:14px; font-weight:700; }
+.traffic { display:flex; gap:8px; }
+.traffic span { width:13px; height:13px; border-radius:50%; background:#d75d57; }
+.traffic span:nth-child(2) { background:#e7b64a; }
+.traffic span:nth-child(3) { background:#69b66d; }
+.mini-content { display:grid; grid-template-rows:66px 1fr; min-width:0; background:#fff; }
+.mini-top { display:flex; align-items:center; justify-content:space-between; padding:0 26px; border-bottom:1px solid #e5e7e9; font-size:18px; font-weight:800; }
+.progress { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+.progress span { height:9px; border-radius:99px; background:#e9e5dd; }
+.progress .done, .progress .active { background:var(--accent); }
+.mini-app .mini-title { margin:0; font-size:34px; line-height:1.1; color:#202124; }
+.mini-copy { margin:0; color:#656b70; font-size:18px; line-height:1.36; }
+.ui-card, .field, .choice, .chat-row, .context-note { border:1px solid #ded8cc; border-radius:6px; background:#fffdf8; }
+.ui-card { padding:18px; }
+.field { padding:18px; color:#69645e; }
+.field strong { display:block; color:#202124; font-size:15px; }
+.choice { min-height:78px; display:grid; grid-template-columns:52px 1fr auto; align-items:center; gap:16px; padding:14px; }
+.choice.selected { border-color:var(--accent); background:#fff2df; }
+.choice-icon { display:grid; place-items:center; width:52px; height:52px; border-radius:12px; background:#f8efe0; color:var(--accent); font-size:20px; font-weight:900; }
+.status { display:inline-flex; align-items:center; min-height:30px; border:1px solid #c5cbd1; border-radius:99px; padding:4px 12px; font-size:13px; font-weight:800; white-space:nowrap; }
+.status.ok { border-color:rgba(52,122,77,.35); background:rgba(52,122,77,.1); color:#347a4d; }
+.status.warn { border-color:rgba(154,101,0,.32); background:rgba(244,215,186,.7); color:#9a6500; }
+.status.info { border-color:rgba(47,111,163,.3); background:rgba(47,111,163,.09); color:#2f6fa3; }
+.status.danger { border-color:rgba(163,73,61,.35); background:rgba(163,73,61,.08); color:#a3493d; }
+.mini-actions { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.mini-btn { display:inline-flex; justify-content:center; align-items:center; min-height:48px; border:1px solid #cfc8bc; border-radius:10px; background:#fffdf8; padding:0 22px; font-size:16px; font-weight:800; }
+.mini-btn.primary { border-color:#8c4e16; background:var(--accent); color:white; }
+.mini-btn.disabled { border-color:#b9b4ad; background:#aaa49a; color:white; }
+
+.onboarding-shell { height:896px; background:#f7f3ed; padding:78px 80px 54px; }
+.onboarding-step { display:grid; justify-items:center; gap:14px; margin:0 auto 48px; color:#4f4b46; font-size:14px; font-weight:800; }
+.onboarding-progress { display:grid; grid-template-columns:repeat(5,44px); gap:10px; }
+.onboarding-progress span { height:7px; border-radius:999px; background:#dfddd8; }
+.onboarding-progress .done, .onboarding-progress .active { background:#c66f25; }
+.onboarding-content { width:760px; margin:0 auto; text-align:center; }
+.onboarding-content.wide { width:900px; text-align:left; }
+.onboarding-kicker { margin:0 0 18px; color:#605d58; font-size:15px; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
+.onboarding-title { margin:0; color:#171717; font-size:46px; line-height:1.05; font-weight:850; }
+.onboarding-subtitle { max-width:760px; margin:20px auto 0; color:#55524e; font-size:22px; line-height:1.36; }
+.onboarding-description { max-width:680px; margin:18px auto 0; color:#6a665f; font-size:17px; line-height:1.42; }
+.onboarding-actions { display:flex; justify-content:center; gap:18px; margin-top:34px; }
+.onboarding-actions.split { justify-content:space-between; margin-top:32px; }
+.provider-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; margin-bottom:28px; }
+.provider-card { min-height:76px; display:grid; grid-template-columns:48px 1fr 28px; align-items:center; gap:14px; border:1px solid #e0ddd7; border-radius:10px; background:#fff; padding:14px 16px; }
+.provider-card.selected { border-color:#e1a372; background:#fff1e6; }
+.provider-icon { display:grid; place-items:center; width:48px; height:48px; border-radius:50%; background:#f0eee9; color:#222; font-size:19px; font-weight:850; }
+.provider-check { width:28px; height:28px; border:2px solid #eee9e1; border-radius:50%; }
+.provider-card.selected .provider-check { display:grid; place-items:center; border-color:#c66f25; background:#c66f25; color:white; }
+.provider-card.selected .provider-check::after { content:"✓"; font-weight:900; }
+.provider-card strong { display:block; font-size:18px; }
+.setup-form { border:1px solid #ded8cc; border-radius:14px; background:#fff; padding:22px; }
+.setup-form label { display:block; margin-bottom:10px; color:#222; font-size:16px; font-weight:850; }
+.text-input { min-height:58px; display:flex; align-items:center; border:2px solid #242424; border-radius:12px; background:#fff; padding:0 18px; color:#6f6b65; font-size:18px; }
+.select-input { display:inline-flex; min-height:44px; align-items:center; gap:12px; margin-top:18px; border:1px solid #ded8cc; border-radius:10px; background:#fff; padding:0 18px; font-size:16px; font-weight:750; }
+.tone-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-top:26px; }
+.tone-card { border:1px solid #ded8cc; border-radius:14px; background:#fff; padding:20px; text-align:left; }
+.tone-card.selected { border-color:#c66f25; background:#fff1e6; }
+.tone-card strong { display:block; margin-bottom:8px; font-size:20px; }
+.notification-art { position:relative; width:260px; height:210px; margin:0 auto 24px; border-radius:36px; background:#ffe1df; box-shadow:0 18px 48px rgba(196,93,64,.18); }
+.notification-art::before { content:""; position:absolute; left:88px; top:58px; width:84px; height:92px; border-radius:44px 44px 28px 28px; background:#ef4444; }
+.notification-toast { position:absolute; left:50%; bottom:4px; width:330px; transform:translateX(-50%); border:1px solid #eee8df; border-radius:16px; background:#fff; padding:16px; box-shadow:0 18px 42px rgba(30,30,30,.18); text-align:left; }
+.ready-mark { display:grid; place-items:center; width:86px; height:86px; margin:0 auto 26px; border-radius:50%; background:#ffe7e4; color:#ef4444; font-size:42px; box-shadow:0 0 44px rgba(239,68,68,.28); }
+.handoff-note { margin-top:28px; color:#77716b; font-size:15px; }
+.context-note { padding:16px; font-size:15px; line-height:1.32; color:#68625b; }
+.context-note strong { display:block; margin-bottom:6px; color:#202124; }
+.two-col { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.ready-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.chat-row { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:74px; padding:16px; }
+.card-notes { margin:12px 0 0; padding-left:18px; color:#555b61; font-size:13px; line-height:1.35; }
+.card-notes li { margin-bottom:4px; }
+.note-row { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
 .note { border:1px solid #c9cdd2; border-radius:8px; background:#fff; padding:13px; min-height:118px; }
 .note strong { display:block; margin-bottom:7px; font-size:12px; }
 .note p { margin:0; color:#50565c; font-size:12px; line-height:1.42; }
-.footer-space { height:80px; }
-@media (max-width: 900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns: 1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:720px; } }
+.footer-space { height:120px; }
+@media (max-width:900px) { .header { position:relative; display:block; } .controls { justify-content:flex-start; margin-top:12px; min-width:0; } .layout { grid-template-columns:1fr; height:auto; } .nav { border-right:0; border-bottom:1px solid #c9cdd2; max-height:180px; } .viewport { height:740px; } }
 </style>
 </head>
 <body>
@@ -65,55 +134,216 @@ li { margin:0 0 5px; color:#555b61; font-size:11px; line-height:1.3; }
   </div>
 </header>
 <main class="layout">
-  <aside class="nav"><h2>Jump list</h2><button onclick="jump('band-0')">Main path</button><button onclick="jump('band-1')">Detail states</button><button onclick="jump('band-2')">PM decisions</button><button onclick="jump('band-notes')">Review notes</button></aside>
+  <aside class="nav">
+    <h2>Jump list</h2>
+    <button onclick="jump('band-0')">Main path</button>
+    <button onclick="jump('band-1')">Detail states</button>
+    <button onclick="jump('band-2')">Recovery states</button>
+    <button onclick="jump('band-3')">PM decisions</button>
+    <button onclick="jump('band-notes')">Review notes</button>
+  </aside>
   <section class="viewport" aria-label="Wireframe canvas">
-    <div class="stage"><section class="band" id="band-0">
-  <div class="band-title"><h3>Main path</h3><span>5 frames</span></div>
-  <div class="flow"><article class="card detail"><h4>Welcome</h4><p>The app names the product, sets expectations, and offers Start setup plus Skip for experienced users.</p><ul><li>Status: first launch</li><li>Choice: guided or skip</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card main"><h4>Base folder</h4><p>User selects or accepts the default workspace location before personal content is created.</p><ul><li>Shows folder purpose</li><li>Can change before continuing</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card main"><h4>Provider access</h4><p>User adds a model provider or chooses to finish with no model and fix it later.</p><ul><li>Key entry is private</li><li>No model warning remains visible</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card main"><h4>Identity and tone</h4><p>User sets display name, preferred tone, and whether proactive suggestions should be quiet or active.</p><ul><li>Short defaults</li><li>No long profile form</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card detail"><h4>Ready screen</h4><p>The app summarizes what is ready and lands the user in the primary conversation surface.</p><ul><li>Continue to chat</li><li>Setup can be reopened</li></ul></article></div>
-</section><section class="band" id="band-1">
-  <div class="band-title"><h3>Detail states</h3><span>3 frames</span></div>
-  <div class="flow"><article class="card error"><h4>Skip behavior</h4><p>Skipping setup should still leave visible next steps so users do not get stranded at the composer.</p><ul><li>Provider missing</li><li>Workspace pending</li><li>Notification unset</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card detail"><h4>Notification prompt</h4><p>Permission request appears only after the user understands scheduled reminders and long-running work.</p><ul><li>Ask later option</li><li>System setting status</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card blocking"><h4>Recovery copy</h4><p>If setup fails, the user gets one clear action: retry, choose another folder, or continue without that capability.</p><ul><li>No blocking mystery state</li></ul></article></div>
-</section><section class="band" id="band-2">
-  <div class="band-title"><h3>PM decisions</h3><span>2 frames</span></div>
-  <div class="flow"><article class="card decision"><h4>Mandatory setup</h4><p>Decide whether provider configuration is required before first chat or only recommended.</p><ul><li>Decision</li><li>Affects first-run speed</li></ul></article>
-<div class="arrow" aria-hidden="true"></div>
-<article class="card decision"><h4>Profile depth</h4><p>Decide whether identity/tone belongs in setup or after first successful conversation.</p><ul><li>Decision</li><li>Affects perceived complexity</li></ul></article></div>
-</section><section class="band" id="band-notes">
-  <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
-  <div class="note-row">
-    <div class="note"><strong>Benefits</strong><p>Users reach a useful first state faster. Setup failures become recoverable instead of dead ends.</p></div>
-    <div class="note"><strong>Tradeoffs</strong><p>More setup screens can slow activation. Skipping creates more warning states later.</p></div>
-    <div class="note"><strong>Open questions</strong><p>Should notification permission be introduced here or only when the first reminder is created?</p></div>
-  </div>
-</section><div class="footer-space"></div></div>
+    <div class="stage">
+      <section class="band" id="band-0">
+        <div class="band-title"><h3>Main path</h3><span>5 wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card main">
+            <h4>Welcome</h4>
+            <p>First launch starts inside the product shell, with guided setup as the primary action.</p>
+            <div class="mini-app" data-screen="welcome"></div>
+            <ul class="card-notes"><li>Skip is available but names consequences.</li><li>No marketing hero or separate landing page.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main">
+            <h4>Base folder</h4>
+            <p>User confirms where local workspace and agent files can be created safely.</p>
+            <div class="mini-app" data-screen="folder"></div>
+            <ul class="card-notes"><li>Default path visible and changeable.</li><li>Access test controls continue state.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main">
+            <h4>Provider access</h4>
+            <p>Provider setup can be completed now or deferred with a visible first-chat warning.</p>
+            <div class="mini-app" data-screen="provider"></div>
+            <ul class="card-notes"><li>Private credentials, testable readiness.</li><li>Skip leaves Send disabled later.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main">
+            <h4>Identity and tone</h4>
+            <p>Keep profile lightweight: name, tone, proactive suggestions, notification timing.</p>
+            <div class="mini-app" data-screen="identity"></div>
+            <ul class="card-notes"><li>Short defaults, not a long profile form.</li><li>Notification permission is contextual.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card main">
+            <h4>Ready screen</h4>
+            <p>Finish lands in Chat with a setup summary and any remaining next action.</p>
+            <div class="mini-app" data-screen="ready"></div>
+            <ul class="card-notes"><li>Composer readiness mirrors model state.</li><li>Setup can be reopened later.</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="band" id="band-1">
+        <div class="band-title"><h3>Detail states</h3><span>3 wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card detail">
+            <h4>Skip behavior</h4>
+            <p>Skipping setup opens Chat but keeps model/setup debt visible and actionable.</p>
+            <div class="mini-app" data-screen="skip"></div>
+            <ul class="card-notes"><li>Missing provider card stays near composer.</li><li>User can resume setup from Chat.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card detail">
+            <h4>Notification prompt</h4>
+            <p>Permission is introduced only when reminders or scheduled work makes it meaningful.</p>
+            <div class="mini-app" data-screen="notify"></div>
+            <ul class="card-notes"><li>Ask later is a valid state.</li><li>System prompt is not first-launch noise.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card detail">
+            <h4>Reopen setup</h4>
+            <p>Settings exposes the same setup choices after onboarding.</p>
+            <div class="mini-app" data-screen="reopen"></div>
+            <ul class="card-notes"><li>Users can change folder/provider/tone.</li><li>Incomplete setup remains resumable.</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="band" id="band-2">
+        <div class="band-title"><h3>Recovery states</h3><span>3 wireframe frames</span></div>
+        <div class="flow">
+          <article class="wire-card error">
+            <h4>Folder access failed</h4>
+            <p>The blocking failure offers retry, choose another folder, or inspect permission guidance.</p>
+            <div class="mini-app" data-screen="folder-error"></div>
+            <ul class="card-notes"><li>Continue disabled until safe write access exists.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card error">
+            <h4>Provider test failed</h4>
+            <p>User keeps their draft key state and can retry, edit, or continue without model.</p>
+            <div class="mini-app" data-screen="provider-error"></div>
+            <ul class="card-notes"><li>Error is secret-safe and field-local.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card error">
+            <h4>First chat gated</h4>
+            <p>If setup was skipped, the composer explains exactly what must be fixed before Send.</p>
+            <div class="mini-app" data-screen="chat-gated"></div>
+            <ul class="card-notes"><li>Forbidden action appears disabled, not missing.</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="band" id="band-3">
+        <div class="band-title"><h3>PM decisions</h3><span>3 decision frames</span></div>
+        <div class="flow">
+          <article class="wire-card decision">
+            <h4>Mandatory setup</h4>
+            <p>Decide whether provider configuration is required before first chat or only recommended.</p>
+            <div class="mini-app" data-screen="decision-required"></div>
+            <ul class="card-notes"><li>Impacts activation speed and first-message success.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card decision">
+            <h4>Profile depth</h4>
+            <p>Decide whether identity/tone belongs in setup or after first successful conversation.</p>
+            <div class="mini-app" data-screen="decision-profile"></div>
+            <ul class="card-notes"><li>Impacts perceived setup length.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="wire-card blocking">
+            <h4>Notification timing</h4>
+            <p>Confirm whether notification permission waits for scheduled tasks or appears in setup.</p>
+            <div class="mini-app" data-screen="decision-notify"></div>
+            <ul class="card-notes"><li>Blocking because OS prompt timing affects trust.</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="band" id="band-notes">
+        <div class="band-title"><h3>Review notes</h3><span>Benefits, tradeoffs, open questions</span></div>
+        <div class="note-row">
+          <div class="note"><strong>Benefits</strong><p>PM can inspect the actual setup screen structure while keeping the map-like canvas overview.</p></div>
+          <div class="note"><strong>Tradeoffs</strong><p>Wireframe cards are denser than text cards, so each card focuses on the state PM must judge.</p></div>
+          <div class="note"><strong>Open questions</strong><p>Should provider setup block first chat, and should notification permission wait until scheduled tasks?</p></div>
+        </div>
+      </section>
+      <div class="footer-space"></div>
+    </div>
   </section>
 </main>
 <script>
-let scale = 0.78;
+const screens = {
+  welcome: { step:0, kicker:"Welcome", title:"Your AI assistant, wherever you need it", subtitle:"NoraHarness runs locally on your Mac and connects to your own AI service, so it feels natural to start chatting and getting work done.", description:"Make installing NoraHarness as easy as installing any other application.", body:`<div class="onboarding-actions"><span class="status info">Runs locally</span><span class="status info">Ready to use</span><span class="status info">Works with chat apps</span></div>`, actions:`<button class="mini-btn primary">Get started</button>` },
+  folder: { step:1, kicker:"Workspace", title:"Choose where NoraHarness can work", subtitle:"Pick a local folder for generated files, agent notes, and workspace data.", body:`<div class="setup-form"><label>Workspace location</label><div class="text-input">/Users/zhaowei/NoraHarness</div><div class="onboarding-actions split"><button class="mini-btn">Choose folder</button><button class="mini-btn primary">Test access</button></div><p class="onboarding-description" style="text-align:left;margin:18px 0 0">Folder exists, can be written, and existing files will not be overwritten.</p></div>`, actions:`<button class="mini-btn">Back</button><button class="mini-btn primary">Continue</button>`, wide:true },
+  provider: { step:1, kicker:"Provider", title:"Connect your AI provider", subtitle:"Choose a provider, enter credentials, and select the default model for your first chat.", body:`<div class="provider-grid"><div class="provider-card"><div class="provider-icon">A</div><strong>Anthropic</strong><div class="provider-check"></div></div><div class="provider-card selected"><div class="provider-icon">O</div><strong>OpenAI</strong><div class="provider-check"></div></div><div class="provider-card"><div class="provider-icon">G</div><strong>Gemini</strong><div class="provider-check"></div></div><div class="provider-card"><div class="provider-icon">M</div><strong>MiniMax</strong><div class="provider-check"></div></div><div class="provider-card"><div class="provider-icon">R</div><strong>OpenRouter</strong><div class="provider-check"></div></div><div class="provider-card"><div class="provider-icon">L</div><strong>Local Models</strong><div class="provider-check"></div></div></div><div class="setup-form"><label>API Key</label><div class="text-input">Paste your API key</div><label style="margin-top:20px">Default model</label><div class="select-input">GPT-5.5</div><p class="onboarding-description" style="text-align:left;margin:18px 0 0">You can change this later in Settings.</p></div>`, actions:`<button class="mini-btn">Back</button><button class="mini-btn">Verify key</button><button class="mini-btn primary">Continue</button>`, wide:true },
+  identity: { step:2, kicker:"Personality", title:"Choose how Nora should collaborate", subtitle:"Pick a tone and optional instructions. You can edit this later.", body:`<div class="tone-grid"><div class="tone-card selected"><strong>Concise collaborator</strong><p class="onboarding-description" style="text-align:left;margin:0">Direct, warm, low ceremony.</p></div><div class="tone-card"><strong>Detailed reviewer</strong><p class="onboarding-description" style="text-align:left;margin:0">Explains rationale and tradeoffs.</p></div></div><div class="setup-form" style="margin-top:18px"><label>Custom instructions</label><div class="text-input">Optional: tell Nora how you like to work</div></div>`, actions:`<button class="mini-btn">Skip</button><button class="mini-btn primary">Save and continue</button>`, wide:true },
+  ready: { step:4, kicker:"Ready", title:"You're all set", subtitle:"NoraHarness is connected to OpenAI with GPT-5.5 as the default model.", body:`<div class="ready-mark">✓</div>`, actions:`<button class="mini-btn primary">Start chatting</button><div class="handoff-note">You can also connect Telegram or Discord in Settings -> Channels.</div>` },
+  skip: { step:1, kicker:"Provider", title:"Continue without verification?", subtitle:"You can finish setup, but Chat will ask you to connect or verify a provider before sending.", body:`<div class="setup-form"><span class="status warn">Verification skipped</span><p class="onboarding-description" style="text-align:left;margin:14px 0 0">Your model choice is saved as incomplete. The first chat keeps a setup card visible until provider access is ready.</p></div>`, actions:`<button class="mini-btn">Back</button><button class="mini-btn primary">Continue anyway</button>`, wide:true },
+  notify: { step:3, kicker:"Notifications", title:"Stay in the loop", subtitle:"Turn on notifications to get timely reply alerts from NoraHarness and message updates from connected channels.", body:`<div class="notification-art"><div class="notification-toast"><strong>NoraHarness</strong><br />Hello, I can notify you when work finishes.</div></div><p class="onboarding-description">You can always change this later in System Settings.</p>`, actions:`<button class="mini-btn">Maybe later</button><button class="mini-btn primary">Turn on notifications</button>` },
+  reopen: { step:4, kicker:"Settings", title:"Resume onboarding choices", subtitle:"After setup, the same provider, personality, and notification choices are available in Settings.", body:`<div class="setup-form"><div class="provider-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:0"><div class="provider-card selected"><div class="provider-icon">P</div><strong>Provider</strong><div class="provider-check"></div></div><div class="provider-card"><div class="provider-icon">N</div><strong>Notifications</strong><div class="provider-check"></div></div></div></div>`, actions:`<button class="mini-btn">Close</button><button class="mini-btn primary">Open Settings</button>`, wide:true },
+  "folder-error": { step:1, kicker:"Workspace", title:"Folder access needs attention", subtitle:"NoraHarness cannot continue until the selected folder can be written safely.", body:`<div class="setup-form"><label>Workspace location</label><div class="text-input">/Users/zhaowei/NoraHarness</div><p class="onboarding-description" style="text-align:left;margin:18px 0 0"><span class="status danger">Access failed</span> Choose another folder or retry after changing permissions.</p></div>`, actions:`<button class="mini-btn">Back</button><button class="mini-btn">Choose folder</button><button class="mini-btn primary">Retry</button>`, wide:true },
+  "provider-error": { step:1, kicker:"Provider", title:"Provider verification failed", subtitle:"The app keeps the API key draft and gives retry, edit, or skip verification choices.", body:`<div class="provider-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="provider-card selected"><div class="provider-icon">O</div><strong>OpenAI</strong><span class="status danger">Error</span></div></div><div class="setup-form"><p class="onboarding-description" style="text-align:left;margin:0">The key could not be verified. No secret text is shown in the error.</p></div>`, actions:`<button class="mini-btn">Skip verification</button><button class="mini-btn primary">Retry</button>`, wide:true },
+  "chat-gated": { step:4, kicker:"Ready", title:"Provider still required before first message", subtitle:"If setup was skipped, the completion handoff explains the missing provider before Chat send is enabled.", body:`<div class="setup-form"><span class="status warn">Model setup required</span><p class="onboarding-description" style="text-align:left;margin:14px 0 0">Start chatting opens the first chat with a provider setup card and Send disabled until a model is ready.</p></div>`, actions:`<button class="mini-btn">Finish setup later</button><button class="mini-btn primary">Choose provider</button>`, wide:true },
+  "decision-required": { step:1, kicker:"PM decision", title:"Should provider setup block first chat?", subtitle:"Required setup reduces failed first sends; deferred setup shortens activation.", body:`<div class="tone-grid"><div class="tone-card selected"><strong>Required</strong><p class="onboarding-description" style="text-align:left;margin:0">Continue only after verify or explicit skip.</p></div><div class="tone-card"><strong>Deferred</strong><p class="onboarding-description" style="text-align:left;margin:0">Open Chat sooner with setup debt visible.</p></div></div>`, actions:`<button class="mini-btn primary">Pick policy</button>`, wide:true },
+  "decision-profile": { step:2, kicker:"PM decision", title:"How much profile setup belongs here?", subtitle:"Keep first launch lightweight, or ask for more personalization before Chat.", body:`<div class="tone-grid"><div class="tone-card selected"><strong>Name + tone</strong><p class="onboarding-description" style="text-align:left;margin:0">Low friction and enough signal.</p></div><div class="tone-card"><strong>Deeper profile</strong><p class="onboarding-description" style="text-align:left;margin:0">Better personalization but longer setup.</p></div></div>`, actions:`<button class="mini-btn primary">Keep short</button>`, wide:true },
+  "decision-notify": { step:3, kicker:"PM decision", title:"When should notifications be introduced?", subtitle:"The screenshots show a dedicated notification step; PM should decide if it remains in first launch or moves to scheduled tasks.", body:`<div class="tone-grid"><div class="tone-card selected"><strong>Dedicated step</strong><p class="onboarding-description" style="text-align:left;margin:0">Complete first-run setup.</p></div><div class="tone-card"><strong>Ask later</strong><p class="onboarding-description" style="text-align:left;margin:0">Prompt only when reminders or tasks need it.</p></div></div>`, actions:`<button class="mini-btn primary">Decide timing</button>`, wide:true }
+};
+function shellFor(screen) {
+  const progress = Array.from({ length:5 }, (_, index) => `<span class="${index < screen.step ? "done" : index === screen.step ? "active" : ""}"></span>`).join("");
+  const bodyClass = screen.wide ? "onboarding-content wide" : "onboarding-content";
+  const actionClass = screen.actions.includes("handoff-note") ? "onboarding-actions" : "onboarding-actions";
+  return `<div class="desktop-screen"><div class="mini-window"><div class="traffic"><span></span><span></span><span></span></div><span>NoraHarness Desktop</span><span></span></div>
+    <div class="onboarding-shell">
+      <div class="onboarding-step"><span>Step ${screen.step + 1} of 5</span><div class="onboarding-progress">${progress}</div></div>
+      <section class="${bodyClass}">
+        <p class="onboarding-kicker">${screen.kicker}</p>
+        <h5 class="onboarding-title">${screen.title}</h5>
+        <p class="onboarding-subtitle">${screen.subtitle}</p>
+        ${screen.description ? `<p class="onboarding-description">${screen.description}</p>` : ""}
+        ${screen.body}
+        <div class="${actionClass}">${screen.actions}</div>
+      </section>
+    </div></div>`;
+}
+document.querySelectorAll("[data-screen]").forEach((el) => { el.innerHTML = shellFor(screens[el.dataset.screen]); });
+let scale = 0.72;
 let x = 0;
 let y = 0;
-const stage = document.querySelector('.stage');
-const viewport = document.querySelector('.viewport');
-function apply() { stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; }
+const stage = document.querySelector(".stage");
+const viewport = document.querySelector(".viewport");
+let frame = null;
+function applyNow() {
+  frame = null;
+  stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+}
+function apply() {
+  if (frame) return;
+  frame = requestAnimationFrame(applyNow);
+}
 function fit() {
   const vw = viewport.clientWidth - 56;
   const vh = viewport.clientHeight - 56;
-  scale = Math.max(0.35, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 1));
-  x = 0; y = 0; apply();
+  scale = Math.max(0.24, Math.min(vw / stage.scrollWidth, vh / stage.scrollHeight, 0.82));
+  x = 0;
+  y = 0;
+  apply();
 }
-function zoom(delta) { scale = Math.max(0.35, Math.min(1.4, scale + delta)); apply(); }
+function clampScale(value) { return Math.max(0.28, Math.min(1.4, value)); }
+function zoom(delta) { scale = clampScale(scale + delta); apply(); }
+function zoomAt(clientX, clientY, factor) {
+  const rect = viewport.getBoundingClientRect();
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  const canvasX = (localX - x) / scale;
+  const canvasY = (localY - y) / scale;
+  scale = clampScale(scale * factor);
+  x = localX - canvasX * scale;
+  y = localY - canvasY * scale;
+  apply();
+}
 function jump(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -122,11 +352,37 @@ function jump(id) {
   apply();
 }
 let drag = null;
-viewport.addEventListener('pointerdown', (e) => { drag = { sx:e.clientX, sy:e.clientY, x, y }; viewport.setPointerCapture(e.pointerId); });
-viewport.addEventListener('pointermove', (e) => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
-viewport.addEventListener('pointerup', () => { drag = null; });
-window.addEventListener('resize', fit);
-fit();
+viewport.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+  drag = { sx:e.clientX, sy:e.clientY, x, y };
+  viewport.classList.add("dragging");
+  viewport.setPointerCapture(e.pointerId);
+});
+viewport.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  x = drag.x + e.clientX - drag.sx;
+  y = drag.y + e.clientY - drag.sy;
+  apply();
+});
+function endDrag(e) {
+  drag = null;
+  viewport.classList.remove("dragging");
+  if (e && viewport.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId);
+}
+viewport.addEventListener("pointerup", endDrag);
+viewport.addEventListener("pointercancel", endDrag);
+viewport.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  if (e.ctrlKey || e.metaKey) {
+    zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.002));
+    return;
+  }
+  x -= e.deltaX;
+  y -= e.deltaY;
+  apply();
+}, { passive:false });
+window.addEventListener("resize", () => apply());
+apply();
 </script>
 </body>
 </html>
