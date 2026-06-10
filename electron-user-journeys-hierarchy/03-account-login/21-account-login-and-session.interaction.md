@@ -3,7 +3,7 @@
 This file is the text description for the account login HTML wireframe.
 
 - Source HTML: [21-account-login-and-session.wireframe.html](21-account-login-and-session.wireframe.html)
-- Screenshot reference: [login-page.jpg](../../assets/screenshots/login-page.jpg)
+- Screenshot reference: [login-page.jpg](../../ui-contracts/assets/screenshots/login-page.jpg)
 
 ## Goal
 
