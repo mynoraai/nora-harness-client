@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>First Launch Onboarding Wireframe</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #1f2328;
+  --muted: #626970;
+  --faint: #8a929b;
+  --line: #cbd1d8;
+  --soft: #f4f6f8;
+  --paper: #ffffff;
+  --canvas: #eef1f4;
+  --grid: #dce2e8;
+  --accent: #c87733;
+  --accent-weak: #f4dfcb;
+  --success: #347a4d;
+  --success-bg: #e8f5ee;
+  --warning: #9a6500;
+  --warning-bg: #fff3cd;
+  --danger: #a3493d;
+  --danger-bg: #f8d7da;
+  --info: #2f6fa3;
+  --info-bg: #e8f2fb;
+  --cream: #f8f5ef;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #e8ecef;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+button {
+  font: inherit;
+  border: 1px solid #aeb6bf;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 0 10px;
+  min-height: 32px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+button:hover { background: #f3f6f8; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #c7ced6;
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(10px);
+}
+.topbar h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.14;
+}
+.topbar p {
+  margin: 0;
+  max-width: 1060px;
+  color: #4e5660;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid #c5ccd4;
+  border-radius: 999px;
+  padding: 3px 9px;
+  background: #fff;
+  color: #3f4750;
+  font-size: 11px;
+  font-weight: 800;
+}
+.pill.ok { border-color: #bcd9c7; background: var(--success-bg); color: var(--success); }
+.pill.warn { border-color: #e2cc84; background: var(--warning-bg); color: #735200; }
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 292px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  height: calc(100vh - 102px);
+  min-height: 680px;
+}
+.nav {
+  border-right: 1px solid #c7ced6;
+  background: #f8fafb;
+  padding: 14px;
+  overflow: auto;
+}
+.nav h2 {
+  margin: 0 0 10px;
+  color: #626970;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.nav button {
+  width: 100%;
+  height: auto;
+  min-height: 34px;
+  margin: 0 0 8px;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.25;
+}
+.viewport {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--canvas);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+.viewport.dragging { cursor: grabbing; }
+.stage {
+  position: absolute;
+  left: 30px;
+  top: 30px;
+  width: 5150px;
+  min-height: 2860px;
+  padding: 18px 18px 140px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.band { margin: 0 0 38px; }
+.band-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.band-title h3 { margin: 0; font-size: 15px; }
+.band-title span { color: #606870; font-size: 12px; }
+.flow {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 22px;
+}
+.card {
+  position: relative;
+  width: 690px;
+  min-height: 690px;
+  border: 1px solid #222;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(30, 38, 48, .12);
+  padding: 16px;
+}
+.card.main { border-top: 6px solid #8bbce8; }
+.card.detail { border-top: 6px solid #91d6a6; }
+.card.state { border-top: 6px solid #d3b166; }
+.card.error { border-top: 6px solid #dd8c74; }
+.card h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.card > p {
+  margin: 0 0 12px;
+  color: #4e5660;
+  font-size: 13px;
+  line-height: 1.42;
+}
+.arrow {
+  align-self: center;
+  width: 24px;
+  height: 1px;
+  margin-left: -6px;
+  margin-right: -6px;
+  background: #78818a;
+  position: relative;
+}
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #78818a;
+  border-right: 1px solid #78818a;
+  transform: rotate(45deg);
+}
+.product {
+  width: 658px;
+  height: 510px;
+  border: 1px solid #c7ced6;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.desktop {
+  width: 1200px;
+  height: 940px;
+  transform: scale(.548);
+  transform-origin: top left;
+  background: #fff;
+}
+.onboarding {
+  height: 940px;
+  background: var(--cream);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 60px;
+}
+.on-window {
+  width: 1120px;
+  height: 780px;
+  border-radius: 30px;
+  background: #fbf8f3;
+  box-shadow: inset 0 0 0 1px rgba(80, 70, 60, .06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.step-head {
+  padding-top: 24px;
+  text-align: center;
+  color: #77726a;
+  font-size: 12px;
+  font-weight: 700;
+}
+.progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 200px;
+  margin: 12px auto 0;
+}
+.progress span {
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(91, 83, 73, .18);
+}
+.progress .active,
+.progress .done { background: var(--accent); }
+.step-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 76px 50px;
+}
+.center { align-items: center; text-align: center; }
+.wide { justify-content: flex-start; overflow: hidden; }
+.kicker {
+  margin: 0 0 14px;
+  color: #6f6a63;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.title {
+  margin: 0;
+  color: #191919;
+  font-size: 50px;
+  line-height: 1;
+  font-weight: 780;
+}
+.subtitle {
+  max-width: 720px;
+  margin: 18px auto 0;
+  color: #5f5a54;
+  font-size: 21px;
+  line-height: 1.32;
+}
+.small-copy {
+  margin: 12px auto 0;
+  color: #777168;
+  font-size: 15px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+.chip {
+  border: 1px solid #e4ddd2;
+  border-radius: 999px;
+  background: #fff;
+  padding: 9px 16px;
+  color: #6b665f;
+  font-size: 13px;
+  font-weight: 700;
+}
+.btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 30px;
+}
+.btn-row.split {
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 20px;
+}
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  min-width: 178px;
+  border: 1px solid #cfc6ba;
+  border-radius: 10px;
+  background: #fff;
+  color: #312c26;
+  padding: 0 20px;
+  font-size: 15px;
+  font-weight: 760;
+}
+.ui-btn.primary {
+  border-color: #965719;
+  background: var(--accent);
+  color: #fff;
+}
+.ui-btn.disabled {
+  border-color: #ead6c2;
+  background: #f0d7c1;
+  color: rgba(255, 255, 255, .95);
+}
+.text-link {
+  border: 0;
+  background: transparent;
+  color: #776f66;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 750;
+}
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+.provider-card {
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 38px 1fr 24px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e4ddd3;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 12px;
+}
+.provider-card.selected {
+  border-color: #ddb282;
+  background: #fff1e6;
+}
+.provider-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f1eee8;
+  font-size: 15px;
+  font-weight: 850;
+}
+.provider-card strong {
+  display: block;
+  font-size: 15px;
+}
+.radio {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #d8d0c5;
+  border-radius: 50%;
+  background: #fff;
+}
+.selected .radio,
+.radio.filled {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: inset 0 0 0 6px var(--accent);
+}
+.setup-card {
+  margin-top: 18px;
+  border: 1px solid #e2dbcf;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .78);
+  padding: 18px;
+}
+.field-stack { display: grid; gap: 12px; }
+.field label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+  color: #2f2b27;
+  font-size: 14px;
+  font-weight: 760;
+}
+.input {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd5ca;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0 12px;
+  color: #827a72;
+  font-size: 14px;
+}
+.input.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.hint {
+  margin: 8px 0 0;
+  color: #756e65;
+  font-size: 12px;
+}
+.hint.error { color: var(--danger); }
+.verified-label { color: var(--success); font-weight: 800; }
+.skip-label { color: #756e65; font-weight: 800; }
+.tone-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+.tone-card {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 42px 1fr 24px;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e4ddd3;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+.tone-card.selected {
+  border-color: #ddb282;
+  background: #fff1e6;
+}
+.tone-card strong { display: block; font-size: 15px; }
+.tone-card span { display: block; margin-top: 3px; color: #70695f; font-size: 12px; }
+.initial {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f1eee8;
+  font-weight: 850;
+}
+.text-area {
+  height: 70px;
+  border: 1px solid #ddd5ca;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+  color: #827a72;
+  font-size: 14px;
+}
+.preview {
+  max-height: 172px;
+  overflow: hidden;
+  border: 1px solid #e2dbcf;
+  border-radius: 8px;
+  background: #fff;
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.preview strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+.notify-art {
+  position: relative;
+  width: 210px;
+  height: 190px;
+  margin: 0 auto 26px;
+}
+.bell-box {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  width: 162px;
+  height: 150px;
+  border-radius: 32px;
+  background: #ffe7e4;
+  display: grid;
+  place-items: center;
+  color: #ef5d50;
+  font-size: 72px;
+  font-weight: 800;
+}
+.mini-badge {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 1px solid #eee2d7;
+  font-size: 12px;
+  font-weight: 900;
+}
+.b1 { left: 36px; top: 18px; color: #ef5d50; }
+.b2 { right: 24px; top: 22px; color: #2f6fa3; }
+.b3 { left: 12px; top: 70px; color: #5c68d8; }
+.b4 { right: 6px; top: 82px; color: #1c8d54; }
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 315px;
+  transform: translateX(-50%);
+  border: 1px solid #eee5dc;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .94);
+  padding: 12px;
+  box-shadow: 0 14px 36px rgba(30, 30, 30, .14);
+  text-align: left;
+  font-size: 12px;
+}
+.ready-icon {
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 26px;
+  border-radius: 50%;
+  background: #ffe7e4;
+  color: #ef5d50;
+  font-size: 36px;
+  font-weight: 900;
+}
+.chat-shell {
+  width: 1200px;
+  height: 940px;
+  display: grid;
+  grid-template-columns: 268px 1fr;
+  background: #faf8f4;
+}
+.sidebar {
+  border-right: 1px solid #e0ddd7;
+  background: #f3f0ea;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.mode-switch {
+  margin: 0 auto 16px;
+  display: inline-flex;
+  border-radius: 8px;
+  background: #fff;
+  padding: 3px;
+  font-size: 14px;
+}
+.mode-switch span {
+  padding: 6px 18px;
+  border-radius: 7px;
+  color: #77716a;
+  font-weight: 760;
+}
+.mode-switch .active { background: #f3f0ea; color: #1f2328; }
+.search {
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #e2ddd4;
+  background: #fff;
+  padding: 0 12px;
+  color: #8a837c;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.side-empty {
+  margin-top: 40px;
+  text-align: center;
+  color: #7c756d;
+  font-size: 14px;
+}
+.side-footer {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+  color: #6f675f;
+  font-size: 14px;
+}
+.chat-main {
+  display: grid;
+  grid-template-rows: 48px 1fr 104px;
+  background: #fffdf9;
+}
+.chat-top {
+  border-bottom: 1px solid #e2ddd4;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  color: #2b2824;
+  font-size: 14px;
+  font-weight: 780;
+}
+.empty-chat {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.empty-chat h3 { margin: 0 0 8px; font-size: 28px; }
+.empty-chat p { margin: 0; color: #6f675f; font-size: 15px; }
+.suggestions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.suggestions span {
+  border: 1px solid #e2ddd4;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.composer {
+  border-top: 1px solid #e2ddd4;
+  padding: 14px 24px;
+}
+.composer-box {
+  height: 76px;
+  border: 1px solid #e7ded2;
+  border-radius: 16px;
+  background: #fff;
+  color: #8a837c;
+  padding: 14px;
+  font-size: 14px;
+}
+.notes {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: #4f5963;
+  font-size: 13px;
+  line-height: 1.38;
+}
+.notes li { margin-bottom: 4px; }
+.status-row {
+  display: grid;
+  grid-template-columns: 190px 1fr 180px;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 10px;
+}
+.status-cell {
+  border: 1px solid #cdd4dc;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+  min-height: 92px;
+}
+.status-cell strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.status-cell p {
+  margin: 0;
+  color: #59636d;
+  font-size: 12px;
+  line-height: 1.38;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  border: 1px solid #cbd1d8;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 850;
+}
+.badge.ok { background: var(--success-bg); border-color: #bcd9c7; color: var(--success); }
+.badge.warn { background: var(--warning-bg); border-color: #e2cc84; color: var(--warning); }
+.badge.err { background: var(--danger-bg); border-color: #e3aaa5; color: var(--danger); }
+.badge.info { background: var(--info-bg); border-color: #b9d4eb; color: var(--info); }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+@media (max-width: 900px) {
+  .topbar { position: relative; display: block; }
+  .controls { justify-content: flex-start; margin-top: 12px; min-width: 0; }
+  .layout { display: block; height: auto; }
+  .nav { border-right: 0; border-bottom: 1px solid #c7ced6; max-height: 160px; }
+  .viewport { height: 760px; }
+}
+
+/* Text-only journey cards stay compact; product wireframe cards keep the large frame size. */
+#detail-states .flow,
+#state-language .flow,
+#errors .flow {
+  align-items: flex-start;
+}
+#detail-states .card,
+#state-language .card,
+#errors .card {
+  width: 540px;
+  min-height: 230px;
+  padding: 16px;
+}
+#detail-states .arrow,
+#state-language .arrow,
+#errors .arrow {
+  align-self: flex-start;
+  margin-top: 112px;
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1>Journey 01: First Launch Onboarding</h1>
+    <p>User journey wireframe for the implemented first-run path from fresh install to first usable Chat. Product frames describe the implemented first-run path and current app behavior.</p>
+    <div class="meta">
+      <span class="pill ok">Maturity: implemented</span>
+      <span class="pill">Journey: 01 first launch</span>
+      <span class="pill warn">Record: required steps, skip paths, final handoff</span>
+    </div>
+  </div>
+  <div class="controls" aria-label="Canvas controls">
+    <button type="button" onclick="zoomBy(-0.1)">Zoom out</button>
+    <button type="button" onclick="zoomBy(0.1)">Zoom in</button>
+    <button type="button" onclick="fit()">Fit</button>
+    <button type="button" onclick="resetView()">Reset</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="nav" aria-label="Jump list">
+    <h2>Jump list</h2>
+    <button type="button" onclick="jump('main-path')">Main happy path</button>
+    <button type="button" onclick="jump('detail-states')">Detail states</button>
+    <button type="button" onclick="jump('state-language')">State language</button>
+    <button type="button" onclick="jump('errors')">Errors and recovery</button>
+  </aside>
+  <section class="viewport" id="viewport" aria-label="Wireframe canvas">
+    <div class="stage" id="stage">
+      <section class="band" id="main-path">
+        <div class="band-title"><h3>Main happy path</h3><span>Fresh install to first usable Chat</span></div>
+        <div class="flow">
+          <article class="card main">
+            <h4>1. Welcome</h4>
+            <p>User lands in a centered onboarding shell. One primary action starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes">
+              <li>Step progress is visible before any app shell appears.</li>
+              <li>No alternate action competes with Get started.</li>
+            </ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <h4>2. Provider Setup</h4>
+            <p>User picks an AI service, enters a key or endpoint, chooses a default model, and verifies.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-screen provider-filled"></div></div>
+            <ul class="notes">
+              <li>Continue remains disabled until verification is satisfied.</li>
+              <li>Skip verification exists, but is framed as advanced.</li>
+            </ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <h4>3. Personality</h4>
+            <p>User chooses tone, optionally adds instructions, previews the initial identity, then saves or skips.</p>
+            <div class="product"><div class="desktop onboarding-screen personality-screen"></div></div>
+            <ul class="notes">
+              <li>Saving creates the initial agent identity.</li>
+              <li>Skip lets setup continue without blocking value.</li>
+            </ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <h4>4. Notifications</h4>
+            <p>User chooses whether to ask for system notifications now or continue without them.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes">
+              <li>Both actions advance the flow.</li>
+              <li>The operating system prompt is outside this product frame.</li>
+            </ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <h4>5. Completion</h4>
+            <p>User sees provider/model confirmation and clicks Start chatting.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes">
+              <li>Completion is the moment the first-run gate is satisfied.</li>
+              <li>Provider/model summary reassures the user before handoff.</li>
+            </ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <h4>6. First Chat Surface</h4>
+            <p>The app opens a new Chat conversation with composer ready.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes">
+              <li>This is the end of Journey 01.</li>
+              <li>Code workspace creation starts a separate journey.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="band" id="detail-states">
+        <div class="band-title"><h3>Detail states</h3><span>Onboarding state changes that are not separate journeys</span></div>
+        <div class="flow">
+          <article class="card detail">
+            <h4>1. Provider setup pending</h4>
+            <p>The user has entered Provider setup. The UI preserves the selected provider, model, API key, and base URL inputs. Continue remains controlled before verification; the user can verify, change provider, or configure later.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>The form shows required, verifying, and verified states inline.</li>
+                <li>Skipping does not block onboarding completion, but the next conversation can enter the provider-readiness repair path.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>2. Personality and local preference saved</h4>
+            <p>After the user completes personality, notifications, and local-run preferences, step progress advances and the UI shows lightweight saving-to-saved feedback.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>Optional fields do not force the user to stay.</li>
+                <li>Going back preserves entered content.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>3. First usable Chat handoff</h4>
+            <p>After the user clicks Finish, the onboarding shell closes and the normal Chat home opens. The client records onboarding complete and shows the main surface ready for task input.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>The sidebar, composer, and runtime/model chips appear together.</li>
+                <li>This is the end of Journey 01; later workspace creation belongs to a separate journey.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="band" id="state-language">
+        <div class="band-title"><h3>State language</h3><span>User-facing copy for each onboarding state</span></div>
+        <div class="flow">
+          <article class="card state">
+            <h4>1. Primary actions</h4>
+            <p>Buttons such as Get started, Continue, and Finish setup express only the current step advance and do not carry extra explanation.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>Progress copy such as Step 1 of 5 stays fixed at the top.</li>
+                <li>Verify connection is used for provider verification and is not conflated with Save.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card state">
+            <h4>2. Optional actions</h4>
+            <p>Copy such as Skip for now, Maybe later, and Back clearly indicates that the current context will not be lost.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>When the user skips provider or notification setup, the UI gives lightweight confirmation.</li>
+                <li>Back actions remain lower priority.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card state">
+            <h4>3. Status copy</h4>
+            <p>States such as Saving, Verified, Complete, and Needs setup directly describe the current client state.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>State appears near the relevant form or step first.</li>
+                <li>Do not use decision-process wording.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="band" id="errors">
+        <div class="band-title"><h3>Errors and recovery</h3><span>Recoverable onboarding branches</span></div>
+        <div class="flow">
+          <article class="card error">
+            <h4>1. Provider validation failed</h4>
+            <p>If API key, base URL, or model verification fails, inputs are preserved and the form shows an inline error. The user can verify again, change provider, or configure later.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>Failure does not clear fields.</li>
+                <li>After skipping, the user returns to the main app; starting a later task can trigger the repair entry again.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2. Notification permission declined</h4>
+            <p>If the user denies or closes system notification permission, onboarding still completes. The setting remains disabled and can be enabled later in Settings.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>A system denial is not treated as flow failure.</li>
+                <li>Explanatory entry points stay near the notification step.</li>
+              </ul>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>3. Onboarding resume</h4>
+            <p>After an unexpected quit or refresh, the client restores the unfinished step or re-enters Welcome. Saved local configuration is not requested again.</p>
+            <div class="state-panel">
+              <ul class="notes">
+                <li>Recoverable state takes priority over starting from scratch.</li>
+                <li>After completion, later launches no longer show onboarding.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+<script>
+const viewport = document.getElementById('viewport');
+const stage = document.getElementById('stage');
+let scale = 0.62;
+let x = 0;
+let y = 0;
+let dragging = false;
+let startX = 0;
+let startY = 0;
+let baseX = 0;
+let baseY = 0;
+let raf = 0;
+
+function scheduleApply() {
+  if (raf) return;
+  raf = requestAnimationFrame(() => {
+    raf = 0;
+    stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+  });
+}
+
+function zoomAt(delta, clientX, clientY) {
+  const rect = viewport.getBoundingClientRect();
+  const px = clientX - rect.left;
+  const py = clientY - rect.top;
+  const beforeX = (px - x) / scale;
+  const beforeY = (py - y) / scale;
+  const next = Math.max(0.25, Math.min(1.4, scale + delta));
+  scale = next;
+  x = px - beforeX * scale;
+  y = py - beforeY * scale;
+  scheduleApply();
+}
+
+function zoomBy(delta) {
+  const rect = viewport.getBoundingClientRect();
+  zoomAt(delta, rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
+function resetView() {
+  scale = 0.62;
+  x = 0;
+  y = 0;
+  scheduleApply();
+}
+
+function fit() {
+  const rect = viewport.getBoundingClientRect();
+  const sx = (rect.width - 50) / 5150;
+  const sy = (rect.height - 50) / 2860;
+  scale = Math.max(0.22, Math.min(0.7, Math.min(sx, sy)));
+  x = 12;
+  y = 12;
+  scheduleApply();
+}
+
+function jump(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const left = el.offsetLeft || 0;
+  const top = el.offsetTop || 0;
+  x = 24 - left * scale;
+  y = 24 - top * scale;
+  scheduleApply();
+}
+
+viewport.addEventListener('pointerdown', (event) => {
+  dragging = true;
+  startX = event.clientX;
+  startY = event.clientY;
+  baseX = x;
+  baseY = y;
+  viewport.classList.add('dragging');
+  viewport.setPointerCapture(event.pointerId);
+});
+
+viewport.addEventListener('pointermove', (event) => {
+  if (!dragging) return;
+  x = baseX + event.clientX - startX;
+  y = baseY + event.clientY - startY;
+  scheduleApply();
+});
+
+viewport.addEventListener('pointerup', (event) => {
+  dragging = false;
+  viewport.classList.remove('dragging');
+  viewport.releasePointerCapture(event.pointerId);
+});
+
+viewport.addEventListener('pointercancel', () => {
+  dragging = false;
+  viewport.classList.remove('dragging');
+});
+
+viewport.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  if (event.ctrlKey || event.metaKey) {
+    zoomAt(-event.deltaY * 0.0015, event.clientX, event.clientY);
+    return;
+  }
+  x -= event.deltaX;
+  y -= event.deltaY;
+  scheduleApply();
+}, { passive: false });
+
+function progress(current) {
+  return `<div class="step-head">Step ${current} of 5<div class="progress">${[1,2,3,4,5].map(i => `<span class="${i < current ? 'done' : i === current ? 'active' : ''}"></span>`).join('')}</div></div>`;
+}
+
+function onboardingShell(step, body, classes = '') {
+  return `<div class="onboarding"><div class="on-window">${progress(step)}<div class="step-body ${classes}">${body}</div></div></div>`;
+}
+
+function providerCards(selected = 'Anthropic') {
+  const names = ['Anthropic','OpenAI','Gemini','MiniMax','xAI','OpenRouter','Mistral','DeepSeek','Groq','Perplexity','Moonshot','Together','Hugging Face','Local Models'];
+  return `<div class="provider-grid">${names.map(name => `<div class="provider-card ${name === selected ? 'selected' : ''}"><div class="provider-icon">${name[0]}</div><strong>${name}</strong><div class="radio"></div></div>`).join('')}</div>`;
+}
+
+function providerBody(variant) {
+  const keyText = variant === 'empty' ? 'Paste your API key' : 'sk-*******************************';
+  const status = variant === 'verified'
+    ? '<span class="verified-label">Verified</span>'
+    : variant === 'skipped'
+      ? '<span class="skip-label">Verification skipped</span>'
+      : '';
+  const hint = variant === 'error'
+    ? '<p class="hint error">The provider rejected this key. Check the key and try again.</p>'
+    : variant === 'skipped'
+      ? '<p class="hint">You skipped verification. If the key is wrong, the first message may fail.</p>'
+      : '<p class="hint">You can change this later in Settings.</p>';
+  const verifyLabel = variant === 'verified' ? 'Verify again' : variant === 'error' ? 'Retry verify' : 'Verify key';
+  const canContinue = variant === 'verified' || variant === 'skipped';
+  return onboardingShell(2, `
+    <div>
+      <p class="kicker">Connect AI Provider</p>
+      <h2 class="title">Choose your AI service<br>and connect it</h2>
+      <p class="subtitle" style="margin-left:0">Pick the AI service you want to use, then paste in its API key.</p>
+      ${providerCards(variant === 'skipped' ? 'OpenRouter' : 'Anthropic')}
+      <div class="setup-card">
+        <div class="field-stack">
+          <div class="field"><label>API Key ${status}</label><div class="input mono">${keyText}</div></div>
+          <div class="field"><label>Default model</label><div class="input">${variant === 'skipped' ? 'openrouter/auto' : 'Claude Sonnet 4.5'}</div></div>
+        </div>
+        ${hint}
+      </div>
+      <div class="btn-row split">
+        <button class="text-link">Back</button>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span class="ui-btn">${verifyLabel}</span>
+          <span class="ui-btn ${canContinue ? 'primary' : 'disabled'}">Continue</span>
+        </div>
+      </div>
+      ${variant === 'filled' || variant === 'error' ? '<div style="text-align:right;margin-top:8px"><button class="text-link">Skip verification (advanced)</button></div>' : ''}
+    </div>
+  `, 'wide');
+}
+
+function personalityBody(state) {
+  const saving = state === 'saving';
+  const error = state === 'error';
+  return onboardingShell(3, `
+    <div>
+      <p class="kicker">Make It Yours</p>
+      <h2 class="title">Choose your agent's personality</h2>
+      <p class="subtitle" style="margin-left:0">Select how your agent should sound and behave.</p>
+      <div class="tone-grid">
+        <div class="tone-card"><div class="initial">P</div><div><strong>Professional</strong><span>Precise, efficient, and professional</span></div><div class="radio"></div></div>
+        <div class="tone-card selected"><div class="initial">F</div><div><strong>Friendly</strong><span>Warm, casual, and empathetic</span></div><div class="radio filled"></div></div>
+        <div class="tone-card"><div class="initial">W</div><div><strong>Witty</strong><span>Humorous, playful, and lighthearted</span></div><div class="radio"></div></div>
+        <div class="tone-card"><div class="initial">C</div><div><strong>Concise</strong><span>Minimal, direct, no fluff</span></div><div class="radio"></div></div>
+      </div>
+      <div class="field" style="margin-top:14px"><label>Add custom instructions (optional)</label><div class="text-area">Prefer bullet points over paragraphs.</div></div>
+      <div style="margin-top:14px"><label style="font-size:14px;font-weight:760">Preview</label><div class="preview"><strong>SOUL.md - Who You Are</strong>You are a warm, approachable AI assistant who genuinely cares about helping people.<br><br><b>Core Truths</b><br>Be genuinely helpful. Have a heart. Be approachable.</div></div>
+      ${error ? '<p class="hint error">Failed to save personality settings. Please try again.</p>' : ''}
+      <div class="btn-row split"><p class="hint">You can customize this anytime in Settings.</p><div style="display:flex;gap:12px"><button class="text-link">Skip</button><span class="ui-btn primary">${saving ? 'Saving...' : 'Save & Continue'}</span></div></div>
+    </div>
+  `, 'wide');
+}
+
+function notificationBody(denied = false) {
+  return onboardingShell(4, `
+    <div class="center" style="width:100%">
+      <div class="notify-art"><div class="bell-box">!</div><div class="mini-badge b1">O</div><div class="mini-badge b2">S</div><div class="mini-badge b3">D</div><div class="mini-badge b4">W</div><div class="toast"><b>OpenClaw</b><br>Hello, I am the AI that can actually get things done.<span style="float:right;color:#999">now</span></div></div>
+      <p class="kicker">Notifications</p>
+      <h2 class="title" style="font-size:38px">Stay in the loop</h2>
+      <p class="subtitle" style="font-size:17px;max-width:540px">Turn on notifications to get timely reply alerts from OpenClaw and message updates from connected channels.</p>
+      <p class="${denied ? 'hint error' : 'small-copy'}">${denied ? 'Notifications are blocked in System Settings. You can continue and change this later.' : 'You can always change this later in System Settings.'}</p>
+      <div class="btn-row"><span class="ui-btn">Maybe later</span><span class="ui-btn primary">Turn on notifications</span></div>
+    </div>
+  `, 'center');
+}
+
+function completionBody() {
+  return onboardingShell(5, `
+    <div class="center" style="width:100%">
+      <div class="ready-icon">OK</div>
+      <p class="kicker">Ready</p>
+      <h2 class="title" style="font-size:38px">You are all set</h2>
+      <p class="subtitle" style="font-size:17px;max-width:560px">OpenClaw is connected to OpenRouter with auto as the default model.</p>
+      <div class="btn-row"><span class="ui-btn primary">Start chatting</span></div>
+      <p class="small-copy">You can also connect Telegram or Discord in Settings - Channels.</p>
+    </div>
+  `, 'center');
+}
+
+document.querySelectorAll('.welcome-screen').forEach(el => {
+  el.innerHTML = onboardingShell(1, `
+    <div class="center">
+      <p class="kicker">Welcome</p>
+      <h2 class="title">Your AI assistant,<br>wherever you need it</h2>
+      <p class="subtitle">NoraHarness runs locally on your Mac and connects to your own AI service, so it feels natural to start chatting and getting work done.</p>
+      <p class="small-copy">Make installing NoraHarness as easy as installing any other application.</p>
+      <div class="chips"><span class="chip">Runs locally</span><span class="chip">Ready to use</span><span class="chip">Works with chat apps</span></div>
+      <div class="btn-row"><span class="ui-btn primary">Get started</span></div>
+    </div>
+  `, 'center');
+});
+
+document.querySelectorAll('.provider-empty').forEach(el => { el.innerHTML = providerBody('empty'); });
+document.querySelectorAll('.provider-filled').forEach(el => { el.innerHTML = providerBody('filled'); });
+document.querySelectorAll('.provider-verified').forEach(el => { el.innerHTML = providerBody('verified'); });
+document.querySelectorAll('.provider-skipped').forEach(el => { el.innerHTML = providerBody('skipped'); });
+document.querySelectorAll('.provider-error').forEach(el => { el.innerHTML = providerBody('error'); });
+document.querySelectorAll('.personality-screen').forEach(el => { el.innerHTML = personalityBody('normal'); });
+document.querySelectorAll('.personality-saving').forEach(el => { el.innerHTML = personalityBody('saving'); });
+document.querySelectorAll('.personality-error').forEach(el => { el.innerHTML = personalityBody('error'); });
+document.querySelectorAll('.notifications-screen').forEach(el => { el.innerHTML = notificationBody(false); });
+document.querySelectorAll('.notification-denied').forEach(el => { el.innerHTML = notificationBody(true); });
+document.querySelectorAll('.completion-screen').forEach(el => { el.innerHTML = completionBody(); });
+
+document.querySelectorAll('.chat-screen').forEach(el => {
+  el.innerHTML = `
+    <div class="chat-shell">
+      <aside class="sidebar">
+        <div class="mode-switch"><span class="active">Chat</span><span>Code</span></div>
+        <div class="search">Search conversations...</div>
+        <div class="side-empty">No conversations yet</div>
+        <div class="side-footer"><span>Settings</span><span>Log in</span></div>
+      </aside>
+      <main class="chat-main">
+        <div class="chat-top">New Conversation</div>
+        <div class="empty-chat"><div><h3>Start a focused conversation</h3><p>Describe your goal, and OpenClaw will execute step by step and provide real-time feedback.</p><div class="suggestions"><span>Find the root cause of this error message</span><span>Plan and implement a feature</span><span>Refactor this function</span></div></div></div>
+        <div class="composer"><div class="composer-box">Assign a task, or ask any question</div></div>
+      </main>
+    </div>
+  `;
+});
+
+scheduleApply();
+</script>
+</body>
+</html>
