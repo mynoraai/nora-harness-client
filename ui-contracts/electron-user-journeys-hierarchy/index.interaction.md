@@ -1,91 +1,109 @@
-# Electron User Journeys - Hierarchical Map
+# Electron User Journeys - Current Hierarchy Map
 
-This file is the text description for the hierarchy index HTML. It explains how level-1 journeys contain the original 20 level-2 journeys.
+This is the text description for `index.wireframe.html`.
 
-- Source HTML: [index.wireframe.html](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/index.wireframe.html)
+The hierarchy follows the v2 inventory and contains only current explicit Electron user journeys. Historical, future, or removed surfaces are excluded from the active map.
 
-## Goal
+### 01. 首次启动 / Onboarding
 
-Level 1 journeys are user goals or product areas. Level 2 journeys preserve the original 20 numbered inventory items under those goals, including removed and not-current surfaces. Journey 21 is a newly identified missing login/account journey.
+- Entry: 首次安装并打开 NoraHarness，本地尚未完成 onboarding。
+- End state: 主应用侧边栏和 Chat/Code 主界面可见；后续启动不再显示 onboarding，除非用户重置数据。
+- Files: [HTML](01-first-launch/01-first-launch-onboarding.wireframe.html), [MD](01-first-launch/01-first-launch-onboarding.interaction.md)
 
-## Level 1 To Level 2 Map
+### 02. 主应用启动 / 恢复状态
 
-### First Launch
+- Entry: 已完成 onboarding 后再次启动应用，或 renderer 刷新/重启。
+- End state: 停在可操作主界面；用户能继续上次会话、新建会话或处理 gateway/更新恢复动作。
+- Files: [HTML](02-main-app-startup/02-main-app-startup-recovery.wireframe.html), [MD](02-main-app-startup/02-main-app-startup-recovery.interaction.md)
 
-- Description: A new user completes onboarding before the normal Chat/Code shell appears.
-- Status: current
-- Level-2 journey: 01. First Launch Onboarding - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/01-first-launch/01-first-launch-and-base-setup.wireframe.html), [MD](01-first-launch/01-first-launch-and-base-setup.interaction.md) (current)
+### 03. 登录 / 账户认证
 
-### Main App Startup
+- Entry: 用户从侧边栏账户入口点击登录，或从其他账户依赖功能触发认证。
+- End state: 用户处于已登录或未登录的明确状态；所有账户依赖入口按状态继续、拦截或要求重新登录。
+- Files: [HTML](03-account-login/03-account-login-authentication.wireframe.html), [MD](03-account-login/03-account-login-authentication.interaction.md)
 
-- Description: A returning user opens the app, sees gateway health, and resumes the last useful mode.
-- Status: current
-- Level-2 journey: 02. Startup And Gateway Status - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/02-main-app-startup/02-main-app-startup-gateway-status.wireframe.html), [MD](02-main-app-startup/02-main-app-startup-gateway-status.interaction.md) (current)
+### 04. Chat 模式
 
-### Account Login
+- Entry: 用户进入默认 Chat 模式，或从模式切换器切回 Chat。
+- End state: 会话停在完成、停止或失败的 turn 后；用户可继续发送、重试、切换会话或离开 Chat。
+- Files: [HTML](04-chat-mode/04-chat-mode-conversation.wireframe.html), [MD](04-chat-mode/04-chat-mode-conversation.interaction.md)
 
-- Description: A user signs in, creates an account, restores authenticated state, and recovers when authentication is interrupted.
-- Status: current screenshot reference / needs follow-up visual verification
-- Level-2 journey: 21. Account Login And Session - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/03-account-login/21-account-login-and-session.wireframe.html), [MD](03-account-login/21-account-login-and-session.interaction.md) (current screenshot reference)
+### 05. Code 模式 / 工作区
 
-### Chat
+- Entry: 用户从模式切换器点击 Code，或从已有 Code workspace/session 进入。
+- End state: 用户停在已打开的 Code session；工作区、活动 tab、工作目录和 composer 均可继续工作。
+- Files: [HTML](05-code-workspace/05-code-workspace-start-session.wireframe.html), [MD](05-code-workspace/05-code-workspace-start-session.interaction.md)
 
-- Description: A user creates or resumes a conversation, chooses model/runtime, sends messages, and recovers from blocked states.
-- Status: current / needs visual verification
-- Level-2 journey: 03. Chat Mode Conversation - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/03-chat/03-chat-mode-conversation.wireframe.html), [MD](03-chat/03-chat-mode-conversation.interaction.md) (needs visual verification)
+### 06. Runtime / Model / Permission
 
-### Code Workspace
+- Entry: 用户在 Chat 或 Code composer 打开 runtime/model 选择器，或发送消息时触发 runtime/provider/permission 检查。
+- End state: 运行时、model 和权限选择在界面上清楚可见；turn 完成、可恢复、可重试或等待批准。
+- Files: [HTML](06-runtime-model-permission/06-runtime-model-permission.wireframe.html), [MD](06-runtime-model-permission/06-runtime-model-permission.interaction.md)
 
-- Description: A developer opens a local workspace, starts code sessions, manages runtime/model/permission state, and reviews files, diffs, terminal output, and panels.
-- Status: current / needs visual verification
-- Level-2 journey: 04. Create Code Workspace And Start Code Session - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/04-code-workspace/04-create-code-workspace-and-start-code-session.wireframe.html), [MD](04-code-workspace/04-create-code-workspace-and-start-code-session.interaction.md) (needs visual verification)
-- Level-2 journey: 05. Code Mode Runtime, Models, And Permissions - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/04-code-workspace/05-code-mode-runtime-models-permissions.wireframe.html), [MD](04-code-workspace/05-code-mode-runtime-models-permissions.interaction.md) (needs visual verification)
-- Level-2 journey: 06. Code Workspace Files, Diff, Terminal, Right Panel - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/04-code-workspace/06-code-workspace-files-diff-terminal-right-panel.wireframe.html), [MD](04-code-workspace/06-code-workspace-files-diff-terminal-right-panel.interaction.md) (needs visual verification)
+### 07. Code 工作台面板
 
-### Agent Authoring
+- Entry: 用户在 Code session 中查看右侧工作台和底部面板。
+- End state: 用户停在某个工作台视图；文件、diff、terminal 或日志状态与当前 Code session 对齐。
+- Files: [HTML](07-code-workbench-panels/07-code-workbench-panels.wireframe.html), [MD](07-code-workbench-panels/07-code-workbench-panels.interaction.md)
 
-- Description: A developer edits agent/package content and reaches a publish-ready state.
-- Status: current / needs visual verification
-- Level-2 journey: 07. Agent Authoring - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/05-agent-authoring/07-agent-authoring.wireframe.html), [MD](05-agent-authoring/07-agent-authoring.interaction.md) (needs visual verification)
+### 08. Agent Authoring
 
-### Publish And Release
+- Entry: 用户在 Code 工作区点击 Edit Agent，或从 agent 配置相关入口进入。
+- End state: agent 配置处于已保存、保存失败待处理或未保存改动状态；用户可回 Code 或继续发布。
+- Files: [HTML](08-agent-authoring/08-agent-authoring.wireframe.html), [MD](08-agent-authoring/08-agent-authoring.interaction.md)
 
-- Description: An author publishes package metadata and manages firmware release artifacts where applicable.
-- Status: needs verification
-- Level-2 journey: 08. Publish Agent, Review, Edit Catalog Info - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/06-publish-preview-release/08-publish-agent-review-edit-catalog-info.wireframe.html), [MD](06-publish-preview-release/08-publish-agent-review-edit-catalog-info.interaction.md) (needs visual verification)
-- Level-2 journey: 10. Firmware Publish - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/06-publish-preview-release/10-firmware-publish.wireframe.html), [MD](06-publish-preview-release/10-firmware-publish.interaction.md) (needs visual verification)
+### 09. 统一发布中心 / Catalog Review / Firmware Publish
 
-### Hardware Device Work
+- Entry: 用户在 Agent Authoring 点击 Publish，或从发布状态行进入发布中心。
+- End state: App record、agent package 和 firmware 在同一中心内有清晰的未提交、审核、通过、拒绝、撤销、可发布、已发布或失败状态。
+- Files: [HTML](09-publish-center/09-unified-publish-center.wireframe.html), [MD](09-publish-center/09-unified-publish-center.interaction.md)
 
-- Description: A hardware developer checks device readiness, logs, PlatformIO state, and LVGL preview behavior.
-- Status: needs verification
-- Level-2 journey: 12. Device Status, PlatformIO, Device Logs - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/07-hardware-device/12-device-status-platformio-device-logs.wireframe.html), [MD](07-hardware-device/12-device-status-platformio-device-logs.interaction.md) (needs visual verification)
-- Level-2 journey: 13. LVGL Preview - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/07-hardware-device/13-lvgl-preview.wireframe.html), [MD](07-hardware-device/13-lvgl-preview.interaction.md) (needs visual verification)
+### 10. Device / PlatformIO / Logs
 
-### Settings
+- Entry: 用户在 Code 工作台打开 Device tab 或 Device Log 面板。
+- End state: 用户能确认设备、PlatformIO 和日志链路是 ready、missing、disconnected 还是 error。
+- Files: [HTML](10-device-platformio-logs/10-device-platformio-logs.wireframe.html), [MD](10-device-platformio-logs/10-device-platformio-logs.interaction.md)
 
-- Description: A user manages app settings, workspace files, providers/default models, permissions, and updates.
-- Status: current / needs visual verification
-- Level-2 journey: 14. Settings - General - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/08-settings/14-settings-general.wireframe.html), [MD](08-settings/14-settings-general.interaction.md) (needs visual verification)
-- Level-2 journey: 15. Settings - Workspace Files - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/08-settings/15-settings-workspace-files.wireframe.html), [MD](08-settings/15-settings-workspace-files.interaction.md) (needs visual verification)
-- Level-2 journey: 16. Settings - Providers And Default Model - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/08-settings/16-settings-providers-default-model.wireframe.html), [MD](08-settings/16-settings-providers-default-model.interaction.md) (needs visual verification)
-- Level-2 journey: 18. Settings - Permissions - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/08-settings/18-settings-permissions.wireframe.html), [MD](08-settings/18-settings-permissions.interaction.md) (needs visual verification)
-- Level-2 journey: 19. Settings - About And Updates - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/08-settings/19-settings-about-and-updates.wireframe.html), [MD](08-settings/19-settings-about-and-updates.interaction.md) (needs visual verification)
+### 11. LVGL Preview
 
-### Scheduled Tasks / Automations
+- Entry: 用户在 Code 工作台打开 Preview tab 或 LVGL Preview 面板。
+- End state: 用户看到最新 LVGL 截图，或看到明确失败原因和可重试动作。
+- Files: [HTML](11-lvgl-preview/11-lvgl-preview.wireframe.html), [MD](11-lvgl-preview/11-lvgl-preview.interaction.md)
 
-- Description: A priority concept for reminders, recurring jobs, and conversation-derived task drafts; not yet a confirmed current UI surface.
-- Status: not current surface
-- Level-2 journey: 20. Scheduled Tasks / Cron Jobs - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/09-scheduled-tasks/20-scheduled-tasks-cron-jobs.wireframe.html), [MD](09-scheduled-tasks/20-scheduled-tasks-cron-jobs.interaction.md) (not current surface)
+### 12. Settings - General
 
-### Removed / Historical Surfaces
+- Entry: 用户从应用设置入口打开 Settings，并停留在 General tab。
+- End state: 通用设置保存成功或停在可重试错误；Gateway 当前状态可见。
+- Files: [HTML](12-settings-general/12-settings-general.wireframe.html), [MD](12-settings-general/12-settings-general.interaction.md)
 
-- Description: Numbered slots retained to show removed surfaces that should not be drawn as active journeys.
-- Status: removed
-- Level-2 journey: 09. Mobile Preview - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/06-publish-preview-release/09-mobile-preview.wireframe.html), [MD](06-publish-preview-release/09-mobile-preview.interaction.md) (document hidden; related product code retained)
-- Level-2 journey: 11. Cloud Deploy - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/10-removed-historical/11-cloud-deploy-removed.wireframe.html), [MD](10-removed-historical/11-cloud-deploy-removed.interaction.md) (removed)
-- Level-2 journey: 17. Settings - Extensions / ACP Runtime Management - [HTML](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/codex/electron-user-journey-wireframes/ui-contracts/electron-user-journeys-hierarchy/10-removed-historical/17-settings-extensions-acp-runtime-management-removed.wireframe.html), [MD](10-removed-historical/17-settings-extensions-acp-runtime-management-removed.interaction.md) (removed)
+### 13. Settings - Workspace Files
 
-## End State
+- Entry: 用户在 Settings 中打开 Workspace Files tab。
+- End state: 用户完成查看、保存、重置，或停在有未保存改动的编辑状态。
+- Files: [HTML](13-settings-workspace-files/13-settings-workspace-files.wireframe.html), [MD](13-settings-workspace-files/13-settings-workspace-files.interaction.md)
 
-- Reviewers can enter all original 20 level-2 HTML wireframes plus the newly identified login journey from the level-1 map and distinguish current, needs-verification, not-current, and removed journeys.
+### 14. Settings - Providers
+
+- Entry: 用户在 Settings 中打开 Providers tab，或从 provider 缺失提示跳转。
+- End state: Provider 配置 ready，或明确提示缺失认证、验证失败、没有默认 model 等待处理。
+- Files: [HTML](14-settings-providers/14-settings-providers.wireframe.html), [MD](14-settings-providers/14-settings-providers.interaction.md)
+
+### 15. Settings - Permissions
+
+- Entry: 用户在 Settings 中打开 Permissions tab，或从运行中的权限/系统权限提示跳转。
+- End state: 权限页展示当前执行策略和系统权限最终状态；后续运行按权限自动执行、请求批准或阻止。
+- Files: [HTML](15-settings-permissions/15-settings-permissions.wireframe.html), [MD](15-settings-permissions/15-settings-permissions.interaction.md)
+
+### 16. Settings - About / Updates
+
+- Entry: 用户在 Settings 中打开 About / Updates tab，或点击主界面更新提示。
+- End state: 用户确认最新版、完成下载等待安装，或停在可重试更新错误。
+- Files: [HTML](16-settings-about-updates/16-settings-about-updates.wireframe.html), [MD](16-settings-about-updates/16-settings-about-updates.interaction.md)
+
+## Boundary Register
+
+| Surface | Status | Notes |
+| --- | --- | --- |
+| Mobile Preview | secondary | Agent Authoring `AUTH-04` remains a secondary one-time QR preview journey, not a primary inventory journey. |
+| Cloud Deploy right-panel tab | removed | Deleted right-panel tab interaction; do not correct it through the unified publish entry. |
+| Settings Extensions / ACP Runtime Management | removed | Deleted Settings extension ACP module. |

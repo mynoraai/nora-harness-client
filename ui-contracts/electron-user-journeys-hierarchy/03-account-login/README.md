@@ -1,11 +1,8 @@
-# Account Login
+# 03. 登录 / 账户认证
 
-A user signs in, creates an account, restores an authenticated session, or recovers when authentication is interrupted.
+This folder contains the current user journey interaction document and HTML wireframe for **登录 / 账户认证**.
 
-## Level 2 Journeys
+- [Interaction description](03-account-login-authentication.interaction.md)
+- [HTML wireframe](03-account-login-authentication.wireframe.html)
 
-- 21: [Account Login And Session](21-account-login-and-session.wireframe.html) - `current screenshot reference`
-
-## Interaction Docs
-
-- [21-account-login-and-session.interaction.md](21-account-login-and-session.interaction.md) - [source HTML](21-account-login-and-session.wireframe.html)
+This is an implemented/current journey inventory artifact focused on observed interaction states.

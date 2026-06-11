@@ -4,7 +4,7 @@ Source rows: `AUTH-01`, `AUTH-02`, `AUTH-03`, `AUTH-04`, `AUTH-05`
 Entry path: Code mode -> active workspace -> `Edit Agent`
 Status: Draft, evidence-only
 
-This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, mobile preview, publish, or export behavior.
+This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, the secondary mobile preview dialog, Publish to Catalog, or package export component boundaries.
 
 ## Owned Rows
 
@@ -13,7 +13,7 @@ This folder covers Agent Authoring in the Electron IDE. Use it when you need to 
 | `AUTH-01`  | [file-edit.md](./file-edit.md)           | Agent authoring tab, editable core agent files, save/revert/status loop |
 | `AUTH-02`  | [capabilities.md](./capabilities.md)     | Device capability manifest and agent-vs-device diff                     |
 | `AUTH-03`  | [skills.md](./skills.md)                 | Skill list, SKILL.md editor/preview, new skill dialog, probe panel      |
-| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | One-time mobile preview QR dialog                                       |
+| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | Secondary one-time mobile preview QR dialog                             |
 | `AUTH-05`  | [publish-export.md](./publish-export.md) | Publish to Catalog dialog and package export component boundary         |
 
 ## Shared Entry Contract
