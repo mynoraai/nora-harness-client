@@ -4,7 +4,7 @@ Source rows: `AUTH-01`, `AUTH-02`, `AUTH-03`, `AUTH-04`, `AUTH-05`
 Entry path: Code mode -> active workspace -> `Edit Agent`
 Status: Draft, evidence-only
 
-This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, the secondary mobile preview dialog, Publish to Catalog, or package export component boundaries.
+This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, secondary mobile preview behavior, or the unified publish center.
 
 ## Owned Rows
 
@@ -13,8 +13,8 @@ This folder covers Agent Authoring in the Electron IDE. Use it when you need to 
 | `AUTH-01`  | [file-edit.md](./file-edit.md)           | Agent authoring tab, editable core agent files, save/revert/status loop |
 | `AUTH-02`  | [capabilities.md](./capabilities.md)     | Device capability manifest and agent-vs-device diff                     |
 | `AUTH-03`  | [skills.md](./skills.md)                 | Skill list, SKILL.md editor/preview, new skill dialog, probe panel      |
-| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | Secondary one-time mobile preview QR dialog                             |
-| `AUTH-05`  | [publish-export.md](./publish-export.md) | Publish to Catalog dialog and package export component boundary         |
+| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | Secondary one-time mobile preview QR dialog; not a primary inventory journey |
+| `AUTH-05`  | [publish-export.md](./publish-export.md) | Unified publish center for App record, Icon & screenshots, Agent package, and Firmware |
 
 ## Shared Entry Contract
 
@@ -32,10 +32,11 @@ Agent Authoring uses these shared boundaries:
 | Workspace file read/write IPC | File editor, Skills, Capabilities diff, package export           | [workspace-client.ts:263](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L263), [workspace-client.ts:298](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L298), [ipc-channels.ts:47](../../../../apps/electron/src/main/ipc-channels.ts#L47), [ipc-channels.ts:72](../../../../apps/electron/src/main/ipc-channels.ts#L72) |
 | Agent authoring store         | Dirty/saving/error state, saved timestamp, last published footer | [agent-authoring-store.ts:40](../../../../apps/electron/src/renderer/src/stores/agent-authoring-store.ts#L40), [AgentAuthoringTab.tsx:72](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L72)                                                                                                                         |
 | Device stream                 | Capabilities and mobile preview crash detection                  | [CapabilitiesSection.tsx:66](../../../../apps/electron/src/renderer/src/components/agent-authoring/CapabilitiesSection.tsx#L66), [MobilePreviewDialog.tsx:103](../../../../apps/electron/src/renderer/src/components/agent-authoring/MobilePreviewDialog.tsx#L103)                                                                                                 |
-| Cloud catalog IPC             | Publish dialog                                                   | [ipc-cloud-catalog.ts:42](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L42), [cloud-catalog-client.ts:101](../../../../apps/electron/src/renderer/src/lib/cloud-catalog-client.ts#L101)                                                                                                                                                                 |
+| Cloud catalog IPC             | Unified publish center                                           | [ipc-cloud-catalog.ts:42](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L42), [cloud-catalog-client.ts:101](../../../../apps/electron/src/renderer/src/lib/cloud-catalog-client.ts#L101); Journey 09 source: `../../electron-user-journeys-hierarchy-v2/09-catalog-review/catalog-review-publish.pm.md`                                                                 |
 
 ## Gaps
 
 - TODO: add a stable `data-testid="agent-authoring-tab"` before L3 automation can reliably assert the tab content. The test index tracks this selector gap in `../tests/l3-computer-use-scenarios.md`.
 - No L3 Electron harness exists for Agent Authoring. Existing coverage is L1/L2 component, store, and main-process helper tests.
-- `ExportPackageDialog` exists and is tested, but this directory documents it as a component boundary because current `AgentAuthoringTab` exposes `Publish`, not a standalone export button.
+- `ExportPackageDialog` exists and is tested, but this directory documents it as a component boundary because the primary implemented journey is now the unified publish center, not standalone `.tar.gz` export.
+- Mobile Preview remains documented as `AUTH-04`, but the current inventory treats it as secondary rather than one of the 16 primary Electron journeys.

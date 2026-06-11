@@ -1,12 +1,12 @@
-# 01. First Launch
+# 05. Agent Authoring
 
-Status: `current`
+Status: `current / needs visual verification`
 
-A new user completes onboarding before the normal Chat/Code shell appears.
+A developer edits agent/package content and reaches a publish-ready state.
 
 ## Level 2 Journeys
 
-- 01: [First Launch Onboarding](01-first-launch-and-base-setup.wireframe.html) - `current`
+- 07: [Agent Authoring](07-agent-authoring.wireframe.html) - `needs visual verification`
 
 ## Verification Notes
 
@@ -16,4 +16,4 @@ A new user completes onboarding before the normal Chat/Code shell appears.
 
 ## Interaction Text Descriptions
 
-- [01-first-launch-and-base-setup.interaction.md](01-first-launch-and-base-setup.interaction.md) - [source HTML](01-first-launch-and-base-setup.wireframe.html)
+- [07-agent-authoring.interaction.md](07-agent-authoring.interaction.md) - [source HTML](07-agent-authoring.wireframe.html)
