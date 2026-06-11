@@ -44,7 +44,7 @@ journey
     See Saved timestamp: 5: User
     Click Revert after unwanted edits: 4: User
   section Continue
-    Use Preview on Mobile or Publish entry point: 4: User
+    Open unified Publish center or secondary Mobile Preview: 4: User
 ```
 
 ### Journey Steps
@@ -135,15 +135,15 @@ Future L3 scenario: `AUTH-01 opens agent authoring, edits a core file, saves, an
 
 ## UI Surface
 
-![Agent Authoring Soul editor](../assets/screenshots/agent-authoring-soul-editor.jpg)
+![Agent Authoring app info edit state over the Soul editor](../assets/screenshots/agent-authoring-soul-editor.jpg)
 
-The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Preview on Mobile, Publish, Revert, and Save visible in one Code-mode tab.
+The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Publish, Revert, and Save visible in one Code-mode tab. Mobile Preview can still be present as a secondary capability, but the primary downstream journey is Publish into the unified publish center.
 
 ### Wireframe
 
 ```text
 +--------------------------------------------------------------------------------+
-| Agent <workspace>                     [Save All (N)] [Preview on Mobile] [Publish] |
+| Agent <workspace>          [Approved] [Save All (N)] [Preview on Mobile] [Publish] |
 +----------------------+---------------------------------------------------------+
 | Soul                 | agent/SOUL.md                         [Revert] [Save]   |
 | Style                +---------------------------------------------------------+
@@ -159,12 +159,14 @@ The authoring tab keeps section navigation, the selected agent file path, person
 ```
 
 - Header title showing the agent workspace name.
-- Header actions: `Save All (N)` when at least two core file sections are dirty, `Preview on Mobile`, and `Publish`.
+- Header state/action area: optional reviewed-state badge such as `Approved`, `Save All (N)` when at least two core file sections are dirty, optional secondary `Preview on Mobile`, and primary `Publish`.
 - Left rail sections: `Soul`, `Style`, `Tools`, `Heartbeat`, `Bootstrap`, then `Skills` and `Capabilities`.
 - Editable file sub-header for single-file sections: workspace-relative path, `Revert`, `Save`, and `Saving...` button state.
 - Main editor: section-specific editor for Soul, Style, Tools, Heartbeat, and Bootstrap.
 - Empty/loading state: `Resolving files...`.
-- Status bar states: saving, saved timestamp with file path, unsaved file path, error text, and last published catalog link when present.
+- Status bar states: saving, saved timestamp with file path, unsaved file path, error text, and last-published catalog link when present.
+- Publish entry: opens the unified publish center documented in `publish-export.md`; it does not replace the editor or discard dirty state.
+- Review state: an `Approved` badge in the header means catalog/package review has approved a related publish row. It does not mean optional media or firmware has been published.
 
 ## File Edit State Machine
 
@@ -219,6 +221,7 @@ Transition labels:
 | Save all dirty core files      | At least two core file sections are dirty         | Header shows `Save All (N)` and writes each dirty core file; failures show per-file error toasts                                                                         | `writeWorkspaceFile` once per dirty core file                                                  | [AgentAuthoringTab.tsx:138](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L138), [AgentAuthoringTab.tsx:146](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L146), [AgentAuthoringTab.tsx:201](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L201)                                                                                                     | L2 no direct test                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | Revert selected file           | Active file is dirty                              | Content returns to saved content and dirty/error state clears                                                                                                            | Local store only                                                                               | [AgentAuthoringTab.tsx:158](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L158), [AgentAuthoringTab.tsx:290](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L290)                                                                                                                                                                                                                                    | L1 covered: [agent-authoring-store.test.ts:63](../../../../apps/electron/src/renderer/src/stores/agent-authoring-store.test.ts#L63)                                                                                                                                                                                                                                                                                                  |
 | Open last published URL        | `lastPublished` exists in store                   | Footer shows semver and opens the catalog URL via Electron external-open                                                                                                 | `window.electronAPI.openExternal(lastPublished.catalogUrl)`                                    | [AgentAuthoringTab.tsx:357](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L357), [AgentAuthoringTab.tsx:362](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L362)                                                                                                                                                                                                                                    | L2 no direct test                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Open unified publish center    | Agent Authoring tab is mounted                    | Publish center opens as a modal over the editor with App record, Icon & screenshots, Agent package, and Firmware rows.                                                    | Shared account and catalog publish boundaries; see `publish-export.md`.                         | `electron-user-journeys-hierarchy-v2/09-catalog-review/catalog-review-publish.pm.md`; latest review screenshots.                                                                                                                                                                                                                                                                                                                 | L3 planned                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Data And Events
 

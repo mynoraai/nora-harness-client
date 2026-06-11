@@ -148,8 +148,8 @@ Editor mode:
 
 - Loading providers state.
 - Empty state with Add Provider.
-- Default model card with enabled-model selector.
-- Provider rows with enabled-model count and edit affordance.
+- Default model card with enabled-model selector. Current screenshots show this as a compact card such as `DEFAULT MODEL auto · OpenRouter` with a native select.
+- Provider rows with enabled-model count and edit affordance, for example `DeepSeek - 1 models enabled` and `OpenRouter - 3 models enabled`.
 - Add Provider row.
 - Provider editor with Back, provider select, API key or local endpoint input, region select when applicable, enabled-model count, filter input, model checkboxes, local model id input, stale model markers, Load models or Reload models, Remove provider, Save, and disabled save reason.
 

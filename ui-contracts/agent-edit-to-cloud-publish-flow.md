@@ -1,179 +1,148 @@
-# AUTH-05 Agent Edit to Cloud Publish
+# AUTH-05 Agent Edit To Unified Publish Center
 
 This document defines the user journey from the in-app **Edit Agent** workspace
-to a published version on the cloud catalog. It covers entry from Code mode,
-section editing in the Agent Authoring tab, sign-in, new-agent vs new-version
-detection, the success state, and recovery from version conflicts.
+to reviewed catalog state, production package publish, and firmware publish.
+It is the cross-file narrative companion to
+`agent-authoring/publish-export.md`.
+
+Current source of truth: `electron-user-journeys-hierarchy-v2/user-journey-inventory.md`, Journey 09.
 
 ## User Journey
 
 ### 1. User opens Edit Agent from Code mode
 
-The user is in Code mode with a workspace open. When the workspace root contains
-an agent project (a manifest file at the root), the workspace header exposes an
-**Edit Agent** action. Tapping it switches the right panel to the Agent
-Authoring tab.
+The user is in Code mode with a workspace open. When the workspace root resolves
+to an agent project, the workspace header exposes **Edit Agent**. Clicking it
+opens an Agent Authoring tab without leaving the Code workbench.
 
-<img src="./assets/screenshots/agent-publish/1-code-edit-agent-entry.jpg" alt="Code mode header with Edit Agent button" width="640" />
+If the workspace is not an agent project, **Edit Agent** is not shown. Publishing
+is intentionally scoped to an authorable agent workspace.
 
-If the workspace is not an agent project, **Edit Agent** is not shown. This is
-intentional: the publish flow only makes sense from an agent workspace.
+### 2. User edits agent content and sees review state
 
-### 2. User reviews and edits agent files, then clicks Publish
+The Agent Authoring tab keeps the section rail, active editor, file path,
+Revert/Save controls, right-side file panel, and bottom terminal/log area in the
+same workbench frame.
 
-The Agent Authoring tab groups the agent into sections on the left rail and
-shows the editable file on the right. The user can move between Capabilities,
-Skills, Soul, Style, Tools, Heartbeat, and Bootstrap. Dirty files are marked
-with a dot next to the section name.
+After review approval, the header can show an **Approved** badge near the authoring
+actions while the user remains in the editor. This badge means the reviewed
+catalog/package state is approved; it does not mean firmware or optional media
+has also been published.
 
-The top right shows three action buttons: **Save All (N)** appears only when
-two or more files are dirty, **Preview on Mobile** generates a one-time QR for
-`hh-mobile-chat`, and **Publish** opens the Publish to Catalog dialog. The
-status bar at the bottom shows per-file save state and, after a prior publish,
-a **Last published** pill that links to the catalog page.
+### 3. User opens Publish
 
-<img src="./assets/screenshots/agent-publish/2-authoring-tab-publish-action.jpg" alt="Agent Authoring tab with section rail, editor, and Publish action highlighted" width="640" />
+The user clicks **Publish** from Agent Authoring. If the user is signed out, the
+publish flow blocks on account login and returns to the publish context after
+login succeeds.
 
-Saving and publishing are independent. Publish always rebuilds the package, so
-explicit save is not required, but unsaved changes will not be in the published
-artifact.
+When signed in, the publish center opens as a modal over the Agent Authoring tab.
+The current reviewed state is shown as row-level badges.
 
-### 3. User signs in to NoraClaw when prompted
+```text
+----------------------------------------------------------+
+| Publish · xiao-zhi · agt_tozatmarubfxs2iu           [x] |
++----------------------------------------------------------+
+| 1  App record                 [Approved]        [Edit]   |
+|    agt_tozatmarubfxs2iu                              |
++----------------------------------------------------------+
+| 2  Icon & screenshots         [Optional]        [Edit]   |
+|    add any time                                      |
++----------------------------------------------------------+
+| 3  Agent package              [Approved]  [Publish to production] |
+|    v0.9.0 · from manifest                         |
++----------------------------------------------------------+
+| 4  Firmware                   [Draft]     [Publish firmware]       |
+|    from build                                       |
++----------------------------------------------------------+
+```
 
-The Publish to Catalog dialog first verifies sign-in. If the user is not
-signed in, the dialog shows the sign-in card. **Sign in** runs the same
-NoraClaw auth flow used elsewhere in the app; once authenticated, the dialog
-auto-advances to package build.
+### 4. User edits app record or media
 
-<img src="./assets/screenshots/agent-publish/5-dialog-unauthenticated.png" alt="Publish dialog unauthenticated card with Sign in button" width="480" />
+The **App record** row owns catalog identity and text metadata. The **Icon &
+screenshots** row owns optional or required media. Clicking **Edit** opens the
+relevant edit surface.
 
-The cloud session cookie lives in the main process only. The renderer never
-sees it; the renderer talks to main over IPC, main talks to the cloud over
-`net.fetch` with the cookie attached.
+The edit surface must preserve unsaved changes, show saving state, disable
+duplicate save while saving, and return to the publish center with refreshed row
+status after success. Failure leaves the user in context with retry.
 
-### 4. App auto-detects new-agent vs new-version
+### 5. User submits for review and reads the result
 
-Every Publish click produces a new tar.gz. The artifact is written to
-`dist/agent-package/.publish-cache/agent-package-<id>-<version>-<ts>.tar.gz`
-inside the workspace, which is gitignored by the same rule that hides `dist/`.
-The dialog never accepts a pre-built tar.gz; the workspace state is the source
-of truth.
+The publish center separates review state from production publish state.
 
-After the build, the dialog calls `GET /api/cloud/agents?owner=me` and matches
-the workspace manifest `id` against the signed-in user's catalog slugs.
+- Draft or ready rows can be submitted for review.
+- Submitted rows become pending/in-review.
+- Review can return approved, rejected, or revoked.
+- Approved rows show `Approved` and unlock only the next valid action for that row.
 
-If a match is found, the mode picker preselects **New version** of the matched
-agent. The Package Digest card above the picker shows the file name, agent id,
-version, byte size, the SHA-256 prefix, and the declared capabilities.
+The latest reviewed-state screenshot shows App record and Agent package as
+`Approved`, while Firmware remains `Draft`. This is the canonical example of
+independent row state.
 
-<img src="./assets/screenshots/agent-publish/8-dialog-metadata-new-version.jpg" alt="Publish dialog with New version selected for an existing matched agent" width="480" />
+### 6. User publishes production package or firmware
 
-If no match is found, **New version** is disabled (with a "no existing agent
-matches" hint) and the picker preselects **Publish as new agent**. The dialog
-then asks for the catalog **Display name** and **Description**, prefilled
-from the manifest.
+When **Agent package** is approved, the user can click **Publish to production**.
+The row enters publishing, then success or failure. Success refreshes the row and
+last-published state.
 
-<img src="./assets/screenshots/agent-publish/9-dialog-metadata-new-agent.jpg" alt="Publish dialog with Publish as new agent selected, showing Display name and Description fields" width="480" />
-
-The user can switch modes manually, but the auto-detection is the default
-because it matches the intent of the workspace manifest.
-
-### 5. App uploads the package and shows the success card
-
-Pressing **Publish** sends the tar.gz to the cloud catalog. The renderer does
-not build the HTTP request directly; it calls an IPC handler in the main
-process, which builds the multipart body and forwards the request with the
-better-auth cookie. Endpoints used:
-
-| Mode        | Method | Endpoint                                                          |
-| ----------- | ------ | ----------------------------------------------------------------- |
-| New agent   | POST   | `/api/cloud/agents`                                               |
-| New version | POST   | `/api/cloud/agents/<agentId>/versions`                            |
-| List my own | GET    | `/api/cloud/agents?owner=me&sort=latest_published_desc&limit=50`  |
-
-Multipart fields:
-
-- `manifest` - serialized agent manifest JSON
-- `bundle` - the tar.gz file, content-type `application/gzip`
-- `package_sha256` - hex digest of the bundle
-- For new agent: optional `slug`, `display_name`, `description`
-
-On success the dialog shows a green confirmation banner with the published
-semver, the `agent_id`, `version_id`, the SHA-256 prefix, and the full catalog
-URL. The user can **Copy URL**, **Open** the catalog page, or press **Done** to
-close.
-
-<img src="./assets/screenshots/agent-publish/11-dialog-success.png" alt="Publish dialog success card with catalog URL and Copy URL / Open / Done actions" width="480" />
-
-### 6. App helps the user recover from version conflicts
-
-If the manifest version is already in the catalog, the cloud returns
-`VERSION_CONFLICT`. The retry button is labeled **Rebuild and retry**: the
-user must bump the manifest version outside the dialog first, and the click
-always re-runs the package build from scratch so the new version is picked up.
-
-<img src="./assets/screenshots/agent-publish/14-dialog-version-conflict.png" alt="Publish dialog version-conflict card with Rebuild and retry action" width="480" />
-
-A similar slug-conflict card handles the case where another account already
-owns the manifest `id`; the user changes the id in the workspace manifest and
-presses **Retry**.
+When **Firmware** has a valid build and metadata, the user can click **Publish
+firmware**. Firmware publish is no longer a separate primary journey; it is the
+Firmware row inside the same publish center.
 
 ## Control Contract
 
-| Control                  | Required behavior                                                                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| Edit Agent               | Only visible when the active workspace root is an agent project. Switches the right panel to the Agent Authoring tab.        |
-| Save / Save All          | Persist the active file or every dirty file. Publish does not depend on Save; unsaved files are not in the published bundle. |
-| Preview on Mobile        | Generates a one-time QR for `hh-mobile-chat`. Independent of Publish.                                                        |
-| Publish                  | Opens the Publish to Catalog dialog. Always rebuilds the package, never accepts a pre-built tar.gz.                          |
-| Sign in (in dialog)      | Runs the NoraClaw auth flow. On success, dialog auto-advances to packaging.                                                  |
-| Mode picker              | Preselects new-version when the manifest id matches an owned agent; preselects new-agent otherwise. User can override.       |
-| Publish (metadata-entry) | Sends the multipart upload to the cloud catalog using the cookie held by main.                                               |
-| Retry (version conflict) | Re-runs the build; expects manifest version to have been bumped.                                                             |
-| Copy URL / Open / Done   | Copy the catalog URL, open it in the OS browser, or close the dialog. Last published pill persists in the status bar.        |
+| Control | Required behavior |
+| ------- | ----------------- |
+| Edit Agent | Visible only for an agent workspace. Opens/focuses Agent Authoring as a Code center tab. |
+| Approved badge | Shows reviewed approval state in the authoring header when available. Does not imply every row is published. |
+| Save / Save All | Persists authoring file edits. Publish reads from the saved/built workspace state according to the implementation boundary. |
+| Publish | Opens the unified publish center. Signed-out users see an auth gate before row actions can submit. |
+| App record Edit | Opens metadata editing and returns to refreshed row state after save. |
+| Icon & screenshots Edit | Opens media editing/upload and returns to refreshed row state after save. |
+| Submit review | Moves the selected row to pending/in-review and later approved/rejected/revoked. |
+| Publish to production | Available only for an approved package row. Shows progress, success, or retryable failure. |
+| Publish firmware | Available only when firmware build/metadata is ready. Shows progress, success, or retryable failure. |
 
 ## State Contract
 
-| State           | Required UI                                                            | API / runtime dependency                                                     |
-| --------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Authoring idle  | Section rail, active file, header actions, status bar.                 | Workspace file read / write IPC.                                             |
-| Unauthenticated | Sign-in card with Sign in button.                                      | NoraClaw auth flow.                                                          |
-| Loading agents  | "Loading your agents..." spinner.                                      | `GET /api/cloud/agents?owner=me` via main.                                   |
-| Metadata entry  | Package Digest card, mode picker, optional Display name / Description. | Manifest fields, `listMyAgents` result.                                      |
-| Submitting      | "Uploading package..." spinner.                                        | `POST /api/cloud/agents` or `POST /api/cloud/agents/<id>/versions` via main. |
-| Success         | Green banner, agent_id / version_id / SHA-256 / catalog URL block.     | Publish response fields.                                                     |
-| Error           | Red card with message, code, and retry / cancel actions.               | `PublishApiError` from main, normalized to `PublishClientError` in renderer. |
+| State | Required UI |
+| ----- | ----------- |
+| Authoring idle | Section rail, active file/editor, Revert/Save, right panel, bottom terminal/logs. |
+| Review approved in authoring | Header shows `Approved` badge while editor stays usable. |
+| Login required | Publish center shows sign-in path and does not submit review/publish actions. |
+| Publish center loaded | Four rows are visible: App record, Icon & screenshots, Agent package, Firmware. |
+| Optional media | Icon & screenshots can show `Optional` and still allow Edit. |
+| Approved app/package | Row badge says `Approved`; package row can expose `Publish to production`. |
+| Draft firmware | Firmware row says `Draft`; publish action is disabled or leads to required build/metadata handling unless ready. |
+| Saving/editing | The affected edit surface disables duplicate submit and preserves draft on failure. |
+| Publishing | The affected row shows progress and blocks duplicate publish. |
+| Failed | The affected row keeps error copy and retry/recovery action. |
 
 ## Loading And Error Contract
 
-- Publish always rebuilds. Pressing Publish must produce a fresh tar.gz; the
-  dialog must never accept a pre-built artifact.
-- The renderer must never hold the cloud session cookie. All cloud catalog
-  calls go through main, which attaches the cookie.
-- Mode auto-detection must run before the user makes a decision. The metadata
-  phase must not appear until `listMyAgents` has resolved.
-- Version conflict requires a fresh build. Retry from this state must restart
-  the build phase, not reuse the existing tar.gz.
-- 5xx and 429 responses are retryable and should be marked so on the error
-  card. 4xx codes other than slug / version conflicts are not retryable by
-  default.
-- After success, the Authoring tab status bar must show the Last published
-  pill with the catalog URL. The pill survives section navigation and
-  workspace re-open within the same session.
+- The publish center must preserve authoring context behind the modal.
+- Account login must gate publish submission but should not discard the publish entry.
+- Row state is independent. App/package approval must not hide incomplete media or draft firmware.
+- Review states and production publish states must use different badges/copy.
+- Firmware publish belongs to the Firmware row of this center, not to a separate primary flow.
+- Recovery should happen in place whenever possible: edit/resubmit for review problems, rebuild/complete metadata for firmware, retry for transient publish failures.
 
 ## Asset Inventory
 
-Screenshots live under
-`docs/hardware_harness/ui-contracts/assets/screenshots/agent-publish/`. Capture
-all screenshots at the default app theme; do not capture personal email, real
-workspace path, or device hostname.
+Screenshot assets under `ui-contracts/assets/screenshots/agent-publish/` have
+been refreshed from the current edit-agent publish video and now represent the
+unified publish center. Add focused assets when these terminal states are
+available:
 
-| Step | File                                       | Capture setup                                                                                 |
-| ---- | ------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| 1    | `1-code-edit-agent-entry.jpg`              | Open a workspace whose root contains an agent project so the Edit Agent button is present.    |
-| 2    | `2-authoring-tab-publish-action.jpg`       | Open the Agent Authoring tab on the Soul section; capture full tab including header actions. |
-| 3    | `5-dialog-unauthenticated.png`             | Sign out of NoraClaw, then click Publish from the Authoring tab.                              |
-| 4    | `8-dialog-metadata-new-version.jpg`        | Sign in with the account that already owns the workspace manifest id; click Publish.          |
-| 4    | `9-dialog-metadata-new-agent.jpg`          | Sign in with an account that has not published this manifest id; click Publish.               |
-| 5    | `11-dialog-success.png`                    | Complete a successful publish.                                                                |
-| 6    | `14-dialog-version-conflict.png`           | Publish a version, then attempt to publish the same version again without bumping manifest.   |
+| Needed asset | Capture setup |
+| ------------ | ------------- |
+| `edit-agent-approved-header` | Agent Authoring tab after review approval, with `Approved` badge visible. |
+| `publish-center-approved-package-draft-firmware` | Publish center modal showing App record approved, Icon & screenshots optional, Agent package approved, Firmware draft. |
+| `publish-center-firmware-published` | Firmware row after a successful firmware publish. |
+| `publish-center-failed-row` | A row-level failure with retry/recovery action visible. |
+
+## Relationship To Detailed Contract
+
+The detailed row/state contract lives in
+`agent-authoring/publish-export.md`. Keep both files synchronized when Journey 09
+changes.
