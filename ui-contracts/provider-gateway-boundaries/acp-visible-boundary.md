@@ -152,6 +152,7 @@ ACP spawn error banner
 
 - Working directory marker: `AcpRuntimeStatusPill` beside folder path.
 - Message list ACP blocks: `data-acp-tool`, `data-acp-permission`, `data-acp-status`, `data-acp-modified-files`.
+- Conversation approval is separate from the ACP permission card: some runtime approvals are resolved when the user sends `/approve <id> allow-once` or `/approve <id> deny` through the normal Chat/Code composer. That path is documented in `../chat/chat-runtime.md`.
 - Spawn error banner: title/body, optional login hint, `Retry`, optional `Open Settings`.
 - Related ACP surface: routing, permission decision semantics, upstream runtime lifecycle, bridge tests, and ACP settings internals beyond visible navigation are covered by `docs/hardware_harness/ui-contracts/agent-ui-contracts-via-acp.md`.
 

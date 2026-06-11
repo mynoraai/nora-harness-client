@@ -18,11 +18,36 @@ The contracts cover the Electron IDE experience from first launch through normal
 | Main window, sidebar, account, and system routes | Returning-user frame, mode switch, sidebar, login footer, tray, update/status, routes | `MAIN-*`    |
 | Chat tab                                         | Sessions, message list, composer, model picker, thinking picker, send/stop/recovery   | `CHAT-*`    |
 | Code tab                                         | Workspaces, code sessions, tabs, file/diff/device panels, terminal, empty states      | `CODE-*`    |
-| Agent authoring                                  | Agent files, skills, capabilities, mobile preview, publish/export                     | `AUTH-*`    |
+| Agent authoring                                  | Agent files, skills, capabilities, secondary-priority mobile preview boundary, publish/export | `AUTH-*`    |
 | Settings                                         | Settings frame and every visible settings tab                                         | `SET-*`     |
 | Provider and gateway boundaries                  | Provider validation, model selection, chat RPC, visible ACP boundary markers          | `BND-*`     |
 
 ACP-specific routing, permission prompts, runtime events, and renderer bridge behavior are covered by `docs/hardware_harness/ui-contracts/agent-ui-contracts-via-acp.md`. Rows in this directory may still mark visible ACP UI only; do not infer ACP behavior from public SDK knowledge.
+
+## Journey Inventory Alignment
+
+The current end-to-end journey source is `electron-user-journeys-hierarchy-v2/user-journey-inventory.md`. Use it as the behavior-language source when contract rows need to describe what the user does, what visible state changes, and where the flow ends.
+
+| Inventory journey | Primary UI contract rows | Contract files to update together |
+| ----------------- | ------------------------ | --------------------------------- |
+| `01 First Launch / Onboarding` | `ONB-01` through `ONB-05` | `onboarding/onboarding-flow.md`, `tests/onboarding-tests.md` |
+| `02 Main App Startup / Recovery State` | `MAIN-01`, `MAIN-03`, `MAIN-05` | `main-window/main-window-runtime.md`, `tests/main-window-tests.md` |
+| `03 Login / Account Authentication` | `MAIN-04` | `main-window/main-window-runtime.md`, `tests/main-window-tests.md` |
+| `04 Chat Mode` | `CHAT-01` through `CHAT-08`, `BND-03`, `BND-04` | `chat/chat-runtime.md`, `chat/client-state-machine.md`, `provider-gateway-boundaries/*` |
+| `05 Code Mode / Workspace` | `CODE-01` through `CODE-05` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
+| `06 Runtime / Model / Permission` | `CHAT-05`, `CHAT-07`, `CHAT-08`, `SET-07`, `BND-04` | `chat/chat-runtime.md`, `settings/permissions.md`, `provider-gateway-boundaries/acp-visible-boundary.md` |
+| `07 Code Workbench Panels` | `CODE-06` through `CODE-12` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
+| `08 Agent Authoring` | `AUTH-01` through `AUTH-03` | `agent-authoring/file-edit.md`, `agent-authoring/capabilities.md`, `agent-authoring/skills.md` |
+| `09 Catalog Review / Firmware Publish` | `AUTH-05` | `agent-authoring/publish-export.md`, `tests/agent-authoring-tests.md` |
+| `10 Device / PlatformIO / Logs` | `CODE-08`, `CODE-10`, `CODE-11` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
+| `11 LVGL Preview` | `CODE-14` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
+| `12 Settings - General` | `SET-02` | `settings/general.md`, `tests/settings-tests.md` |
+| `13 Settings - Workspace Files` | `SET-03` | `settings/workspace.md`, `tests/settings-tests.md` |
+| `14 Settings - Providers` | `SET-04`, `BND-01`, `BND-02` | `settings/providers.md`, `provider-gateway-boundaries/provider-validation.md` |
+| `15 Settings - Permissions` | `SET-07`, runtime permission parts of `CHAT-08` | `settings/permissions.md`, `chat/chat-runtime.md` |
+| `16 Settings - About / Updates` | `SET-10`, frame update prompt parts of `MAIN-01` | `settings/about.md`, `main-window/main-window-runtime.md` |
+
+Journey 09 does not rewrite Agent Authoring into an auth journey or a four-row release contract. `AUTH-05` remains the Publish to Catalog / package export boundary; Mobile Preview is secondary priority, not a primary inventory journey.
 
 ## Directory Layout
 
@@ -143,6 +168,6 @@ Detailed contract groups currently split out:
 - `onboarding/README.md` maps `ONB-01` through `ONB-05`, with `onboarding-flow.md` covering first run, provider verification, personality setup, skip behavior, and handoff into chat.
 - `main-window/README.md` maps `MAIN-01` through `MAIN-06`, with `main-window-runtime.md` covering boot, the main frame, sidebar mode switching, account/login entry, update/status screens, and route handoffs.
 - `chat/README.md` maps `CHAT-01` through `CHAT-08`, with `chat-runtime.md` covering session creation and selection, message list rendering, composer state, model/thinking selectors, send/stop/retry behavior, and visible error states.
-- `code-ide/README.md` maps `CODE-01` through `CODE-13`, with `code-mode-runtime.md` covering workspace selection, Code sessions, file/diff panels, device/terminal panels, and empty/error states.
-- `agent-authoring/README.md` maps `AUTH-01` through `AUTH-05`, with focused contracts for file editing, capabilities, skills, mobile preview, and publish/export.
+- `code-ide/README.md` maps `CODE-01` through `CODE-14`, with `code-mode-runtime.md` covering workspace selection, Code sessions, file/diff panels, device/preview/terminal panels, and empty/error states.
+- `agent-authoring/README.md` maps `AUTH-01` through `AUTH-05`, with focused contracts for file editing, capabilities, skills, secondary-priority mobile preview, and publish/export.
 - `provider-gateway-boundaries/README.md` maps `BND-01` through `BND-04`, with focused contracts for provider validation, model selection, gateway chat, and visible ACP markers. `provider-gateway-boundaries/runtime-flows.md` is the end-to-end reference for ACP, chat, gateway messaging, and session routing. ACP behavior is covered by `docs/hardware_harness/ui-contracts/agent-ui-contracts-via-acp.md`.

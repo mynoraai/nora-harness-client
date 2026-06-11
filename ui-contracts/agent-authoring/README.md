@@ -4,7 +4,7 @@ Source rows: `AUTH-01`, `AUTH-02`, `AUTH-03`, `AUTH-04`, `AUTH-05`
 Entry path: Code mode -> active workspace -> `Edit Agent`
 Status: Draft, evidence-only
 
-This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, mobile preview, publish, or export behavior.
+This folder covers Agent Authoring in the Electron IDE. Use it when you need to understand the `Edit Agent` tab, editable agent files, skills, capabilities, secondary-priority Mobile Preview boundary, Publish to Catalog, or package export behavior.
 
 ## Owned Rows
 
@@ -13,7 +13,7 @@ This folder covers Agent Authoring in the Electron IDE. Use it when you need to 
 | `AUTH-01`  | [file-edit.md](./file-edit.md)           | Agent authoring tab, editable core agent files, save/revert/status loop |
 | `AUTH-02`  | [capabilities.md](./capabilities.md)     | Device capability manifest and agent-vs-device diff                     |
 | `AUTH-03`  | [skills.md](./skills.md)                 | Skill list, SKILL.md editor/preview, new skill dialog, probe panel      |
-| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | One-time mobile preview QR dialog                                       |
+| `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | Secondary-priority Mobile Preview entry                                 |
 | `AUTH-05`  | [publish-export.md](./publish-export.md) | Publish to Catalog dialog and package export component boundary         |
 
 ## Shared Entry Contract
@@ -38,4 +38,5 @@ Agent Authoring uses these shared boundaries:
 
 - TODO: add a stable `data-testid="agent-authoring-tab"` before L3 automation can reliably assert the tab content. The test index tracks this selector gap in `../tests/l3-computer-use-scenarios.md`.
 - No L3 Electron harness exists for Agent Authoring. Existing coverage is L1/L2 component, store, and main-process helper tests.
+- Mobile Preview is secondary priority for the current Agent Authoring inventory, not a primary journey.
 - `ExportPackageDialog` exists and is tested, but this directory documents it as a component boundary because current `AgentAuthoringTab` exposes `Publish`, not a standalone export button.

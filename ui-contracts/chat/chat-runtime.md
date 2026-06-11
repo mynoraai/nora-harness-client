@@ -30,8 +30,9 @@ This file explains the Chat tab from the user's point of view. Read it when you 
 4. The message list renders either the empty focused-conversation hero or historical/streaming message parts.
 5. The composer lets the user type, attach files, choose a model, choose a thinking level, or open slash commands.
 6. Send validates the draft, turns a draft session into a saved session if needed, sends through the chat transport, and shows an optimistic user message.
-7. Streaming chunks update text, reasoning, tool, and command-result UI parts until finish, abort, or error.
-8. Errors and ACP spawn problems stay visible in Chat until dismissed or resolved by user action.
+7. Streaming chunks update text, reasoning, tool, approval, and command-result UI parts until finish, abort, or error.
+8. If a command/tool needs approval, the stream pauses at an approval request in the conversation. The user responds from the same composer by sending `/approve <id> allow-once` or `/approve <id> deny`; the submitted command appears as a user message, then the message stream shows approval submitted and either executed output or denied result.
+9. Errors and ACP spawn problems stay visible in Chat until dismissed or resolved by user action.
 
 ## UI Surface Map
 
@@ -58,6 +59,7 @@ Chat mode
    ├─ ChatMessages
    │  ├─ empty focused-conversation hero and suggestion chips
    │  ├─ history, streaming text, reasoning disclosure, tool cards
+   │  ├─ conversation approval request, submitted approval command, allow/deny result
    │  ├─ slash command result card
    │  └─ visible ACP boundary blocks and error banners
    └─ ChatComposer
@@ -168,6 +170,7 @@ Read the tree by visible region:
 | `CHAT-07` | Composer send       | Empty prompt no-op and no-model toast                                    | Click send while invalid               | Empty message returns; missing model shows toast.                                                                              | Local validation                                   | `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:506`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:510`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:514`                                                                                                                                                     | L2 partial      |
 | `CHAT-07` | Composer send       | ACP spawn error disables send                                            | ACP error is present                   | Submit button is disabled.                                                                                                     | Local session state                                | `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:775`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:778`                                                                                                                                                                                                                            | No L3 test      |
 | `CHAT-07` | Composer send       | Optimistic user message and Stop button                                  | Click send or Stop                     | Sends, streams, or aborts run.                                                                                                 | `chat.send`, `chat.abort`                          | `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:470`; `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:476`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:781`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:782`                                                                                      | L2 partial      |
+| `CHAT-08` | Conversation approval | Approval request with `/approve <id> allow-once` and `/approve <id> deny` guidance | Send approval command in composer | The approval command is appended as a user message; submitted confirmation appears; allow continues execution and prints output, while deny ends the command path without execution. | Runtime approval boundary through the same chat stream | `electron-user-journeys-hierarchy-v2/06-runtime-model-permission/runtime-model-permission.pm.md`; user-provided approval screenshots; native tool states below cover `approval-requested`, `approval-responded`, and `output-denied`. | L3 planned      |
 | `CHAT-08` | Run recovery/errors | Active-run reconnect                                                     | Return to active run                   | Replays buffered events.                                                                                                       | `chat.runs.active`, `gatewayGetRecentEventsForRun` | `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:361`; `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:381`                                                                                                                                                                                                                                    | L2 partial      |
 | `CHAT-08` | Run recovery/errors | Error details disclosure and Dismiss                                     | Expand details or dismiss error        | Shows technical detail or clears visible error.                                                                                | Local session streaming store                      | `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:526`; `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:570`; `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:578`; `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:593`                                                                                              | L2 partial      |
 | `CHAT-08` | Run recovery/errors | ACP spawn error banner states                                            | Read banner or open settings           | Shows Claude Code unavailable/auth/runtime-disabled copy.                                                                      | Local session state/settings route                 | `apps/electron/src/renderer/src/components/chat/AcpSpawnErrorBanner.tsx:41`; `apps/electron/src/renderer/src/components/chat/AcpSpawnErrorBanner.tsx:82`                                                                                                                                                                                                                | No L3 test      |
@@ -321,7 +324,7 @@ The Chat message list does not render raw gateway events. `OpenClawChatTransport
 | `{ type: "file", mediaType, url }`    | Composer file attachments and persisted image/file content converted to data URLs                                | Inline attachment chip or preview inside the message.                                                                                                                     | `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:38`; `apps/electron/src/renderer/src/lib/format-converters.ts:237`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:302`                                                           |
 | `{ type: "tool-<name>", ... }`        | Native chat `agent.tool` lifecycle events or persisted `toolCall` / `toolResult` content                         | Native tool card. `read`, `write`, `edit`, `bash`, and `exec` use specialized renderers; other tools use the generic Parameters/Result card.                              | `apps/electron/src/renderer/src/hooks/use-chat.ts:358`; `apps/electron/src/renderer/src/lib/format-converters.ts:174`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:362`; `apps/electron/src/renderer/src/components/ai-elements/tool.tsx:1` |
 | `{ type: "data-acp-tool", data }`     | ACP `tool_call` runtime events                                                                                   | ACP tool block with title/status/text. This is not the same card as native `tool-<name>` parts.                                                                           | `apps/electron/src/renderer/src/lib/acp-bridge.ts:228`; `apps/electron/src/renderer/src/hooks/use-chat.ts:715`; `apps/electron/src/renderer/src/components/chat/AcpToolBlock.tsx:20`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:313`      |
-| `{ type: "data-acp-permission" }`     | ACP permission request and resolution events                                                                     | Permission card with allow/deny choices and resolved state.                                                                                                               | `apps/electron/src/renderer/src/lib/acp-bridge.ts:330`; `apps/electron/src/renderer/src/hooks/use-chat.ts:715`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:326`                                                                            |
+| `{ type: "data-acp-permission" }`     | ACP permission request and resolution events                                                                     | ACP permission card with resolved state when ACP emits this part. This is separate from the native conversation approval path where the user sends `/approve <id> allow-once` or `/approve <id> deny` through the composer. | `apps/electron/src/renderer/src/lib/acp-bridge.ts:330`; `apps/electron/src/renderer/src/hooks/use-chat.ts:715`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:326`                                                                            |
 | `{ type: "data-acp-status" }`         | Tagged ACP status events or seq-gap recovery status                                                              | Compact ACP status block. Untagged status text renders as normal assistant text instead.                                                                                  | `apps/electron/src/renderer/src/lib/acp-bridge.ts:246`; `apps/electron/src/renderer/src/lib/acp-bridge.ts:128`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:340`                                                                            |
 | `{ type: "data-acp-modified-files" }` | End-of-turn ACP mutation summary                                                                                 | Modified files block with links back into the Code workspace.                                                                                                             | `apps/electron/src/renderer/src/lib/acp-bridge.ts:267`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:348`                                                                                                                                    |
 | `data-command-result` chunk           | Final output from ephemeral slash commands: `/status`, `/usage`, `/queue`, `/export`, `/import`                  | Dismissible command result card below the message list. It says `Command result · not saved`, because it lives in `ChatArea` state instead of the persisted message list. | `apps/electron/src/renderer/src/lib/protocol-bridge.ts:40`; `apps/electron/src/renderer/src/lib/dual-stream-handler.ts:333`; `apps/electron/src/renderer/src/hooks/use-chat.ts:699`; `apps/electron/src/renderer/src/components/chat/CommandResultCard.tsx:10`   |
@@ -355,6 +358,29 @@ type NativeToolPart = {
   };
 };
 ```
+
+### Conversation Approval Path
+
+Some runtime command approvals are resolved as part of the conversation rather than by clicking an in-card button.
+
+```text
+Assistant stream:
+  Approval required (id 684ba694)
+  Host: gateway
+  CWD: /path/to/workspace
+  Command: echo "..."
+  -> /approve 684ba694 allow-once -> /approve 684ba694 deny
+
+User message:
+  /approve 684ba694 allow-once
+
+Assistant stream:
+  Approval allow-once submitted for 684ba694.
+  Approval passed. Command executed.
+  Output: ...
+```
+
+Denial follows the same shape, but the assistant result says the command was not executed. The UI contract is that approval remains inside the current message history: the composer stays the user's response surface, the user's `/approve ...` text is visible as a normal user message, and the later assistant text resolves the pending approval state.
 
 Native tool rendering rules:
 

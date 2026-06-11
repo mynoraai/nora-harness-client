@@ -11,9 +11,9 @@ Status: Draft, evidence-only
 | Attribute      | Value                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------ |
 | Priority       | High                                                                                                   |
-| User type      | Signed-in or signing-in agent author publishing to the catalog                                         |
+| User type      | Agent author publishing to the catalog                                         |
 | Frequency      | Occasional but high-stakes                                                                             |
-| Success metric | User can package, review, publish, and recover from auth/package/catalog errors without losing context |
+| Success metric | User can package, review, publish, and recover from package/catalog errors without losing context |
 
 ### User Goal
 
@@ -24,7 +24,7 @@ Status: Draft, evidence-only
 - User is in the Agent Authoring tab for a workspace.
 - Workspace package export APIs are available.
 - Cloud catalog IPC is available.
-- User may be signed in or unauthenticated.
+- Catalog APIs may require an account session, but authentication is handled by the shared login flow and is not the publish journey itself.
 - Package may have blockers, warnings, version conflicts, or slug conflicts.
 
 ### Journey Map
@@ -34,8 +34,7 @@ journey
   title Agent publish journey
   section Start publish
     Click Publish: 5: User
-    Wait for sign-in check: 3: User
-    Sign in if needed: 2: User
+    Account prerequisite if needed: 3: User
   section Validate package
     Package agent files: 3: User
     Review package digest and capabilities: 5: User
@@ -52,19 +51,19 @@ journey
 
 ### Journey Steps
 
-#### Step 1: Start publish and resolve auth
+#### Step 1: Start publish
 
 **User action:** The user clicks `Publish`.
-**System response:** The dialog checks sign-in state and either shows signed-in context or an unauthenticated sign-in card.
+**System response:** The dialog opens without leaving Agent Authoring and prepares package/catalog state. If an account session is missing, the shared login flow blocks catalog submission before publish-specific steps continue.
 **Success criteria:**
 
 - [ ] The dialog opens without leaving Agent Authoring.
-- [ ] Auth state is visible before package upload.
-- [ ] Unauthenticated users have a sign-in path.
+- [ ] Publish-specific state is not confused with the login journey.
+- [ ] Missing account state preserves the publish entry context.
 
 **Potential friction:**
 
-- There is no direct L2 coverage for the publish dialog auth phase.
+- There is no direct L2 coverage for the account prerequisite path.
 
 #### Step 2: Validate and package
 
@@ -110,11 +109,11 @@ journey
 
 ### Error Scenarios
 
-#### E1: Unauthenticated
+#### E1: Account session missing
 
-**Trigger:** Auth check finds no signed-in cloud session.
+**Trigger:** Catalog submission requires an account session that is not present.
 **User sees:** `Sign in to NoraClaw to publish.`
-**Recovery path:** Click sign-in, complete auth, then return to the publish flow.
+**Recovery path:** Complete the shared login journey, then return to the publish flow.
 **Test:** No direct L2 publish dialog test.
 
 #### E2: Export blocked
@@ -144,13 +143,13 @@ The standalone `ExportPackageDialog` also exists and has tests for `.tar.gz` exp
 
 - Publish dialog open to metadata-entry time.
 - Package blocker rate.
-- Auth failure or sign-in-required rate.
+- Account-prerequisite interruption rate.
 - Publish success rate by mode.
 - Version conflict and slug conflict rates.
 
 ### E2E Test Reference
 
-Future L3 scenario: `AUTH-05 publishes an agent package, handles auth/package blockers, and records last published state`.
+Future L3 scenario: `AUTH-05 publishes an agent package, handles package blockers, and records last published state`.
 
 ## UI Surface
 
@@ -181,12 +180,12 @@ Publish dialog:
                  |                              [Cancel] [Publish] |
                  +------------------------------------------------+
 
-Alternate bodies: checking sign-in, sign-in required, packaging, blockers,
+Alternate bodies: account prerequisite, packaging, blockers,
 loading agents, uploading, success, generic error, slug conflict.
 ```
 
 - Header: `Publish to Catalog` and close button.
-- Auth/loading states: `Checking sign-in...`, unauthenticated sign-in card, signed-in banner.
+- Account prerequisite state: missing account card can route to the shared login flow before publish continues.
 - Package phases: `Packaging agent files...`, `Loading your agents...`.
 - Package digest: file name, agent id, version, bytes, SHA-256 prefix, and capabilities.
 - Publish mode radio group: `New version` or `Publish as new agent`.
@@ -237,10 +236,8 @@ This diagram covers the visible publish dialog. The standalone export component 
 
 ```mermaid
 stateDiagram-v2
-  [*] --> CheckingAuth: dialog opens
-  CheckingAuth --> SignInRequired: no cloud session
-  CheckingAuth --> Packaging: signed in
-  SignInRequired --> CheckingAuth: sign-in completed
+  [*] --> AccountPrerequisite: dialog opens
+  AccountPrerequisite --> Packaging: account requirement satisfied
   Packaging --> Blocked: dry-run blockers
   Packaging --> LoadingAgents: package built
   Packaging --> Error: package failed
@@ -261,8 +258,7 @@ State responsibilities:
 
 | State             | Meaning                                                       | User-facing responsibility                                  |
 | ----------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
-| `CheckingAuth`    | Dialog is resolving cloud sign-in state.                      | Show auth progress before any package upload is possible.   |
-| `SignInRequired`  | No authenticated cloud session is available.                  | Present sign-in path without losing publish context.        |
+| `AccountPrerequisite` | Catalog APIs may require account state before submission. | Preserve publish context while shared login resolves if needed. |
 | `Packaging`       | Workspace is being dry-run validated and exported for upload. | Show package progress and keep publish actions unavailable. |
 | `Blocked`         | Dry-run found package blockers.                               | List blockers and require workspace fixes before upload.    |
 | `LoadingAgents`   | Package exists and catalog-owned agents are loading.          | Resolve whether `New version` is available.                 |
@@ -277,7 +273,7 @@ Transition labels:
 
 | Label               | Trigger                                     | Expected result                                              |
 | ------------------- | ------------------------------------------- | ------------------------------------------------------------ |
-| `signed in`         | Auth hook finds a cloud session.            | Package validation starts.                                   |
+| `account ready`      | Account prerequisite is satisfied.          | Package validation starts.                                   |
 | `dry-run blockers`  | Export dry-run reports blockers.            | Upload is blocked.                                           |
 | `package built`     | Dry-run/export succeeds.                    | Digest and catalog-agent lookup can proceed.                 |
 | `Publish`           | User submits valid metadata/mode.           | Cloud upload begins.                                         |
@@ -289,8 +285,8 @@ Transition labels:
 | User action                                | UI precondition                                                | UI result                                                                                       | Backend/API path                                                                                                                | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Test coverage                                                                                                                                                                                                                                                                                      |
 | ------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Click `Publish`                            | Agent Authoring tab is mounted                                 | Publish dialog opens                                                                            | Local renderer state                                                                                                            | [AgentAuthoringTab.tsx:223](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L223), [AgentAuthoringTab.tsx:377](../../../../apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx#L377), [PublishCatalogDialog.tsx:239](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L239)                                                                                                                                                                                                                                                                                       | L2 no direct parent click test                                                                                                                                                                                                                                                                     |
-| Check auth                                 | Publish dialog mounts                                          | Shows auth-loading, unauthenticated, or signed-in state                                         | Auth state hook plus cloud auth IPC underneath; main cloud catalog IPC calls `getAuthenticatedCloudSession` before publish/list | [PublishCatalogDialog.tsx:246](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L246), [PublishCatalogDialog.tsx:389](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L389), [ipc-cloud-catalog.ts:48](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L48)                                                                                                                                                                                                                                                                                                                        | L2 publish dialog coverage not found                                                                                                                                                                                                                                                               |
-| Build package for publish                  | User is authenticated                                          | Dry-run validates blockers, then package export result loads into metadata-entry phase          | `dryRunExport(workspacePath)` then `exportWorkspacePackage({ workspacePath, outputFilePath })`                                  | [PublishCatalogDialog.tsx:130](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L130), [PublishCatalogDialog.tsx:136](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L136), [workspace-client.ts:294](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L294), [workspace-client.ts:298](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L298), [main/index.ts:793](../../../../apps/electron/src/main/index.ts#L793), [main/index.ts:800](../../../../apps/electron/src/main/index.ts#L800)                                                          | Main exporter covered: [application-package-exporter.test.ts:43](../../../../apps/electron/src/main/application-package-exporter.test.ts#L43), [application-package-exporter.test.ts:249](../../../../apps/electron/src/main/application-package-exporter.test.ts#L249); publish dialog L2 missing |
+| Account prerequisite | Publish dialog mounts | Missing account state blocks catalog submission without becoming the publish journey | Shared login flow plus cloud catalog session requirement | [PublishCatalogDialog.tsx:246](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L246), [PublishCatalogDialog.tsx:389](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L389), [ipc-cloud-catalog.ts:48](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L48)                                                                                                                                                                                                                                                                                                                        | L2 publish dialog coverage not found                                                                                                                                                                                                                                                               |
+| Build package for publish                  | Account prerequisite is satisfied                                          | Dry-run validates blockers, then package export result loads into metadata-entry phase          | `dryRunExport(workspacePath)` then `exportWorkspacePackage({ workspacePath, outputFilePath })`                                  | [PublishCatalogDialog.tsx:130](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L130), [PublishCatalogDialog.tsx:136](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L136), [workspace-client.ts:294](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L294), [workspace-client.ts:298](../../../../apps/electron/src/renderer/src/lib/workspace-client.ts#L298), [main/index.ts:793](../../../../apps/electron/src/main/index.ts#L793), [main/index.ts:800](../../../../apps/electron/src/main/index.ts#L800)                                                          | Main exporter covered: [application-package-exporter.test.ts:43](../../../../apps/electron/src/main/application-package-exporter.test.ts#L43), [application-package-exporter.test.ts:249](../../../../apps/electron/src/main/application-package-exporter.test.ts#L249); publish dialog L2 missing |
 | Review package digest and mode             | Package export result exists and phase is metadata-entry       | Digest and publish-mode selector render; new-agent fields render only for `new-agent` mode      | Local renderer state plus cloud list-my-agents result for matched-agent choice                                                  | [PublishCatalogDialog.tsx:283](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L283), [PublishCatalogDialog.tsx:305](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L305), [PublishCatalogDialog.tsx:311](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L311), [PublishCatalogDialog.tsx:417](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L417), [PublishCatalogDialog.tsx:468](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L468) | L2 no publish dialog test                                                                                                                                                                                                                                                                          |
 | Publish a new version                      | Mode is `new-version` and matched agent exists                 | Upload state then success/error state                                                           | `publishVersion(request)` -> preload `publishVersion` -> IPC `cloud:publish-version` -> cloud catalog client                    | [PublishCatalogDialog.tsx:194](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L194), [cloud-catalog-client.ts:109](../../../../apps/electron/src/renderer/src/lib/cloud-catalog-client.ts#L109), [preload/index.ts:228](../../../../apps/electron/src/preload/index.ts#L228), [ipc-cloud-catalog.ts:58](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L58)                                                                                                                                                                                                                                                                    | Cloud client error decoding partial: [cloud-catalog-client.test.ts:27](../../../../apps/electron/src/renderer/test/cloud-catalog-client.test.ts#L27)                                                                                                                                               |
 | Publish a new agent                        | Mode is `new-agent`                                            | Upload state then success/error state                                                           | `publishAgent(request)` -> preload `publishAgent` -> IPC `cloud:publish-agent` -> cloud catalog client                          | [PublishCatalogDialog.tsx:201](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L201), [cloud-catalog-client.ts:101](../../../../apps/electron/src/renderer/src/lib/cloud-catalog-client.ts#L101), [preload/index.ts:226](../../../../apps/electron/src/preload/index.ts#L226), [ipc-cloud-catalog.ts:42](../../../../apps/electron/src/main/ipc-cloud-catalog.ts#L42)                                                                                                                                                                                                                                                                    | Cloud client error decoding partial: [cloud-catalog-client.test.ts:27](../../../../apps/electron/src/renderer/test/cloud-catalog-client.test.ts#L27)                                                                                                                                               |
@@ -342,7 +338,7 @@ type PublishVersionResponse = PublishAgentResponse;
 
 List-my-agents returns `SearchAgentsResponse` with `agents`, `total`, `page`, and `limit`. Each `AgentSearchResult` includes `agent_id`, `slug`, `display_name`, nullable `description`, nullable `latest_version`, and `created_at`.
 
-`PublishProgress` is a transport/client progress model, not the visible dialog state machine. Its five stages are `idle`, `uploading`, `processing`, `done`, and `error`. The dialog state machine above remains the UI-level contract for auth, packaging, metadata, conflict, and success states.
+`PublishProgress` is a transport/client progress model, not the visible dialog state machine. Its five stages are `idle`, `uploading`, `processing`, `done`, and `error`. The dialog state machine above remains the UI-level contract for account prerequisite, packaging, metadata, conflict, and success states.
 
 ## End To End Publish Sequence
 
@@ -543,7 +539,7 @@ Evidence:
 | Package export preview/result | Agent id, version, manifest, files, declared capabilities, bytes, sha256 | [PublishCatalogDialog.tsx:283](../../../../apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx#L283), [main/index.ts:800](../../../../apps/electron/src/main/index.ts#L800)                               |
 | Cloud IPC channels            | `cloud:publish-agent`, `cloud:publish-version`, `cloud:list-my-agents`   | [ipc-channels.ts:78](../../../../apps/electron/src/main/ipc-channels.ts#L78), [ipc-channels.ts:79](../../../../apps/electron/src/main/ipc-channels.ts#L79), [ipc-channels.ts:80](../../../../apps/electron/src/main/ipc-channels.ts#L80) |
 | Workspace export IPC channels | `workspace:dry-run-export`, `workspace:export-package`                   | [ipc-channels.ts:73](../../../../apps/electron/src/main/ipc-channels.ts#L73), [ipc-channels.ts:74](../../../../apps/electron/src/main/ipc-channels.ts#L74)                                                                               |
-| Publish auth state            | `loading`, `unauthenticated`, or `authenticated` with user id/name/email | [cloud-catalog-types.ts:7](../../../../apps/electron/src/shared/cloud-catalog-types.ts#L7)                                                                                                                                               |
+| Account prerequisite state | Shared login may provide user id/name/email when catalog APIs require it | [cloud-catalog-types.ts:7](../../../../apps/electron/src/shared/cloud-catalog-types.ts#L7)                                                                                                                                               |
 | Publish progress              | `idle`, `uploading`, `processing`, `done`, or `error`                    | [cloud-catalog-types.ts:80](../../../../apps/electron/src/shared/cloud-catalog-types.ts#L80)                                                                                                                                             |
 | Cloud API error envelope      | Optional `status: failed` plus `error.code` and `error.message`          | [cloud-catalog-types.ts:70](../../../../apps/electron/src/shared/cloud-catalog-types.ts#L70), [http-utils.ts:11](../../../../noracloud/src/cloud/http-utils.ts#L11)                                                                      |
 | Better-auth API base          | `__BETTER_AUTH_URL__` compile-time constant                              | [cloud-catalog-client.ts:18](../../../../apps/electron/src/main/cloud-catalog-client.ts#L18), [cloud-auth.ts:8](../../../../apps/electron/src/main/cloud-auth.ts#L8)                                                                     |
