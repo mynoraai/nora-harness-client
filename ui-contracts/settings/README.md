@@ -15,7 +15,7 @@ This folder covers the Settings dialog. Use it to find what each Settings tab sh
 | `SET-03`   | `workspace.md`      | Workspace markdown file list, editor, save, refresh, autosave-on-switch                          |
 | `SET-04`   | `providers.md`      | Provider list, default model, add/edit/remove providers, model loading and validation            |
 | `SET-05`   | `channels.md`       | Channel cards, configuration flows, accounts, group settings, DM policy, pairing inbox           |
-| `SET-06`   | `extensions.md`     | Electron-managed extensions and visible ACP runtime controls                                     |
+| `SET-06`   | `extensions.md`     | Removed Settings Extensions / ACP module                                                        |
 | `SET-07`   | `permissions.md`    | Command approval mode, allowlist, notification and macOS permissions                             |
 | `SET-08`   | `voice.md`          | Voice wake, microphone selection, trigger words, sounds                                          |
 | `SET-09`   | `advanced.md`       | Config editor, cron toggles, skill toggles, debug restart                                        |

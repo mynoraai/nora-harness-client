@@ -32,13 +32,13 @@ The current end-to-end journey source is `electron-user-journeys-hierarchy-v2/us
 | ----------------- | ------------------------ | --------------------------------- |
 | `01 First Launch / Onboarding` | `ONB-01` through `ONB-05` | `onboarding/onboarding-flow.md`, `tests/onboarding-tests.md` |
 | `02 Main App Startup / Recovery State` | `MAIN-01`, `MAIN-03`, `MAIN-05` | `main-window/main-window-runtime.md`, `tests/main-window-tests.md` |
-| `03 Login / Account Authentication` | `MAIN-04`, `AUTH-05` when publish is gated | `main-window/main-window-runtime.md`, `agent-authoring/publish-export.md`, `tests/main-window-tests.md` |
+| `03 Login / Account Authentication` | `MAIN-04` | `main-window/main-window-runtime.md`, `tests/main-window-tests.md` |
 | `04 Chat Mode` | `CHAT-01` through `CHAT-08`, `BND-03`, `BND-04` | `chat/chat-runtime.md`, `chat/client-state-machine.md`, `provider-gateway-boundaries/*` |
 | `05 Code Mode / Workspace` | `CODE-01` through `CODE-05` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
 | `06 Runtime / Model / Permission` | `CHAT-05`, `CHAT-07`, `CHAT-08`, `SET-07`, `BND-04` | `chat/chat-runtime.md`, `settings/permissions.md`, `provider-gateway-boundaries/acp-visible-boundary.md` |
 | `07 Code Workbench Panels` | `CODE-06` through `CODE-12` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
 | `08 Agent Authoring` | `AUTH-01` through `AUTH-03` | `agent-authoring/file-edit.md`, `agent-authoring/capabilities.md`, `agent-authoring/skills.md` |
-| `09 Unified Publish Center / Catalog Review / Firmware Publish` | `AUTH-05` plus login-gated `MAIN-04` | `agent-authoring/publish-export.md`, `agent-edit-to-cloud-publish-flow.md`, `tests/agent-authoring-tests.md` |
+| `09 Catalog Review / Firmware Publish` | `AUTH-05` | `agent-authoring/publish-export.md`, `tests/agent-authoring-tests.md` |
 | `10 Device / PlatformIO / Logs` | `CODE-08`, `CODE-10`, `CODE-11` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
 | `11 LVGL Preview` | `CODE-14` | `code-ide/code-mode-runtime.md`, `tests/code-ide-tests.md` |
 | `12 Settings - General` | `SET-02` | `settings/general.md`, `tests/settings-tests.md` |
@@ -47,7 +47,7 @@ The current end-to-end journey source is `electron-user-journeys-hierarchy-v2/us
 | `15 Settings - Permissions` | `SET-07`, runtime permission parts of `CHAT-08` | `settings/permissions.md`, `chat/chat-runtime.md` |
 | `16 Settings - About / Updates` | `SET-10`, frame update prompt parts of `MAIN-01` | `settings/about.md`, `main-window/main-window-runtime.md` |
 
-Journey 09 replaces the older split between Catalog publish and Firmware Publish: both are now represented inside the unified publish center. Mobile Preview remains documented as an available authoring surface, but it is no longer a primary inventory journey.
+Journey 09 does not rewrite Agent Authoring into an auth journey or a four-row release contract. `AUTH-05` remains the Publish to Catalog / package export boundary; Mobile Preview remains documented as an available secondary authoring surface, not a primary inventory journey.
 
 ## Directory Layout
 
