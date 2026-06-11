@@ -86,7 +86,7 @@ L3 is not wired yet.
 | `AUTH-01`                                                                                          | Agent file editing               | Partial           | Store coverage exists; full authoring tab file read/write/save/revert flow missing                                                                 |
 | `AUTH-02`                                                                                          | Capabilities section             | Partial           | Diff panel covered; device stream/status section flow missing                                                                                      |
 | `AUTH-03`                                                                                          | Skills section                   | Partial           | Component coverage exists for skills/new skill/probe; integrated path still incomplete                                                             |
-| `AUTH-04`                                                                                          | Mobile preview                   | Partial           | Dialog and main store coverage exist; this is secondary in the current primary journey inventory                                                    |
+| `AUTH-04`                                                                                          | Mobile Preview deleted           | Removed           | Historical dialog and main store coverage may exist; do not expand it as a current Agent Authoring entry                                             |
 | `AUTH-05`                                                                                          | Publish to Catalog / export      | Partial           | Export dialog covered; Publish to Catalog dialog still needs account prerequisite, digest, mode, metadata, success/error, and retry coverage        |
 | `SET-*`                                                                                            | Settings tabs                    | Partial/no test   | Config-editor tests exist; Settings frame/providers/voice/channels need focused integration tests                                                  |
 | `SET-01`, `SET-02`, `SET-03`, `SET-04`, `SET-05`, `SET-06`, `SET-07`, `SET-08`, `SET-09`, `SET-10` | Settings per-tab journeys        | Partial/no test   | `settings-tests.md` owns row-by-row gaps; most tabs need mocked Electron API wrapper tests                                                         |
@@ -120,7 +120,7 @@ L3 is not wired yet.
 | `AUTH-edit-files`           | `AUTH-01`                                                                                          | Edit and save an authoring markdown file.             | No harness |
 | `AUTH-capabilities`         | `AUTH-02`                                                                                          | Inspect device manifest and capability diff states.   | No harness |
 | `AUTH-skills`               | `AUTH-03`                                                                                          | Select, edit, preview, create, and probe skills.      | No harness |
-| `AUTH-mobile-preview`       | `AUTH-04`                                                                                          | Open mobile preview and inspect QR/error states.      | No harness |
+| `AUTH-mobile-preview-deleted` | `AUTH-04`                                                                                        | Confirm Mobile Preview is deleted from current authoring journey. | Deleted |
 | `AUTH-publish-catalog`      | `AUTH-05`                                                                                          | Use Publish to Catalog with controlled stubs.         | No harness |
 | `CODE-device-terminal`      | `CODE-08`, `CODE-09`                                                                               | Use Device tab, Terminal tab, Device Log tab.         | No harness |
 | `CODE-lvgl-preview`         | `CODE-14`                                                                                          | Use Preview tab and verify LVGL result or diagnostic. | No harness |
@@ -147,7 +147,7 @@ High-risk targets for selectors:
 - `CODE-11` DiffTab states.
 - `CODE-12` EmptyTabPlaceholder.
 - `CODE-09` Terminal and Device Log tab state.
-- `AUTH-04` mobile preview state variants.
+- `AUTH-04` Mobile Preview deleted/absence marker.
 - `AUTH-01`, `AUTH-02`, `AUTH-03`, and `AUTH-05` authoring tab selectors.
 - `SET-05` channel cards and setup modals.
 - `SET-01` through `SET-10` per-tab roots and primary control selectors.

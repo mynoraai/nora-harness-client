@@ -44,7 +44,7 @@ journey
     See Saved timestamp: 5: User
     Click Revert after unwanted edits: 4: User
   section Continue
-    Open Publish to Catalog or secondary Mobile Preview: 4: User
+    Open Publish to Catalog: 4: User
 ```
 
 ### Journey Steps
@@ -137,13 +137,13 @@ Future L3 scenario: `AUTH-01 opens agent authoring, edits a core file, saves, an
 
 ![Agent Authoring app info edit state over the Soul editor](../assets/screenshots/agent-authoring-soul-editor.jpg)
 
-The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Publish, Revert, and Save visible in one Code-mode tab. Mobile Preview can still be present as a secondary capability, but the primary downstream journey remains Publish to Catalog and package export.
+The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Publish, Revert, and Save visible in one Code-mode tab. Mobile Preview is marked as a deleted entry for this inventory; the primary downstream journey remains Publish to Catalog and package export.
 
 ### Wireframe
 
 ```text
 +--------------------------------------------------------------------------------+
-| Agent <workspace>          [Approved] [Save All (N)] [Preview on Mobile] [Publish] |
+| Agent <workspace>          [Approved] [Save All (N)] [Publish]             |
 +----------------------+---------------------------------------------------------+
 | Soul                 | agent/SOUL.md                         [Revert] [Save]   |
 | Style                +---------------------------------------------------------+
@@ -159,7 +159,7 @@ The authoring tab keeps section navigation, the selected agent file path, person
 ```
 
 - Header title showing the agent workspace name.
-- Header state/action area: optional reviewed-state badge such as `Approved`, `Save All (N)` when at least two core file sections are dirty, optional secondary `Preview on Mobile`, and primary `Publish`.
+- Header state/action area: optional reviewed-state badge such as `Approved`, `Save All (N)` when at least two core file sections are dirty, and primary `Publish`.
 - Left rail sections: `Soul`, `Style`, `Tools`, `Heartbeat`, `Bootstrap`, then `Skills` and `Capabilities`.
 - Editable file sub-header for single-file sections: workspace-relative path, `Revert`, `Save`, and `Saving...` button state.
 - Main editor: section-specific editor for Soul, Style, Tools, Heartbeat, and Bootstrap.
