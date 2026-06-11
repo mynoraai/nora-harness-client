@@ -8,7 +8,7 @@ Status: Draft, source-anchored
 
 ## Scope
 
-Agent Authoring is a tab inside Code mode. It opens from `Edit Agent` when the active workspace has a resolved agent root. Use this file to understand the visible authoring areas: editable agent files, skills, capabilities, the deleted Mobile Preview boundary, publish, and export.
+Agent Authoring is a tab inside Code mode. It opens from `Edit Agent` when the active workspace has a resolved agent root. Use this file to understand the visible authoring areas: editable agent files, skills, capabilities, the secondary-priority Mobile Preview boundary, publish, and export.
 
 ![Agent Authoring Soul editor](../assets/screenshots/agent-authoring-soul-editor.jpg)
 
@@ -21,13 +21,14 @@ The default authoring surface starts with the Soul editor and keeps the left sec
 | `AUTH-01` | Authoring tab  | Open Edit Agent                 | Agent tab appears with title, Publish, section rail, personality fields, editor, save controls.                      | Local tab store; workspace file IPC on load/save | `apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx:219`; `apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx:241`; `apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx:288`; `apps/electron/src/renderer/src/components/ui/markdown-editor.tsx:130`                            | L2 partial |
 | `AUTH-02` | Capabilities   | Click View/View Diff or Refresh | Shows manifest/diff panels or refreshed capability state.                                                                               | Workspace/project gateway helpers                | `apps/electron/src/renderer/src/components/agent-authoring/CapabilitiesSection.tsx:36`; `apps/electron/src/renderer/src/components/agent-authoring/CapabilitiesSection.tsx:126`; `apps/electron/src/renderer/src/components/agent-authoring/CapabilitiesSection.tsx:164`; `apps/electron/src/renderer/src/components/agent-authoring/CapabilitiesSection.tsx:174`                                                                                             | L2 partial |
 | `AUTH-03` | Skills         | Create/edit/probe skill         | Skill list/detail updates; probe runs and shows result.                                                                                 | Project gateway chat probe                       | `apps/electron/src/renderer/src/components/agent-authoring/SkillsSection.tsx:119`; `apps/electron/src/renderer/src/components/agent-authoring/NewSkillDialog.tsx:90`; `apps/electron/src/renderer/src/components/agent-authoring/SkillsSection.tsx:193`; `apps/electron/src/renderer/src/components/agent-authoring/SkillTestPanel.tsx:173`                                                                                                                   | L2 partial |
-| `AUTH-04` | Mobile Preview deleted | No current entry action         | Mobile Preview is not treated as a current Agent Authoring entry.                 | Removed / historical boundary                    | Historical anchors only: `apps/electron/src/renderer/src/components/agent-authoring/MobilePreviewDialog.tsx:149`; `apps/electron/src/renderer/src/components/agent-authoring/MobilePreviewDialog.tsx:361`     | Deleted |
+| `AUTH-04` | Mobile Preview secondary | Open Preview on Mobile when this secondary capability is in scope.         | Mobile Preview is treated as a secondary-priority authoring capability, not a primary inventory journey.                 | Mobile preview boundary                    | Historical anchors: `apps/electron/src/renderer/src/components/agent-authoring/MobilePreviewDialog.tsx:149`; `apps/electron/src/renderer/src/components/agent-authoring/MobilePreviewDialog.tsx:361`     | Secondary |
 | `AUTH-05` | Publish/export | Click Publish or export         | Publish to Catalog dialog shows account prerequisite, package digest, mode radio, display fields, success/error/retry; export creates tarball. | Publish/export IPC/cloud calls                   | `apps/electron/src/renderer/src/components/agent-authoring/AgentAuthoringTab.tsx:221`; `apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx:239`; `apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx:283`; `apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx:303`; `apps/electron/src/renderer/src/components/agent-authoring/PublishCatalogDialog.tsx:468` | No L3 test |
 
-## Mobile Preview Deleted Boundary
+## Mobile Preview Secondary Boundary
 
-`AUTH-04` is retained only as a removed/historical row. Do not expand Mobile
-Preview as a current Agent Authoring entry in this inventory.
+`AUTH-04` is retained as a secondary-priority capability. Keep it behind the
+primary Agent Authoring and Publish to Catalog journeys unless a later inventory
+promotes it.
 
 ## Publish Dialog State
 
@@ -66,6 +67,6 @@ Evidence:
 
 ## Gaps
 
-- Mobile Preview is deleted from the current Agent Authoring inventory.
+- Mobile Preview is secondary priority and should not displace primary authoring/publish coverage.
 - Publish flow has no safe full e2e because it can be externally visible.
 - Skill probe behavior needs clearer integration coverage.

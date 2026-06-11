@@ -137,7 +137,7 @@ Future L3 scenario: `AUTH-01 opens agent authoring, edits a core file, saves, an
 
 ![Agent Authoring app info edit state over the Soul editor](../assets/screenshots/agent-authoring-soul-editor.jpg)
 
-The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Publish, Revert, and Save visible in one Code-mode tab. Mobile Preview is marked as a deleted entry for this inventory; the primary downstream journey remains Publish to Catalog and package export.
+The authoring tab keeps section navigation, the selected agent file path, personality controls, Markdown toolbar, editor content, Publish, Revert, and Save visible in one Code-mode tab. Mobile Preview is secondary priority for this inventory; the primary downstream journey remains Publish to Catalog and package export.
 
 ### Wireframe
 

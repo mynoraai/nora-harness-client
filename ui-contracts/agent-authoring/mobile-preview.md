@@ -1,28 +1,29 @@
-# Agent Authoring Mobile Preview Removed Boundary
+# Agent Authoring Mobile Preview Secondary Boundary
 
 Source rows: `AUTH-04`
-Entry path: Agent Authoring
-Status: Deleted / historical
+Entry path: Agent Authoring -> Preview on Mobile
+Status: Secondary priority / historical implementation anchors
 
-Mobile Preview is marked as a deleted entry for the current Agent Authoring
-inventory. Do not add it to the active wireframe, and do not expand it as a
-current L3 journey.
+Mobile Preview remains documented as a secondary-priority Agent Authoring
+capability. It is not part of the primary end-to-end journey inventory for this
+pass, so do not expand it ahead of the primary authoring and publish flows.
 
 ## Current Contract
 
 | Row | Treatment | Notes |
 | --- | --------- | ----- |
-| `AUTH-04` | Deleted | Mobile Preview is not a current Agent Authoring entry. |
+| `AUTH-04` | Secondary priority | Keep the entry and historical anchors; do not treat it as a primary journey. |
 
 ## Historical Anchors
 
-Older Electron code and tests may still contain `Preview on Mobile`,
+Older Electron code and tests may contain `Preview on Mobile`,
 `MobilePreviewDialog`, mobile preview tokens, and QR/link state handling. Treat
-those as historical implementation references only for this UI-contract pass.
+those as secondary-priority references unless the inventory promotes Mobile
+Preview into a primary journey.
 
-## Replacement
+## Primary Journey Relationship
 
-Active Agent Authoring journey work should use:
+Primary Agent Authoring journey work should prioritize:
 
 - `file-edit.md` for the Edit Agent surface.
 - `publish-export.md` for Publish to Catalog and package export.

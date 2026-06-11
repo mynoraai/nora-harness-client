@@ -18,7 +18,7 @@ The contracts cover the Electron IDE experience from first launch through normal
 | Main window, sidebar, account, and system routes | Returning-user frame, mode switch, sidebar, login footer, tray, update/status, routes | `MAIN-*`    |
 | Chat tab                                         | Sessions, message list, composer, model picker, thinking picker, send/stop/recovery   | `CHAT-*`    |
 | Code tab                                         | Workspaces, code sessions, tabs, file/diff/device panels, terminal, empty states      | `CODE-*`    |
-| Agent authoring                                  | Agent files, skills, capabilities, removed mobile preview boundary, publish/export    | `AUTH-*`    |
+| Agent authoring                                  | Agent files, skills, capabilities, secondary-priority mobile preview boundary, publish/export | `AUTH-*`    |
 | Settings                                         | Settings frame and every visible settings tab                                         | `SET-*`     |
 | Provider and gateway boundaries                  | Provider validation, model selection, chat RPC, visible ACP boundary markers          | `BND-*`     |
 
@@ -47,7 +47,7 @@ The current end-to-end journey source is `electron-user-journeys-hierarchy-v2/us
 | `15 Settings - Permissions` | `SET-07`, runtime permission parts of `CHAT-08` | `settings/permissions.md`, `chat/chat-runtime.md` |
 | `16 Settings - About / Updates` | `SET-10`, frame update prompt parts of `MAIN-01` | `settings/about.md`, `main-window/main-window-runtime.md` |
 
-Journey 09 does not rewrite Agent Authoring into an auth journey or a four-row release contract. `AUTH-05` remains the Publish to Catalog / package export boundary; Mobile Preview is marked as a deleted entry.
+Journey 09 does not rewrite Agent Authoring into an auth journey or a four-row release contract. `AUTH-05` remains the Publish to Catalog / package export boundary; Mobile Preview is secondary priority, not a primary inventory journey.
 
 ## Directory Layout
 
@@ -169,5 +169,5 @@ Detailed contract groups currently split out:
 - `main-window/README.md` maps `MAIN-01` through `MAIN-06`, with `main-window-runtime.md` covering boot, the main frame, sidebar mode switching, account/login entry, update/status screens, and route handoffs.
 - `chat/README.md` maps `CHAT-01` through `CHAT-08`, with `chat-runtime.md` covering session creation and selection, message list rendering, composer state, model/thinking selectors, send/stop/retry behavior, and visible error states.
 - `code-ide/README.md` maps `CODE-01` through `CODE-14`, with `code-mode-runtime.md` covering workspace selection, Code sessions, file/diff panels, device/preview/terminal panels, and empty/error states.
-- `agent-authoring/README.md` maps `AUTH-01` through `AUTH-05`, with focused contracts for file editing, capabilities, skills, removed mobile preview, and publish/export.
+- `agent-authoring/README.md` maps `AUTH-01` through `AUTH-05`, with focused contracts for file editing, capabilities, skills, secondary-priority mobile preview, and publish/export.
 - `provider-gateway-boundaries/README.md` maps `BND-01` through `BND-04`, with focused contracts for provider validation, model selection, gateway chat, and visible ACP markers. `provider-gateway-boundaries/runtime-flows.md` is the end-to-end reference for ACP, chat, gateway messaging, and session routing. ACP behavior is covered by `docs/hardware_harness/ui-contracts/agent-ui-contracts-via-acp.md`.
