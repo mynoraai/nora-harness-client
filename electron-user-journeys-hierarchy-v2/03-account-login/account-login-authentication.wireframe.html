@@ -1,21 +1,1500 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>03 Login / Account Authentication</title><style>:root{--ink:#23262a;--muted:#66707a;--line:#cbd3db;--grid:#d9e0e6;--rail:#f0ece4;--accent:#8bbce8}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#e9edf1}button,input,textarea,select{font:inherit}header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;gap:18px;padding:18px 22px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}h1{margin:0 0 6px;font-size:22px}header p{margin:0;color:#4f5963}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.meta span{border:1px solid #c5ccd4;border-radius:999px;background:#fff;padding:4px 9px;font-size:11px;font-weight:800}.meta span:first-child{background:#e8f5ee;border-color:#bcd9c7;color:#287348}header button,.layout nav button{height:32px;border:1px solid #aeb8c2;border-radius:6px;background:#fff;font-weight:750;font-size:12px;margin-left:6px}.layout{display:grid;grid-template-columns:230px 1fr;height:calc(100vh - 100px);min-height:720px}.layout>nav{background:#f9fafb;border-right:1px solid var(--line);padding:14px;overflow:auto}.layout>nav b{display:block;font-size:12px;color:#606a74;text-transform:uppercase;margin-bottom:10px}.layout>nav button{width:100%;height:auto;min-height:34px;margin:0 0 8px;text-align:left}#viewport{position:relative;overflow:hidden;background-color:#edf1f4;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;cursor:grab;user-select:none}#viewport.dragging{cursor:grabbing}#stage{position:absolute;left:24px;top:24px;width:5600px;min-height:2600px;transform-origin:0 0;will-change:transform}.band{margin-bottom:42px}.band h2{font-size:15px;margin:0 0 10px}.band h2 small{color:#68717a;font-weight:500;margin-left:10px}.flow{display:flex;gap:22px;align-items:stretch}.arrow{align-self:center;width:26px;height:1px;background:#87919a;position:relative}.arrow:after{content:"";position:absolute;right:0;top:-4px;width:8px;height:8px;border-top:1px solid #87919a;border-right:1px solid #87919a;transform:rotate(45deg)}article{width:760px;min-height:690px;border:1px solid #20242a;border-top:6px solid var(--accent);border-radius:8px;background:#fff;padding:14px;box-shadow:0 10px 20px rgba(27,37,48,.13)}article h3{margin:0 0 7px;font-size:17px}article>p{margin:0 0 10px;color:#4e5964;font-size:12px;line-height:1.4}article ul{margin:10px 0 0;padding-left:18px;color:#4e5964;font-size:12px;line-height:1.4}.app{position:relative;width:730px;height:500px;border:1px solid #cbd2da;border-radius:7px;overflow:hidden;background:#fff;display:grid;grid-template-columns:145px 1fr 180px;grid-template-rows:1fr 122px;font-size:10px}.app>aside{grid-row:1/3;background:var(--rail);border-right:1px solid #ded8ce;padding:9px;overflow:hidden;position:relative}.traffic{height:16px}.traffic:before{content:"";display:block;width:7px;height:7px;border-radius:50%;background:#e0695d;box-shadow:11px 0 #e8b84c,22px 0 #66b86c}.switch{display:flex;justify-content:end;gap:4px;margin:-15px 0 10px}.switch b,.switch span{padding:4px 8px;border-radius:6px}.switch b{background:#fff}.search{height:24px;border:1px solid #e1dcd4;border-radius:7px;background:#fff;padding:5px;color:#8a8278;margin-bottom:8px}.app aside h5{font-size:9px;color:#8a8177;margin:10px 0 4px}.app aside p{border-radius:6px;padding:6px;margin:0 0 4px;white-space:nowrap;overflow:hidden}.app aside p.active,.app aside p.indent.active{background:#eadfce}.ws{font-weight:800}.indent{margin-left:12px!important;background:#fff}.app aside footer{position:absolute;bottom:8px;left:9px;right:9px;display:flex;justify-content:space-between}.code,.chat{position:relative;grid-column:2;grid-row:1/3;background:#fffdf9;overflow:hidden}.right{grid-column:3;grid-row:1;border-left:1px solid #e0d9cf;background:#f8f5ef;overflow:hidden}.bottom{grid-column:3;grid-row:2;border-left:1px solid #e0d9cf;border-top:1px solid #e0d9cf;background:#211f1f;color:#eee}.path{height:28px;border-bottom:1px solid #e4ded5;padding:5px 10px;display:flex;justify-content:space-between}.tab{height:30px;border-bottom:1px solid #e4ded5;padding:8px 10px;border-bottom:2px solid #c68148;display:inline-block}.thread{height:360px;padding:12px 16px;overflow:hidden;position:relative}.thread h3{font-size:13px;margin:0 0 8px}.model{position:absolute;right:14px;top:10px;border:1px solid #e4ded5;border-radius:999px;padding:3px 8px;background:#fff}.bubble{margin-left:auto;max-width:320px;background:#f6f7f8;border-radius:10px;padding:8px}.tool{border:1px solid #e1dce5;border-radius:7px;padding:8px;margin:6px 0}.tool b{background:#e8f5ee;border-radius:999px;padding:2px 6px;margin-left:6px;color:#287348}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #e2ddd5;padding:5px;text-align:left}.composer{position:absolute;left:10px;right:10px;bottom:10px;border:1px solid #e6dfd4;border-radius:16px;background:#fff;padding:9px 10px;box-shadow:0 6px 18px rgba(120,90,50,.08)}.composer span{display:block;color:#aaa;margin-bottom:8px}.composer button{border:1px solid #e2d8ca;border-radius:999px;background:#fff;padding:4px 8px}.composer .send{float:right;background:#eadfce}.title{height:36px;padding:10px 16px;display:flex;justify-content:space-between}.title span{border-radius:999px;background:#fff;padding:4px 8px}.center,.workspace-empty{height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.spark{width:42px;height:42px;border-radius:14px;background:#f3e7dd;display:grid;place-items:center;font-size:20px}.center h2,.workspace-empty h2{font-size:22px;margin:14px 0 8px}.center p,.workspace-empty p{max-width:420px;color:#68717a}.chips{display:flex;gap:8px}.chips button{border:1px solid #e5ddd3;border-radius:12px;background:#fff;padding:8px 12px}.right nav{height:32px;display:flex;gap:8px;align-items:end;border-bottom:1px solid #e0d9cf;padding:0 8px}.right nav b{padding:9px 4px;color:#777}.right nav .on{color:#111;border-bottom:2px solid #c68148}.empty{height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#777;gap:10px}.empty.small{height:220px}.empty.card{height:180px;border:1px solid #eee2d6;border-radius:8px;background:#fff;margin:8px}.device,.preview{margin:8px;border:1px solid #eee2d6;border-radius:8px;background:#fff;padding:10px}.device h4,.preview h4{margin:0 0 8px}.device h4 span,.preview h4 span{float:right;color:#b06d1f}.device dl{display:grid;grid-template-columns:55px 1fr;background:#faf7f1;padding:8px;border-radius:7px}.lvgl{height:190px;background:#161828;color:#dfe9e6;border-radius:6px;padding:12px;position:relative}.lvgl span{color:#6bc08d}.lvgl em{position:absolute;bottom:14px;left:18px;font-style:normal}.lvgl div{width:86px;height:120px;background:#090a0e;border-radius:42px;margin:18px auto;position:relative}.lvgl div:before{content:"";position:absolute;left:21px;top:28px;width:44px;height:44px;border-radius:50%;background:#f3ead6}.bottom nav{height:28px;background:#f8f5ef;color:#333;display:flex;align-items:end;gap:20px;padding-left:12px}.bottom nav b{padding:8px 0}.bottom nav .on{border-bottom:2px solid #c68148}.bottom pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;padding:12px;white-space:pre-wrap}.filters{background:#f8f5ef;color:#333;display:flex;gap:4px;padding:6px;flex-wrap:wrap}.filters button{font-size:9px;border:0;background:transparent}.settings{display:grid;grid-template-columns:145px 1fr}.settings-nav{background:var(--rail);border-right:1px solid #ded8ce;padding:16px 9px}.settings-nav b,.settings-nav button{display:block;width:100%;border-radius:7px;padding:8px;margin:3px 0;text-align:left;background:transparent;border:0}.settings-nav .on{background:#eadfce}.settings main{padding:24px 70px;max-width:680px}.cardline,.provider{border:1px solid #eee2d6;background:#fff;border-radius:9px;padding:12px;margin:10px 0}.ok{float:right;background:#e8f5ee;color:#287348;border-radius:999px;padding:3px 7px}.line{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:10px}.tabs{display:flex;gap:16px;border-bottom:3px solid #d6d0c8;padding-bottom:10px}.editor{border:1px solid #ddd;border-radius:8px;margin-top:14px;padding:12px;background:#fff}.toolbar{background:#f2f0ee;padding:8px;margin:8px -12px}.provider{display:flex;justify-content:space-between}.settings label{display:block;margin:10px 0}.settings label small{display:block;color:#777;margin-left:18px}.settings em{background:#e85555;color:#fff;border-radius:999px;padding:2px 8px;font-style:normal}.allow{display:flex}.allow input{flex:1}.about{display:flex;gap:16px}.about div{width:56px;height:56px;border-radius:14px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900}.overlay{position:absolute;inset:0;background:rgba(30,30,30,.45);display:grid;place-items:center;z-index:5}.overlay.dark{background:rgba(0,0,0,.65)}.dialog{width:390px;max-height:440px;overflow:auto;background:#fff;border-radius:9px;box-shadow:0 16px 40px rgba(0,0,0,.25);padding:16px}.dialog.wide,.dialog.publish{width:430px}.dialog input,.dialog textarea,.dialog select{width:100%;border:1px solid #ddd;border-radius:6px;padding:7px;margin:4px 0 10px}.dialog footer{text-align:right}.media{border:1px solid #eee;border-radius:7px;padding:9px}.success{background:#dff6e6;border:1px solid #9fd4b1;border-radius:7px;padding:8px}.load{background:#eef2f7;border-radius:7px;padding:8px}.browser{position:absolute;inset:0;background:#fff;z-index:4}.browser>div{height:34px;background:#d9e8fb;padding:8px 80px}.browser section{width:260px;margin:100px auto;text-align:center}.browser input,.browser button{display:block;width:100%;margin:8px 0;padding:7px}.welcome b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#d9f7e3;color:#287348}.finder{width:540px;height:330px;background:#252525;color:#eee;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.45);display:grid;grid-template-columns:130px 1fr;grid-template-rows:40px 1fr 44px}.finder h3{grid-column:1/3;margin:0;padding:12px}.finder aside{padding:12px;background:#1d1d1d}.finder section{padding:12px}.finder footer{grid-column:1/3;text-align:right;padding:8px}.qr{height:120px;border:1px solid #ddd;border-radius:8px;display:grid;place-items:center;font-weight:900}.author{position:absolute;inset:50px 190px 75px 15px;background:#fff;border:1px solid #ddd;display:grid;grid-template-columns:110px 1fr}.author aside{background:#f7f3ec;padding:12px;display:grid;gap:8px}.author article{width:auto;min-height:0;border:0;box-shadow:none;padding:16px}.author .tabs{border:0;background:#f6f3ef;padding:8px;margin-bottom:10px}@media(max-width:900px){header{position:relative;display:block}.layout{display:block;height:auto}.layout>nav{max-height:160px}#viewport{height:760px}}
-/* Text-only journey cards stay compact; product wireframe cards keep the large frame size. */
-#detail-states .flow,
-#state-language .flow,
-#errors .flow {
-  align-items: flex-start;
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journey 3: Login / Account Authentication Wireframe</title>
+<style>
+:root {
+  --bg: #eef3f7;
+  --grid: #d9e2ea;
+  --ink: #1f2933;
+  --muted: #667789;
+  --line: #c6d0da;
+  --panel: #ffffff;
+  --soft: #f7f9fb;
+  --blue: #2d77b8;
+  --blue-soft: #e5f1fb;
+  --green: #1f8a52;
+  --green-soft: #e7f6ed;
+  --amber: #9a6a1f;
+  --amber-soft: #fff3d4;
+  --red: #a43c3c;
+  --red-soft: #fde8e8;
+  --shell: #f6f3ed;
+  --shell-line: #ded7cd;
+  --sidebar: #eee8df;
 }
-#detail-states article,
-#state-language article,
-#errors article {
-  width: 540px;
-  min-height: 210px;
-  padding: 16px;
+* { box-sizing: border-box; }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-#detail-states .arrow,
-#state-language .arrow,
-#errors .arrow {
-  align-self: flex-start;
-  margin-top: 102px;
+button { font: inherit; }
+.topbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, .94);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
 }
-</style></head><body><header><div><h1>03. Login / Account Authentication</h1><p>The user enters login from the sidebar or a pre-publish gate. After browser authentication, the user returns to NoraHarness and the account area shows identity and Sign out.</p><div class="meta"><span>Evidence: authentication flow reference + live app observation</span><span>Source: user-journey-inventory.md</span><span>implemented journey record</span></div></div><div><button onclick="zoomBy(-.1)">Zoom out</button><button onclick="zoomBy(.1)">Zoom in</button><button onclick="fit()">Fit</button><button onclick="resetView()">Reset</button></div></header><main class="layout"><nav><b>Jump list</b><button onclick="jump('path')">Main Path</button><button onclick="jump('detail-states')">Detail states</button><button onclick="jump('state-language')">State language</button><button onclick="jump('errors')">Errors and recovery</button><button onclick="location.href='../index.wireframe.html'">Back to index</button></nav><section id="viewport"><div id="stage"><section class="band" id="path"><h2>Main Path <small>app -&gt; browser -&gt; app</small></h2><div class="flow"><article><h3>1. Signed-out entry</h3><p>The user sees Log in at the bottom of the sidebar.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><b>Chat</b><span>Code</span></div><div class="search">Search conversations...</div><h5>TODAY</h5><p class="active">[OpenClaw heartbeat poll] <em>12m</em></p><h5>PREVIOUS 7 DAYS</h5><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>5d</em></p><h5>OLDER</h5><p>webchat:g-agent-main... <em>May 30</em></p><footer>Settings <span>Log in</span></footer></aside><main class="chat"><div class="title"><b>[OpenClaw heartbeat poll]</b><span>openrouter/auto</span></div><section class="center"><div class="spark">*</div><h2>Start a focused conversation</h2><p>Describe your goal, OpenClaw will execute step by step and provide real-time feedback.</p><div class="chips"><button>Refactor this function without changing behavior</button><button>Find the root cause of this error message</button><button>Summarize the files I should look at first</button></div></section><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>auto</button><button>medium</button><button class="send">↑</button></div></main></div><ul><li>Local conversations remain visible before login.</li></ul></article><div class="arrow"></div><article><h3>2. Browser login</h3><p>Clicking login opens the NoraClaw login page.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><b>Chat</b><span>Code</span></div><div class="search">Search conversations...</div><h5>TODAY</h5><p class="active">[OpenClaw heartbeat poll] <em>12m</em></p><h5>PREVIOUS 7 DAYS</h5><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>5d</em></p><h5>OLDER</h5><p>webchat:g-agent-main... <em>May 30</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="chat"><div class="title"><b>[OpenClaw heartbeat poll]</b><span>openrouter/auto</span></div><section class="center"><div class="spark">*</div><h2>Start a focused conversation</h2><p>Describe your goal, OpenClaw will execute step by step and provide real-time feedback.</p><div class="chips"><button>Refactor this function without changing behavior</button><button>Find the root cause of this error message</button><button>Summarize the files I should look at first</button></div></section><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>auto</button><button>medium</button><button class="send">↑</button></div></main><div class="browser"><div>https://app.noraharness.ai/login</div><section><h3>Log in to NoraClaw</h3><button>Continue with Google</button><p>or sign in with email</p><input placeholder="Email"><input placeholder="Password"><button>Continue with Email</button><small>Don't have an account? Create account</small></section></div></div><ul><li>Includes Google login and email/password.</li></ul></article><div class="arrow"></div><article><h3>3. Welcome back</h3><p>After login succeeds, the browser shows Welcome back.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><b>Chat</b><span>Code</span></div><div class="search">Search conversations...</div><h5>TODAY</h5><p class="active">[OpenClaw heartbeat poll] <em>12m</em></p><h5>PREVIOUS 7 DAYS</h5><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>5d</em></p><h5>OLDER</h5><p>webchat:g-agent-main... <em>May 30</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="chat"><div class="title"><b>[OpenClaw heartbeat poll]</b><span>openrouter/auto</span></div><section class="center"><div class="spark">*</div><h2>Start a focused conversation</h2><p>Describe your goal, OpenClaw will execute step by step and provide real-time feedback.</p><div class="chips"><button>Refactor this function without changing behavior</button><button>Find the root cause of this error message</button><button>Summarize the files I should look at first</button></div></section><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>auto</button><button>medium</button><button class="send">↑</button></div></main><div class="browser"><div>https://app.noraharness.ai/oauth/callback</div><section class="welcome"><b>check</b><h3>Welcome back!</h3><p>You have successfully signed in. You may now close this window.</p></section></div></div><ul><li>The user returns to Electron.</li></ul></article><div class="arrow"></div><article><h3>4. Signed-in app</h3><p>The app footer shows wei, developer, and Sign out.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><b>Chat</b><span>Code</span></div><div class="search">Search conversations...</div><h5>TODAY</h5><p class="active">[OpenClaw heartbeat poll] <em>12m</em></p><h5>PREVIOUS 7 DAYS</h5><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>4d</em></p><p>webchat:g-agent-main... <em>5d</em></p><h5>OLDER</h5><p>webchat:g-agent-main... <em>May 30</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="chat"><div class="title"><b>[OpenClaw heartbeat poll]</b><span>openrouter/auto</span></div><section class="center"><div class="spark">*</div><h2>Start a focused conversation</h2><p>Describe your goal, OpenClaw will execute step by step and provide real-time feedback.</p><div class="chips"><button>Refactor this function without changing behavior</button><button>Find the root cause of this error message</button><button>Summarize the files I should look at first</button></div></section><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>auto</button><button>medium</button><button class="send">↑</button></div></main></div><ul><li>Account-related entries such as publishing are no longer login-gated.</li></ul></article></div></section><section class="band" id="detail-states"><h2>Detail states <small>Expanded from the client state changes in this journey record</small></h2><div class="flow"><article><h3>0. Entry and user action</h3><p>The user clicks the account login entry in the sidebar, or a Catalog publishing action blocks on account authentication.</p><ul><li>The user starts login, completes browser or embedded authentication, then can inspect account state, sign out, or retry the action that was blocked before login.</li></ul></article><div class="arrow"></div><article><h3>1. When signed out, the sidebar shows a login...</h3><p>When signed out, the sidebar shows a login entry; account-required features show a login requirement instead of continuing submission.</p></article><div class="arrow"></div><article><h3>2. After the user clicks login, the client en...</h3><p>After the user clicks login, the client enters signing in / waiting state and prevents duplicate clicks on related buttons.</p></article><div class="arrow"></div><article><h3>3. After login succeeds, the account area swi...</h3><p>After login succeeds, the account area switches to signed-in state and shows identity or avatar; account-dependent actions move from blocked to available.</p></article><div class="arrow"></div><article><h3>4. If login fails or is cancelled, the UI ret...</h3><p>If login fails or is cancelled, the UI returns to signed-out state and shows failure or cancellation feedback at the original entry.</p></article><div class="arrow"></div><article><h3>5. After sign out, local account state is cle...</h3><p>After sign out, local account state is cleared and Catalog publishing or other account-required entries return to login-gated state.</p></article><div class="arrow"></div><article><h3>6. End state</h3><p>The user is clearly signed in or signed out. Every account-required entry can show continue, block, or re-login based on that state.</p></article></div></section><section class="band" id="state-language"><h2>State language <small>Uses only status and action language from this journey record</small></h2><div class="flow"><article><h3>1. Entry language basis</h3><p>The user clicks the account login entry in the sidebar, or a Catalog publishing action blocks on account authentication.</p></article><div class="arrow"></div><article><h3>2. User action language basis</h3><p>The user starts login, completes browser or embedded authentication, then can inspect account state, sign out, or retry the action that was blocked before login.</p></article><div class="arrow"></div><article><h3>3. State vocabulary basis</h3><p>These terms come from this journey record and its client-state changes.</p><ul><li>cancelled</li><li>available</li><li>blocked</li><li>signing in</li><li>waiting</li><li>publishing</li></ul></article><div class="arrow"></div><article><h3>4. End language basis</h3><p>The user is clearly signed in or signed out. Every account-required entry can show continue, block, or re-login based on that state.</p></article></div></section><section class="band" id="errors"><h2>Errors and recovery <small>Only failure, blocking, and recovery branches explicitly recorded in this journey</small></h2><div class="flow"><article><h3>1. When signed out, the sidebar shows a login...</h3><p>When signed out, the sidebar shows a login entry; account-required features show a login requirement instead of continuing submission.</p></article><div class="arrow"></div><article><h3>2. After login succeeds, the account area swi...</h3><p>After login succeeds, the account area switches to signed-in state and shows identity or avatar; account-dependent actions move from blocked to available.</p></article><div class="arrow"></div><article><h3>3. If login fails or is cancelled, the UI ret...</h3><p>If login fails or is cancelled, the UI returns to signed-out state and shows failure or cancellation feedback at the original entry.</p></article></div></section></div></section></main><script>const viewport=document.getElementById('viewport');const stage=document.getElementById('stage');let scale=.66,x=0,y=0,drag=false,sx=0,sy=0,bx=0,by=0,raf=0;function apply(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;stage.style.transform='translate('+x+'px, '+y+'px) scale('+scale+')';});}function zoomAt(d,cx,cy){const r=viewport.getBoundingClientRect(),px=cx-r.left,py=cy-r.top,ox=(px-x)/scale,oy=(py-y)/scale;scale=Math.max(.25,Math.min(1.3,scale+d));x=px-ox*scale;y=py-oy*scale;apply();}function zoomBy(d){const r=viewport.getBoundingClientRect();zoomAt(d,r.left+r.width/2,r.top+r.height/2)}function fit(){const r=viewport.getBoundingClientRect();scale=Math.max(.25,Math.min(.75,(r.width-40)/3600));x=16;y=16;apply()}function resetView(){scale=.66;x=0;y=0;apply()}function jump(id){const el=document.getElementById(id);if(!el)return;x=20-el.offsetLeft*scale;y=20-el.offsetTop*scale;apply()}viewport.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sy=e.clientY;bx=x;by=y;viewport.classList.add('dragging');viewport.setPointerCapture(e.pointerId)});viewport.addEventListener('pointermove',e=>{if(!drag)return;x=bx+e.clientX-sx;y=by+e.clientY-sy;apply()});viewport.addEventListener('pointerup',e=>{drag=false;viewport.classList.remove('dragging');viewport.releasePointerCapture(e.pointerId)});viewport.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){zoomAt(-e.deltaY*.0015,e.clientX,e.clientY);return}x-=e.deltaX;y-=e.deltaY;apply()},{passive:false});apply();</script></body></html>
+.topbar h1 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.topbar p {
+  min-width: 240px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.controls {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.controls button {
+  min-width: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 11px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+}
+.shell {
+  height: 100%;
+  padding-top: 72px;
+  display: grid;
+  grid-template-columns: 272px 1fr;
+}
+.jump {
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  background: rgba(255, 255, 255, .78);
+  padding: 18px 14px 28px;
+}
+.jump h2 {
+  margin: 0 0 12px;
+  color: #536272;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.jump a {
+  display: block;
+  margin: 8px 0;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.jump small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.viewport {
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+.viewport.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9200px;
+  min-height: 14200px;
+  padding: 32px 54px 72px;
+  transform-origin: 0 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.band {
+  position: relative;
+  margin: 0 0 42px;
+  padding: 76px 0 32px;
+  border-top: 2px solid rgba(31, 41, 51, .2);
+}
+.band-title {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+.band-title h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.band-title p {
+  max-width: 1180px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.route-row {
+  position: relative;
+  margin: 0 0 30px;
+  padding: 54px 0 18px;
+}
+.route-title {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+.route-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.route-title p {
+  max-width: 1120px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.route-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+.arrow {
+  width: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #748599;
+  font-size: 25px;
+  font-weight: 900;
+}
+.card {
+  width: 560px;
+  min-width: 560px;
+  min-height: 548px;
+  padding: 12px;
+  border: 1.5px solid #1f2933;
+  border-top: 7px solid var(--blue);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 13px 28px rgba(30, 41, 59, .13);
+}
+.card.error { border-top-color: var(--red); }
+.card.success { border-top-color: var(--green); }
+.card.waiting { border-top-color: var(--amber); }
+.card-head {
+  min-height: 54px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-head h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.18;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  padding: 0 8px;
+  background: var(--blue-soft);
+  color: #1b5f96;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.badge.green { background: var(--green-soft); color: var(--green); }
+.badge.red { background: var(--red-soft); color: var(--red); }
+.badge.amber { background: var(--amber-soft); color: var(--amber); }
+.screen {
+  height: 386px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid #d7e0e8;
+  border-radius: 8px;
+  background: #fbfaf7;
+}
+.state-panel {
+  min-height: 386px;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #d7e0e8;
+  border-radius: 8px;
+  background: #fbfaf7;
+}
+.route-list,
+.copy-list {
+  display: grid;
+  gap: 10px;
+}
+.route-item,
+.copy-row {
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 1px solid #dde5ed;
+  border-radius: 8px;
+  background: #fff;
+}
+.route-item strong,
+.copy-row strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.route-item p,
+.copy-row span,
+.state-panel .notes {
+  margin: 0;
+  color: #546273;
+  font-size: 12px;
+  line-height: 1.38;
+}
+.state-panel .notes {
+  padding-left: 18px;
+}
+.state-panel .notes li {
+  margin: 0 0 8px;
+}
+.legacy-screen {
+  background: #fff;
+}
+.legacy-desktop {
+  width: 1200px;
+  height: 940px;
+  transform: scale(.445);
+  transform-origin: top left;
+  background: #fff;
+}
+.legacy-login-window {
+  width: 1200px;
+  height: 940px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0 20px 54px rgba(35,31,27,.15);
+}
+.legacy-login-form {
+  width: 520px;
+  display: grid;
+  gap: 24px;
+  transform: translateY(-8px);
+}
+.legacy-login-form h5 {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 35px;
+  line-height: 1.1;
+  font-weight: 850;
+}
+.legacy-auth-btn {
+  height: 58px;
+  border: 0;
+  border-radius: 9px;
+  background: #171717;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.legacy-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+  color: #686868;
+  font-size: 20px;
+}
+.legacy-divider:before,
+.legacy-divider:after {
+  content: "";
+  height: 1px;
+  background: #d7d7d7;
+}
+.legacy-field {
+  display: grid;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+}
+.legacy-input {
+  height: 58px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  color: #777;
+  font-size: 21px;
+  font-weight: 500;
+  background: #fff;
+}
+.legacy-links {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  font-size: 19px;
+  color: #5d5d5d;
+}
+.legacy-links span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legacy-shell {
+  width: 1200px;
+  height: 940px;
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  overflow: hidden;
+  border: 1px solid #cbc5bb;
+  border-radius: 18px;
+  background: #f7f4ee;
+  box-shadow: 0 20px 54px rgba(35,31,27,.22);
+}
+.legacy-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: #eee7dd;
+  border-right: 1px solid #ddd4c8;
+}
+.legacy-side-top {
+  height: 58px;
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+}
+.legacy-traffic {
+  display: flex;
+  gap: 8px;
+}
+.legacy-traffic span {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.legacy-traffic span:nth-child(2) { background: #febc2e; }
+.legacy-traffic span:nth-child(3) { background: #28c840; }
+.legacy-mode {
+  justify-self: end;
+  display: flex;
+  gap: 2px;
+  border-radius: 12px;
+  background: #ebe7df;
+  padding: 3px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.legacy-mode span {
+  padding: 7px 12px;
+  border-radius: 9px;
+  color: #62615f;
+}
+.legacy-mode .active {
+  background: #fff;
+  color: #191919;
+  box-shadow: 0 1px 5px rgba(0,0,0,.12);
+}
+.legacy-search {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 8px 18px;
+  border-radius: 11px;
+  background: #fff;
+  color: #6e6a65;
+  padding: 0 14px;
+  font-size: 15px;
+}
+.legacy-label {
+  margin: 0 16px 8px;
+  color: #6b6259;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+.legacy-conv {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 8px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 750;
+}
+.legacy-conv.active { background: #e4d1bf; }
+.legacy-footer {
+  margin-top: auto;
+  border-top: 1px solid #ddd4c8;
+  padding: 14px 16px 18px;
+  display: grid;
+  gap: 14px;
+  font-size: 15px;
+  font-weight: 750;
+  color: #4c4742;
+}
+.legacy-footer div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.legacy-main {
+  position: relative;
+  display: grid;
+  grid-template-rows: 58px 1fr auto;
+  background: #f7f4ee;
+}
+.legacy-main header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  font-size: 16px;
+}
+.legacy-hero {
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  transform: translateY(28px);
+}
+.legacy-spark {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 30px;
+  border-radius: 17px;
+  background: #ead9ca;
+  color: #9b5c2e;
+  box-shadow: 0 10px 28px rgba(130,87,49,.17);
+  font-size: 24px;
+}
+.legacy-hero h5 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 1.12;
+  font-weight: 900;
+}
+.legacy-hero p {
+  margin: 0;
+  color: #57524d;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.legacy-composer {
+  margin: 0 20px 22px;
+  min-height: 86px;
+  border: 1px solid #ddd4c8;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(60,46,33,.08);
+  padding: 18px 14px 12px 16px;
+  color: #8d867f;
+}
+.welcome-panel {
+  width: 500px;
+  margin: 132px auto 0;
+  padding: 28px;
+  border: 1px solid #d5dfe8;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(0,0,0,.18);
+}
+.welcome-panel h5 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+.welcome-panel p {
+  margin: 0 0 18px;
+  color: #5c5c5c;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.caption {
+  margin: 9px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.app {
+  position: relative;
+  width: 1040px;
+  height: 720px;
+  transform: scale(.54);
+  transform-origin: 0 0;
+  overflow: hidden;
+  border: 1px solid var(--shell-line);
+  background: var(--shell);
+}
+.traffic {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  left: 18px;
+  display: flex;
+  gap: 8px;
+}
+.traffic i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.traffic i:nth-child(2) { background: #ffbd2e; }
+.traffic i:nth-child(3) { background: #28c840; }
+.sidebar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 230px;
+  padding: 48px 14px 14px;
+  border-right: 1px solid var(--shell-line);
+  background: var(--sidebar);
+}
+.mode {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #fff;
+}
+.mode span {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+.mode .active {
+  background: #f7f4ef;
+  box-shadow: 0 1px 6px rgba(20, 30, 40, .16);
+}
+.search,
+.side-row,
+.workspace-row {
+  margin-top: 12px;
+  padding: 10px 11px;
+  border: 1px solid #e0d8cd;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+.side-label {
+  margin: 20px 4px 8px;
+  color: #6f655a;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.side-footer {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 8px;
+}
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 11px;
+  border: 1px solid #e0d8cd;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+.account-user {
+  display: grid;
+  gap: 4px;
+}
+.account-user strong { font-size: 13px; }
+.account-user small { color: #6f655a; font-size: 11px; }
+.role {
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 900;
+}
+.main {
+  position: absolute;
+  inset: 0 0 0 230px;
+  background: #fffdf9;
+}
+.bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  border-bottom: 1px solid #ebe4dc;
+  background: #fffaf3;
+}
+.bar strong { font-size: 15px; }
+.bar-actions {
+  display: flex;
+  gap: 8px;
+}
+.small-button,
+.primary,
+.danger-button {
+  border: 1px solid #d5c9bb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+.primary {
+  border-color: #2d77b8;
+  background: #2d77b8;
+  color: #fff;
+}
+.danger-button {
+  border-color: #d7a1a1;
+  background: var(--red-soft);
+  color: var(--red);
+}
+.chat-body,
+.author-body {
+  position: absolute;
+  inset: 56px 0 0;
+  padding: 36px 42px 96px;
+}
+.empty-hero {
+  max-width: 520px;
+  margin: 78px auto 0;
+  text-align: center;
+}
+.empty-hero h4,
+.login-card h4,
+.publish-modal h4,
+.browser-card h4 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+.empty-hero p,
+.login-card p,
+.publish-modal p,
+.browser-card p {
+  margin: 0;
+  color: #667789;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.composer {
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 26px;
+  min-height: 64px;
+  padding: 15px 18px;
+  border: 1px solid #e2d8cc;
+  border-radius: 22px;
+  color: #948878;
+  background: #fff;
+}
+.login-page {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #fbfaf7;
+}
+.login-card {
+  width: 385px;
+  padding: 28px;
+  border: 1px solid #d8dfe7;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(31, 41, 55, .14);
+  text-align: center;
+}
+.login-card .field {
+  height: 42px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid #cfd8e3;
+  border-radius: 6px;
+  color: #7a8795;
+  background: #fff;
+  text-align: left;
+  font-size: 13px;
+}
+.login-card .links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: #2d77b8;
+  font-size: 12px;
+  font-weight: 800;
+}
+.inline-error {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border: 1px solid #f0b4b4;
+  border-radius: 7px;
+  background: var(--red-soft);
+  color: var(--red);
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+}
+.browser-card {
+  width: 520px;
+  margin: 120px auto 0;
+  padding: 22px;
+  border: 1px solid #d8dfe7;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(31, 41, 55, .16);
+}
+.browser-top {
+  height: 34px;
+  margin: -4px -4px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #f0f4f8;
+  color: #667789;
+  font-size: 12px;
+}
+.progress-line {
+  height: 8px;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e4ebf2;
+}
+.progress-line span {
+  display: block;
+  width: 58%;
+  height: 100%;
+  background: #2d77b8;
+}
+.author-body {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  padding: 0;
+}
+.author-nav {
+  padding: 22px 16px;
+  border-right: 1px solid #ebe4dc;
+  background: #f5efe8;
+}
+.author-nav div {
+  margin: 5px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.author-nav .active { background: #fff; border: 1px solid #e4ddd4; }
+.author-main {
+  position: relative;
+  padding: 24px;
+}
+.editor-box {
+  height: 330px;
+  border: 1px solid #ddd6cc;
+  border-radius: 9px;
+  background: #fff;
+  padding: 18px;
+}
+.publish-modal {
+  width: 460px;
+  margin: 64px auto 0;
+  padding: 20px;
+  border: 1px solid #d5dfe8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 46px rgba(31, 41, 55, .22);
+}
+.publish-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #e0e7ef;
+  border-radius: 9px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+.toast {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  max-width: 330px;
+  padding: 12px 14px;
+  border: 1px solid #d9e2ea;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(31, 41, 55, .18);
+  font-size: 13px;
+}
+.toast.error {
+  border-color: #edb7b7;
+  background: var(--red-soft);
+  color: var(--red);
+}
+.toast.success {
+  border-color: #b8e2c6;
+  background: var(--green-soft);
+  color: var(--green);
+}
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  max-width: 4200px;
+}
+.card-grid .card { min-height: 506px; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>Journey 3: Login / Account Authentication</h1>
+  <p>Account sign-in starts from the sidebar or an account-required publish gate, then returns to the originating app context.</p>
+  <div class="controls">
+    <button id="zoom-out" type="button">-</button>
+    <button id="zoom-in" type="button">+</button>
+    <button id="fit" type="button">Fit</button>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</header>
+<div class="shell">
+  <nav class="jump" id="jump">
+    <h2>Jump List</h2>
+  </nav>
+  <main class="viewport" id="viewport" aria-label="Journey canvas">
+    <div class="stage" id="stage"></div>
+  </main>
+</div>
+<script>
+const states = {
+  "0.1": {title:"0.1 Account Footer Language", tags:["State language"], tone:"", caption:"Footer copy follows account state: Log in while signed out; identity, role badge, and Sign out while signed in.", screen:"footer-language"},
+  "0.2": {title:"0.2 Login Page Language", tags:["State language"], tone:"", caption:"The account page exposes Google, email/password, password recovery, and create-account routes.", screen:"login"},
+  "0.3": {title:"0.3 Publish Authentication Gate Language", tags:["State language"], tone:"waiting", caption:"Publish language changes from sign-in required to signed-in context once a usable account returns.", screen:"publish-gate"},
+  "0.4": {title:"0.4 Failure And Recovery Language", tags:["State language","Recovery"], tone:"error", caption:"Failure copy stays near the login page, sidebar origin, or publish dialog so the user can retry without losing context.", screen:"auth-failed"},
+  "1": {title:"1 Signed-Out Entry", tags:["Main path","Signed out"], tone:"", caption:"Sidebar footer shows Log in. Local Chat and Code stay available while account-required actions remain gated.", screen:"signed-out"},
+  "1.1": {title:"1.1 Sidebar Login Entry", tags:["Branch","Sidebar"], tone:"", caption:"The user clicks Log in in the account footer. The footer stays signed out until authentication succeeds.", screen:"sidebar-login"},
+  "1.2": {title:"1.2 Publish Action Starts While Signed Out", tags:["Branch","Publish"], tone:"waiting", caption:"Publish opens from authoring and checks sign-in before package upload or catalog submission.", screen:"publish-check"},
+  "1.2.1": {title:"1.2.1 Publish Sign-In Gate", tags:["Gate","Blocked"], tone:"waiting", caption:"The publish dialog says Sign in to NoraClaw to publish. No package upload starts until sign-in succeeds.", screen:"publish-gate"},
+  "1.3": {title:"1.3 Signed-Out Footer And Local-Only App Behavior", tags:["Detail","Signed out"], tone:"", caption:"The user can continue local work while account-required entries still resolve to a sign-in gate.", screen:"local-only"},
+  "1.4": {title:"1.4 Publish Gate Closed Or Deferred", tags:["Recovery","Deferred"], tone:"waiting", caption:"Closing the sign-in gate returns to the authoring context without starting upload or storing account state.", screen:"publish-closed"},
+  "2": {title:"2 Browser Login", tags:["Main path","Auth"], tone:"waiting", caption:"The browser login surface opens from the sidebar or publish gate and preserves the original return context.", screen:"login"},
+  "2.1": {title:"2.1 Account Login Page", tags:["Branch","Login page"], tone:"", caption:"Login page shows Log in to NoraClaw, Continue with Google, email/password, Forgot your password?, and Create account.", screen:"login"},
+  "2.1.1": {title:"2.1.1 Google Sign-In Choice", tags:["Google"], tone:"waiting", caption:"Continue with Google opens a browser or auth handoff while the desktop app waits for a result.", screen:"google"},
+  "2.1.2": {title:"2.1.2 Email/Password Sign-In Choice", tags:["Email"], tone:"waiting", caption:"Email and password fields remain visible; submit is meaningful only after required fields are present.", screen:"email"},
+  "2.1.2.1": {title:"2.1.2.1 Email/Password Validation Failure", tags:["Error","Retry"], tone:"error", caption:"Invalid credentials show inline error, keep the email available, and let the user retry.", screen:"email-error"},
+  "2.1.3": {title:"2.1.3 Create Account Entry", tags:["Create account"], tone:"waiting", caption:"Account creation opens from the account surface and can return to normal login if abandoned.", screen:"create-account"},
+  "2.1.4": {title:"2.1.4 Forgot Password Entry", tags:["Recovery"], tone:"waiting", caption:"Password recovery opens from the account route and returns the user to normal login.", screen:"forgot-password"},
+  "2.2": {title:"2.2 Waiting For Authentication Result", tags:["Waiting"], tone:"waiting", caption:"The auth surface is pending. Sidebar and publish origins do not switch to signed-in until a valid account returns.", screen:"waiting"},
+  "2.2.1": {title:"2.2.1 Welcome Back / Authentication Success Return", tags:["Success","Return"], tone:"success", caption:"The app returns to the originating sidebar or publish context; onboarding does not reappear.", screen:"auth-success"},
+  "2.2.2": {title:"2.2.2 Authentication Canceled", tags:["Canceled","Signed out"], tone:"error", caption:"The user cancels authentication and returns to the original signed-out surface or publish sign-in gate.", screen:"auth-canceled"},
+  "2.2.3": {title:"2.2.3 Authentication Failed", tags:["Error","Retry"], tone:"error", caption:"A failure message appears near the active login or gated surface, and retry remains available.", screen:"auth-failed"},
+  "2.3": {title:"2.3 Authentication Retry Recovery", tags:["Recovery"], tone:"error", caption:"Retry, change method, or cancel stays tied to the original sidebar or publish origin.", screen:"retry-recovery"},
+  "3": {title:"3 Signed-In App", tags:["Main path","Signed in"], tone:"success", caption:"Sidebar footer shows identity, role badge, and Sign out. Account-required dialogs can continue.", screen:"signed-in"},
+  "3.1": {title:"3.1 Sidebar Signed-In Identity", tags:["Branch","Signed in"], tone:"success", caption:"The sidebar shows the signed-in user, developer role badge, and Sign out action.", screen:"signed-in"},
+  "3.2": {title:"3.2 Account-Required Publish Action Continues", tags:["Publish","Signed in"], tone:"success", caption:"The publish dialog moves beyond the sign-in gate into package, metadata, upload, success, or publish error states.", screen:"publish-continue"},
+  "3.3": {title:"3.3 User Signs Out", tags:["Sign out"], tone:"waiting", caption:"Clicking Sign out clears local account state while leaving the current app surface visible.", screen:"sign-out"},
+  "3.3.1": {title:"3.3.1 Signed-Out State After Sign-Out", tags:["Signed out"], tone:"", caption:"The footer returns to Log in and account-required actions become gated again.", screen:"signed-out-after"},
+  "3.4": {title:"3.4 Current Account Session Cannot Be Used", tags:["Error","Session"], tone:"error", caption:"The publish dialog shows a sign-in-again error instead of continuing upload or submission.", screen:"session-error"},
+  "3.4.1": {title:"3.4.1 Re-Login From An Account-Required Error", tags:["Recovery","Re-login"], tone:"waiting", caption:"The same login route opens while the publish dialog remains the recovery context.", screen:"relogin"},
+  "3.5": {title:"3.5 Signed-In Local-Only Continuation", tags:["Detail","Signed in"], tone:"success", caption:"The user can keep using Chat, Code, Settings, or authoring while signed-in state remains available.", screen:"signed-in-local"},
+  "3.6": {title:"3.6 Sign-Out And Session Recovery Summary", tags:["Recovery"], tone:"error", caption:"Recovery can refresh the account, clear it, or keep account-required work blocked while local work remains visible.", screen:"session-recovery"}
+};
+
+const routes = [
+  {name:"Sidebar Google login", ids:["1","1.1","2","2.1","2.1.1","2.2","2.2.1","3","3.1"], result:"The user signs in from the sidebar with Google and sees signed-in account footer state."},
+  {name:"Sidebar email login", ids:["1","1.1","2","2.1","2.1.2","2.2","2.2.1","3","3.1"], result:"The user signs in from the sidebar with email/password and sees signed-in account footer state."},
+  {name:"Email validation retry", ids:["1","1.1","2","2.1","2.1.2","2.1.2.1","2.1","2.1.2","2.2","2.2.1","3","3.1"], result:"The login page keeps the user in context after invalid credentials, then succeeds after retry."},
+  {name:"Create account from login", ids:["1","1.1","2","2.1","2.1.3","2.2","2.2.1","3","3.1"], result:"The user enters account creation from the login page and returns signed in after completion."},
+  {name:"Forgot password return", ids:["1","1.1","2","2.1","2.1.4","2.1"], result:"The user uses password recovery and returns to the account login page."},
+  {name:"Sidebar authentication canceled", ids:["1","1.1","2","2.1","2.1.1","2.2","2.2.2","2.3","1"], result:"The user cancels authentication and remains signed out with local app surfaces available."},
+  {name:"Sidebar authentication failed then retried", ids:["1","1.1","2","2.1","2.1.1","2.2","2.2.3","2.3","2.1","2.1.2","2.2","2.2.1","3","3.1"], result:"The failed sign-in keeps the user in account recovery, then a later attempt succeeds."},
+  {name:"Publish blocked while signed out", ids:["1","1.2","1.2.1"], result:"The publish/review action stops before package upload and asks the user to sign in."},
+  {name:"Publish sign-in happy path", ids:["1","1.2","1.2.1","2","2.1","2.1.1","2.2","2.2.1","3","3.2"], result:"The user signs in from the publish gate and the publish dialog proceeds into signed-in publishing states."},
+  {name:"Publish gate closed", ids:["1","1.2","1.2.1","1.4","1"], result:"The user defers sign-in; no package upload starts and the app returns to the local context."},
+  {name:"Already signed-in publish", ids:["3","3.1","3.2"], result:"The user opens publish while signed in and skips the sign-in gate."},
+  {name:"Publish session unusable with re-login", ids:["3","3.1","3.2","3.4","3.4.1","2","2.1","2.1.2","2.2","2.2.1","3","3.2"], result:"A session problem blocks the account-required action, then re-login returns the user to the publish flow."},
+  {name:"Sign out", ids:["3","3.1","3.3","3.3.1","1"], result:"Account state is cleared, the sidebar returns to Log in, and account-required actions become gated again."},
+  {name:"Sign out then hit publish gate", ids:["3","3.1","3.3","3.3.1","1","1.2","1.2.1"], result:"After sign-out, publishing again opens the unauthenticated sign-in gate."}
+];
+
+const branchIds = ["1.1","1.2","2.1","2.1.1","2.1.2","2.1.3","2.1.4","2.2","2.2.1","3.1","3.2","3.3","3.3.1"];
+const detailIds = ["1.3","3.5"];
+const stateLanguageIds = ["0.1","0.2","0.3","0.4"];
+const errorRecoveryIds = ["1.2.1","1.4","2.1.2.1","2.2.2","2.2.3","2.3","3.4","3.4.1","3.6"];
+
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[ch]));
+}
+
+function tagClass(tag, tone) {
+  if (tone === "error" || tag === "Error" || tag === "Blocked") return "badge red";
+  if (tone === "success" || tag === "Success" || tag === "Signed in") return "badge green";
+  if (tone === "waiting" || tag === "Waiting" || tag === "Recovery" || tag === "Deferred") return "badge amber";
+  return "badge";
+}
+
+function card(id) {
+  const state = states[id];
+  const tone = state.tone ? ` ${state.tone}` : "";
+  const badges = state.tags.map(tag => `<span class="${tagClass(tag, state.tone)}">${esc(tag)}</span>`).join("");
+  return `<article class="card${tone}" data-state-id="${esc(id)}">
+    <div class="card-head">
+      <h3>${esc(state.title)}</h3>
+      <div class="badges"><span class="badge">${esc(id)}</span>${badges}</div>
+    </div>
+    <div class="screen">${renderScreen(state.screen)}</div>
+    <p class="caption">${esc(state.caption)}</p>
+  </article>`;
+}
+
+function appFrame(mainHtml, options = {}) {
+  const signedIn = options.signedIn;
+  const accountLabel = signedIn ? `<div class="account-user"><strong>zhaowei@example.com</strong><small>Signed in</small></div><span class="role">developer</span>` : `<strong>Log in</strong>`;
+  const activeMode = options.mode || "Chat";
+  return `<div class="app">
+    <div class="traffic"><i></i><i></i><i></i></div>
+    <aside class="sidebar">
+      <div class="mode"><span class="${activeMode === "Chat" ? "active" : ""}">Chat</span><span class="${activeMode === "Code" ? "active" : ""}">Code</span></div>
+      <div class="search">Search conversations...</div>
+      <div class="side-label">${activeMode === "Code" ? "Workspaces" : "Conversations"}</div>
+      <div class="side-row ${activeMode === "Chat" ? "active" : ""}">${activeMode === "Chat" ? "New conversation" : "hardware-agent"}</div>
+      <div class="side-row">${activeMode === "Chat" ? "Hardware planning" : "Catalog package"}</div>
+      <div class="side-row">${activeMode === "Chat" ? "Device notes" : "Release notes"}</div>
+      <div class="side-footer">
+        <div class="footer-row"><span>Settings</span><span>General</span></div>
+        <div class="footer-row">${accountLabel}</div>
+        ${signedIn ? `<div class="footer-row"><span>Account</span><strong>Sign out</strong></div>` : ""}
+      </div>
+    </aside>
+    <section class="main">${mainHtml}</section>
+  </div>`;
+}
+
+function chatMain(message) {
+  return `<div class="bar"><strong>NoraHarness</strong><div class="bar-actions"><button class="small-button">MiniMax-M2.5</button><button class="small-button">medium</button></div></div>
+  <div class="chat-body">
+    <div class="empty-hero"><h4>${esc(message.title)}</h4><p>${esc(message.body)}</p></div>
+    <div class="composer">Ask NoraHarness anything... <button class="small-button">Send</button></div>
+  </div>`;
+}
+
+function authorMain(modal) {
+  return `<div class="bar"><strong>Agent Authoring</strong><div class="bar-actions"><button class="small-button">Preview on Mobile</button><button class="primary">Publish</button></div></div>
+  <div class="author-body">
+    <nav class="author-nav"><div class="active">Soul</div><div>Style</div><div>Tools</div><div>Skills</div><div>Capabilities</div></nav>
+    <section class="author-main"><div class="editor-box"><strong>Agent package</strong><p>Editable agent files stay behind the publish dialog.</p></div>${modal}</section>
+  </div>`;
+}
+
+function publishModal(kind) {
+  if (kind === "checking") {
+    return `<div class="publish-modal"><h4>Publish to Catalog</h4><p>Checking sign-in before package upload.</p><div class="publish-row"><strong>Account</strong><span class="badge amber">Checking</span></div><div class="publish-row"><span>Package upload</span><span>Waiting</span></div></div>`;
+  }
+  if (kind === "gate") {
+    return `<div class="publish-modal"><h4>Sign in to NoraClaw to publish.</h4><p>This publish action is held until account authentication succeeds.</p><div class="publish-row"><strong>Account required</strong><button class="primary">Sign in</button></div></div>`;
+  }
+  if (kind === "closed") {
+    return `<div class="publish-modal"><h4>Publish not started</h4><p>The sign-in gate was closed. No package upload or catalog submission has started.</p><div class="publish-row"><span>Account</span><span>Signed out</span></div></div>`;
+  }
+  if (kind === "continue") {
+    return `<div class="publish-modal"><h4>Publish to Catalog</h4><p>Signed in as zhaowei@example.com.</p><div class="publish-row"><strong>Package digest</strong><span class="badge green">Ready</span></div><div class="publish-row"><strong>Mode</strong><span>New version</span></div><div class="publish-row"><strong>Upload</strong><button class="primary">Publish</button></div></div>`;
+  }
+  if (kind === "session-error") {
+    return `<div class="publish-modal"><h4>Sign in again to publish.</h4><p>The current account session cannot be used for this account-required action.</p><div class="publish-row"><strong>Publish blocked</strong><button class="primary">Sign in again</button></div><div class="publish-row"><span>Package upload</span><span>Not started</span></div></div>`;
+  }
+  return "";
+}
+
+function loginPage(kind) {
+  let body = `<h4>Log in to NoraClaw</h4><p>Use your NoraClaw account to continue.</p>
+    <button class="primary" style="width:100%;margin-top:18px">Continue with Google</button>
+    <div class="field">Email</div>
+    <div class="field">Password</div>
+    <button class="small-button" style="width:100%;margin-top:10px">Continue with Email</button>
+    <div class="links"><span>Forgot your password?</span><span>Create account</span></div>`;
+  if (kind === "email") {
+    body = `<h4>Log in to NoraClaw</h4><p>Email sign-in keeps the user on the account page.</p>
+      <div class="field">zhaowei@example.com</div><div class="field">Password hidden</div>
+      <button class="primary" style="width:100%;margin-top:12px">Continue with Email</button>
+      <div class="links"><span>Forgot your password?</span><span>Continue with Google</span></div>`;
+  }
+  if (kind === "email-error") {
+    body = `<h4>Log in to NoraClaw</h4><p>Email can be corrected and retried.</p>
+      <div class="field">zhaowei@example.com</div><div class="field">Password hidden</div>
+      <div class="inline-error">Email or password was not accepted.</div>
+      <button class="primary" style="width:100%;margin-top:12px">Continue with Email</button>
+      <div class="links"><span>Forgot your password?</span><span>Continue with Google</span></div>`;
+  }
+  if (kind === "create") {
+    body = `<h4>Create account</h4><p>Create a NoraClaw account, then return signed in.</p>
+      <div class="field">Email</div><div class="field">Password</div>
+      <button class="primary" style="width:100%;margin-top:12px">Create account</button>
+      <div class="links"><span>Already have an account?</span><span>Log in</span></div>`;
+  }
+  if (kind === "forgot") {
+    body = `<h4>Reset password</h4><p>Request recovery, then return to login.</p>
+      <div class="field">Email</div>
+      <button class="primary" style="width:100%;margin-top:12px">Send recovery link</button>
+      <div class="links"><span>Back to login</span><span></span></div>`;
+  }
+  return `<div class="login-page"><div class="login-card">${body}</div></div>`;
+}
+
+function renderScreen(type) {
+  switch (type) {
+    case "signed-out":
+    case "sidebar-login":
+      return appFrame(chatMain({title:"Ready to work locally", body:"The account footer is signed out. Account-required actions will ask for sign-in."}));
+    case "local-only":
+      return appFrame(chatMain({title:"Local work continues", body:"Chat, Code, and Settings remain available while the footer still shows Log in."}));
+    case "login":
+      return appFrame(loginPage("login"));
+    case "google":
+      return appFrame(`<div class="bar"><strong>Browser authentication</strong><span class="badge amber">Waiting</span></div><div class="browser-card"><div class="browser-top">accounts.noraclaw.com / oauth / google</div><h4>Continue with Google</h4><p>The browser or auth surface is open. NoraHarness waits for the result.</p><div class="progress-line"><span></span></div><button class="small-button" style="margin-top:18px">Cancel</button></div>`);
+    case "email":
+      return appFrame(loginPage("email"));
+    case "email-error":
+      return appFrame(loginPage("email-error"));
+    case "create-account":
+      return appFrame(loginPage("create"));
+    case "forgot-password":
+      return appFrame(loginPage("forgot"));
+    case "waiting":
+      return appFrame(`<div class="bar"><strong>Authentication pending</strong><span class="badge amber">Waiting</span></div><div class="browser-card"><h4>Waiting for account result</h4><p>The originating app context is preserved until success, cancellation, or failure.</p><div class="progress-line"><span></span></div></div>`);
+    case "auth-success":
+      return appFrame(chatMain({title:"Returned signed in", body:"The app returns to the origin and updates account state."}), {signedIn:true});
+    case "auth-canceled":
+      return appFrame(chatMain({title:"Sign-in canceled", body:"The user remains signed out and can retry or keep working locally."}) + `<div class="toast error"><strong>Sign-in did not complete.</strong><br>Try again when ready.</div>`);
+    case "auth-failed":
+      return appFrame(loginPage("login") + `<div class="toast error"><strong>Sign-in failed.</strong><br>Retry or choose another method.</div>`);
+    case "retry-recovery":
+      return appFrame(loginPage("login") + `<div class="toast error"><strong>Still signed out.</strong><br>Retry sign-in, change method, or return to the app.</div>`);
+    case "signed-in":
+      return appFrame(chatMain({title:"Signed-in account visible", body:"The account footer shows identity, developer role, and Sign out."}), {signedIn:true});
+    case "footer-language":
+      return appFrame(chatMain({title:"Footer state language", body:"Signed out uses Log in. Signed in uses identity, role badge, and Sign out."}), {signedIn:true});
+    case "signed-in-local":
+      return appFrame(chatMain({title:"Local work continues signed in", body:"The signed-in footer remains available while Chat or Code work continues."}), {signedIn:true});
+    case "publish-check":
+      return appFrame(authorMain(publishModal("checking")), {mode:"Code"});
+    case "publish-gate":
+      return appFrame(authorMain(publishModal("gate")), {mode:"Code"});
+    case "publish-closed":
+      return appFrame(authorMain(publishModal("closed")), {mode:"Code"});
+    case "publish-continue":
+      return appFrame(authorMain(publishModal("continue")), {mode:"Code", signedIn:true});
+    case "sign-out":
+      return appFrame(chatMain({title:"Sign out selected", body:"The signed-in account action clears account state and keeps the app surface visible."}), {signedIn:true});
+    case "signed-out-after":
+      return appFrame(chatMain({title:"Signed out after account action", body:"The footer returns to Log in. Publishing will show the sign-in gate again."}));
+    case "session-error":
+      return appFrame(authorMain(publishModal("session-error")), {mode:"Code", signedIn:true});
+    case "relogin":
+      return appFrame(authorMain(publishModal("session-error")) + `<div class="toast"><strong>Re-login starts.</strong><br>The publish dialog remains the recovery context.</div>`, {mode:"Code"});
+    case "session-recovery":
+      return appFrame(authorMain(publishModal("session-error")) + `<div class="toast error"><strong>Account recovery needed.</strong><br>Sign in again, cancel, or continue local work.</div>`, {mode:"Code", signedIn:true});
+    default:
+      return appFrame(chatMain({title:"Account state", body:"This state follows the current Journey 3 record."}));
+  }
+}
+
+function routeRow(route, index, rowId, labelPrefix = "") {
+  const cards = route.ids.map((id, i) => `${i ? '<div class="arrow" aria-hidden="true">&rarr;</div>' : ""}${card(id)}`).join("");
+  return `<section class="route-row" id="${esc(rowId)}" data-route-name="${esc(route.name)}">
+    <div class="route-title"><h2>${esc(labelPrefix)}${esc(route.name)}</h2><p>${esc(route.result)}</p></div>
+    <div class="route-flow">${cards}</div>
+  </section>`;
+}
+
+function legacyShell(signedIn = false) {
+  const account = signedIn ? `<div class="account-row"><strong>zhaowei@example.com</strong><span>v</span></div>` : `<div><span>Log in</span></div>`;
+  return `<div class="legacy-desktop"><div class="legacy-shell">
+    <aside class="legacy-sidebar">
+      <div class="legacy-side-top"><div class="legacy-traffic"><span></span><span></span><span></span></div><div class="legacy-mode"><span class="active">Chat</span><span>Code</span></div></div>
+      <div class="legacy-search">Search conversations...</div>
+      <div class="legacy-label">TODAY</div>
+      <div class="legacy-conv active"><span>heartbeat</span><small>21m</small></div>
+      <div class="legacy-conv"><span>Agent draft</span><small>2h</small></div>
+      <div class="legacy-footer"><div><span>Settings</span></div>${account}</div>
+    </aside>
+    <section class="legacy-main">
+      <header><strong>heartbeat</strong><span>MiniMax-M2.7</span></header>
+      <div class="legacy-hero"><div class="legacy-spark">*</div><h5>Start a focused conversation</h5><p>${signedIn ? "Signed-in account state is visible while local context remains restored." : "Local work remains visible before account login."}</p></div>
+      <div class="legacy-composer">Assign a task or ask any question</div>
+    </section>
+  </div></div>`;
+}
+
+function legacyLogin() {
+  return `<div class="legacy-desktop"><div class="legacy-login-window"><div class="legacy-login-form">
+    <h5>Log in to NoraClaw</h5>
+    <button class="legacy-auth-btn"><span>G</span><span>Continue with Google</span></button>
+    <div class="legacy-divider">or sign in with email</div>
+    <label class="legacy-field">Email<div class="legacy-input">Email</div></label>
+    <label class="legacy-field">Password<div class="legacy-input">Password</div></label>
+    <button class="legacy-auth-btn">Continue with Email</button>
+    <div class="legacy-links"><div><span>Forgot your password?</span></div><div>Don't have an account? <span>Create account</span></div></div>
+  </div></div></div>`;
+}
+
+function legacyWelcomeBack() {
+  return `<div class="legacy-desktop"><div class="legacy-login-window"><div class="welcome-panel">
+    <h5>Welcome back</h5>
+    <p>NoraClaw finished authentication. Return to NoraHarness to continue from the original app context.</p>
+    <button class="legacy-auth-btn">Return to NoraHarness</button>
+  </div></div></div>`;
+}
+
+function legacyHappyCard(title, description, html, tone = "main") {
+  return `<article class="card ${tone}">
+    <div class="card-head"><h3>${esc(title)}</h3><div class="badges"><span class="badge">Main happy path</span></div></div>
+    <div class="screen legacy-screen">${html}</div>
+    <p class="caption">${esc(description)}</p>
+  </article>`;
+}
+
+function legacyMainPathBand() {
+  const cards = [
+    legacyHappyCard("Signed-out entry", "User starts in the app shell with local context visible and a Log in footer action.", legacyShell(false), ""),
+    legacyHappyCard("Browser login", "The account surface opens as the standalone NoraClaw login page, matching the old Journey 3 baseline.", legacyLogin(), "waiting"),
+    legacyHappyCard("Welcome back", "Authentication returns through the browser/account handoff without restarting onboarding.", legacyWelcomeBack(), "success"),
+    legacyHappyCard("Signed-in app", "The app restores the originating context and shows signed-in account state in the sidebar.", legacyShell(true), "success")
+  ];
+  return `<div class="route-flow">${cards.map((html, i) => `${i ? '<div class="arrow" aria-hidden="true">&rarr;</div>' : ""}${html}`).join("")}</div>`;
+}
+
+function band(id, title, summary, content) {
+  return `<section class="band" id="${esc(id)}">
+    <div class="band-title"><h2>${esc(title)}</h2><p>${esc(summary)}</p></div>
+    ${content}
+  </section>`;
+}
+
+function cardGrid(ids) {
+  if (!ids.length) {
+    return `<div class="card-grid"><article class="card"><div class="card-head"><h3>No separate states</h3><div class="badges"><span class="badge">Empty</span></div></div><div class="screen">${renderScreen("signed-out")}</div><p class="caption">This record has no separate states for this category.</p></article></div>`;
+  }
+  return `<div class="card-grid">${ids.map(id => card(id)).join("")}</div>`;
+}
+
+function summaryItem(kind, id, title, body) {
+  const badgeClass = kind === "error" ? "badge red" : kind === "success" ? "badge green" : kind === "warn" ? "badge amber" : "badge";
+  return `<div class="route-item"><strong><span class="${badgeClass}">${esc(id)}</span> ${esc(title)}</strong><p>${esc(body)}</p></div>`;
+}
+
+function copyItem(label, body) {
+  return `<div class="copy-row"><strong>${esc(label)}</strong><span>${esc(body)}</span></div>`;
+}
+
+function summaryCard(id, tone, body, panelHtml) {
+  const state = states[id];
+  const toneClass = tone ? ` ${tone}` : "";
+  return `<article class="card${toneClass}" data-state-id="${esc(id)}">
+    <div class="card-head">
+      <h3>${esc(state.title)}</h3>
+      <div class="badges"><span class="badge">${esc(id)}</span>${state.tags.map(tag => `<span class="${tagClass(tag, state.tone)}">${esc(tag)}</span>`).join("")}</div>
+    </div>
+    <p class="caption">${esc(body)}</p>
+    <div class="state-panel">${panelHtml}</div>
+  </article>`;
+}
+
+function detailStatesBand() {
+  const cards = [
+    summaryCard("1.3", "", "Signed-out app use remains available while account-required entries keep routing to sign-in.", `<div class="route-list">
+      ${summaryItem("info", "1", "Signed-out footer", "The shared sidebar footer shows Log in and does not show identity or Sign out.")}
+      ${summaryItem("info", "1.1", "Sidebar login entry", "Clicking Log in opens the account route without changing local Chat or Code context.")}
+      ${summaryItem("warn", "1.2", "Account-required work", "Publish or review actions still stop at the sign-in gate until an account returns.")}
+    </div>`),
+    summaryCard("3.5", "success", "Signed-in local work remains normal; account state is available but does not replace the current app surface.", `<div class="route-list">
+      ${summaryItem("success", "3.1", "Signed-in footer", "The sidebar keeps identity, role badge, and Sign out visible.")}
+      ${summaryItem("success", "3.2", "Later account-required work", "Publish can continue when opened while the session remains usable.")}
+      ${summaryItem("warn", "3.3", "Sign-out remains available", "The user can clear account state without losing local app context.")}
+    </div>`)
+  ];
+  return `<div class="route-flow">${cards.map((html, i) => `${i ? '<div class="arrow" aria-hidden="true">&rarr;</div>' : ""}${html}`).join("")}</div>`;
+}
+
+function stateLanguageBand() {
+  const cards = [
+    summaryCard("0.1", "", "Account footer copy is the stable language layer shared across signed-out and signed-in app states.", `<div class="copy-list">
+      ${copyItem("Log in", "Signed-out footer action.")}
+      ${copyItem("Identity and developer role", "Signed-in footer state.")}
+      ${copyItem("Sign out", "Account-clearing action available after sign-in.")}
+    </div>`),
+    summaryCard("0.2", "", "Login page copy stays on the account surface and keeps all sign-in alternatives visible.", `<div class="copy-list">
+      ${copyItem("Log in to NoraClaw", "Account page title.")}
+      ${copyItem("Continue with Google", "Browser/auth handoff action.")}
+      ${copyItem("Continue with Email", "Email/password submission action.")}
+      ${copyItem("Forgot your password? / Create account", "Secondary account routes.")}
+    </div>`),
+    summaryCard("0.3", "waiting", "Publish gate language separates account requirements from package upload or catalog submission.", `<div class="copy-list">
+      ${copyItem("Sign in to NoraClaw to publish.", "Signed-out publish gate title.")}
+      ${copyItem("Sign in", "Primary gate action.")}
+      ${copyItem("Signed in as ...", "Signed-in publish context once a usable account exists.")}
+    </div>`),
+    summaryCard("0.4", "error", "Recovery copy stays near the active login, sidebar, or publish context.", `<div class="copy-list">
+      ${copyItem("Sign-in did not complete", "Cancellation or incomplete auth feedback.")}
+      ${copyItem("Email or password was not accepted", "Inline retry language for email/password.")}
+      ${copyItem("Sign in again to publish", "Session recovery language for account-required work.")}
+    </div>`)
+  ];
+  return `<div class="route-flow">${cards.map((html, i) => `${i ? '<div class="arrow" aria-hidden="true">&rarr;</div>' : ""}${html}`).join("")}</div>`;
+}
+
+function errorsBand() {
+  const cards = [
+    summaryCard("1.2.1", "waiting", "Publish is blocked before upload when no signed-in account is available.", `<div class="route-list">
+      ${summaryItem("warn", "gate", "Sign-in required", "The dialog asks the user to sign in before publish can proceed.")}
+      ${summaryItem("info", "next", "Recovery choices", "Sign in moves to Browser Login; close moves to gate deferred.")}
+    </div>`),
+    summaryCard("1.4", "waiting", "Closing the publish sign-in gate returns to the app without starting upload.", `<div class="route-list">
+      ${summaryItem("warn", "closed", "Publish not started", "No account session is stored and no package upload is attempted.")}
+      ${summaryItem("info", "origin", "Return to local context", "The sidebar remains signed out and local work is still available.")}
+    </div>`),
+    summaryCard("2.1.2.1", "error", "Email/password validation failure is recoverable on the login page.", `<div class="route-list">
+      ${summaryItem("error", "invalid", "Credentials rejected", "The email remains available and password stays hidden.")}
+      ${summaryItem("info", "retry", "Retry in place", "The user can correct fields, switch method, or use password recovery.")}
+    </div>`),
+    summaryCard("2.2.2", "error", "Authentication can be canceled without changing account state.", `<div class="route-list">
+      ${summaryItem("error", "canceled", "No account returned", "The sidebar or publish origin remains signed out.")}
+      ${summaryItem("info", "origin", "Return path preserved", "The user can retry sign-in or continue local-only work.")}
+    </div>`),
+    summaryCard("2.2.3", "error", "Authentication failure keeps the user near the active account route.", `<div class="route-list">
+      ${summaryItem("error", "failed", "Sign-in did not complete", "No signed-in account is stored.")}
+      ${summaryItem("info", "retry", "Choose another method", "Retry can return to the login page or the publish sign-in gate.")}
+    </div>`),
+    summaryCard("2.3", "error", "Retry recovery is the shared path after canceled or failed authentication.", `<div class="route-list">
+      ${summaryItem("info", "retry", "Retry sign-in", "Returns to Account Login Page.")}
+      ${summaryItem("warn", "cancel", "Cancel back to origin", "Returns to Signed-Out Entry or Publish Sign-In Gate.")}
+    </div>`),
+    summaryCard("3.4", "error", "A stored account can become unusable for an account-required action.", `<div class="route-list">
+      ${summaryItem("error", "session", "Publish blocked", "The publish dialog asks for sign-in again instead of continuing upload.")}
+      ${summaryItem("info", "context", "Origin preserved", "The publish dialog remains the recovery context.")}
+    </div>`),
+    summaryCard("3.4.1", "waiting", "Re-login starts from the account-required error without losing publish context.", `<div class="route-list">
+      ${summaryItem("warn", "re-login", "Fresh authentication", "The same login route opens again.")}
+      ${summaryItem("success", "return", "Resume publish", "Success returns to account-required publish continuation.")}
+    </div>`),
+    summaryCard("3.6", "error", "Session recovery summarizes refresh, sign-out, cancel, and blocked states.", `<div class="route-list">
+      ${summaryItem("success", "refresh", "Account refreshed", "Publish can continue after successful authentication.")}
+      ${summaryItem("warn", "cleared", "Account cleared", "The footer returns to Log in and account-required work gates again.")}
+      ${summaryItem("error", "blocked", "Still unavailable", "The user can continue local work while account-required work remains blocked.")}
+    </div>`)
+  ];
+  return `<div class="route-flow">${cards.map((html, i) => `${i ? '<div class="arrow" aria-hidden="true">&rarr;</div>' : ""}${html}`).join("")}</div>`;
+}
+
+function routeMapBand() {
+  return routes.map((route, index) => routeRow(route, index, `route-${index}`, index === 0 ? "Main happy path route: " : "")).join("");
+}
+
+function renderCanvas() {
+  return [
+    band("band-main", "Main happy path", "Old Journey 3 four-card app -> browser -> app baseline preserved without expanding the Route Table composition.", legacyMainPathBand()),
+    band("band-route-map", "Route map", "Every Route Table row is represented as a complete full-size product wireframe row.", routeMapBand()),
+    band("band-branch", "Branch journeys", "Full product screens for account paths that branch from the main journey.", cardGrid(branchIds)),
+    band("band-detail", "Detail states", "Journey 1 style state cards for local-only account behavior and signed-in continuation.", detailStatesBand()),
+    band("band-state-language", "State language", "Journey 1 style copy cards for account, login, publish-gate, and recovery language.", stateLanguageBand()),
+    band("band-errors", "Errors and recovery", "Journey 1 style summary index for blocked, canceled, failed, retry, re-login, and recovery states.", errorsBand())
+  ].join("");
+}
+
+function jumpEntry(href, label, note) {
+  return `<a href="${esc(href)}">${esc(label)}<small>${esc(note)}</small></a>`;
+}
+
+function renderJump() {
+  const firstLevel = [
+    ["#band-main", "Main happy path", "Signed-out entry -> Browser login -> Welcome back -> Signed-in app"],
+    ["#band-route-map", "Route map", "All 14 full route rows"],
+    ["#band-branch", "Branch journeys", branchIds.join(" -> ")],
+    ["#band-detail", "Detail states", detailIds.join(" -> ")],
+    ["#band-state-language", "State language", stateLanguageIds.join(" -> ")],
+    ["#band-errors", "Errors and recovery", errorRecoveryIds.join(" -> ")]
+  ].map(([href, label, note]) => jumpEntry(href, label, note)).join("");
+  const shortcuts = routes.map((route, i) => jumpEntry(`#route-${i}`, `Route: ${route.name}`, route.ids.join(" -> "))).join("");
+  return `<h2>Jump List</h2>${firstLevel}<h2 style="margin-top:18px">Route Shortcuts</h2>${shortcuts}`;
+}
+
+function render() {
+  const jump = document.getElementById("jump");
+  jump.innerHTML = renderJump();
+  document.getElementById("stage").innerHTML = renderCanvas();
+}
+
+render();
+
+const viewport = document.getElementById("viewport");
+const stage = document.getElementById("stage");
+let scale = .7;
+let x = 18;
+let y = 18;
+let dragging = false;
+let sx = 0;
+let sy = 0;
+let px = 0;
+let py = 0;
+let raf = 0;
+
+function applyTransform() {
+  raf = 0;
+  stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+}
+function scheduleTransform() {
+  if (!raf) raf = requestAnimationFrame(applyTransform);
+}
+function fitCanvas() {
+  const rect = viewport.getBoundingClientRect();
+  const contentWidth = Math.max(...routes.map(route => route.ids.length * 610)) + 120;
+  const contentHeight = Math.max(stage.scrollHeight, 14200);
+  scale = Math.max(.16, Math.min(.82, Math.min(rect.width / contentWidth, rect.height / contentHeight)));
+  x = 18;
+  y = 18;
+  scheduleTransform();
+}
+
+viewport.addEventListener("pointerdown", event => {
+  dragging = true;
+  viewport.classList.add("dragging");
+  sx = event.clientX;
+  sy = event.clientY;
+  px = x;
+  py = y;
+  viewport.setPointerCapture(event.pointerId);
+});
+viewport.addEventListener("pointermove", event => {
+  if (!dragging) return;
+  x = px + event.clientX - sx;
+  y = py + event.clientY - sy;
+  scheduleTransform();
+});
+viewport.addEventListener("pointerup", () => {
+  dragging = false;
+  viewport.classList.remove("dragging");
+});
+viewport.addEventListener("pointercancel", () => {
+  dragging = false;
+  viewport.classList.remove("dragging");
+});
+viewport.addEventListener("wheel", event => {
+  event.preventDefault();
+  if (event.metaKey || event.ctrlKey) {
+    const oldScale = scale;
+    const next = event.deltaY < 0 ? 1.08 : .92;
+    scale = Math.max(.16, Math.min(1.15, scale * next));
+    const rect = viewport.getBoundingClientRect();
+    const cx = event.clientX - rect.left;
+    const cy = event.clientY - rect.top;
+    x = cx - (cx - x) * (scale / oldScale);
+    y = cy - (cy - y) * (scale / oldScale);
+  } else {
+    x -= event.deltaX;
+    y -= event.deltaY;
+  }
+  scheduleTransform();
+}, {passive: false});
+document.getElementById("zoom-in").addEventListener("click", () => {
+  scale = Math.min(1.15, scale * 1.12);
+  scheduleTransform();
+});
+document.getElementById("zoom-out").addEventListener("click", () => {
+  scale = Math.max(.16, scale * .88);
+  scheduleTransform();
+});
+document.getElementById("fit").addEventListener("click", fitCanvas);
+document.getElementById("reset").addEventListener("click", () => {
+  scale = .7;
+  x = 18;
+  y = 18;
+  scheduleTransform();
+});
+document.getElementById("jump").addEventListener("click", event => {
+  const link = event.target.closest("a");
+  if (!link) return;
+  event.preventDefault();
+  const target = document.querySelector(link.getAttribute("href"));
+  if (!target) return;
+  x = 18;
+  y = 18 - target.offsetTop * scale;
+  scheduleTransform();
+});
+applyTransform();
+</script>
+</body>
+</html>
