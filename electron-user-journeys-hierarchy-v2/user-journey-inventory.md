@@ -14,119 +14,6 @@ This version expands only the currently confirmed primary journeys. Mobile Previ
 
 ## Confirmed Primary Journeys
 
-### 10. Device / PlatformIO / Logs
-
-**User entry**: The user opens the Device tab or Device Log panel in the Code workbench.
-
-**User behavior**: The user checks PlatformIO state, refreshes devices, inspects connected devices, device metrics, USB fallback, and logs.
-
-**Client state changes**:
-
-- When the Device tab opens, the client loads PlatformIO availability, installation state, and device connection state.
-- When PlatformIO is unavailable, the UI shows install/repair guidance; when available, it shows ready state and available device actions.
-- While refreshing devices, the UI enters loading; completion shows connected/disconnected device cards, firmware version, memory, latency, and similar information.
-- Opening logs starts receiving device or USB monitor output; pausing stops visual autoscroll, and resuming continues it.
-- Changing filters updates the visible log list immediately by level, source, or search term.
-- If the device disconnects or probing fails, device cards and log area switch to disconnected/error state while preserving refresh or retry.
-
-**End state**: The user can tell whether the development device, PlatformIO, and log path are ready, missing, disconnected, or error.
-
-### 11. LVGL Preview
-
-**User entry**: The user opens the Preview tab or LVGL Preview panel in the Code workbench.
-
-**User behavior**: The user starts preview, triggers build/capture/rebuild, and inspects screenshot result, errors, and logs.
-
-**Client state changes**:
-
-- When the Preview tab opens, the client checks LVGL preview capability, dependencies, and current workspace state.
-- If preview is unavailable, the UI shows missing dependency or non-runnable reason and disables the start action.
-- After the user starts or rebuilds, the UI enters building/capturing state and shows progress steps or a loading overlay.
-- On success, the screenshot area changes from empty state to the latest preview image and shows metadata such as time, size, or source.
-- If build or capture fails, the UI shows error state, log summary, and retry; any old screenshot is preserved or replaced with an error placeholder according to UI rules.
-
-**End state**: The user sees the latest LVGL screenshot, or sees a clear failure reason and retry action.
-
-### 12. Settings - General
-
-**User entry**: The user opens Settings from the app settings entry and lands on the General tab.
-
-**User behavior**: The user checks Gateway status, restarts Gateway, and configures proxy, login item, dock, debug tools, and other general settings.
-
-**Client state changes**:
-
-- After Settings opens, the General tab loads current local settings and Gateway state.
-- Gateway state updates from loading to running, stopped, restarting, or error; the restart button enables or disables based on state.
-- After the user toggles login item, dock, debug tools, or similar switches, the switch immediately reflects the target state; saving or failure shows matching feedback.
-- After the user edits proxy or similar fields, the form enters changed state; save success returns it to clean, while failure preserves input and shows an error.
-- After Settings closes, the main app updates dock, debug UI, or connection behavior based on the new settings.
-
-**End state**: General settings are saved or left in a retryable error state. Current Gateway state remains visible in Settings.
-
-### 13. Settings - Workspace Files
-
-**User entry**: The user opens the Workspace Files tab in Settings.
-
-**User behavior**: The user views and edits SOUL, IDENTITY, USER, AGENTS, TOOLS, HEARTBEAT, MEMORY, and other workspace files.
-
-**Client state changes**:
-
-- After the tab opens, the client loads the current workspace file list and selected file content.
-- Selecting a different file swaps editor content and updates current filename and description state.
-- After editing content, the editor enters dirty state and save/reset actions become available.
-- During save, the UI enters saving; success clears the dirty marker, while failure preserves edited content and shows an error.
-- If a file is missing, the UI shows missing/empty state and offers create or restore when supported.
-
-**End state**: The user finishes viewing, saving, resetting, or rests with unsaved edits for a workspace file.
-
-### 14. Settings - Providers
-
-**User entry**: The user opens the Providers tab in Settings, or jumps to Provider configuration from a provider-missing prompt.
-
-**User behavior**: The user adds, edits, or removes providers, fills API key, base URL, enabled models, and selects a default model.
-
-**Client state changes**:
-
-- After Providers opens, the client loads existing providers and default model state.
-- When adding a provider, the form starts empty; save/verify stays unavailable until required fields are present.
-- After API key or base URL input, verification becomes available; pending is shown during verification, success shows verified, and failure shows inline error.
-- After changing enabled models or default model, list and default badge update; save success returns configuration to clean state.
-- When deleting a provider, the UI asks for confirmation; after deletion succeeds, the provider is removed and related default model may fall back or require reselection.
-
-**End state**: Provider configuration is ready for runs, or clearly indicates missing authentication, verification failure, or no default model waiting for user action.
-
-### 15. Settings - Permissions
-
-**User entry**: The user opens the Permissions tab in Settings, or arrives from a runtime permission/system permission prompt.
-
-**User behavior**: The user configures exec approval and allowlist, and reviews or handles notifications, microphone, accessibility, and other system permissions.
-
-**Client state changes**:
-
-- After Permissions opens, the client loads current execution policy, allowlist, and system permission state.
-- After changing exec approval policy, the UI shows the new policy choice and after saving it affects whether later tool execution requires confirmation.
-- Adding or removing allowlist entries updates the list immediately; save failure restores or flags unsaved state.
-- When system permission is missing, the UI shows missing/needs action and offers open system settings or recheck.
-- After the user grants permission and returns to the app, recheck changes state from missing to granted; if still denied, it remains blocked with explanation.
-
-**End state**: Permissions shows final execution policy and system permission state. Later Chat/Code runs follow these permissions as auto-run, request approval, or blocked.
-
-### 16. Settings - About / Updates
-
-**User entry**: The user opens the About / Updates tab in Settings, or clicks an update notice in the main UI.
-
-**User behavior**: The user checks version information, checks for updates, downloads an update, and chooses install or later.
-
-**Client state changes**:
-
-- After About/Updates opens, the UI shows current app version, build information, and updater state.
-- After the user checks for updates, state moves from idle to checking; if none exists, it shows up to date.
-- When an update exists, the UI shows new version information and a download entry; after clicking download it enters downloading and shows progress.
-- After download completes, state changes to ready to install and the install/restart button becomes available.
-- If checking or download fails, state becomes error and the UI shows failure reason and retry.
-
-**End state**: The user confirms the app is up to date, finishes download and waits to install, or rests on a retryable update error.
-
 ### 01. First Launch / Onboarding
 
 **User entry**: The user installs and opens NoraHarness for the first time. The client detects that onboarding has not been completed locally.
@@ -277,6 +164,119 @@ This version expands only the currently confirmed primary journeys. Mobile Previ
 - The Firmware row reads version, channel, and device metadata from build/manifest; incomplete form or build output disables publish, publishing shows uploading/publishing, success refreshes available/latest state, and failure remains on the row with retry.
 
 **End state**: App record, agent package, and firmware all sit in one publish center with clear states: unsubmitted, in review, approved, rejected, revoked, ready for production, published, or failed and retryable.
+
+### 10. Device / PlatformIO / Logs
+
+**User entry**: The user opens the Device tab or Device Log panel in the Code workbench.
+
+**User behavior**: The user checks PlatformIO state, refreshes devices, inspects connected devices, device metrics, USB fallback, and logs.
+
+**Client state changes**:
+
+- When the Device tab opens, the client loads PlatformIO availability, installation state, and device connection state.
+- When PlatformIO is unavailable, the UI shows install/repair guidance; when available, it shows ready state and available device actions.
+- While refreshing devices, the UI enters loading; completion shows connected/disconnected device cards, firmware version, memory, latency, and similar information.
+- Opening logs starts receiving device or USB monitor output; pausing stops visual autoscroll, and resuming continues it.
+- Changing filters updates the visible log list immediately by level, source, or search term.
+- If the device disconnects or probing fails, device cards and log area switch to disconnected/error state while preserving refresh or retry.
+
+**End state**: The user can tell whether the development device, PlatformIO, and log path are ready, missing, disconnected, or error.
+
+### 11. LVGL Preview
+
+**User entry**: The user opens the Preview tab or LVGL Preview panel in the Code workbench.
+
+**User behavior**: The user starts preview, triggers build/capture/rebuild, and inspects screenshot result, errors, and logs.
+
+**Client state changes**:
+
+- When the Preview tab opens, the client checks LVGL preview capability, dependencies, and current workspace state.
+- If preview is unavailable, the UI shows missing dependency or non-runnable reason and disables the start action.
+- After the user starts or rebuilds, the UI enters building/capturing state and shows progress steps or a loading overlay.
+- On success, the screenshot area changes from empty state to the latest preview image and shows metadata such as time, size, or source.
+- If build or capture fails, the UI shows error state, log summary, and retry; any old screenshot is preserved or replaced with an error placeholder according to UI rules.
+
+**End state**: The user sees the latest LVGL screenshot, or sees a clear failure reason and retry action.
+
+### 12. Settings - General
+
+**User entry**: The user opens Settings from the app settings entry and lands on the General tab.
+
+**User behavior**: The user checks Gateway status, restarts Gateway, and configures proxy, login item, dock, debug tools, and other general settings.
+
+**Client state changes**:
+
+- After Settings opens, the General tab loads current local settings and Gateway state.
+- Gateway state updates from loading to running, stopped, restarting, or error; the restart button enables or disables based on state.
+- After the user toggles login item, dock, debug tools, or similar switches, the switch immediately reflects the target state; saving or failure shows matching feedback.
+- After the user edits proxy or similar fields, the form enters changed state; save success returns it to clean, while failure preserves input and shows an error.
+- After Settings closes, the main app updates dock, debug UI, or connection behavior based on the new settings.
+
+**End state**: General settings are saved or left in a retryable error state. Current Gateway state remains visible in Settings.
+
+### 13. Settings - Workspace Files
+
+**User entry**: The user opens the Workspace Files tab in Settings.
+
+**User behavior**: The user views and edits SOUL, IDENTITY, USER, AGENTS, TOOLS, HEARTBEAT, MEMORY, and other workspace files.
+
+**Client state changes**:
+
+- After the tab opens, the client loads the current workspace file list and selected file content.
+- Selecting a different file swaps editor content and updates current filename and description state.
+- After editing content, the editor enters dirty state and save/reset actions become available.
+- During save, the UI enters saving; success clears the dirty marker, while failure preserves edited content and shows an error.
+- If a file is missing, the UI shows missing/empty state and offers create or restore when supported.
+
+**End state**: The user finishes viewing, saving, resetting, or rests with unsaved edits for a workspace file.
+
+### 14. Settings - Providers
+
+**User entry**: The user opens the Providers tab in Settings, or jumps to Provider configuration from a provider-missing prompt.
+
+**User behavior**: The user adds, edits, or removes providers, fills API key, base URL, enabled models, and selects a default model.
+
+**Client state changes**:
+
+- After Providers opens, the client loads existing providers and default model state.
+- When adding a provider, the form starts empty; save/verify stays unavailable until required fields are present.
+- After API key or base URL input, verification becomes available; pending is shown during verification, success shows verified, and failure shows inline error.
+- After changing enabled models or default model, list and default badge update; save success returns configuration to clean state.
+- When deleting a provider, the UI asks for confirmation; after deletion succeeds, the provider is removed and related default model may fall back or require reselection.
+
+**End state**: Provider configuration is ready for runs, or clearly indicates missing authentication, verification failure, or no default model waiting for user action.
+
+### 15. Settings - Permissions
+
+**User entry**: The user opens the Permissions tab in Settings, or arrives from a runtime permission/system permission prompt.
+
+**User behavior**: The user configures exec approval and allowlist, and reviews or handles notifications, microphone, accessibility, and other system permissions.
+
+**Client state changes**:
+
+- After Permissions opens, the client loads current execution policy, allowlist, and system permission state.
+- After changing exec approval policy, the UI shows the new policy choice and after saving it affects whether later tool execution requires confirmation.
+- Adding or removing allowlist entries updates the list immediately; save failure restores or flags unsaved state.
+- When system permission is missing, the UI shows missing/needs action and offers open system settings or recheck.
+- After the user grants permission and returns to the app, recheck changes state from missing to granted; if still denied, it remains blocked with explanation.
+
+**End state**: Permissions shows final execution policy and system permission state. Later Chat/Code runs follow these permissions as auto-run, request approval, or blocked.
+
+### 16. Settings - About / Updates
+
+**User entry**: The user opens the About / Updates tab in Settings, or clicks an update notice in the main UI.
+
+**User behavior**: The user checks version information, checks for updates, downloads an update, and chooses install or later.
+
+**Client state changes**:
+
+- After About/Updates opens, the UI shows current app version, build information, and updater state.
+- After the user checks for updates, state moves from idle to checking; if none exists, it shows up to date.
+- When an update exists, the UI shows new version information and a download entry; after clicking download it enters downloading and shows progress.
+- After download completes, state changes to ready to install and the install/restart button becomes available.
+- If checking or download fails, state becomes error and the UI shows failure reason and retry.
+
+**End state**: The user confirms the app is up to date, finishes download and waits to install, or rests on a retryable update error.
 
 ## Boundary Notes Preserved From The Original Inventory
 

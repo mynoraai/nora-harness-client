@@ -1,21 +1,1323 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>08 Agent Authoring</title><style>:root{--ink:#23262a;--muted:#66707a;--line:#cbd3db;--grid:#d9e0e6;--rail:#f0ece4;--accent:#8bbce8}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#e9edf1}button,input,textarea,select{font:inherit}header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;gap:18px;padding:18px 22px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}h1{margin:0 0 6px;font-size:22px}header p{margin:0;color:#4f5963}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.meta span{border:1px solid #c5ccd4;border-radius:999px;background:#fff;padding:4px 9px;font-size:11px;font-weight:800}.meta span:first-child{background:#e8f5ee;border-color:#bcd9c7;color:#287348}header button,.layout nav button{height:32px;border:1px solid #aeb8c2;border-radius:6px;background:#fff;font-weight:750;font-size:12px;margin-left:6px}.layout{display:grid;grid-template-columns:230px 1fr;height:calc(100vh - 100px);min-height:720px}.layout>nav{background:#f9fafb;border-right:1px solid var(--line);padding:14px;overflow:auto}.layout>nav b{display:block;font-size:12px;color:#606a74;text-transform:uppercase;margin-bottom:10px}.layout>nav button{width:100%;height:auto;min-height:34px;margin:0 0 8px;text-align:left}#viewport{position:relative;overflow:hidden;background-color:#edf1f4;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;cursor:grab;user-select:none}#viewport.dragging{cursor:grabbing}#stage{position:absolute;left:24px;top:24px;width:5600px;min-height:2600px;transform-origin:0 0;will-change:transform}.band{margin-bottom:42px}.band h2{font-size:15px;margin:0 0 10px}.band h2 small{color:#68717a;font-weight:500;margin-left:10px}.flow{display:flex;gap:22px;align-items:stretch}.arrow{align-self:center;width:26px;height:1px;background:#87919a;position:relative}.arrow:after{content:"";position:absolute;right:0;top:-4px;width:8px;height:8px;border-top:1px solid #87919a;border-right:1px solid #87919a;transform:rotate(45deg)}article{width:760px;min-height:690px;border:1px solid #20242a;border-top:6px solid var(--accent);border-radius:8px;background:#fff;padding:14px;box-shadow:0 10px 20px rgba(27,37,48,.13)}article h3{margin:0 0 7px;font-size:17px}article>p{margin:0 0 10px;color:#4e5964;font-size:12px;line-height:1.4}article ul{margin:10px 0 0;padding-left:18px;color:#4e5964;font-size:12px;line-height:1.4}.app{position:relative;width:730px;height:500px;border:1px solid #cbd2da;border-radius:7px;overflow:hidden;background:#fff;display:grid;grid-template-columns:145px 1fr 180px;grid-template-rows:1fr 122px;font-size:10px}.app>aside{grid-row:1/3;background:var(--rail);border-right:1px solid #ded8ce;padding:9px;overflow:hidden;position:relative}.traffic{height:16px}.traffic:before{content:"";display:block;width:7px;height:7px;border-radius:50%;background:#e0695d;box-shadow:11px 0 #e8b84c,22px 0 #66b86c}.switch{display:flex;justify-content:end;gap:4px;margin:-15px 0 10px}.switch b,.switch span{padding:4px 8px;border-radius:6px}.switch b{background:#fff}.search{height:24px;border:1px solid #e1dcd4;border-radius:7px;background:#fff;padding:5px;color:#8a8278;margin-bottom:8px}.app aside h5{font-size:9px;color:#8a8177;margin:10px 0 4px}.app aside p{border-radius:6px;padding:6px;margin:0 0 4px;white-space:nowrap;overflow:hidden}.app aside p.active,.app aside p.indent.active{background:#eadfce}.ws{font-weight:800}.indent{margin-left:12px!important;background:#fff}.app aside footer{position:absolute;bottom:8px;left:9px;right:9px;display:flex;justify-content:space-between}.code,.chat{position:relative;grid-column:2;grid-row:1/3;background:#fffdf9;overflow:hidden}.right{grid-column:3;grid-row:1;border-left:1px solid #e0d9cf;background:#f8f5ef;overflow:hidden}.bottom{grid-column:3;grid-row:2;border-left:1px solid #e0d9cf;border-top:1px solid #e0d9cf;background:#211f1f;color:#eee}.path{height:28px;border-bottom:1px solid #e4ded5;padding:5px 10px;display:flex;justify-content:space-between}.tab{height:30px;border-bottom:1px solid #e4ded5;padding:8px 10px;border-bottom:2px solid #c68148;display:inline-block}.thread{height:360px;padding:12px 16px;overflow:hidden;position:relative}.thread h3{font-size:13px;margin:0 0 8px}.model{position:absolute;right:14px;top:10px;border:1px solid #e4ded5;border-radius:999px;padding:3px 8px;background:#fff}.bubble{margin-left:auto;max-width:320px;background:#f6f7f8;border-radius:10px;padding:8px}.tool{border:1px solid #e1dce5;border-radius:7px;padding:8px;margin:6px 0}.tool b{background:#e8f5ee;border-radius:999px;padding:2px 6px;margin-left:6px;color:#287348}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #e2ddd5;padding:5px;text-align:left}.composer{position:absolute;left:10px;right:10px;bottom:10px;border:1px solid #e6dfd4;border-radius:16px;background:#fff;padding:9px 10px;box-shadow:0 6px 18px rgba(120,90,50,.08)}.composer span{display:block;color:#aaa;margin-bottom:8px}.composer button{border:1px solid #e2d8ca;border-radius:999px;background:#fff;padding:4px 8px}.composer .send{float:right;background:#eadfce}.title{height:36px;padding:10px 16px;display:flex;justify-content:space-between}.title span{border-radius:999px;background:#fff;padding:4px 8px}.center,.workspace-empty{height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.spark{width:42px;height:42px;border-radius:14px;background:#f3e7dd;display:grid;place-items:center;font-size:20px}.center h2,.workspace-empty h2{font-size:22px;margin:14px 0 8px}.center p,.workspace-empty p{max-width:420px;color:#68717a}.chips{display:flex;gap:8px}.chips button{border:1px solid #e5ddd3;border-radius:12px;background:#fff;padding:8px 12px}.right nav{height:32px;display:flex;gap:8px;align-items:end;border-bottom:1px solid #e0d9cf;padding:0 8px}.right nav b{padding:9px 4px;color:#777}.right nav .on{color:#111;border-bottom:2px solid #c68148}.empty{height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#777;gap:10px}.empty.small{height:220px}.empty.card{height:180px;border:1px solid #eee2d6;border-radius:8px;background:#fff;margin:8px}.device,.preview{margin:8px;border:1px solid #eee2d6;border-radius:8px;background:#fff;padding:10px}.device h4,.preview h4{margin:0 0 8px}.device h4 span,.preview h4 span{float:right;color:#b06d1f}.device dl{display:grid;grid-template-columns:55px 1fr;background:#faf7f1;padding:8px;border-radius:7px}.lvgl{height:190px;background:#161828;color:#dfe9e6;border-radius:6px;padding:12px;position:relative}.lvgl span{color:#6bc08d}.lvgl em{position:absolute;bottom:14px;left:18px;font-style:normal}.lvgl div{width:86px;height:120px;background:#090a0e;border-radius:42px;margin:18px auto;position:relative}.lvgl div:before{content:"";position:absolute;left:21px;top:28px;width:44px;height:44px;border-radius:50%;background:#f3ead6}.bottom nav{height:28px;background:#f8f5ef;color:#333;display:flex;align-items:end;gap:20px;padding-left:12px}.bottom nav b{padding:8px 0}.bottom nav .on{border-bottom:2px solid #c68148}.bottom pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;padding:12px;white-space:pre-wrap}.filters{background:#f8f5ef;color:#333;display:flex;gap:4px;padding:6px;flex-wrap:wrap}.filters button{font-size:9px;border:0;background:transparent}.settings{display:grid;grid-template-columns:145px 1fr}.settings-nav{background:var(--rail);border-right:1px solid #ded8ce;padding:16px 9px}.settings-nav b,.settings-nav button{display:block;width:100%;border-radius:7px;padding:8px;margin:3px 0;text-align:left;background:transparent;border:0}.settings-nav .on{background:#eadfce}.settings main{padding:24px 70px;max-width:680px}.cardline,.provider{border:1px solid #eee2d6;background:#fff;border-radius:9px;padding:12px;margin:10px 0}.ok{float:right;background:#e8f5ee;color:#287348;border-radius:999px;padding:3px 7px}.line{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:10px}.tabs{display:flex;gap:16px;border-bottom:3px solid #d6d0c8;padding-bottom:10px}.editor{border:1px solid #ddd;border-radius:8px;margin-top:14px;padding:12px;background:#fff}.toolbar{background:#f2f0ee;padding:8px;margin:8px -12px}.provider{display:flex;justify-content:space-between}.settings label{display:block;margin:10px 0}.settings label small{display:block;color:#777;margin-left:18px}.settings em{background:#e85555;color:#fff;border-radius:999px;padding:2px 8px;font-style:normal}.allow{display:flex}.allow input{flex:1}.about{display:flex;gap:16px}.about div{width:56px;height:56px;border-radius:14px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900}.overlay{position:absolute;inset:0;background:rgba(30,30,30,.45);display:grid;place-items:center;z-index:5}.overlay.dark{background:rgba(0,0,0,.65)}.dialog{width:390px;max-height:440px;overflow:auto;background:#fff;border-radius:9px;box-shadow:0 16px 40px rgba(0,0,0,.25);padding:16px}.dialog.wide,.dialog.publish{width:430px}.dialog input,.dialog textarea,.dialog select{width:100%;border:1px solid #ddd;border-radius:6px;padding:7px;margin:4px 0 10px}.dialog footer{text-align:right}.media{border:1px solid #eee;border-radius:7px;padding:9px}.success{background:#dff6e6;border:1px solid #9fd4b1;border-radius:7px;padding:8px}.load{background:#eef2f7;border-radius:7px;padding:8px}.browser{position:absolute;inset:0;background:#fff;z-index:4}.browser>div{height:34px;background:#d9e8fb;padding:8px 80px}.browser section{width:260px;margin:100px auto;text-align:center}.browser input,.browser button{display:block;width:100%;margin:8px 0;padding:7px}.welcome b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#d9f7e3;color:#287348}.finder{width:540px;height:330px;background:#252525;color:#eee;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.45);display:grid;grid-template-columns:130px 1fr;grid-template-rows:40px 1fr 44px}.finder h3{grid-column:1/3;margin:0;padding:12px}.finder aside{padding:12px;background:#1d1d1d}.finder section{padding:12px}.finder footer{grid-column:1/3;text-align:right;padding:8px}.qr{height:120px;border:1px solid #ddd;border-radius:8px;display:grid;place-items:center;font-weight:900}.author{position:absolute;inset:50px 190px 75px 15px;background:#fff;border:1px solid #ddd;display:grid;grid-template-columns:110px 1fr}.author aside{background:#f7f3ec;padding:12px;display:grid;gap:8px}.author article{width:auto;min-height:0;border:0;box-shadow:none;padding:16px}.author .tabs{border:0;background:#f6f3ef;padding:8px;margin-bottom:10px}@media(max-width:900px){header{position:relative;display:block}.layout{display:block;height:auto}.layout>nav{max-height:160px}#viewport{height:760px}}
-/* Text-only journey cards stay compact; product wireframe cards keep the large frame size. */
-#detail-states .flow,
-#state-language .flow,
-#errors .flow {
-  align-items: flex-start;
-}
-#detail-states article,
-#state-language article,
-#errors article {
-  width: 540px;
-  min-height: 210px;
-  padding: 16px;
-}
-#detail-states .arrow,
-#state-language .arrow,
-#errors .arrow {
-  align-self: flex-start;
-  margin-top: 102px;
-}
-</style></head><body><header><div><h1>08. Agent Authoring</h1><p>The user enters agent authoring, edits Identity/Soul/Style/Tools/Heartbeat/Bootstrap/Skills/Capabilities, and enters publishing from Publish.</p><div class="meta"><span>Evidence: publish flow reference + app information reference</span><span>Source: user-journey-inventory.md</span><span>implemented journey record</span></div></div><div><button onclick="zoomBy(-.1)">Zoom out</button><button onclick="zoomBy(.1)">Zoom in</button><button onclick="fit()">Fit</button><button onclick="resetView()">Reset</button></div></header><main class="layout"><nav><b>Jump list</b><button onclick="jump('path')">Main Path</button><button onclick="jump('detail-states')">Detail states</button><button onclick="jump('state-language')">State language</button><button onclick="jump('errors')">Errors and recovery</button><button onclick="location.href='../index.wireframe.html'">Back to index</button></nav><section id="viewport"><div id="stage"><section class="band" id="path"><h2>Main Path <small>Authoring page and publish entry</small></h2><div class="flow"><article><h3>1. Open authoring</h3><p>The user enters the agent authoring tab from a Code workspace.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><span>Chat</span><b>Code</b></div><div class="search">Search conversations...</div><h4>Workspaces <small>+ / expand</small></h4><p class="ws">ntt22 <em>2</em></p><p class="active indent">Help me create an AI conversation...</p><p class="indent">Help me create an AI conversation...</p><p class="ws">ntt21 <em>1</em></p><p class="ws">ntt20 <em>1</em></p><p class="ws">ntt19 <em>2</em></p><p class="ws">ntt18 <em>2</em></p><p class="ws">ntt17 <em>1</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="code"><div class="path">/Volumes/PSSD/noraclaw-demos/ntt22 <button>+</button></div><div class="tab">Help me create a firmware project that can chat with AI...</div><div class="thread"><h3>Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</h3><span class="model">anthropic/claude-sonnet-4.6</span><p class="bubble">Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</p><div class="tool">Read firmware-vibe <b>Completed</b></div><div class="tool">2 tool calls <b>2 calls</b></div><p>Following the requirement-analysis flow, finish the brief before init. Here is the decision table I inferred:</p><table><tr><th>Decision</th><th>Analysis</th><th>Conclusion</th></tr><tr><td>app_mode</td><td>AI conversation requires STT/LLM/TTS, so it needs the harness.</td><td>harness_controlled</td></tr><tr><td>board/SOC</td><td>M5Stack CoreS3</td><td>CoreS3</td></tr><tr><td>connection_setup</td><td>costly to reverse -> Ask you</td><td>Needs confirmation</td></tr></table></div><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>anthropic/claude-sonnet-4.6</button><button class="send">↑</button></div></main><section class="right"><nav><b class="on">All Files</b><b class="">Changes</b><b class="">Device</b><b class="">Preview</b></nav><div class="empty">No visible files in this workspace.<button>Refresh files</button></div></section><section class="bottom terminal"><nav><b class="on">Terminal</b><b>Device Log</b></nav><pre>zhaowei@192 ntt22 %</pre></section><div class="author"><aside><b>Identity</b><b>Soul</b><b>Style</b><b>Tools</b><b>Heartbeat</b><b>Bootstrap</b><b>Skills</b><b>Capabilities</b></aside><article><h2>Willie - Steamboat Willie AI Companion</h2><p class="tabs">Edit Preview Publish</p><h3>Identity</h3><p>This is Willie, a cheerful and mischievous animated character inspired by classic black-and-white cartoon energy.</p><h3>Personality</h3><p>Friendly, musical, playful, and expressive.</p><button>Save</button><button>Publish</button></article></div></div><ul><li>The left side keeps workspace context.</li></ul></article><div class="arrow"></div><article><h3>2. Edit sections</h3><p>The user switches among Identity, Soul, Style, Tools, Heartbeat, Bootstrap, Skills, and Capabilities.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><span>Chat</span><b>Code</b></div><div class="search">Search conversations...</div><h4>Workspaces <small>+ / expand</small></h4><p class="ws">ntt22 <em>2</em></p><p class="active indent">Help me create an AI conversation...</p><p class="indent">Help me create an AI conversation...</p><p class="ws">ntt21 <em>1</em></p><p class="ws">ntt20 <em>1</em></p><p class="ws">ntt19 <em>2</em></p><p class="ws">ntt18 <em>2</em></p><p class="ws">ntt17 <em>1</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="code"><div class="path">/Volumes/PSSD/noraclaw-demos/ntt22 <button>+</button></div><div class="tab">Help me create a firmware project that can chat with AI...</div><div class="thread"><h3>Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</h3><span class="model">anthropic/claude-sonnet-4.6</span><p class="bubble">Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</p><div class="tool">Read firmware-vibe <b>Completed</b></div><div class="tool">2 tool calls <b>2 calls</b></div><p>Following the requirement-analysis flow, finish the brief before init. Here is the decision table I inferred:</p><table><tr><th>Decision</th><th>Analysis</th><th>Conclusion</th></tr><tr><td>app_mode</td><td>AI conversation requires STT/LLM/TTS, so it needs the harness.</td><td>harness_controlled</td></tr><tr><td>board/SOC</td><td>M5Stack CoreS3</td><td>CoreS3</td></tr><tr><td>connection_setup</td><td>costly to reverse -> Ask you</td><td>Needs confirmation</td></tr></table></div><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>anthropic/claude-sonnet-4.6</button><button class="send">↑</button></div></main><section class="right"><nav><b class="on">All Files</b><b class="">Changes</b><b class="">Device</b><b class="">Preview</b></nav><div class="empty">No visible files in this workspace.<button>Refresh files</button></div></section><section class="bottom terminal"><nav><b class="on">Terminal</b><b>Device Log</b></nav><pre>zhaowei@192 ntt22 %</pre></section><div class="author"><aside><b>Identity</b><b>Soul</b><b>Style</b><b>Tools</b><b>Heartbeat</b><b>Bootstrap</b><b>Skills</b><b>Capabilities</b></aside><article><h2>Willie - Steamboat Willie AI Companion</h2><p class="tabs">Edit Preview Publish</p><h3>Identity</h3><p>This is Willie, a cheerful and mischievous animated character inspired by classic black-and-white cartoon energy.</p><h3>Personality</h3><p>Friendly, musical, playful, and expressive.</p><button>Save</button><button>Publish</button></article></div></div><ul><li>The content area shows agent identity/personality.</li></ul></article><div class="arrow"></div><article><h3>3. Publish entry</h3><p>Clicking Publish opens the app info dialog.</p><div class="app"><aside><div class="traffic"></div><div class="switch"><span>Chat</span><b>Code</b></div><div class="search">Search conversations...</div><h4>Workspaces <small>+ / expand</small></h4><p class="ws">ntt22 <em>2</em></p><p class="active indent">Help me create an AI conversation...</p><p class="indent">Help me create an AI conversation...</p><p class="ws">ntt21 <em>1</em></p><p class="ws">ntt20 <em>1</em></p><p class="ws">ntt19 <em>2</em></p><p class="ws">ntt18 <em>2</em></p><p class="ws">ntt17 <em>1</em></p><footer>Settings <span>wei developer</span></footer></aside><main class="code"><div class="path">/Volumes/PSSD/noraclaw-demos/ntt22 <button>+</button></div><div class="tab">Help me create a firmware project that can chat with AI...</div><div class="thread"><h3>Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</h3><span class="model">anthropic/claude-sonnet-4.6</span><p class="bubble">Create a firmware project that can chat with AI. Only create the project; do not deploy or flash it.</p><div class="tool">Read firmware-vibe <b>Completed</b></div><div class="tool">2 tool calls <b>2 calls</b></div><p>Following the requirement-analysis flow, finish the brief before init. Here is the decision table I inferred:</p><table><tr><th>Decision</th><th>Analysis</th><th>Conclusion</th></tr><tr><td>app_mode</td><td>AI conversation requires STT/LLM/TTS, so it needs the harness.</td><td>harness_controlled</td></tr><tr><td>board/SOC</td><td>M5Stack CoreS3</td><td>CoreS3</td></tr><tr><td>connection_setup</td><td>costly to reverse -> Ask you</td><td>Needs confirmation</td></tr></table></div><div class="composer"><span>Assign a task or ask any question</span><button>+</button><button>OpenClaw</button><button>anthropic/claude-sonnet-4.6</button><button class="send">↑</button></div></main><section class="right"><nav><b class="on">All Files</b><b class="">Changes</b><b class="">Device</b><b class="">Preview</b></nav><div class="empty">No visible files in this workspace.<button>Refresh files</button></div></section><section class="bottom terminal"><nav><b class="on">Terminal</b><b>Device Log</b></nav><pre>zhaowei@192 ntt22 %</pre></section><div class="author"><aside><b>Identity</b><b>Soul</b><b>Style</b><b>Tools</b><b>Heartbeat</b><b>Bootstrap</b><b>Skills</b><b>Capabilities</b></aside><article><h2>Willie - Steamboat Willie AI Companion</h2><p class="tabs">Edit Preview Publish</p><h3>Identity</h3><p>This is Willie, a cheerful and mischievous animated character inspired by classic black-and-white cartoon energy.</p><h3>Personality</h3><p>Friendly, musical, playful, and expressive.</p><button>Save</button><button>Publish</button></article></div><div class="overlay"><div class="dialog publish"><h3>Add app info - Steamboat Willie AI Companion</h3><label>Display name<input value="Steamboat Willie AI Companion"></label><label>Short description<textarea>AI companion inspired by classic animation.</textarea></label><h4>Hero image</h4><p class="media">preview image <button>Remove</button></p><h4>Screenshots</h4><p class="media">Screenshot 1 <button>Upload</button></p><button>Add screenshot</button><footer><button>Save</button><button>Save changes to app</button></footer></div></div></div><ul><li>After the dialog closes, the user returns to authoring.</li></ul></article></div></section><section class="band" id="detail-states"><h2>Detail states <small>Expanded from the client state changes in this journey record</small></h2><div class="flow"><article><h3>0. Entry and user action</h3><p>The user clicks Edit Agent in a Code workspace, or enters Agent Authoring from an agent-configuration entry.</p><ul><li>The user edits Soul, Style, Tools, Heartbeat, Bootstrap, Skills, and Capabilities, reviews capability differences, adds or tests skills, and saves changes.</li></ul></article><div class="arrow"></div><article><h3>1. Entering Authoring switches the UI from a ...</h3><p>Entering Authoring switches the UI from a code session to the agent configuration editor and loads the current workspace agent files and config state.</p></article><div class="arrow"></div><article><h3>2. Switching among Soul, Style, Tools, Heartb...</h3><p>Switching among Soul, Style, Tools, Heartbeat, Bootstrap, and other areas updates the main editor and marks the matching nav item active.</p></article><div class="arrow"></div><article><h3>3. After the user edits text or config, the p...</h3><p>After the user edits text or config, the page enters dirty state; save button or status changes from clean to unsaved/saving.</p></article><div class="arrow"></div><article><h3>4. After save succeeds, dirty state clears an...</h3><p>After save succeeds, dirty state clears and saved feedback appears; save failure preserves user input and shows an error.</p></article><div class="arrow"></div><article><h3>5. The Skills area lists existing skills</h3><p>The Skills area lists existing skills; the user can create, edit, preview, or run probes, with pending during execution and success/failure afterward.</p></article><div class="arrow"></div><article><h3>6. The Capabilities area shows agent and devi...</h3><p>The Capabilities area shows agent and device/manifest capability state; refreshing updates lists, difference hints, and availability.</p></article><div class="arrow"></div><article><h3>7. End state</h3><p>Agent configuration is clearly saved, failed-to-save, or dirty. The user can return to the Code session or continue to publishing.</p></article></div></section><section class="band" id="state-language"><h2>State language <small>Uses only status and action language from this journey record</small></h2><div class="flow"><article><h3>1. Entry language basis</h3><p>The user clicks Edit Agent in a Code workspace, or enters Agent Authoring from an agent-configuration entry.</p></article><div class="arrow"></div><article><h3>2. User action language basis</h3><p>The user edits Soul, Style, Tools, Heartbeat, Bootstrap, Skills, and Capabilities, reviews capability differences, adds or tests skills, and saves changes.</p></article><div class="arrow"></div><article><h3>3. State vocabulary basis</h3><p>These terms come from this journey record and its client-state changes.</p><ul><li>error</li><li>pending</li><li>unsaved</li><li>saving</li><li>saved</li><li>clean</li><li>dirty</li><li>failed</li><li>publishing</li><li>unsaved/saving</li><li>success/failure</li><li>device/manifest</li></ul></article><div class="arrow"></div><article><h3>4. End language basis</h3><p>Agent configuration is clearly saved, failed-to-save, or dirty. The user can return to the Code session or continue to publishing.</p></article></div></section><section class="band" id="errors"><h2>Errors and recovery <small>Only failure, blocking, and recovery branches explicitly recorded in this journey</small></h2><div class="flow"><article><h3>1. After save succeeds, dirty state clears an...</h3><p>After save succeeds, dirty state clears and saved feedback appears; save failure preserves user input and shows an error.</p></article><div class="arrow"></div><article><h3>2. The Skills area lists existing skills</h3><p>The Skills area lists existing skills; the user can create, edit, preview, or run probes, with pending during execution and success/failure afterward.</p></article><div class="arrow"></div><article><h3>3. Agent configuration is clearly saved, fail...</h3><p>Agent configuration is clearly saved, failed-to-save, or dirty. The user can return to the Code session or continue to publishing.</p></article></div></section></div></section></main><script>const viewport=document.getElementById('viewport');const stage=document.getElementById('stage');let scale=.66,x=0,y=0,drag=false,sx=0,sy=0,bx=0,by=0,raf=0;function apply(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;stage.style.transform='translate('+x+'px, '+y+'px) scale('+scale+')';});}function zoomAt(d,cx,cy){const r=viewport.getBoundingClientRect(),px=cx-r.left,py=cy-r.top,ox=(px-x)/scale,oy=(py-y)/scale;scale=Math.max(.25,Math.min(1.3,scale+d));x=px-ox*scale;y=py-oy*scale;apply();}function zoomBy(d){const r=viewport.getBoundingClientRect();zoomAt(d,r.left+r.width/2,r.top+r.height/2)}function fit(){const r=viewport.getBoundingClientRect();scale=Math.max(.25,Math.min(.75,(r.width-40)/3600));x=16;y=16;apply()}function resetView(){scale=.66;x=0;y=0;apply()}function jump(id){const el=document.getElementById(id);if(!el)return;x=20-el.offsetLeft*scale;y=20-el.offsetTop*scale;apply()}viewport.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sy=e.clientY;bx=x;by=y;viewport.classList.add('dragging');viewport.setPointerCapture(e.pointerId)});viewport.addEventListener('pointermove',e=>{if(!drag)return;x=bx+e.clientX-sx;y=by+e.clientY-sy;apply()});viewport.addEventListener('pointerup',e=>{drag=false;viewport.classList.remove('dragging');viewport.releasePointerCapture(e.pointerId)});viewport.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){zoomAt(-e.deltaY*.0015,e.clientX,e.clientY);return}x-=e.deltaX;y-=e.deltaY;apply()},{passive:false});apply();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journey 08: Agent Authoring Wireframe</title>
+<style>
+:root{--bg:#eef3f6;--grid:#d7e0e7;--panel:#fff;--ink:#20242a;--muted:#66717f;--line:#bac6d0;--soft:#f8f6f2;--warm:#eee8df;--accent:#c77743;--ok:#12805c;--warn:#b7791f;--danger:#b42318;--blue:#2563a8;--shadow:0 18px 40px rgba(24,35,48,.16)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}button{font:inherit}.topbar{position:fixed;z-index:20;top:0;left:0;right:0;height:72px;display:flex;align-items:center;gap:18px;padding:12px 18px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.topbar h1{margin:0;font-size:20px;line-height:1.05;white-space:nowrap}.topbar p{margin:3px 0 0;color:var(--muted);font-size:13px;max-width:900px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.controls{margin-left:auto;display:flex;align-items:center;gap:8px}.controls button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:800;cursor:pointer}.readout{min-width:54px;color:var(--muted);font-size:12px;text-align:right}.shell{height:100%;padding-top:72px;display:grid;grid-template-columns:300px minmax(0,1fr)}.jump{border-right:1px solid var(--line);background:rgba(255,255,255,.82);overflow:auto;padding:18px 14px 28px}.jump h2{margin:0 0 10px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.jump a{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid #d5dde5;border-radius:8px;padding:9px 10px;margin:7px 0;font-size:12px;line-height:1.25;box-shadow:0 1px 0 rgba(0,0,0,.03)}.jump a.band-link{border-left:5px solid #2563a8;font-weight:900}.jump a.route-link{margin-left:14px;font-size:11px}.jump a b{display:block}.jump a span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.viewport{position:relative;overflow:hidden;background:#e9f0f4;touch-action:none;overscroll-behavior:contain;cursor:grab}.viewport.dragging{cursor:grabbing;user-select:none}.stage{position:absolute;left:0;top:0;width:10000px;height:10000px;transform-origin:0 0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px}.band{position:absolute;left:0;width:100%}.band-label{position:absolute;left:56px;top:24px;width:920px;background:rgba(255,255,255,.93);border:1px solid #d7e0e7;border-left:7px solid #2563a8;border-radius:10px;padding:11px 13px;box-shadow:0 4px 15px rgba(40,52,68,.08)}.band-label h2{margin:0;font-size:20px}.band-label p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.35}.route-row{position:absolute;left:0;height:704px}.route-label{position:absolute;left:56px;top:8px;width:900px;background:rgba(255,255,255,.9);border:1px solid #d7e0e7;border-radius:10px;padding:10px 12px;box-shadow:0 4px 15px rgba(40,52,68,.08)}.route-label h3{margin:0;font-size:18px;line-height:1.1}.route-label p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.35}.node{position:absolute;top:104px;width:760px}.card-node{position:absolute;width:760px}.arrow{position:absolute;top:380px;color:#8aa0b4;font-size:34px;font-weight:900}.card{width:760px;min-height:608px;border:1.5px solid #22272e;border-top:7px solid #8ab7de;border-radius:8px;background:#fff;box-shadow:var(--shadow);padding:12px}.card.error{border-top-color:#e28c85}.card.warn{border-top-color:#e6bd65}.card.ok{border-top-color:#78be98}.card.publish{border-top-color:#a6a5e8}.card.lang{border-top-color:#85b5b8}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;min-height:44px}.card-head h3{margin:0;font-size:16px;line-height:1.15;max-width:500px}.meta{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:3px 7px;font-size:10px;font-weight:850;background:#eef6ff;color:var(--blue);border:1px solid #cbe0f7}.pill.ok{background:#e8f7ee;color:var(--ok);border-color:#b9e3c8}.pill.warn{background:#fff8e5;color:var(--warn);border-color:#f0d58b}.pill.error{background:#fff0ef;color:var(--danger);border-color:#f3b9b4}.card-note{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.35;min-height:34px}.frame-wrap{margin-top:10px;height:442px;overflow:hidden;border:1px solid #d8e0e8;border-radius:9px;background:#faf8f3}.app-frame{width:1200px;height:780px;transform:scale(.615);transform-origin:0 0;position:relative;overflow:hidden;border-radius:18px;background:var(--soft);border:1px solid #ded6cc}.window-dots{position:absolute;left:14px;top:14px;display:flex;gap:8px;z-index:5}.window-dots i{width:12px;height:12px;border-radius:50%;background:#ff5f57}.window-dots i:nth-child(2){background:#ffbd2e}.window-dots i:nth-child(3){background:#28c840}.app-sidebar{position:absolute;left:0;top:0;bottom:0;width:260px;background:#efe7dd;border-right:1px solid #ded4c8;padding:50px 14px 16px}.mode{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:12px}.mode span{flex:1;text-align:center;padding:7px;border-radius:8px;font-size:13px;color:#6d675f}.mode .selected{background:#fff;color:#111;box-shadow:0 1px 6px rgba(0,0,0,.15);font-weight:800}.search{height:36px;border-radius:10px;background:#fff;border:1px solid #e5dbcf;padding:9px 12px;color:#857a70;font-size:13px}.side-title{display:flex;justify-content:space-between;align-items:center;margin:18px 4px 8px;font-weight:850;font-size:14px}.workspace-row{border-radius:10px;padding:10px;margin:7px 0;background:transparent;font-size:13px;display:flex;justify-content:space-between;align-items:center}.workspace-row.active{background:#e6d6c6}.workspace-row.dim{color:#7a7168}.sidebar-footer{position:absolute;bottom:14px;left:14px;right:14px;display:grid;gap:8px;color:#6f675f;font-size:13px}.main-area{position:absolute;left:260px;right:300px;top:0;bottom:0;background:#fffdf9}.right-panel{position:absolute;right:0;top:0;bottom:0;width:300px;background:#efe7dd;border-left:1px solid #ded4c8;display:flex;flex-direction:column}.right-main{flex:1;min-height:0;display:flex;flex-direction:column}.right-bottom{height:204px;background:#1f1f1f;color:#ddd;border-top:1px solid #d8cdc0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.right-bottom-tabs{height:34px;background:#f2ebe3;color:#5f564d;border-bottom:1px solid #ded4c8;display:flex;align-items:center;gap:18px;padding:0 14px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.right-bottom-body{padding:14px 16px}.right-tabs{height:52px;border-bottom:1px solid #ded4c8;display:flex;gap:10px;align-items:end;padding:0 12px}.right-tabs span{padding:11px 12px;border-radius:9px 9px 0 0;font-size:13px}.right-tabs .selected{background:#fffdf9;font-weight:850}.right-content{padding:18px;font-size:13px;line-height:1.5;color:#544b43;flex:1;min-height:0}.bottom-panel{display:none}.code-top{height:64px;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid #eee5db}.path-box{flex:1;border:1px solid #ded4c8;border-radius:9px;background:#f7f1ea;padding:10px 12px;color:#7c7167;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.edit-agent,.btn{border:1px solid #cfc5ba;border-radius:8px;background:#fff;padding:8px 12px;font-weight:850;font-size:13px}.edit-agent{background:#17130f;color:#fff;border-color:#17130f}.btn.primary{background:#17130f;color:#fff;border-color:#17130f}.btn.disabled{opacity:.48}.tab-strip{height:42px;display:flex;align-items:end;gap:6px;padding:0 14px;border-bottom:1px solid #eee5db}.tab{background:#f3ece4;border:1px solid #e0d6ca;border-bottom:0;border-radius:9px 9px 0 0;padding:10px 14px;font-size:12px}.tab.active{background:#fffdf9;font-weight:850}.workspace-body{padding:28px}.chat-card{border:1px solid #e5ddd4;background:#fff;border-radius:10px;padding:18px}.authoring{position:absolute;inset:0;display:grid;grid-template-rows:56px minmax(0,1fr)34px}.agent-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #e6ddd3}.agent-title{font-weight:900}.header-actions{display:flex;align-items:center;gap:8px}.agent-body{display:grid;grid-template-columns:180px minmax(0,1fr);min-height:0}.author-nav{border-right:1px solid #e4d9cf;background:#f6efe7;padding:12px}.nav-item{height:38px;border-radius:8px;padding:9px 10px;display:flex;align-items:center;gap:8px;font-size:13px;color:#655c54;position:relative}.nav-item.active{background:#fff;color:#17130f;font-weight:900;box-shadow:0 1px 5px rgba(0,0,0,.08)}.nav-sep{height:1px;background:#e0d6ca;margin:10px 0}.dot{position:absolute;right:9px;width:7px;height:7px;border-radius:50%;background:#c77743}.author-content{position:relative;min-width:0;overflow:hidden}.statusbar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e6ddd3;padding:0 14px;font-size:12px;color:#665d54}.unsaved{color:#8b4e2f;font-weight:850}.error-text{color:#b42318;font-weight:850}.file-bar,.section-head,.cap-head{height:48px;border-bottom:1px solid #e4dcd1;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px}.file-actions{display:flex;gap:8px}.editor-area{position:absolute;left:0;right:0;top:48px;bottom:0;display:grid;grid-template-columns:240px minmax(0,1fr);background:#fffdf9}.personality{border-right:1px solid #e4dcd1;padding:16px;background:#fbf7f1}.personality h4{margin:0 0 12px;font-size:12px;letter-spacing:.08em;color:#6b625a}.field-row{display:grid;gap:6px;margin-bottom:14px;font-size:12px;font-weight:850}.select-box,.input-box{border:1px solid #d9d2ca;background:#fff;border-radius:8px;padding:9px;color:#776d64;font-weight:500}.slider{height:8px;border-radius:999px;background:linear-gradient(90deg,#c77743 50%,#e2d8ce 50%);margin-top:5px}.md-toolbar{position:absolute;left:240px;right:0;top:0;height:38px;border-bottom:1px solid #e4dcd1;display:flex;gap:6px;align-items:center;padding:0 12px;background:#fff}.md-toolbar span{border:1px solid #ded5cb;border-radius:6px;padding:4px 8px;font-size:11px}.md-toolbar .active-tool{background:#17130f;color:#fff;border-color:#17130f}.doc{position:absolute;left:240px;right:0;top:38px;bottom:0;padding:22px 30px;overflow:hidden;line-height:1.45}.doc h3{margin:0 0 8px;font-size:22px}.doc h4{margin:16px 0 6px}.center-state,.empty-state{height:100%;display:grid;place-items:center;text-align:center;color:#6b625a;font-size:15px}.skills-layout,.cap-shell{position:absolute;inset:0;background:#fffdf9}.section-head .title{font-weight:900}.skill-body{position:absolute;inset:48px 0 0;display:grid;grid-template-columns:250px minmax(0,1fr)}.skill-list{border-right:1px solid #e4dcd1;background:#fbf7f1;padding:12px}.skill-row{border:1px solid transparent;border-radius:9px;padding:11px;margin-bottom:8px;background:#fff;color:#4a423a}.skill-row.active{border-color:#17130f;color:#17130f;font-weight:850}.skill-row small{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#7b7168;margin-top:3px}.skill-detail{position:relative;min-width:0}.detail-tabs{height:42px;border-bottom:1px solid #e4dcd1;display:flex;align-items:center;gap:6px;padding:0 12px}.detail-tabs span{border-radius:6px;padding:6px 13px;font-size:12px;font-weight:800;color:#6b625a}.detail-tabs .active{color:#17130f;background:#f1ebe3}.detail-path{margin-left:auto;font-size:11px;color:#766c63;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.skill-pane{position:absolute;left:16px;right:16px;top:58px;bottom:16px}.dialog-backdrop,.confirm{position:absolute;inset:0;background:rgba(0,0,0,.28);display:grid;place-items:center}.dialog{width:430px;background:#fff;border:1px solid #d9d2ca;border-radius:12px;box-shadow:0 25px 70px rgba(0,0,0,.22);overflow:hidden}.dialog header,.dialog footer{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #eee6dd}.dialog footer{border-bottom:0;border-top:1px solid #eee6dd;justify-content:flex-end;gap:8px}.dialog .body{padding:15px 16px;display:grid;gap:12px;font-size:12px}.label{display:grid;gap:5px;font-size:12px;font-weight:850}.input{border:1px solid #d9d2ca;border-radius:8px;padding:9px 10px;background:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#3c352f}.validation{color:var(--danger);font-size:11px}.info-box{border:1px solid #e4dcd1;background:#f7f3ed;border-radius:8px;padding:10px;color:#5f554b}.probe{display:grid;gap:12px}.probe-card{border:1px solid #e1d8cd;border-radius:9px;background:#fff;padding:12px;font-size:12px}.probe-card .line{display:flex;justify-content:space-between;margin:5px 0}.textarea{height:70px;border:1px solid #d9d2ca;border-radius:8px;background:#fff;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#6b625a}.result-box,.log-box{border:1px solid #e1d8cd;background:#f8fafc;border-radius:8px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.35;white-space:pre-wrap}.cap-title{display:flex;align-items:center;gap:12px;font-weight:850;font-size:14px}.device-dot{width:7px;height:7px;border-radius:50%;background:#15a46b;display:inline-block}.toggle{border-radius:999px;padding:5px 10px;font-size:11px;color:#6b625a}.toggle.active{background:#17130f;color:#fff}.cap-body{padding:18px;overflow:hidden}.manifest{display:grid;grid-template-columns:1fr 1fr;gap:12px}.manifest-card{border:1px solid #e1d8cd;border-radius:10px;background:#fff;padding:14px;min-height:122px}.manifest-card h4{margin:0 0 10px}.check-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f0e8df;font-size:12px}.toast{position:absolute;right:18px;top:62px;max-width:360px;border:1px solid #f3b9b4;background:#fff0ef;color:#8f1f17;border-radius:9px;padding:12px;font-size:12px;box-shadow:0 12px 32px rgba(60,24,20,.14)}.confirm-box{width:440px;background:#fff;border:1px solid #d9d2ca;border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.confirm-box h4{margin:0 0 8px}.confirm-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.release-hub{width:560px;margin:96px auto 0;background:#fff;border:1px solid #d9d2ca;border-radius:12px;box-shadow:0 22px 70px rgba(0,0,0,.2);overflow:hidden}.release-hub header{padding:16px 18px;border-bottom:1px solid #eee6dd;display:flex;justify-content:space-between}.release-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid #f0e9e1;font-size:13px}.release-row small{display:block;color:#7a7168;margin-top:3px}.review-detail{width:500px;margin:104px auto 0;background:#fff;border:1px solid #d9d2ca;border-radius:12px;box-shadow:0 22px 70px rgba(0,0,0,.2);padding:18px}.review-detail h4{margin:0 0 12px;font-size:18px}.language-grid{position:absolute;inset:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.language-card{border:1px solid #ded6cc;background:#fff;border-radius:10px;padding:14px;font-size:13px}.language-card b{display:block;margin-bottom:8px}.language-card span{display:inline-block;margin:3px;border:1px solid #d7e0e7;border-radius:999px;padding:4px 8px;background:#f8fafc}.small-note{position:absolute;left:56px;right:56px;bottom:36px;border:1px solid #d7e0e7;background:rgba(255,255,255,.92);border-radius:10px;padding:12px;color:var(--muted);font-size:11px;line-height:1.35}
+</style>
+<style>
+.summary-card{width:500px;min-height:250px;border-top-width:7px}.summary-card .card-head{min-height:34px}.summary-panel{margin-top:9px;border:1px solid #d8e0e8;border-radius:8px;background:#fbfcfd;overflow:hidden}.summary-row{display:grid;grid-template-columns:108px minmax(0,1fr);gap:10px;padding:8px 11px;border-bottom:1px solid #e5ebf0;font-size:12px;line-height:1.3}.summary-row:last-child{border-bottom:0}.summary-row b{color:#4c5560}.summary-status{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.copy-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}.copy-box{border:1px solid #d8e0e8;border-radius:8px;background:#fbfcfd;padding:10px}.copy-box b{display:block;margin-bottom:6px}.copy-box span{display:inline-block;margin:2px;border:1px solid #d7e0e7;border-radius:999px;padding:3px 7px;background:#fff;font-size:11px}.summary-note{margin:9px 0 0;color:#5d6772;font-size:12px;line-height:1.35}.summary-card.detail{border-top-color:#91d6a6}.summary-card.state{border-top-color:#d3b166}.summary-card.error{border-top-color:#dd8c74}
+</style>
+</head>
+<body>
+<header class="topbar"><div><h1>Journey 08: Agent Authoring</h1><p>Record-driven HTML wireframe for editing core agent sections, Skills, Capabilities, save states, and publish handoff.</p></div><div class="controls"><button id="zoom-out">Zoom out</button><button id="zoom-in">Zoom in</button><button id="fit">Fit</button><button id="reset">Reset</button><span class="readout" id="readout">100%</span></div></header>
+<div class="shell"><nav class="jump"><h2>Canvas Bands</h2><div id="jumpList"></div></nav><main class="viewport" id="viewport"><div class="stage" id="stage"></div></main></div>
+<div id="record-source-index" hidden><span data-record-id="1">1</span>
+<span data-record-id="2">2</span>
+<span data-record-id="3">3</span>
+<span data-record-id="4">4</span>
+<span data-record-id="5">5</span>
+<span data-record-id="6">6</span>
+<span data-record-id="7">7</span>
+<span data-record-id="8">8</span>
+<span data-record-id="2.1">2.1</span>
+<span data-record-id="2.2">2.2</span>
+<span data-record-id="3.1">3.1</span>
+<span data-record-id="3.2">3.2</span>
+<span data-record-id="3.3">3.3</span>
+<span data-record-id="3.4">3.4</span>
+<span data-record-id="3.5">3.5</span>
+<span data-record-id="3.6">3.6</span>
+<span data-record-id="3.6.1">3.6.1</span>
+<span data-record-id="3.6.2">3.6.2</span>
+<span data-record-id="4.1">4.1</span>
+<span data-record-id="4.2">4.2</span>
+<span data-record-id="4.2.1">4.2.1</span>
+<span data-record-id="4.2.2">4.2.2</span>
+<span data-record-id="4.3">4.3</span>
+<span data-record-id="4.3.1">4.3.1</span>
+<span data-record-id="4.3.2">4.3.2</span>
+<span data-record-id="4.4">4.4</span>
+<span data-record-id="5.1">5.1</span>
+<span data-record-id="5.2">5.2</span>
+<span data-record-id="5.3">5.3</span>
+<span data-record-id="5.4">5.4</span>
+<span data-record-id="5.5">5.5</span>
+<span data-record-id="5.5.1">5.5.1</span>
+<span data-record-id="5.5.2">5.5.2</span>
+<span data-record-id="5.5.3">5.5.3</span>
+<span data-record-id="5.6">5.6</span>
+<span data-record-id="5.6.1">5.6.1</span>
+<span data-record-id="5.6.2">5.6.2</span>
+<span data-record-id="5.6.2.1">5.6.2.1</span>
+<span data-record-id="5.6.2.2">5.6.2.2</span>
+<span data-record-id="6.1">6.1</span>
+<span data-record-id="6.2">6.2</span>
+<span data-record-id="6.3">6.3</span>
+<span data-record-id="6.4">6.4</span>
+<span data-record-id="6.4.1">6.4.1</span>
+<span data-record-id="6.4.2">6.4.2</span>
+<span data-record-id="6.5">6.5</span>
+<span data-record-id="6.5.1">6.5.1</span>
+<span data-record-id="6.5.2">6.5.2</span>
+<span data-record-id="7.1">7.1</span>
+<span data-record-id="7.2">7.2</span>
+<span data-record-id="7.3">7.3</span>
+<span data-record-id="7.4">7.4</span>
+<span data-record-id="7.5">7.5</span>
+<span data-record-id="8.1">8.1</span>
+<span data-record-id="8.2">8.2</span>
+<span data-record-id="8.3">8.3</span>
+<span data-record-id="8.4">8.4</span>
+<span data-record-id="8.5">8.5</span>
+<span data-record-id="8.6">8.6</span>
+<span data-record-id="0.1">0.1</span>
+<span data-record-route-row="0">Core editor happy path</span>
+<span data-record-route-row="1">Section navigation without edits</span>
+<span data-record-route-row="2">Dirty section switch confirmed</span>
+<span data-record-route-row="3">Dirty section switch canceled</span>
+<span data-record-route-row="4">Selected save failure then retry</span>
+<span data-record-route-row="5">Save All succeeds</span>
+<span data-record-route-row="6">Save All partial failure</span>
+<span data-record-route-row="7">Revert active edit</span>
+<span data-record-route-row="8">Skills edit and save</span>
+<span data-record-route-row="9">Skills empty then create</span>
+<span data-record-route-row="10">Invalid new skill slug</span>
+<span data-record-route-row="11">New skill creation failure</span>
+<span data-record-route-row="12">Skill preview</span>
+<span data-record-route-row="13">Skill probe succeeds</span>
+<span data-record-route-row="14">Skill probe unavailable</span>
+<span data-record-route-row="15">Skill probe fails then retryable</span>
+<span data-record-route-row="16">Capabilities no-device path</span>
+<span data-record-route-row="17">Capabilities manifest path</span>
+<span data-record-route-row="18">Capabilities diff succeeds</span>
+<span data-record-route-row="19">Capabilities diff unavailable</span>
+<span data-record-route-row="20">Capabilities refresh succeeds</span>
+<span data-record-route-row="21">Capabilities refresh fails</span>
+<span data-record-route-row="22">Publish entry handoff</span>
+<span data-record-route-row="23">Review detail return</span>
+<span data-record-route-row="24">Last published link</span>
+<span data-record-route-row="25">Return to Code workspace</span>
+<span data-record-route-row="26">Agent workspace entry unavailable</span>
+<span data-band-source="Main happy path">Main happy path</span>
+<span data-band-source="Route path">Route path</span>
+<span data-band-source="Detail states">Detail states</span>
+<span data-band-source="State language">State language</span>
+<span data-band-source="Errors and recovery">Errors and recovery</span></div>
+<script>
+const STATES = [
+  {
+    "id": "1",
+    "title": "Code Workspace Entry",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Code workspace entry with an available authoring action.",
+    "action": "Clicks `Edit Agent`.",
+    "ui": "Code mode remains visible and `Edit Agent` is available for an agent workspace.",
+    "client": "The current workspace becomes the authoring target.",
+    "next": "`2`"
+  },
+  {
+    "id": "2",
+    "title": "Agent Authoring Surface",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Agent Authoring opens or focuses.",
+    "action": "Waits for authoring files to resolve.",
+    "ui": "Header shows `Agent \u00b7 <workspace>`, authoring rail, and initial resolving state when needed.",
+    "client": "Editable sections, publish status, and save state are prepared.",
+    "next": "`2.1`, then `3`"
+  },
+  {
+    "id": "3",
+    "title": "Main Editor Area",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Main authoring editor area.",
+    "action": "Selects a section, reads content, or edits.",
+    "ui": "The active rail item is highlighted and the matching editor or management view is visible.",
+    "client": "The active section and editable target are tracked.",
+    "next": "`4`, `5`, or `6`"
+  },
+  {
+    "id": "4",
+    "title": "Core File Edit And Save Loop",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Core file edit and save loop.",
+    "action": "Edits, saves, saves all, or reverts.",
+    "ui": "File actions and footer show clean, unsaved, saving, saved, or failed state.",
+    "client": "Clean, dirty, saving, saved, and error state are tracked per editable target.",
+    "next": "`8` or save branch"
+  },
+  {
+    "id": "5",
+    "title": "Skills Management",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Skills management and probe path.",
+    "action": "Opens `Skills`, selects, creates, previews, refreshes, or probes.",
+    "ui": "Skills shows list count, `New Skill`, `Refresh`, `Edit`, `Preview`, and `Probe`.",
+    "client": "The selected skill and probe readiness are tracked.",
+    "next": "`8` or skills branch"
+  },
+  {
+    "id": "6",
+    "title": "Capabilities Review",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Capabilities review path.",
+    "action": "Opens `Capabilities`, switches view, or refreshes.",
+    "ui": "Capabilities shows device state, manifest, difference view, loading, empty, or error state.",
+    "client": "Device capability state and comparison state are refreshed when requested.",
+    "next": "`8` or capabilities branch"
+  },
+  {
+    "id": "7",
+    "title": "Leave, Return, Or Publish Entry",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Leave, return, or publish entry.",
+    "action": "Returns to Code, opens `Publish`, opens review details, or follows last published link.",
+    "ui": "Publish or status child surfaces open above Agent Authoring and can return.",
+    "client": "Authoring state is preserved while the user moves to adjacent surfaces.",
+    "next": "`8`, Journey 09, or Code workspace"
+  },
+  {
+    "id": "8",
+    "title": "Stable Authoring State",
+    "type": "Main path",
+    "parent": "Journey 08",
+    "rep": "Stable authoring state.",
+    "action": "Pauses, continues editing, saves, retries, leaves, or publishes.",
+    "ui": "Current section remains visible with clear saved, dirty, saving, or error language.",
+    "client": "Active section, editable target, selected skill, capability view, and status hints remain aligned.",
+    "next": "End"
+  },
+  {
+    "id": "2.1",
+    "title": "Authoring Files Resolving",
+    "type": "Branch journey",
+    "parent": "`2 Agent Authoring Surface`",
+    "rep": "Authoring files are still resolving.",
+    "action": "Waits.",
+    "ui": "Main content shows `Resolving files...`; file actions are unavailable.",
+    "client": "Editable files finish resolving.",
+    "next": "`3`"
+  },
+  {
+    "id": "2.2",
+    "title": "Agent Workspace Entry Unavailable",
+    "type": "Error / recovery",
+    "parent": "`2 Agent Authoring Surface`",
+    "rep": "Agent Authoring entry is unavailable for the current workspace.",
+    "action": "Looks for the entry or changes workspace.",
+    "ui": "`Edit Agent` is absent when the active workspace is not authorable as an agent.",
+    "client": "Agent Authoring does not open for that workspace.",
+    "next": "Code workspace"
+  },
+  {
+    "id": "3.1",
+    "title": "Soul Section Active",
+    "type": "Branch journey",
+    "parent": "`3 Main Editor Area`",
+    "rep": "`Soul` section is active.",
+    "action": "Clicks `Soul` or arrives at the default section.",
+    "ui": "Soul editor shows selected file label, `Revert`, `Save`, content, and footer status.",
+    "client": "Soul becomes the active editable target.",
+    "next": "`4` or `8`"
+  },
+  {
+    "id": "3.2",
+    "title": "Style Section Active",
+    "type": "Branch journey",
+    "parent": "`3 Main Editor Area`",
+    "rep": "`Style` section is active.",
+    "action": "Clicks `Style`.",
+    "ui": "Style editor replaces the previous content and the rail marks `Style` active.",
+    "client": "Style becomes the active editable target.",
+    "next": "`4` or `8`"
+  },
+  {
+    "id": "3.3",
+    "title": "Tools Section Active",
+    "type": "Branch journey",
+    "parent": "`3 Main Editor Area`",
+    "rep": "`Tools` section is active.",
+    "action": "Clicks `Tools`.",
+    "ui": "Tools editor replaces the previous content and the rail marks `Tools` active.",
+    "client": "Tools becomes the active editable target.",
+    "next": "`4` or `8`"
+  },
+  {
+    "id": "3.4",
+    "title": "Heartbeat Section Active",
+    "type": "Branch journey",
+    "parent": "`3 Main Editor Area`",
+    "rep": "`Heartbeat` section is active.",
+    "action": "Clicks `Heartbeat`.",
+    "ui": "Heartbeat editor replaces the previous content and the rail marks `Heartbeat` active.",
+    "client": "Heartbeat becomes the active editable target.",
+    "next": "`4` or `8`"
+  },
+  {
+    "id": "3.5",
+    "title": "Bootstrap Section Active",
+    "type": "Branch journey",
+    "parent": "`3 Main Editor Area`",
+    "rep": "`Bootstrap` section is active.",
+    "action": "Clicks `Bootstrap`.",
+    "ui": "Bootstrap editor replaces the previous content and the rail marks `Bootstrap` active.",
+    "client": "Bootstrap becomes the active editable target.",
+    "next": "`4` or `8`"
+  },
+  {
+    "id": "3.6",
+    "title": "Unsaved Section Switch",
+    "type": "Error / recovery",
+    "parent": "`3 Main Editor Area`",
+    "rep": "User tries to switch sections while dirty.",
+    "action": "Clicks another rail item before saving or reverting.",
+    "ui": "A discard confirmation asks whether to lose unsaved changes and switch.",
+    "client": "Section switching is paused until the user chooses.",
+    "next": "`3.6.1` or `3.6.2`"
+  },
+  {
+    "id": "3.6.1",
+    "title": "Discard And Switch Confirmed",
+    "type": "Error / recovery",
+    "parent": "`3.6 Unsaved Section Switch`",
+    "rep": "Discard and section switch are confirmed.",
+    "action": "Confirms the discard prompt.",
+    "ui": "The requested section becomes active and the previous dirty marker clears.",
+    "client": "Previous content returns to the last saved baseline.",
+    "next": "`3`"
+  },
+  {
+    "id": "3.6.2",
+    "title": "Section Switch Canceled",
+    "type": "Error / recovery",
+    "parent": "`3.6 Unsaved Section Switch`",
+    "rep": "Section switch is canceled.",
+    "action": "Cancels the discard prompt.",
+    "ui": "The original section remains active with unsaved content visible.",
+    "client": "No section or content state changes.",
+    "next": "`4.1`"
+  },
+  {
+    "id": "4.1",
+    "title": "Dirty State",
+    "type": "Detail state",
+    "parent": "`4 Core File Edit And Save Loop`",
+    "rep": "Active editable target is dirty.",
+    "action": "Changes editor content.",
+    "ui": "Footer shows `Unsaved \u00b7 <selected file>` and `Save`/`Revert` are enabled.",
+    "client": "Current content differs from the saved baseline.",
+    "next": "`4.2`, `4.3`, `4.4`, `3.6`, or `7`"
+  },
+  {
+    "id": "4.2",
+    "title": "Selected File Saving",
+    "type": "Detail state",
+    "parent": "`4 Core File Edit And Save Loop`",
+    "rep": "Selected file save is in progress.",
+    "action": "Clicks `Save`.",
+    "ui": "`Save` changes to `Saving...`; duplicate save is disabled while content remains visible.",
+    "client": "The active editable target starts saving.",
+    "next": "`4.2.1` or `4.2.2`"
+  },
+  {
+    "id": "4.2.1",
+    "title": "Selected File Saved",
+    "type": "Detail state",
+    "parent": "`4.2 Selected File Saving`",
+    "rep": "Selected file save succeeds.",
+    "action": "Waits for save to finish.",
+    "ui": "Footer shows `Saved <time> \u00b7 <selected file>` and file actions return to clean state.",
+    "client": "Saved content becomes the new clean baseline.",
+    "next": "`8`"
+  },
+  {
+    "id": "4.2.2",
+    "title": "Selected File Save Failed",
+    "type": "Error / recovery",
+    "parent": "`4.2 Selected File Saving`",
+    "rep": "Selected file save fails.",
+    "action": "Reads the error or retries.",
+    "ui": "`Save error` or error text is visible and edited content remains in place.",
+    "client": "The active target enters error state without discarding content.",
+    "next": "`8.3`"
+  },
+  {
+    "id": "4.3",
+    "title": "Save All",
+    "type": "Detail state",
+    "parent": "`4 Core File Edit And Save Loop`",
+    "rep": "Multiple core sections are dirty.",
+    "action": "Clicks `Save All (N)`.",
+    "ui": "Header shows `Save All (N)` and dirty markers remain until each save resolves.",
+    "client": "Each dirty core section starts its own save.",
+    "next": "`4.3.1` or `4.3.2`"
+  },
+  {
+    "id": "4.3.1",
+    "title": "Save All Complete",
+    "type": "Detail state",
+    "parent": "`4.3 Save All`",
+    "rep": "Save All completes for every dirty section.",
+    "action": "Waits for saves to settle.",
+    "ui": "Dirty markers clear and the active footer returns to saved or clean state.",
+    "client": "All successful sections receive new clean baselines.",
+    "next": "`8`"
+  },
+  {
+    "id": "4.3.2",
+    "title": "Save All Partial Failure",
+    "type": "Error / recovery",
+    "parent": "`4.3 Save All`",
+    "rep": "Save All leaves one or more failures.",
+    "action": "Reads failure feedback and selects failed section if needed.",
+    "ui": "Successful sections clear; failed section feedback and editable content remain.",
+    "client": "Successful saves become clean and failed saves preserve edits.",
+    "next": "`8.3`"
+  },
+  {
+    "id": "4.4",
+    "title": "Revert Active Section",
+    "type": "Detail state",
+    "parent": "`4 Core File Edit And Save Loop`",
+    "rep": "User reverts the active dirty section.",
+    "action": "Clicks `Revert`.",
+    "ui": "Editor content returns to the last saved version and unsaved/error language clears.",
+    "client": "The active editable target returns to clean state.",
+    "next": "`8`"
+  },
+  {
+    "id": "5.1",
+    "title": "Skills List Loading",
+    "type": "Detail state",
+    "parent": "`5 Skills Management`",
+    "rep": "Skills list is loading.",
+    "action": "Opens `Skills` or clicks `Refresh`.",
+    "ui": "Skill count area and actions remain visible; body can show `Loading skills...`.",
+    "client": "The visible skill list refreshes.",
+    "next": "`5.2`, `5.3`, or `8.4`"
+  },
+  {
+    "id": "5.2",
+    "title": "No Skills",
+    "type": "Branch journey",
+    "parent": "`5 Skills Management`",
+    "rep": "No skills are present.",
+    "action": "Reads the empty state or clicks `New Skill`.",
+    "ui": "Empty state says `No skills yet. Click New Skill to create one.`",
+    "client": "An empty skill list is treated as usable state.",
+    "next": "`5.5` or `8`"
+  },
+  {
+    "id": "5.3",
+    "title": "Selected Skill Edit",
+    "type": "Branch journey",
+    "parent": "`5 Skills Management`",
+    "rep": "A readable skill is selected for editing.",
+    "action": "Selects a skill and uses `Edit`.",
+    "ui": "List highlights the skill; detail tabs show `Edit`, `Preview`, and `Probe`.",
+    "client": "The selected skill becomes the active editable target for save/revert/status.",
+    "next": "`4.1`, `5.4`, or `5.6`"
+  },
+  {
+    "id": "5.4",
+    "title": "Skill Preview",
+    "type": "Branch journey",
+    "parent": "`5 Skills Management`",
+    "rep": "Selected skill preview is visible.",
+    "action": "Clicks `Preview`.",
+    "ui": "Rendered Markdown preview replaces plaintext editing.",
+    "client": "The same selected skill remains active without mutating source content.",
+    "next": "`5.3` or `5.6`"
+  },
+  {
+    "id": "5.5",
+    "title": "New Skill Dialog",
+    "type": "Branch journey",
+    "parent": "`5 Skills Management`",
+    "rep": "`New Skill` dialog is open.",
+    "action": "Clicks `New Skill`, enters name and optional description.",
+    "ui": "Dialog shows `Name`, slug preview, optional `Description`, target preview, `Cancel`, and `Create`.",
+    "client": "The target slug is normalized and validated.",
+    "next": "`5.5.1`, `5.5.2`, or `5.5.3`"
+  },
+  {
+    "id": "5.5.1",
+    "title": "New Skill Created",
+    "type": "Detail state",
+    "parent": "`5.5 New Skill Dialog`",
+    "rep": "New skill is created successfully.",
+    "action": "Clicks `Create` with valid input.",
+    "ui": "Dialog closes, list refreshes, and the new skill becomes selected.",
+    "client": "The new skill is added and selected.",
+    "next": "`5.3`"
+  },
+  {
+    "id": "5.5.2",
+    "title": "Invalid Or Duplicate Skill Slug",
+    "type": "Error / recovery",
+    "parent": "`5.5 New Skill Dialog`",
+    "rep": "New skill slug is invalid or duplicate.",
+    "action": "Types a name that normalizes to an invalid or duplicate slug.",
+    "ui": "Inline validation appears and `Create` is disabled.",
+    "client": "No skill is created.",
+    "next": "`5.5`"
+  },
+  {
+    "id": "5.5.3",
+    "title": "New Skill Create Failed",
+    "type": "Error / recovery",
+    "parent": "`5.5 New Skill Dialog`",
+    "rep": "New skill creation fails.",
+    "action": "Clicks `Create` and the write fails.",
+    "ui": "Dialog stays open with the user input and inline error.",
+    "client": "Draft dialog state is preserved and no skill is added.",
+    "next": "`5.5`"
+  },
+  {
+    "id": "5.6",
+    "title": "Probe Tab",
+    "type": "Branch journey",
+    "parent": "`5 Skills Management`",
+    "rep": "Probe tab is open for the selected skill.",
+    "action": "Clicks `Probe`.",
+    "ui": "Probe panel shows runtime status, loaded-skill state, prompt input, `Refresh`, and `Run Probe`.",
+    "client": "Probe readiness is checked for the selected skill.",
+    "next": "`5.6.1`, `5.6.2`, or `8.5`"
+  },
+  {
+    "id": "5.6.1",
+    "title": "Probe Unavailable",
+    "type": "Error / recovery",
+    "parent": "`5.6 Probe Tab`",
+    "rep": "Probe is unavailable.",
+    "action": "Reads the deployment, workspace, or loaded-skill hint.",
+    "ui": "Panel shows actionable unavailable language and disables `Run Probe` when needed.",
+    "client": "Probe submission is blocked until prerequisites recover.",
+    "next": "`8.5`"
+  },
+  {
+    "id": "5.6.2",
+    "title": "Probe Running",
+    "type": "Detail state",
+    "parent": "`5.6 Probe Tab`",
+    "rep": "Probe is running.",
+    "action": "Enters a prompt and clicks `Run Probe`.",
+    "ui": "`Run Probe` shows loading and the panel waits for a result.",
+    "client": "The probe prompt is submitted and running state is recorded.",
+    "next": "`5.6.2.1` or `5.6.2.2`"
+  },
+  {
+    "id": "5.6.2.1",
+    "title": "Probe Success",
+    "type": "Detail state",
+    "parent": "`5.6.2 Probe Running`",
+    "rep": "Probe succeeds.",
+    "action": "Reviews the result.",
+    "ui": "Panel shows completion time, response text, and any tool calls.",
+    "client": "The visible probe result is recorded for inspection.",
+    "next": "`8`"
+  },
+  {
+    "id": "5.6.2.2",
+    "title": "Probe Failed",
+    "type": "Error / recovery",
+    "parent": "`5.6.2 Probe Running`",
+    "rep": "Probe fails.",
+    "action": "Reviews the error and can retry.",
+    "ui": "Panel shows failure time and error details without leaving Probe.",
+    "client": "Running state clears and the prompt is preserved.",
+    "next": "`8.5`"
+  },
+  {
+    "id": "6.1",
+    "title": "Capability Device State Loading",
+    "type": "Detail state",
+    "parent": "`6 Capabilities Review`",
+    "rep": "Capability device state is loading.",
+    "action": "Opens `Capabilities` or clicks `Refresh`.",
+    "ui": "Header actions remain visible and `Refresh` can spin while loading.",
+    "client": "Current device capability state is requested.",
+    "next": "`6.2`, `6.3`, or `8.6`"
+  },
+  {
+    "id": "6.2",
+    "title": "No Device Connected",
+    "type": "Error / recovery",
+    "parent": "`6 Capabilities Review`",
+    "rep": "No focused device is connected.",
+    "action": "Reads the empty state or connects a device.",
+    "ui": "Header says `No device connected`; body explains that capabilities populate after firmware reports a manifest.",
+    "client": "Capabilities remains usable without a focused device.",
+    "next": "`6.5` or `8`"
+  },
+  {
+    "id": "6.3",
+    "title": "Manifest View",
+    "type": "Branch journey",
+    "parent": "`6 Capabilities Review`",
+    "rep": "Device manifest view is visible.",
+    "action": "Reviews the focused device manifest.",
+    "ui": "`View` is active and grouped manifest details are visible when available.",
+    "client": "Latest known device capability data is displayed.",
+    "next": "`6.4` or `6.5`"
+  },
+  {
+    "id": "6.4",
+    "title": "Difference View Loading",
+    "type": "Branch journey",
+    "parent": "`6 Capabilities Review`",
+    "rep": "Difference view is loading.",
+    "action": "Clicks `View Diff`.",
+    "ui": "`View Diff` becomes active and the body shows `Loading agent capabilities...`.",
+    "client": "Agent-declared and device-reported capabilities are compared.",
+    "next": "`6.4.1` or `6.4.2`"
+  },
+  {
+    "id": "6.4.1",
+    "title": "Difference View Ready",
+    "type": "Detail state",
+    "parent": "`6.4 Difference View Loading`",
+    "rep": "Difference view is ready.",
+    "action": "Reviews matched, missing, and unused groups.",
+    "ui": "Difference panel shows agent-declared and device-reported capability groups with status badges.",
+    "client": "Comparison result is visible for the focused device.",
+    "next": "`8`"
+  },
+  {
+    "id": "6.4.2",
+    "title": "Difference Unavailable",
+    "type": "Error / recovery",
+    "parent": "`6.4 Difference View Loading`",
+    "rep": "Difference cannot be computed.",
+    "action": "Reads the unable-to-compute state.",
+    "ui": "Body says the comparison cannot be computed and points back to capability sources.",
+    "client": "No comparison result is available.",
+    "next": "`8.6`"
+  },
+  {
+    "id": "6.5",
+    "title": "Capabilities Refresh",
+    "type": "Branch journey",
+    "parent": "`6 Capabilities Review`",
+    "rep": "User refreshes capability state.",
+    "action": "Clicks `Refresh`.",
+    "ui": "`Refresh` is disabled or spinning while the section reloads.",
+    "client": "Fresh device state is requested.",
+    "next": "`6.5.1` or `6.5.2`"
+  },
+  {
+    "id": "6.5.1",
+    "title": "Capabilities Refresh Succeeded",
+    "type": "Detail state",
+    "parent": "`6.5 Capabilities Refresh`",
+    "rep": "Refresh succeeds.",
+    "action": "Waits for refresh to complete.",
+    "ui": "Device status, manifest, empty state, or difference entry updates.",
+    "client": "Latest capability state replaces stale state.",
+    "next": "`6.2`, `6.3`, or `6.4`"
+  },
+  {
+    "id": "6.5.2",
+    "title": "Capabilities Refresh Failed",
+    "type": "Error / recovery",
+    "parent": "`6.5 Capabilities Refresh`",
+    "rep": "Refresh fails.",
+    "action": "Reads the error and can retry.",
+    "ui": "A red inline error appears while Capabilities remains open.",
+    "client": "Previous visible context is preserved when possible.",
+    "next": "`8.6`"
+  },
+  {
+    "id": "7.1",
+    "title": "Return To Code Workspace",
+    "type": "Branch journey",
+    "parent": "`7 Leave, Return, Or Publish Entry`",
+    "rep": "User returns to Code workspace work.",
+    "action": "Switches back to Code work.",
+    "ui": "Code workspace content regains focus.",
+    "client": "Saved state remains available and dirty buffers follow the current leave path.",
+    "next": "Code workspace or `1`"
+  },
+  {
+    "id": "7.2",
+    "title": "Publish Entry",
+    "type": "Branch journey",
+    "parent": "`7 Leave, Return, Or Publish Entry`",
+    "rep": "User opens publish entry from Agent Authoring.",
+    "action": "Clicks `Publish` or a review/status chip.",
+    "ui": "A status-first publish surface opens above Agent Authoring.",
+    "client": "Editor state remains mounted while publish status is reviewed.",
+    "next": "Journey 09 or `7.5`"
+  },
+  {
+    "id": "7.3",
+    "title": "Review Detail Entry",
+    "type": "Branch journey",
+    "parent": "`7 Leave, Return, Or Publish Entry`",
+    "rep": "User opens review status details.",
+    "action": "Uses a review/status entry for a submitted package.",
+    "ui": "Review details open above the editor and can return to publish status.",
+    "client": "Visible review state refreshes without clearing editor content.",
+    "next": "`7.5`"
+  },
+  {
+    "id": "7.4",
+    "title": "Last Published Link",
+    "type": "Branch journey",
+    "parent": "`7 Leave, Return, Or Publish Entry`",
+    "rep": "User follows the last published catalog link.",
+    "action": "Clicks the footer last published link.",
+    "ui": "Footer shows `Last published <time> \u00b7 <version>` with an external-link affordance.",
+    "client": "The catalog destination opens outside the authoring surface.",
+    "next": "`8`"
+  },
+  {
+    "id": "7.5",
+    "title": "Publish Child Return",
+    "type": "Branch journey",
+    "parent": "`7 Leave, Return, Or Publish Entry`",
+    "rep": "User closes a publish or review child surface.",
+    "action": "Closes the child surface or completes a child action.",
+    "ui": "User returns to Agent Authoring or the status-first publish surface.",
+    "client": "The prior authoring or publish context becomes active again.",
+    "next": "`7`, `8`, or Journey 09"
+  },
+  {
+    "id": "8.1",
+    "title": "Initial Content Recovery",
+    "type": "Error / recovery",
+    "parent": "`2 Agent Authoring Surface`",
+    "rep": "Editable content cannot be read cleanly at first load.",
+    "action": "Waits, then edits or saves if possible.",
+    "ui": "The editor can present fallback editable content or a local error instead of closing the surface.",
+    "client": "The surface remains open and recoverable.",
+    "next": "`4.1` or `8`"
+  },
+  {
+    "id": "8.2",
+    "title": "Unsaved Switch Recovery",
+    "type": "Error / recovery",
+    "parent": "`3 Main Editor Area`",
+    "rep": "Section switching protects unsaved content.",
+    "action": "Confirms or cancels the discard prompt.",
+    "ui": "The prompt prevents accidental loss when moving away from a dirty section.",
+    "client": "The client either reverts and switches or keeps the dirty section active.",
+    "next": "`3.6.1` or `3.6.2`"
+  },
+  {
+    "id": "8.3",
+    "title": "Save Failure Recovery",
+    "type": "Error / recovery",
+    "parent": "`4 Core File Edit And Save Loop`",
+    "rep": "Save failure recovery.",
+    "action": "Retries save, edits, reverts, or saves all again.",
+    "ui": "Error remains visible while edited content is preserved.",
+    "client": "The failed target stays editable and retryable.",
+    "next": "`4.2`, `4.4`, or `8`"
+  },
+  {
+    "id": "8.4",
+    "title": "Skills Recovery",
+    "type": "Error / recovery",
+    "parent": "`5 Skills Management`",
+    "rep": "Skills list or skill file cannot be loaded.",
+    "action": "Refreshes, creates a skill, selects another skill, or keeps editing elsewhere.",
+    "ui": "Skills shows loading, empty, missing-file, or list-error state without breaking the editor.",
+    "client": "The problem remains scoped to Skills.",
+    "next": "`5.1`, `5.2`, `5.3`, or `8`"
+  },
+  {
+    "id": "8.5",
+    "title": "Probe Recovery",
+    "type": "Error / recovery",
+    "parent": "`5 Skills Management`",
+    "rep": "Probe cannot run or returns failure.",
+    "action": "Restarts runtime, refreshes status, edits prompt, or retries.",
+    "ui": "Probe hints and errors stay inside the Probe panel.",
+    "client": "Selected skill is preserved and running state clears after failure.",
+    "next": "`5.6` or `5.6.2`"
+  },
+  {
+    "id": "8.6",
+    "title": "Capabilities Recovery",
+    "type": "Error / recovery",
+    "parent": "`6 Capabilities Review`",
+    "rep": "Capability refresh or comparison fails.",
+    "action": "Refreshes again, connects device, fixes capability declarations, or changes section.",
+    "ui": "Error or unable-to-compute language stays inside Capabilities.",
+    "client": "Previous context is preserved where possible.",
+    "next": "`6.5`, `6.4`, or `8`"
+  },
+  {
+    "id": "0.1",
+    "title": "Shared Authoring Language",
+    "type": "State language",
+    "parent": "Whole journey",
+    "rep": "Shared authoring status and control labels.",
+    "action": "Reads visible status language and chooses the next action.",
+    "ui": "Labels include `Edit Agent`, `Agent`, `Soul`, `Style`, `Tools`, `Heartbeat`, `Bootstrap`, `Skills`, `Capabilities`, `Revert`, `Save`, `Saving...`, `Unsaved`, `Saved`, `Save error`, `Save All (N)`, `New Skill`, `Refresh`, `Edit`, `Preview`, `Probe`, `Run Probe`, `View`, `View Diff`, `Publish`, and `Last published`.",
+    "client": "Visible labels remain aligned with active section and current state.",
+    "next": "Any state"
+  }
+];
+const ROUTES = [
+  {
+    "title": "Core editor happy path",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "4",
+      "4.1",
+      "4.2",
+      "4.2.1",
+      "8"
+    ],
+    "result": "User opens Agent Authoring, edits Soul, saves successfully, and rests in saved state."
+  },
+  {
+    "title": "Section navigation without edits",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "3.2",
+      "3.3",
+      "3.4",
+      "3.5",
+      "8"
+    ],
+    "result": "User reviews core authoring sections and stops without creating dirty state."
+  },
+  {
+    "title": "Dirty section switch confirmed",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "4",
+      "4.1",
+      "3.6",
+      "3.6.1",
+      "3.2",
+      "8"
+    ],
+    "result": "User discards unsaved Soul edits and switches to Style."
+  },
+  {
+    "title": "Dirty section switch canceled",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "4",
+      "4.1",
+      "3.6",
+      "3.6.2",
+      "4.1",
+      "8"
+    ],
+    "result": "User cancels the discard prompt and stays on the dirty section."
+  },
+  {
+    "title": "Selected save failure then retry",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.3",
+      "4",
+      "4.1",
+      "4.2",
+      "4.2.2",
+      "8.3",
+      "4.2",
+      "4.2.1",
+      "8"
+    ],
+    "result": "Save failure preserves edits; retry succeeds and clears the error."
+  },
+  {
+    "title": "Save All succeeds",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "4",
+      "4.1",
+      "3.6",
+      "3.6.1",
+      "3.2",
+      "4.1",
+      "4.3",
+      "4.3.1",
+      "8"
+    ],
+    "result": "User creates multiple dirty core sections and saves them together."
+  },
+  {
+    "title": "Save All partial failure",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.1",
+      "4",
+      "4.1",
+      "3.6",
+      "3.6.1",
+      "3.2",
+      "4.1",
+      "4.3",
+      "4.3.2",
+      "8.3",
+      "8"
+    ],
+    "result": "User saves multiple sections; at least one failed section remains recoverable."
+  },
+  {
+    "title": "Revert active edit",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "3.4",
+      "4",
+      "4.1",
+      "4.4",
+      "8"
+    ],
+    "result": "User reverts a dirty Heartbeat edit and returns to clean state."
+  },
+  {
+    "title": "Skills edit and save",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.3",
+      "4.1",
+      "4.2",
+      "4.2.1",
+      "8"
+    ],
+    "result": "User edits a selected skill file through the shared save controls."
+  },
+  {
+    "title": "Skills empty then create",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.2",
+      "5.5",
+      "5.5.1",
+      "5.3",
+      "8"
+    ],
+    "result": "Empty Skills state leads to a successful new skill and selected skill editor."
+  },
+  {
+    "title": "Invalid new skill slug",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.2",
+      "5.5",
+      "5.5.2",
+      "5.5",
+      "8"
+    ],
+    "result": "Dialog blocks creation until the user fixes the skill name."
+  },
+  {
+    "title": "New skill creation failure",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.2",
+      "5.5",
+      "5.5.3",
+      "5.5",
+      "8"
+    ],
+    "result": "Dialog keeps user input and shows the create failure."
+  },
+  {
+    "title": "Skill preview",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.3",
+      "5.4",
+      "5.3",
+      "8"
+    ],
+    "result": "User previews a selected skill without changing its source."
+  },
+  {
+    "title": "Skill probe succeeds",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.3",
+      "5.6",
+      "5.6.2",
+      "5.6.2.1",
+      "8"
+    ],
+    "result": "User runs a probe and sees a response or tool-call result."
+  },
+  {
+    "title": "Skill probe unavailable",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.3",
+      "5.6",
+      "5.6.1",
+      "8.5",
+      "5.6"
+    ],
+    "result": "Probe is blocked until deployment, ownership, or loaded-skill state is fixed."
+  },
+  {
+    "title": "Skill probe fails then retryable",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "5",
+      "5.1",
+      "5.3",
+      "5.6",
+      "5.6.2",
+      "5.6.2.2",
+      "8.5",
+      "5.6"
+    ],
+    "result": "Probe failure stays inside the panel and can be retried."
+  },
+  {
+    "title": "Capabilities no-device path",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.2",
+      "8"
+    ],
+    "result": "User opens Capabilities without a connected device and sees a non-blocking empty state."
+  },
+  {
+    "title": "Capabilities manifest path",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.3",
+      "8"
+    ],
+    "result": "User reviews the focused device manifest."
+  },
+  {
+    "title": "Capabilities diff succeeds",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.3",
+      "6.4",
+      "6.4.1",
+      "8"
+    ],
+    "result": "User opens the difference view and reviews capability alignment."
+  },
+  {
+    "title": "Capabilities diff unavailable",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.3",
+      "6.4",
+      "6.4.2",
+      "8.6",
+      "8"
+    ],
+    "result": "Difference view cannot be computed and remains recoverable."
+  },
+  {
+    "title": "Capabilities refresh succeeds",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.2",
+      "6.5",
+      "6.5.1",
+      "6.3",
+      "8"
+    ],
+    "result": "User refreshes after a device becomes available and reaches manifest view."
+  },
+  {
+    "title": "Capabilities refresh fails",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "6",
+      "6.1",
+      "6.3",
+      "6.5",
+      "6.5.2",
+      "8.6",
+      "8"
+    ],
+    "result": "Refresh error stays scoped to Capabilities."
+  },
+  {
+    "title": "Publish entry handoff",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "7",
+      "7.2"
+    ],
+    "result": "User opens the publish/status entry and leaves Journey 08 for the publish journey if they continue."
+  },
+  {
+    "title": "Review detail return",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "7",
+      "7.2",
+      "7.3",
+      "7.5",
+      "8"
+    ],
+    "result": "User inspects review details and returns to Agent Authoring."
+  },
+  {
+    "title": "Last published link",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "7",
+      "7.4",
+      "8"
+    ],
+    "result": "User opens the catalog destination while the authoring surface remains stable."
+  },
+  {
+    "title": "Return to Code workspace",
+    "ids": [
+      "1",
+      "2",
+      "2.1",
+      "3",
+      "7",
+      "7.1"
+    ],
+    "result": "User leaves Agent Authoring and returns to Code work."
+  },
+  {
+    "title": "Agent workspace entry unavailable",
+    "ids": [
+      "1",
+      "2.2"
+    ],
+    "result": "User cannot enter Agent Authoring until a valid agent workspace is active."
+  }
+];
+const SECTIONS = {
+  "branch": [
+    "2.1",
+    "3.1",
+    "3.2",
+    "3.3",
+    "3.4",
+    "3.5",
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5",
+    "5.6",
+    "6.3",
+    "6.4",
+    "6.5",
+    "7.1",
+    "7.2",
+    "7.3",
+    "7.4",
+    "7.5"
+  ],
+  "detail": [
+    "4.1",
+    "4.2",
+    "4.2.1",
+    "4.3",
+    "4.3.1",
+    "4.4",
+    "5.1",
+    "5.5.1",
+    "5.6.2",
+    "5.6.2.1",
+    "6.1",
+    "6.4.1",
+    "6.5.1"
+  ],
+  "stateLanguage": [
+    "0.1"
+  ],
+  "errors": [
+    "2.2",
+    "3.6",
+    "3.6.1",
+    "3.6.2",
+    "4.2.2",
+    "4.3.2",
+    "5.5.2",
+    "5.5.3",
+    "5.6.1",
+    "5.6.2.2",
+    "6.2",
+    "6.4.2",
+    "6.5.2",
+    "8.1",
+    "8.2",
+    "8.3",
+    "8.4",
+    "8.5",
+    "8.6"
+  ],
+  "main": [
+    "1",
+    "2",
+    "3",
+    "4.1",
+    "4.2",
+    "4.2.1",
+    "8"
+  ]
+};
+const STATE_BY_ID = new Map(STATES.map((s) => [s.id, s]));
+const BAND_ORDER = [
+  { key:'main', label:'Main happy path', caption:'The primary Agent Authoring route from Code entry to saved stable state.' },
+  { key:'routePath', label:'Route path', caption:'Every route table row is drawn as a complete product wireframe row.' },
+  { key:'detail', label:'Detail states', caption:'Expanded save, loading, probe, and refresh states.' },
+  { key:'stateLanguage', label:'State language', caption:'Shared user-visible labels and status vocabulary.' },
+  { key:'errors', label:'Errors and recovery', caption:'Unavailable, failed, canceled, blocked, and retryable states.' }
+];
+const CARD_W = 760, CARD_GAP = 80, ROW_H = 704, LEFT = 56;
+const stage = document.getElementById('stage'), viewport = document.getElementById('viewport'), jumpList = document.getElementById('jumpList'), readout = document.getElementById('readout');
+const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function stateKind(id){if(['2.2','3.6','4.2.2','4.3.2','5.5.2','5.5.3','5.6.1','5.6.2.2','6.2','6.4.2','6.5.2','8.1','8.2','8.3','8.4','8.5','8.6'].includes(id))return'error';if(['2.1','4.1','4.2','4.3','5.1','5.5','5.6.2','6.1','6.4','6.5'].includes(id))return'warn';if(['4.2.1','4.3.1','4.4','5.5.1','5.6.2.1','6.4.1','6.5.1','8'].includes(id))return'ok';if(id.startsWith('7'))return'publish';if(id==='0.1')return'lang';return''}
+function sectionFor(id){if(id==='3.2')return'Style';if(id==='3.3')return'Tools';if(id==='3.4')return'Heartbeat';if(id==='3.5')return'Bootstrap';if(id.startsWith('5'))return'Skills';if(id.startsWith('6'))return'Capabilities';return'Soul'}
+function statusFor(id){if(id==='4.1'||id==='3.6'||id==='3.6.2')return{text:'Unsaved · agent/SOUL.md',cls:'unsaved',save:'Save',dirty:true};if(id==='4.2'||id==='4.3')return{text:'Saving...',cls:'',save:'Saving...',dirty:true};if(id==='4.2.1'||id==='4.3.1'||id==='4.4'||id==='8')return{text:'Saved 10:42 · agent/SOUL.md',cls:'',save:'Save',dirty:false};if(id==='4.2.2'||id==='4.3.2'||id==='8.3')return{text:'Save failed: workspace file could not be written',cls:'error-text',save:'Save',dirty:true,error:true};if(id.startsWith('5.3')||id==='5.4')return{text:'agent/skills/battery-diagnostics/SKILL.md',cls:'',save:'Save',dirty:false};if(id==='5.6.2.2')return{text:'Probe failed in 812ms',cls:'error-text',save:'Save',dirty:false};return{text:'agent/SOUL.md',cls:'',save:'Save',dirty:false}}
+function appShell(inner,opts={}){const rows=opts.entryUnavailable?'<div class="workspace-row dim">0510</div><div class="workspace-row dim">No agent files</div><div class="workspace-row dim">Device test</div>':'<div class="workspace-row active"><span>0510</span><small>1</small></div><div class="workspace-row dim">0509-test <small>1</small></div><div class="workspace-row dim">0421_ai_chat_test <small>0</small></div>';const top=opts.entry?codeWorkspaceTop(opts.entryUnavailable):'';return `<div class="app-frame"><div class="window-dots"><i></i><i></i><i></i></div><aside class="app-sidebar"><div class="mode"><span>Chat</span><span class="selected">Code</span></div><div class="search">Search conversations...</div><div class="side-title">Workspaces <span>+</span></div>${rows}<div class="sidebar-footer"><span>Settings</span><span>Log in</span></div></aside><section class="main-area">${top}${inner}</section><aside class="right-panel"><div class="right-main"><div class="right-tabs"><span class="selected">All Files</span><span>Changes</span><span>Device</span><span>Preview</span></div><div class="right-content">ai-convo<br><br><span style="color:#7a7168">Select a file or keep authoring in the center.</span></div></div><div class="right-bottom"><div class="right-bottom-tabs"><b>Terminal</b><span>Device Log</span></div><div class="right-bottom-body">zhaowei@MacBook-Pro project %</div></div></aside></div>`}
+function codeWorkspaceTop(unavailable=false){return `<div class="code-top"><div class="path-box">/path/to/workspace</div>${unavailable?'':'<button class="edit-agent">Edit Agent</button>'}</div><div class="tab-strip"><span class="tab">Generate firmware project...</span><span class="tab active">Agent · ai-convo</span><span class="tab">+</span></div><div class="workspace-body"><div class="chat-card"><b>Code workspace</b><br><span style="color:#6b625a">Active project context and authoring entry are visible from Code mode.</span></div></div>`}
+function authoringFrame(id){const section=sectionFor(id),status=statusFor(id);const dirtyCount=['4.3','4.3.1','4.3.2'].includes(id)?'<button class="btn primary">Save All (2)</button>':'';const saveError=status.error?'<span class="pill error">Save error</span>':'';const publishLabel=id==='7.3'||id==='7.4'?'<span class="pill ok">Published</span>':'<button class="btn">Publish</button>';return appShell(`<div class="authoring"><header class="agent-header"><div class="agent-title">Agent · ai-convo</div><div class="header-actions">${saveError}${dirtyCount}${publishLabel}</div></header><div class="agent-body"><nav class="author-nav">${navItems(section,status.dirty)}</nav><section class="author-content">${authorContent(id,section,status)}</section></div><footer class="statusbar"><span class="${status.cls}">${esc(status.text)}</span>${id==='7.4'?'<span class="link">Last published 2h ago · <b>1.4.2</b></span>':'<span></span>'}</footer></div>`)}
+function navItems(active,dirty){const core=['Soul','Style','Tools','Heartbeat','Bootstrap'];return core.map(n=>`<div class="nav-item ${active===n?'active':''}"><span>${iconFor(n)}</span><span>${n}</span>${dirty&&active===n?'<i class="dot"></i>':''}</div>`).join('')+'<div class="nav-sep"></div>'+['Skills','Capabilities'].map(n=>`<div class="nav-item ${active===n?'active':''}"><span>${iconFor(n)}</span><span>${n}</span></div>`).join('')}
+function iconFor(n){return({Soul:'S',Style:'T',Tools:'C',Heartbeat:'H',Bootstrap:'B',Skills:'K',Capabilities:'P'})[n]||'*'}
+function authorContent(id,section,status){if(id==='2.1')return'<div class="center-state">Resolving files...</div>';if(id==='0.1')return languageContent();if(id.startsWith('5'))return skillsContent(id);if(id.startsWith('6'))return capabilitiesContent(id);if(id.startsWith('7'))return publishContent(id);let overlay='';if(id==='3.6')overlay=confirmBox('You have unsaved changes. Discard and switch section?','Cancel','Discard and switch');if(id==='3.6.1')overlay='<div class="toast" style="border-color:#b9e3c8;background:#e8f7ee;color:#12805c">Unsaved Soul edit discarded. Style is now active.</div>';if(id==='3.6.2')overlay='<div class="toast" style="border-color:#f0d58b;background:#fff8e5;color:#8a5a12">Switch canceled. Unsaved Soul edit remains active.</div>';if(id==='4.2.2'||id==='4.3.2'||id==='8.3')overlay='<div class="toast">Save failed. Edited content is still here. Retry is available.</div>';return `<div class="file-bar"><span>agent/${section.toUpperCase()}.md</span><span class="file-actions"><button class="btn ${status.dirty?'':'disabled'}">Revert</button><button class="btn primary ${status.save==='Saving...'?'disabled':''}">${status.save}</button></span></div><div class="editor-area">${editorDocument(section,id)}</div>${overlay}`}
+function editorDocument(section,id){const content=section==='Style'?'<h3>Style</h3><p>Voice, phrasing, tone, density, and directness for this agent.</p><h4>Guidelines</h4><p>Prefer concise answers. Keep user-facing language practical.</p>':section==='Tools'?'<h3>Tools</h3><p>Allowed tools, tool boundaries, and authoring notes for hardware project work.</p><h4>Tool Notes</h4><p>Use project-safe actions first. Explain device-affecting steps before they run.</p>':section==='Heartbeat'?'<h3>Heartbeat</h3><p>Recurring checks and background attention for project health.</p><h4>Cadence</h4><p>Watch deployment status, firmware readiness, and stale review blockers.</p>':section==='Bootstrap'?'<h3>Bootstrap</h3><p>First-run project setup instructions for this agent.</p><h4>Startup</h4><p>Load project context, inspect device state, and establish authoring boundaries.</p>':'<h3>SOUL.md - Who You Are</h3><p><i>You are not a chatbot. You are becoming someone.</i></p><h4>Core Truths</h4><p><b>Be genuinely helpful.</b> Skip filler and help the developer move.</p>';const dirtyLine=id==='4.1'||id==='3.6'||id==='3.6.2'?'<p style="color:#8b4e2f"><b>New edit:</b> sharpen hardware capability guidance.</p>':'';return `<div class="personality"><h4>PERSONALITY</h4><div class="field-row"><span>Tone</span><div class="select-box">-- select --</div></div><div class="field-row"><span>Energy 50</span><div class="slider"></div></div><div class="field-row"><span>Boundaries</span><div class="input-box">Add boundary... (press Enter)</div></div></div><div class="md-toolbar"><span class="active-tool">H1</span><span>H2</span><span>H3</span><span>B</span><span>list</span><span>quote</span></div><div class="doc">${content}${dirtyLine}</div>`}
+function skillsContent(id){const empty=id==='5.2',loading=id==='5.1',dialog=id.startsWith('5.5'),preview=id==='5.4',probe=id.startsWith('5.6')||id==='8.5',createError=id==='5.5.3',invalid=id==='5.5.2';let body='';if(empty||loading){body=`<div class="empty-state">${loading?'Loading skills...':'No skills yet. Click New Skill to create one.'}</div>`}else if(probe){body=`<div class="skill-body"><div class="skill-list"><div class="skill-row active">Battery Diagnostics<small>battery-diagnostics</small></div><div class="skill-row">Display Capture<small>display-capture</small></div></div><div class="skill-detail"><div class="detail-tabs"><span>Edit</span><span>Preview</span><span class="active">Probe</span><span class="detail-path">agent/skills/battery-diagnostics/SKILL.md</span></div><div class="skill-pane">${probePanel(id)}</div></div></div>`}else{body=`<div class="skill-body"><div class="skill-list"><div class="skill-row active">Battery Diagnostics<small>battery-diagnostics</small></div><div class="skill-row">Display Capture<small>display-capture</small></div><div class="skill-row"><span style="color:#b7791f">missing SKILL.md</span><small>legacy_probe</small></div></div><div class="skill-detail"><div class="detail-tabs"><span class="active">${preview?'Preview':'Edit'}</span><span>${preview?'Edit':'Preview'}</span><span>Probe</span><span class="detail-path">agent/skills/battery-diagnostics/SKILL.md</span></div><div class="skill-pane">${preview?skillPreview():skillEdit()}</div></div></div>`}let overlay='';if(dialog)overlay=newSkillDialog(invalid,createError,id==='5.5.1');if(id==='8.4')overlay='<div class="toast" style="border-color:#f0d58b;background:#fff8e5;color:#8a5a12">Skill list needs attention. Refresh, select another skill, or create one.</div>';return `<div class="skills-layout"><header class="section-head"><span class="title">${empty?'No skills':loading?'Loading skills...':'2 skills'}</span><span><button class="btn">New Skill</button> <button class="btn">Refresh</button></span></header>${body}</div>${overlay}`}
+function skillEdit(){return'<div class="md-toolbar"><span class="active-tool">plain</span><span>frontmatter</span><span>Markdown</span></div><div class="doc"><h3>Battery Diagnostics</h3><p>Use this skill when checking battery behavior under load.</p><h4>Steps</h4><p>Read voltage, compare against expected range, summarize risk.</p></div>'}function skillPreview(){return'<div class="doc" style="height:100%"><h3>Battery Diagnostics</h3><p>Use this skill when checking battery behavior under load.</p><h4>Description</h4><p>Diagnose battery behavior and explain the observed pattern.</p></div>'}
+function newSkillDialog(invalid,createError,created){if(created)return'<div class="toast" style="border-color:#b9e3c8;background:#e8f7ee;color:#12805c">New skill created. Battery Diagnostics is selected.</div>';return `<div class="dialog-backdrop"><div class="dialog"><header><b>New Skill</b><button class="btn">x</button></header><div class="body"><label class="label">Name<div class="input">${invalid?'Battery Diagnostics!':'battery-diagnostics'}</div><small>Slug: ${invalid?'battery-diagnostics-':'battery-diagnostics'}</small>${invalid?'<span class="validation">Use lowercase letters, digits, and single hyphens.</span>':''}</label><label class="label">Description<div class="input" style="font-family:inherit">Diagnose battery behavior under load</div></label><div class="info-box">Files to create:<br><b>agent/skills/battery-diagnostics/SKILL.md</b></div>${createError?'<div class="validation">Could not create the skill. Check workspace write access and retry.</div>':''}</div><footer><button class="btn">Cancel</button><button class="btn primary ${invalid?'disabled':''}">Create</button></footer></div></div>`}
+function probePanel(id){const unavailable=id==='5.6.1'||id==='8.5',running=id==='5.6.2',success=id==='5.6.2.1',failed=id==='5.6.2.2';const status=unavailable?'<span style="color:#b7791f">Not deployed</span>':'<span style="color:#12805c">http://localhost:8787 · Running</span>';const loaded=unavailable?'<span style="color:#b7791f">battery-diagnostics not in loaded list</span>':'<span style="color:#12805c">battery-diagnostics loaded</span>';let result='';if(success)result='<div class="probe-card"><b>Probe completed in 642ms</b><div class="result-box">Response: Battery voltage is within expected range. Tool calls: read_battery, compare_thresholds.</div></div>';if(failed)result='<div class="probe-card"><b style="color:#b42318">Probe failed in 812ms</b><div class="result-box">Project runtime could not complete the probe. Retry after refresh.</div></div>';if(running)result='<div class="probe-card"><b>Running probe...</b><div class="log-box">Waiting for final assistant response...</div></div>';if(unavailable)result='<div class="info-box">Deploy or restart the project runtime, then click Refresh before probing.</div>';return `<div class="probe"><div class="probe-card"><div class="line"><b>Project runtime</b>${status}</div><div class="line"><b>Loaded</b>${loaded}</div><button class="btn">Refresh</button></div><div class="probe-card"><b>Probe prompt</b><div class="textarea">Check whether the battery is healthy under load.</div><div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn primary ${unavailable||running?'disabled':''}">${running?'Running...':'Run Probe'}</button></div></div>${result}</div>`}
+function capabilitiesContent(id){const noDevice=id==='6.2',diff=id==='6.4'||id==='6.4.1'||id==='6.4.2',refresh=id==='6.1'||id==='6.5',refreshOk=id==='6.5.1',refreshFail=id==='6.5.2'||id==='8.6';let body='';if(noDevice)body='<div class="empty-state">No device connected<br><small>Connect a device to refresh. Capabilities populate once firmware reports a manifest.</small></div>';else if(diff)body=diffContent(id);else body=manifestContent(refresh||refreshOk);const error=refreshFail?'<div class="toast">Capability refresh failed. Previous context is preserved and retry is available.</div>':'';return `<div class="cap-shell"><header class="cap-head"><div class="cap-title"><span>Capabilities</span><small>${noDevice?'No device connected':'<i class="device-dot"></i> CoreS3 · Online'}</small></div><div><span class="toggle ${diff?'':'active'}">View</span><span class="toggle ${diff?'active':''}">View Diff</span><button class="btn ${refresh?'disabled':''}">${refresh?'Refreshing...':'Refresh Capabilities'}</button></div></header><div class="cap-body">${body}</div></div>${error}`}
+function manifestContent(refreshing){return `<div class="manifest"><div class="manifest-card"><h4>Device manifest</h4><div class="check-row"><span>display.draw</span><span class="pill ok">available</span></div><div class="check-row"><span>battery.read</span><span class="pill ok">available</span></div><div class="check-row"><span>speaker.play</span><span class="pill ok">available</span></div></div><div class="manifest-card"><h4>Source</h4><p>cached firmware manifest · just now</p><p>${refreshing?'Refresh updated the focused device.':'The focused device reports capability metadata.'}</p></div></div>`}
+function diffContent(id){if(id==='6.4')return'<div class="empty-state">Loading agent capabilities...</div>';if(id==='6.4.2')return'<div class="empty-state">Unable to compute capability diff.<br><small>Check that the agent declares capabilities, then try View Diff again.</small></div>';return'<div class="manifest"><div class="manifest-card"><h4>Agent-declared capabilities</h4><div class="check-row"><span>display.draw</span><span class="pill ok">matched</span></div><div class="check-row"><span>battery.read</span><span class="pill ok">matched</span></div><div class="check-row"><span>camera.capture</span><span class="pill error">missing</span></div></div><div class="manifest-card"><h4>Device-reported capabilities</h4><div class="check-row"><span>display.draw</span><span class="pill ok">used</span></div><div class="check-row"><span>speaker.play</span><span class="pill warn">unused</span></div><div class="check-row"><span>battery.read</span><span class="pill ok">used</span></div></div></div>'}
+function publishContent(id){if(id==='7.1')return appShell('',{entry:true});if(id==='7.4')return `<div class="file-bar"><span>agent/SOUL.md</span><span class="file-actions"><button class="btn disabled">Revert</button><button class="btn disabled">Save</button></span></div><div class="editor-area">${editorDocument('Soul',id)}</div>`;if(id==='7.3')return'<div class="dialog-backdrop"><div class="review-detail"><h4>Review details</h4><div class="release-row"><b>Agent package</b><span class="pill warn">in review</span><button class="btn">Refresh</button></div><p>Current submission remains visible while the editor waits underneath.</p><div style="text-align:right"><button class="btn">Close</button></div></div></div>';if(id==='7.5')return'<div class="release-hub"><header><b>Publish · ai-convo</b><button class="btn">Close</button></header><div class="release-row"><b>Returned from child</b><span class="pill ok">context kept</span><button class="btn">Continue</button></div></div>';return '<div class="release-hub"><header><b>Publish · ai-convo</b><button class="btn">Close</button></header><div class="release-row"><div><b>App record</b><small>draft</small></div><span class="pill warn">draft</span><button class="btn">Submit for review</button></div><div class="release-row"><div><b>Icon & screenshots</b><small>add any time</small></div><span class="pill">optional</span><button class="btn disabled">Edit</button></div><div class="release-row"><div><b>Agent package</b><small>from manifest</small></div><span class="pill warn">draft</span><button class="btn">Submit for review</button></div><div class="release-row"><div><b>Firmware</b><small>from build</small></div><span class="pill warn">draft</span><button class="btn disabled">Publish firmware</button></div></div>'}
+function languageContent(){return '<div class="language-grid"><div class="language-card"><b>Entry and sections</b><span>Edit Agent</span><span>Agent · ai-convo</span><span>Soul</span><span>Style</span><span>Tools</span><span>Heartbeat</span><span>Bootstrap</span></div><div class="language-card"><b>Save states</b><span>Revert</span><span>Save</span><span>Saving...</span><span>Unsaved</span><span>Saved</span><span>Save error</span><span>Save All (N)</span></div><div class="language-card"><b>Skills</b><span>No skills</span><span>New Skill</span><span>Refresh</span><span>Edit</span><span>Preview</span><span>Probe</span><span>Run Probe</span></div><div class="language-card"><b>Capabilities and publish</b><span>No device connected</span><span>View</span><span>View Diff</span><span>Refresh Capabilities</span><span>Publish</span><span>Last published</span></div></div>'}
+function confirmBox(text,cancel,confirm){return `<div class="confirm"><div class="confirm-box"><h4>${esc(text)}</h4><p>Unsaved editor content will be lost if the user continues.</p><div class="confirm-actions"><button class="btn">${esc(cancel)}</button><button class="btn primary">${esc(confirm)}</button></div></div></div>`}
+function stateFrame(id){if(id==='1'||id==='7.1')return appShell('',{entry:true});if(id==='2.2')return appShell('',{entry:true,entryUnavailable:true});if(id==='0.1')return appShell(`<div class="authoring"><header class="agent-header"><div class="agent-title">Agent · ai-convo</div><div class="header-actions"><button class="btn">Publish</button></div></header><div class="agent-body"><nav class="author-nav">${navItems('Soul',false)}</nav><section class="author-content">${languageContent()}</section></div><footer class="statusbar"><span>Saved 10:42 · agent/SOUL.md</span><span>Last published 2h ago · <b>1.4.2</b></span></footer></div>`);return authoringFrame(id)}
+function labelForKind(kind){return kind==='error'?'Recovery':kind==='warn'?'Transient':kind==='ok'?'Resolved':kind==='publish'?'Handoff':kind==='lang'?'Language':'State'}
+function stateCard(id,rowIndex='band'){const s=STATE_BY_ID.get(id);const kind=stateKind(id);return `<article class="card ${kind}" data-state-id="${esc(id)}" id="state-${esc(id).replace(/\./g,'_')}-${rowIndex}"><header class="card-head"><h3>${esc(id)} ${esc(s.title)}</h3><div class="meta"><span class="pill">${esc(s.type)}</span><span class="pill ${kind==='error'?'error':kind==='warn'?'warn':kind==='ok'?'ok':''}">${labelForKind(kind)}</span></div></header><div class="frame-wrap">${stateFrame(id)}</div><p class="card-note">${esc(s.ui)}</p></article>`}
+function renderRouteRow(route,rowIndex,top,stageW){const cards=route.ids.map((id,col)=>{const left=LEFT+col*(CARD_W+CARD_GAP);const arrow=col<route.ids.length-1?`<div class="arrow" style="left:${left+CARD_W+22}px;top:330px">→</div>`:'';return `<div class="node" style="left:${left}px;top:100px">${stateCard(id,rowIndex)}</div>${arrow}`}).join('');return `<section class="route-row" data-route-row="${rowIndex}" id="route-${rowIndex}" style="top:${top}px;width:${stageW}px"><div class="route-label"><h3>${rowIndex+1}. ${esc(route.title)}</h3><p><b>Route:</b> ${esc(route.ids.join(' -> '))}<br>${esc(route.result)}</p></div>${cards}</section>`}
+function renderMainBand(top,stageW){const ids=SECTIONS.main;const cards=ids.map((id,col)=>{const left=LEFT+col*(CARD_W+CARD_GAP);const arrow=col<ids.length-1?`<div class="arrow" style="left:${left+CARD_W+22}px;top:346px">→</div>`:'';return `<div class="node" style="left:${left}px;top:118px">${stateCard(id,'main')}</div>${arrow}`}).join('');return `<section class="band" data-band="Main happy path" id="band-main" style="top:${top}px;height:760px"><div class="band-label"><h2>Main happy path</h2><p>Primary route from Code entry through Soul edit, save success, and stable authoring state.</p></div>${cards}</section>`}
+function summaryKind(key){return key==='errors'?'error':key==='stateLanguage'?'state':'detail'}
+function blockText(id){if(['2.1','4.2','4.3','5.1','5.6.2','6.1','6.4','6.5'].includes(id))return'Temporarily while the operation resolves';if(['2.2','3.6','4.2.2','4.3.2','5.5.2','5.5.3','5.6.1','5.6.2.2','6.2','6.4.2','6.5.2','8.2','8.3','8.5','8.6'].includes(id))return'Only for the affected action; other authoring work remains available';return'No'}
+function summaryCard(id,key){const s=STATE_BY_ID.get(id),kind=summaryKind(key);if(key==='stateLanguage')return `<article class="card summary-card state" data-state-id="${esc(id)}"><header class="card-head"><h3>${esc(id)} ${esc(s.title)}</h3><div class="meta"><span class="pill">State language</span></div></header><div class="copy-grid"><div class="copy-box"><b>Entry and sections</b><span>Edit Agent</span><span>Agent · ai-convo</span><span>Soul</span><span>Style</span><span>Tools</span><span>Heartbeat</span><span>Bootstrap</span></div><div class="copy-box"><b>Save states</b><span>Revert</span><span>Save</span><span>Saving...</span><span>Unsaved</span><span>Saved</span><span>Save error</span><span>Save All (N)</span></div><div class="copy-box"><b>Skills</b><span>No skills</span><span>New Skill</span><span>Refresh</span><span>Edit</span><span>Preview</span><span>Probe</span><span>Run Probe</span></div><div class="copy-box"><b>Capabilities and publish</b><span>No device connected</span><span>View</span><span>View Diff</span><span>Refresh Capabilities</span><span>Publish</span><span>Last published</span></div></div><p class="summary-note">Shared vocabulary used across Agent Authoring cards and route rows.</p></article>`;return `<article class="card summary-card ${kind}" data-state-id="${esc(id)}"><header class="card-head"><h3>${esc(id)} ${esc(s.title)}</h3><div class="meta"><span class="pill">${esc(s.type)}</span><span class="pill ${kind==='error'?'error':kind==='detail'?'ok':'warn'}">${kind==='error'?'Recovery':'Status'}</span></div></header><div class="summary-panel"><div class="summary-row"><b>Represents</b><span>${esc(s.rep)}</span></div><div class="summary-row"><b>Visible state</b><span>${esc(s.ui)}</span></div><div class="summary-row"><b>User action</b><span>${esc(s.action)}</span></div><div class="summary-row"><b>Next</b><span>${esc(s.next)}</span></div><div class="summary-row"><b>Blocks progress</b><span>${esc(blockText(id))}</span></div></div><div class="summary-status"><span class="pill">Parent ${esc(s.parent)}</span></div></article>`}
+function emptyBandCard(label){return `<div class="card-node" style="left:${LEFT}px;top:132px"><article class="card summary-card"><header class="card-head"><h3>${esc(label)} has no separate states</h3></header><div class="summary-panel"><div class="summary-row"><b>Status</b><span>This category is retained for record parity.</span></div></div></article></div>`}
+function renderCardBand(key,label,caption,ids,top,stageW){const fullProduct=key==='branch';const perRow=fullProduct?3:5,rowGap=fullProduct?660:286,cardGap=fullProduct?CARD_GAP:32,cardW=fullProduct?CARD_W:500,cardTop=fullProduct?104:112;const cards=ids.map((id,i)=>{const col=i%perRow,row=Math.floor(i/perRow);const card=fullProduct?stateCard(id,key):summaryCard(id,key);return `<div class="card-node" style="left:${LEFT+col*(cardW+cardGap)}px;top:${cardTop+row*rowGap}px;width:${cardW}px">${card}</div>`}).join('') || emptyBandCard(label);const rows=Math.max(1,Math.ceil(ids.length/perRow));return `<section class="band" data-band="${esc(label)}" id="band-${key}" style="top:${top}px;height:${150+rows*rowGap}px"><div class="band-label"><h2>${esc(label)}</h2><p>${esc(caption)}</p></div>${cards}</section>`}
+function render(){jumpList.innerHTML=BAND_ORDER.map((b)=>`<a href="#" class="band-link" data-band-jump="${b.key}"><b>${esc(b.label)}</b><span>${esc(b.caption)}</span></a>`).join('')+'<h2 style="margin-top:18px">Route shortcuts</h2>'+ROUTES.map((route,index)=>`<a href="#" class="route-link" data-route-jump="${index}"><b>${index+1}. ${esc(route.title)}</b><span>${route.ids.join(' -> ')}</span></a>`).join('');const maxCards=Math.max(...ROUTES.map(r=>r.ids.length),SECTIONS.main.length,3);const stageW=LEFT*2+maxCards*CARD_W+(maxCards-1)*CARD_GAP+160;let top=34;let html='';const bandTops={main:top};html+=renderMainBand(top,stageW);top+=760;bandTops.routePath=top;const routeHeight=116+ROUTES.length*ROW_H+24;html+=`<section class="band" data-band="Route path" id="band-routePath" style="top:${top}px;height:${routeHeight}px"><div class="band-label"><h2>Route path</h2><p>Each row mirrors one approved route from the journey record. Every state is drawn as a full product wireframe card.</p></div>${ROUTES.map((route,index)=>renderRouteRow(route,index,96+index*ROW_H,stageW)).join('')}</section>`;top+=routeHeight+40;for(const b of BAND_ORDER.slice(2)){bandTops[b.key]=top;const ids=SECTIONS[b.key]||[];const fullProduct=b.key==='branch';const perRow=fullProduct?3:5;const rowGap=fullProduct?660:286;const rows=Math.max(1,Math.ceil(ids.length/perRow));const height=118+rows*rowGap;html+=renderCardBand(b.key,b.label,b.caption,ids,top,stageW);top+=height+40}stage.style.width=`${stageW}px`;stage.style.height=`${top+120}px`;stage.innerHTML=html;stage.dataset.bandTops=JSON.stringify(bandTops)}
+render();let scale=.48,posX=16,posY=12,dragging=false,startX=0,startY=0,baseX=0,baseY=0,raf=0;function apply(){raf=0;stage.style.transform=`translate(${posX}px, ${posY}px) scale(${scale})`;readout.textContent=`${Math.round(scale*100)}%`}function schedule(){if(!raf)raf=requestAnimationFrame(apply)}function fit(){const rect=viewport.getBoundingClientRect();const w=parseFloat(stage.style.width);const h=parseFloat(stage.style.height);scale=Math.min(rect.width/w,rect.height/h,.72);posX=18;posY=18;schedule()}function zoomAt(cx,cy,next){const old=scale;scale=Math.max(.12,Math.min(1.05,next));posX=cx-(cx-posX)*(scale/old);posY=cy-(cy-posY)*(scale/old);schedule()}viewport.addEventListener('pointerdown',e=>{dragging=true;viewport.classList.add('dragging');startX=e.clientX;startY=e.clientY;baseX=posX;baseY=posY;viewport.setPointerCapture(e.pointerId)});viewport.addEventListener('pointermove',e=>{if(!dragging)return;posX=baseX+e.clientX-startX;posY=baseY+e.clientY-startY;schedule()});viewport.addEventListener('pointerup',()=>{dragging=false;viewport.classList.remove('dragging')});viewport.addEventListener('pointercancel',()=>{dragging=false;viewport.classList.remove('dragging')});viewport.addEventListener('wheel',e=>{e.preventDefault();const rect=viewport.getBoundingClientRect();if(e.metaKey||e.ctrlKey)zoomAt(e.clientX-rect.left,e.clientY-rect.top,scale*(e.deltaY<0?1.09:.91));else{posX-=e.deltaX;posY-=e.deltaY;schedule()}},{passive:false});document.getElementById('zoom-in').onclick=()=>zoomAt(viewport.clientWidth/2,viewport.clientHeight/2,scale*1.12);document.getElementById('zoom-out').onclick=()=>zoomAt(viewport.clientWidth/2,viewport.clientHeight/2,scale*.88);document.getElementById('fit').onclick=fit;document.getElementById('reset').onclick=()=>{scale=.48;posX=16;posY=12;schedule()};jumpList.addEventListener('click',e=>{const route=e.target.closest('a[data-route-jump]');const band=e.target.closest('a[data-band-jump]');if(route){e.preventDefault();const row=Number(route.dataset.routeJump);const tops=JSON.parse(stage.dataset.bandTops);posX=16;posY=-(tops.routePath+96+row*ROW_H)*scale+18;schedule()}else if(band){e.preventDefault();const tops=JSON.parse(stage.dataset.bandTops);posX=16;posY=-(tops[band.dataset.bandJump])*scale+18;schedule()}});apply();
+</script>
+</body>
+</html>

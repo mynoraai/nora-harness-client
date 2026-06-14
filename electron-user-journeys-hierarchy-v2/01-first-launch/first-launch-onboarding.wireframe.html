@@ -145,8 +145,8 @@ button:hover { background: #f3f6f8; }
   position: absolute;
   left: 30px;
   top: 30px;
-  width: 5150px;
-  min-height: 2860px;
+  width: 13000px;
+  min-height: 18800px;
   padding: 18px 18px 140px;
   transform-origin: 0 0;
   will-change: transform;
@@ -180,6 +180,16 @@ button:hover { background: #f3f6f8; }
 .card.detail { border-top: 6px solid #91d6a6; }
 .card.state { border-top: 6px solid #d3b166; }
 .card.error { border-top: 6px solid #dd8c74; }
+.card.context-card {
+  border-top: 6px solid #b9c4d2;
+  background: #fbfcfd;
+}
+.context-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1.2;
+}
 .card h4 {
   margin: 0 0 8px;
   font-size: 18px;
@@ -235,6 +245,7 @@ button:hover { background: #f3f6f8; }
   padding: 40px 60px;
 }
 .on-window {
+  position: relative;
   width: 1120px;
   height: 780px;
   border-radius: 30px;
@@ -244,6 +255,22 @@ button:hover { background: #f3f6f8; }
   display: flex;
   flex-direction: column;
 }
+.window-dots {
+  position: absolute;
+  left: 26px;
+  top: 20px;
+  display: flex;
+  gap: 12px;
+}
+.window-dots span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+}
+.window-dots span:nth-child(1) { background: #ff6158; }
+.window-dots span:nth-child(2) { background: #ffc12f; }
+.window-dots span:nth-child(3) { background: #2acb49; }
 .step-head {
   padding-top: 24px;
   text-align: center;
@@ -253,7 +280,7 @@ button:hover { background: #f3f6f8; }
 }
 .progress {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   width: 200px;
   margin: 12px auto 0;
@@ -440,6 +467,36 @@ button:hover { background: #f3f6f8; }
   font-size: 14px;
 }
 .input.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.input.selectable {
+  justify-content: space-between;
+  color: #2f2b27;
+}
+.model-menu {
+  width: min(520px, 100%);
+  margin-top: 6px;
+  border: 1px solid #ddd5ca;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(31, 26, 20, .12);
+  overflow: hidden;
+}
+.model-option {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  color: #2f2b27;
+  font-size: 14px;
+}
+.model-option.selected {
+  background: #fbf7f1;
+}
+.model-option .check {
+  color: #7d776f;
+  font-weight: 900;
+}
 .hint {
   margin: 8px 0 0;
   color: #756e65;
@@ -448,6 +505,37 @@ button:hover { background: #f3f6f8; }
 .hint.error { color: var(--danger); }
 .verified-label { color: var(--success); font-weight: 800; }
 .skip-label { color: #756e65; font-weight: 800; }
+.confirm-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(32, 30, 27, .32);
+}
+.confirm-dialog {
+  width: 420px;
+  border: 1px solid #d7cec2;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(25, 22, 18, .22);
+  padding: 20px;
+  color: #2f2b27;
+}
+.confirm-dialog h5 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.confirm-dialog p {
+  margin: 0 0 18px;
+  color: #6f675f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
 .tone-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -506,65 +594,134 @@ button:hover { background: #f3f6f8; }
 }
 .notify-art {
   position: relative;
-  width: 210px;
-  height: 190px;
-  margin: 0 auto 26px;
+  width: 380px;
+  height: 300px;
+  margin: 0 auto 38px;
 }
 .bell-box {
   position: absolute;
-  left: 24px;
-  top: 0;
-  width: 162px;
-  height: 150px;
-  border-radius: 32px;
-  background: #ffe7e4;
+  left: 96px;
+  top: 8px;
+  width: 188px;
+  height: 178px;
+  border: 1px solid #ece0d5;
+  border-radius: 42px 42px 10px 10px;
+  background: linear-gradient(180deg, #fff8f1 0%, #f4e9df 100%);
+  box-shadow: 0 18px 46px rgba(112, 91, 74, .14);
   display: grid;
   place-items: center;
-  color: #ef5d50;
-  font-size: 72px;
+  color: var(--accent);
+  font-size: 0;
   font-weight: 800;
+}
+.bell-box::before {
+  content: "";
+  position: absolute;
+  left: 61px;
+  top: 52px;
+  width: 66px;
+  height: 76px;
+  border-radius: 42px 42px 20px 20px;
+  background: var(--accent);
+}
+.bell-box::after {
+  content: "";
+  position: absolute;
+  left: 80px;
+  top: 126px;
+  width: 30px;
+  height: 10px;
+  border-radius: 0 0 18px 18px;
+  border-bottom: 7px solid var(--accent);
 }
 .mini-badge {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: #fff;
   border: 1px solid #eee2d7;
-  font-size: 12px;
+  box-shadow: 0 8px 20px rgba(42, 35, 28, .16);
+  font-size: 14px;
   font-weight: 900;
 }
-.b1 { left: 36px; top: 18px; color: #ef5d50; }
-.b2 { right: 24px; top: 22px; color: #2f6fa3; }
-.b3 { left: 12px; top: 70px; color: #5c68d8; }
-.b4 { right: 6px; top: 82px; color: #1c8d54; }
+.b1 { left: 112px; top: 34px; color: var(--accent); }
+.b2 { right: 94px; top: 34px; background: #5f9b8f; color: #fff; }
+.b3 { left: 78px; top: 94px; background: #28231f; color: #fff; }
+.b4 { right: 76px; top: 102px; background: #b78a55; color: #fff; }
 .toast {
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 315px;
+  width: 382px;
   transform: translateX(-50%);
   border: 1px solid #eee5dc;
-  border-radius: 8px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, .94);
-  padding: 12px;
-  box-shadow: 0 14px 36px rgba(30, 30, 30, .14);
+  padding: 16px 18px 16px 70px;
+  box-shadow: 0 22px 48px rgba(66, 53, 42, .16);
   text-align: left;
-  font-size: 12px;
+  font-size: 18px;
+  line-height: 1.18;
 }
-.ready-icon {
-  width: 86px;
-  height: 86px;
+.toast .toast-icon {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-  margin: 0 auto 26px;
-  border-radius: 50%;
-  background: #ffe7e4;
-  color: #ef5d50;
-  font-size: 36px;
+  border-radius: 11px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 20px;
   font-weight: 900;
+}
+.toast b {
+  display: block;
+  margin-bottom: 2px;
+  color: #2a2520;
+  font-size: 18px;
+}
+.toast .now {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  color: #8a837b;
+  font-size: 16px;
+}
+.ready-icon {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 54px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff8f1 0%, #f8f1e9 100%);
+  color: var(--accent);
+  font-size: 0;
+  font-weight: 900;
+  box-shadow: 0 20px 48px rgba(77, 61, 45, .13);
+}
+.ready-icon::before {
+  content: "";
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--accent);
+  border-radius: 50%;
+}
+.ready-icon::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 10px;
+  border-left: 5px solid var(--accent);
+  border-bottom: 5px solid var(--accent);
+  transform: rotate(-45deg) translate(1px, -2px);
 }
 .chat-shell {
   width: 1200px;
@@ -719,6 +876,259 @@ button:hover { background: #f3f6f8; }
   gap: 8px;
   margin-top: 10px;
 }
+.route-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.route-item {
+  border: 1px solid #d5dce3;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 11px;
+}
+.route-item strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.route-item p {
+  margin: 0;
+  color: #56606a;
+  font-size: 12px;
+  line-height: 1.36;
+}
+.route-map {
+  display: grid;
+  gap: 16px;
+  width: 4200px;
+}
+.route-map-head,
+.route-row {
+  display: grid;
+  grid-template-columns: 300px 1fr 520px;
+  gap: 0;
+}
+.route-map-head {
+  border: 1px solid #aeb8c2;
+  border-radius: 8px 8px 0 0;
+  background: #26313b;
+  color: #fff;
+  overflow: hidden;
+}
+.route-map-head div {
+  padding: 12px 14px;
+  border-right: 1px solid rgba(255, 255, 255, .16);
+  font-size: 12px;
+  font-weight: 850;
+}
+.route-map-head div:last-child { border-right: 0; }
+.route-row {
+  min-height: 82px;
+  border: 1px solid #b8c1ca;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .95);
+  box-shadow: 0 6px 14px rgba(30, 38, 48, .1);
+  overflow: hidden;
+}
+.route-row:nth-child(even) { background: #f8fafc; }
+.route-name,
+.route-result {
+  padding: 14px;
+  border-right: 1px solid #d6dde4;
+  font-size: 13px;
+  line-height: 1.38;
+}
+.route-name {
+  display: flex;
+  align-items: center;
+  color: #21262d;
+  font-weight: 850;
+}
+.route-result {
+  border-right: 0;
+  color: #46515c;
+}
+.route-sequence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-right: 1px solid #d6dde4;
+  white-space: nowrap;
+}
+.route-wireframes {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px;
+  border-right: 1px solid #d6dde4;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.route-frame {
+  flex: 0 0 292px;
+  border: 1px solid #cfd7df;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: inset 0 4px 0 #b9c4d2;
+  overflow: hidden;
+}
+.route-frame.main { box-shadow: inset 0 4px 0 #8bbce8; }
+.route-frame.ok { box-shadow: inset 0 4px 0 #91d6a6; }
+.route-frame.warn { box-shadow: inset 0 4px 0 #d3b166; }
+.route-frame.err { box-shadow: inset 0 4px 0 #dd8c74; }
+.route-frame.info { box-shadow: inset 0 4px 0 #92b7df; }
+.route-frame.detail { box-shadow: inset 0 4px 0 #b7d5a2; }
+.route-frame-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 10px 8px;
+  border-bottom: 1px solid #e3e8ee;
+  color: #1f2328;
+  font-size: 12px;
+  font-weight: 850;
+}
+.route-frame-title span {
+  color: #5f6872;
+  font-size: 10px;
+  font-weight: 760;
+}
+.route-product {
+  width: 292px;
+  height: 212px;
+  overflow: hidden;
+  background: #fbf8f3;
+}
+.route-product .desktop {
+  transform: scale(.244);
+  transform-origin: top left;
+}
+.route-product .chat-shell {
+  background: #fffdf9;
+}
+.route-wire-arrow {
+  flex: 0 0 24px;
+  align-self: center;
+  color: #7a838d;
+  font-size: 22px;
+  text-align: center;
+}
+.route-choice-frames {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  border: 1px dashed #aeb8c2;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px;
+}
+.route-choice-frames em {
+  align-self: center;
+  color: #6a737d;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.route-map {
+  display: grid;
+  gap: 54px;
+  width: 13000px;
+}
+.route-flow-block {
+  min-width: 0;
+}
+.route-flow-block .band-title {
+  margin-bottom: 12px;
+}
+.route-card-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1.2;
+}
+.route-or {
+  align-self: center;
+  min-width: 48px;
+  text-align: center;
+  color: #6b747e;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.route-node {
+  min-width: 74px;
+  border: 1px solid #cfd7df;
+  border-radius: 8px;
+  background: #fff;
+  padding: 7px 9px;
+  text-align: center;
+  box-shadow: inset 0 4px 0 #b9c4d2;
+}
+.route-node strong {
+  display: block;
+  color: #1f2328;
+  font-size: 12px;
+  line-height: 1;
+}
+.route-node span {
+  display: block;
+  margin-top: 4px;
+  color: #5b6570;
+  font-size: 10px;
+  line-height: 1.1;
+}
+.route-node.main { box-shadow: inset 0 4px 0 #8bbce8; }
+.route-node.ok { box-shadow: inset 0 4px 0 #91d6a6; }
+.route-node.warn { box-shadow: inset 0 4px 0 #d3b166; }
+.route-node.err { box-shadow: inset 0 4px 0 #dd8c74; }
+.route-node.info { box-shadow: inset 0 4px 0 #92b7df; }
+.route-node.detail { box-shadow: inset 0 4px 0 #b7d5a2; }
+.route-arrow {
+  color: #7a838d;
+  font-size: 18px;
+  line-height: 1;
+}
+.route-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px dashed #aeb8c2;
+  border-radius: 10px;
+  padding: 4px 6px;
+  background: #fff;
+}
+.route-choice em {
+  color: #6a737d;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.copy-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+.copy-row {
+  display: grid;
+  grid-template-columns: 144px 1fr;
+  gap: 10px;
+  border-bottom: 1px solid #e6ebef;
+  padding-bottom: 8px;
+  color: #56606a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.copy-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.copy-row strong { color: var(--ink); font-size: 12px; }
 @media (max-width: 900px) {
   .topbar { position: relative; display: block; }
   .controls { justify-content: flex-start; margin-top: 12px; min-width: 0; }
@@ -770,6 +1180,8 @@ button:hover { background: #f3f6f8; }
   <aside class="nav" aria-label="Jump list">
     <h2>Jump list</h2>
     <button type="button" onclick="jump('main-path')">Main happy path</button>
+    <button type="button" onclick="jump('route-map')">Route map</button>
+    <button type="button" onclick="jump('branch-journeys')">Branch journeys</button>
     <button type="button" onclick="jump('detail-states')">Detail states</button>
     <button type="button" onclick="jump('state-language')">State language</button>
     <button type="button" onclick="jump('errors')">Errors and recovery</button>
@@ -780,58 +1192,48 @@ button:hover { background: #f3f6f8; }
         <div class="band-title"><h3>Main happy path</h3><span>Fresh install to first usable Chat</span></div>
         <div class="flow">
           <article class="card main">
-            <h4>1. Welcome</h4>
+            <h4>1 Welcome</h4>
             <p>User lands in a centered onboarding shell. One primary action starts setup.</p>
             <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
             <ul class="notes">
-              <li>Step progress is visible before any app shell appears.</li>
-              <li>No alternate action competes with Get started.</li>
+              <li>Step progress shows Step 1 of 4.</li>
+              <li>Get started is the only action on the first screen.</li>
             </ul>
           </article>
           <div class="arrow" aria-hidden="true"></div>
           <article class="card main">
-            <h4>2. Provider Setup</h4>
-            <p>User picks an AI service, enters a key or endpoint, chooses a default model, and verifies.</p>
+            <h4>2 Provider Setup</h4>
+            <p>User chooses a provider, enters a key or local endpoint, chooses a model, then verifies or explicitly skips verification.</p>
             <div class="product"><div class="desktop onboarding-screen provider-screen provider-filled"></div></div>
             <ul class="notes">
-              <li>Continue remains disabled until verification is satisfied.</li>
-              <li>Skip verification exists, but is framed as advanced.</li>
+              <li>Continue is gated until verification is satisfied or skipped.</li>
+              <li>Back returns to Welcome and does not save the verified provider.</li>
             </ul>
           </article>
           <div class="arrow" aria-hidden="true"></div>
           <article class="card main">
-            <h4>3. Personality</h4>
-            <p>User chooses tone, optionally adds instructions, previews the initial identity, then saves or skips.</p>
-            <div class="product"><div class="desktop onboarding-screen personality-screen"></div></div>
-            <ul class="notes">
-              <li>Saving creates the initial agent identity.</li>
-              <li>Skip lets setup continue without blocking value.</li>
-            </ul>
-          </article>
-          <div class="arrow" aria-hidden="true"></div>
-          <article class="card main">
-            <h4>4. Notifications</h4>
+            <h4>3 Notifications</h4>
             <p>User chooses whether to ask for system notifications now or continue without them.</p>
             <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
             <ul class="notes">
-              <li>Both actions advance the flow.</li>
-              <li>The operating system prompt is outside this product frame.</li>
+              <li>Maybe later advances immediately.</li>
+              <li>Turn on notifications requests OS permission, then advances.</li>
             </ul>
           </article>
           <div class="arrow" aria-hidden="true"></div>
           <article class="card main">
-            <h4>5. Completion</h4>
+            <h4>4 Completion</h4>
             <p>User sees provider/model confirmation and clicks Start chatting.</p>
             <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
             <ul class="notes">
-              <li>Completion is the moment the first-run gate is satisfied.</li>
-              <li>Provider/model summary reassures the user before handoff.</li>
+              <li>Completion confirms the provider saved in step 2.</li>
+              <li>The onboarding-complete flag is written only after Start chatting.</li>
             </ul>
           </article>
           <div class="arrow" aria-hidden="true"></div>
           <article class="card main">
-            <h4>6. First Chat Surface</h4>
-            <p>The app opens a new Chat conversation with composer ready.</p>
+            <h4>5 First Chat Surface</h4>
+            <p>The app opens the normal Chat surface with a draft conversation ready.</p>
             <div class="product"><div class="desktop chat-screen"></div></div>
             <ul class="notes">
               <li>This is the end of Journey 01.</li>
@@ -840,39 +1242,1066 @@ button:hover { background: #f3f6f8; }
           </article>
         </div>
       </section>
+      <section class="band" id="route-map">
+        <div class="band-title"><h3>Route map</h3><span>Each row repeats the Main happy path format with full-size product wireframes</span></div>
+        <div class="route-map">
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Happy path with model review</h3><span>1 → 2 → 2.1 → 2.1.1 → 2.14 → 3 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verification success</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1.1 Verified model selection</div>
+            <p>The verified provider exposes the returned model list.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified-model-menu"></div></div>
+            <ul class="notes"><li>The model dropdown is open.</li><li>The selected model is checked.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Happy path without model review</h3><span>1 → 2 → 2.1 → 2.14 → 3 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verification success</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Missing credential</h3><span>1 → 2 → 2.2 → 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.2 Missing credential</div>
+            <p>Verification is blocked because no provider key exists.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-missing"></div></div>
+            <ul class="notes"><li>Inline error explains the missing key.</li><li>The user returns to editing.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Provider entry and edits</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Remote key local validation failure</h3><span>1 → 2 → 2.3 → 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.3 Remote key validation failed</div>
+            <p>The typed remote key fails local shape validation.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-invalid-key"></div></div>
+            <ul class="notes"><li>No verification request runs.</li><li>The user edits the key shape.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Provider entry and edits</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Local endpoint validation failure</h3><span>1 → 2 → 2.4 → 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.4 Local endpoint validation failed</div>
+            <p>The local service URL is missing a valid URL scheme.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-local-url-error"></div></div>
+            <ul class="notes"><li>Test connection remains blocked.</li><li>The user corrects the endpoint URL.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Provider entry and edits</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Provider rejects key</h3><span>1 → 2 → 2.12 → 2.5 → 2.12 or 2.8</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Verification route</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.5 Key rejected</div>
+            <p>Verification ran but the provider rejected the credential.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-key-rejected"></div></div>
+            <ul class="notes"><li>The credential is preserved.</li><li>Retry or skip remains available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Retry verification</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8 Open skip confirmation</div>
+            <p>Advanced skip opens a confirmation over Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes"><li>Cancel returns to Provider Setup.</li><li>Confirm unlocks skipped state.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Provider unreachable</h3><span>1 → 2 → 2.12 → 2.6 → 2.12 or 2.8</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Verification route</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.6 Provider unreachable</div>
+            <p>Verification cannot reach the selected provider.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-network-error"></div></div>
+            <ul class="notes"><li>The form stays editable.</li><li>Retry or skip remains available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Retry verification</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8 Open skip confirmation</div>
+            <p>Advanced skip opens a confirmation over Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes"><li>Cancel returns to Provider Setup.</li><li>Confirm unlocks skipped state.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Unexpected verification result</h3><span>1 → 2 → 2.12 → 2.7 → 2.12 or 2.8</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Verification route</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.7 Unexpected validation result</div>
+            <p>Verification fails with a generic or unexpected result.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-validation-error"></div></div>
+            <ul class="notes"><li>The form keeps the typed values.</li><li>Retry, edit, switch, or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.12 Retry verification</div>
+            <p>The user runs verification from Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Verify key is the active route.</li><li>Success or failure returns inside this step.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8 Open skip confirmation</div>
+            <p>Advanced skip opens a confirmation over Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes"><li>Cancel returns to Provider Setup.</li><li>Confirm unlocks skipped state.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Skip verification</h3><span>1 → 2 → 2.8 → 2.8.1 → 2.14 → 3 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.8 Skip confirmation</div>
+            <p>Advanced skip opens a confirmation over Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes"><li>Cancel returns to Provider Setup.</li><li>Confirm unlocks skipped state.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.8.1 Verification skipped</div>
+            <p>The user confirmed skip verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes"><li>Verification skipped is visible.</li><li>Continue is available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Skip canceled</h3><span>1 → 2 → 2.8 → 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.8 Skip confirmation</div>
+            <p>Advanced skip opens a confirmation over Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes"><li>Cancel returns to Provider Setup.</li><li>Confirm unlocks skipped state.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Provider entry and edits</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Provider save failure after verification</h3><span>1 → 2 → 2.1 → 2.14 → 2.9 → 2.14 or 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verification success</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.9 Provider save failed</div>
+            <p>Continue attempted to save but the provider settings failed.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-save-error"></div></div>
+            <ul class="notes"><li>Current values are preserved.</li><li>The user retries or edits.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Retry Continue</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Edit form</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Provider save failure after skip</h3><span>1 → 2 → 2.8.1 → 2.14 → 2.9 → 2.14 or 2.10</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.8.1 Verification skipped</div>
+            <p>The user confirmed skip verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes"><li>Verification skipped is visible.</li><li>Continue is available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">2.9 Provider save failed</div>
+            <p>Continue attempted to save but the provider settings failed.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-save-error"></div></div>
+            <ul class="notes"><li>Current values are preserved.</li><li>The user retries or edits.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Retry Continue</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card detail">
+            <div class="route-card-title">2.10 Edit form</div>
+            <p>The editable Provider Setup form is shown again.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Fields remain editable.</li><li>The user can correct and retry.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Notification skipped</h3><span>1 → 2 → 2.1 or 2.8.1 → 2.14 → 3 → 3.2 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verified path</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8.1 Skipped path</div>
+            <p>The user confirmed skip verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes"><li>Verification skipped is visible.</li><li>Continue is available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">3.2 Maybe later</div>
+            <p>Notification choice resolves and advances the flow.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Maybe later advances.</li><li>Request resolution also advances.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Notification requested and granted</h3><span>1 → 2 → 2.1 or 2.8.1 → 2.14 → 3 → 3.2 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verified path</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8.1 Skipped path</div>
+            <p>The user confirmed skip verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes"><li>Verification skipped is visible.</li><li>Continue is available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">3.2 Request granted</div>
+            <p>Notification choice resolves and advances the flow.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Maybe later advances.</li><li>Request resolution also advances.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Notification unresolved</h3><span>1 → 2 → 2.1 or 2.8.1 → 2.14 → 3 → 3.1 → 4 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">2 Provider Setup</div>
+            <p>User chooses a provider and fills credential/model fields.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes"><li>Step 2 of 4.</li><li>Continue is gated until verification or skip.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.1 Verified path</div>
+            <p>Provider Setup remains open after a successful verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Verified status is visible.</li><li>Continue becomes available.</li></ul>
+          </article>
+          <div class="route-or">or</div>
+          <article class="card error">
+            <div class="route-card-title">2.8.1 Skipped path</div>
+            <p>The user confirmed skip verification.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes"><li>Verification skipped is visible.</li><li>Continue is available.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card detail">
+            <div class="route-card-title">2.14 Provider save, back, and advance</div>
+            <p>Continue saves provider settings before Notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes"><li>Save succeeds to Step 3.</li><li>Failure stays in Provider Setup.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">3 Notifications</div>
+            <p>User chooses whether to request notifications.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-screen"></div></div>
+            <ul class="notes"><li>Step 3 of 4.</li><li>Maybe later or Turn on notifications.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">3.1 Notification permission unresolved</div>
+            <p>Permission is blocked, unknown, or otherwise not granted.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-denied"></div></div>
+            <ul class="notes"><li>The flow can still continue.</li><li>Settings can be changed later.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Completion handoff</h3><span>4 → 4.1 → 5</span></div>
+            <div class="flow">
+          <article class="card main">
+            <div class="route-card-title">4 Completion</div>
+            <p>User sees the provider/model confirmation.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Step 4 of 4.</li><li>Start chatting is primary.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card error">
+            <div class="route-card-title">4.1 Start chatting handoff</div>
+            <p>The completion screen hands off to Chat.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes"><li>Completion is stored.</li><li>Chat opens next.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Later launch</h3><span>4.2 → 5</span></div>
+            <div class="flow">
+          <article class="card error">
+            <div class="route-card-title">4.2 Later launch after completion</div>
+            <p>Later app launches skip onboarding.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>The normal Chat surface opens.</li><li>Welcome does not appear.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">5 First Chat Surface</div>
+            <p>The normal Chat surface is available.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes"><li>Onboarding is no longer active.</li><li>Other journeys begin from here.</li></ul>
+          </article>
+            </div>
+          </div>
+          <div class="route-flow-block">
+            <div class="band-title"><h3>Reset onboarding</h3><span>4.3 → 1</span></div>
+            <div class="flow">
+          <article class="card error">
+            <div class="route-card-title">4.3 Reset onboarding</div>
+            <p>Reset clears completion and returns to Welcome.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Next run starts Journey 1.</li><li>Provider setup must be redone.</li></ul>
+          </article>
+          <div class="arrow" aria-hidden="true"></div>
+          <article class="card main">
+            <div class="route-card-title">1 Welcome</div>
+            <p>User lands in the onboarding shell and starts setup.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes"><li>Step 1 of 4.</li><li>Primary action: Get started.</li></ul>
+          </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="band" id="branch-journeys">
+        <div class="band-title"><h3>Branch journeys</h3><span>Full product screens for paths that branch from the main journey</span></div>
+        <div class="flow">
+          <article class="card context-card">
+            <div class="context-title">1 Welcome</div>
+            <p>Branch context starts from the same fresh-install entry.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes">
+              <li>User clicks Get started.</li>
+              <li>The path moves to Provider Setup.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card context-card">
+            <div class="context-title">2 Provider Setup</div>
+            <p>The branch point is the provider form, before verification has completed.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-filled"></div></div>
+            <ul class="notes">
+              <li>User enters a valid-looking key.</li>
+              <li>Verify key starts the success or failure branch.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>2.1 Verification success</h4>
+            <p>After the user verifies a valid provider key, Provider Setup stays in place and changes into a verified state.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified"></div></div>
+            <ul class="notes">
+              <li>The key remains masked and shows Verified.</li>
+              <li>Verify again and Continue are both available.</li>
+              <li>The user can open the model selector before continuing.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>2.1.1 Verified model selection</h4>
+            <p>The verified provider path can continue into the model dropdown before saving Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-verified-model-menu"></div></div>
+            <ul class="notes">
+              <li>The dropdown expands in the same Provider Setup step.</li>
+              <li>The selected model has a checkmark.</li>
+              <li>Continue saves the selected provider and model.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.2 Missing credential</h4>
+            <p>The user has not entered a provider key yet. Verification and Continue remain blocked inside Provider Setup.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-missing"></div></div>
+            <ul class="notes">
+              <li>The field stays editable.</li>
+              <li>The inline error explains that a key is required before verification.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.3 Remote key validation failed</h4>
+            <p>The user typed a remote provider key that does not pass local shape validation.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-invalid-key"></div></div>
+            <ul class="notes">
+              <li>The key remains visible as typed.</li>
+              <li>The user must edit the key before verification can proceed.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.4 Local endpoint validation failed</h4>
+            <p>The user chose Local Models but entered an endpoint without a valid URL scheme.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-local-url-error"></div></div>
+            <ul class="notes">
+              <li>The URL field uses local endpoint language.</li>
+              <li>Test connection is blocked until the URL is corrected.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.5 Key rejected</h4>
+            <p>Verification ran, but the provider rejected the key. The user remains in Provider Setup with retry and skip available.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-key-rejected"></div></div>
+            <ul class="notes">
+              <li>The credential is preserved.</li>
+              <li>The recovery path is edit, retry, switch provider, or use advanced skip.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.6 Provider unreachable</h4>
+            <p>Verification cannot reach the provider. The same Provider Setup screen stays open with a network recovery message.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-network-error"></div></div>
+            <ul class="notes">
+              <li>The user can retry after connection changes.</li>
+              <li>Advanced skip remains available when the input is otherwise valid.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.7 Unexpected validation result</h4>
+            <p>The provider result cannot be mapped to a more specific rejection or network message.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-validation-error"></div></div>
+            <ul class="notes">
+              <li>The message stays inline with the credential form.</li>
+              <li>The user can retry, edit, switch provider, or skip verification.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.8 Skip confirmation</h4>
+            <p>The advanced skip action opens a confirmation over Provider Setup before Continue is unlocked.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skip-confirm"></div></div>
+            <ul class="notes">
+              <li>Cancel returns to the unverified Provider Setup screen.</li>
+              <li>Confirming skip changes the form state to Verification skipped.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.8.1 Verification skipped</h4>
+            <p>The user confirmed the advanced skip branch. Provider Setup now permits Continue without a successful verification result.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-skipped"></div></div>
+            <ul class="notes">
+              <li>The status line shows Verification skipped.</li>
+              <li>The first Chat request may surface the provider problem later.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>2.9 Provider save failed</h4>
+            <p>Continue attempted to save provider settings but failed. The user stays in Provider Setup with the same values.</p>
+            <div class="product"><div class="desktop onboarding-screen provider-save-error"></div></div>
+            <ul class="notes">
+              <li>The verified state is preserved.</li>
+              <li>The user can retry Continue or edit before retrying.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>3.1 Notification permission unresolved</h4>
+            <p>Notification permission can be blocked or unresolved, but onboarding keeps moving toward completion.</p>
+            <div class="product"><div class="desktop onboarding-screen notifications-denied"></div></div>
+            <ul class="notes">
+              <li>The copy points users to System Settings for later changes.</li>
+              <li>This branch does not block first chat.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>4.1 Start chatting handoff</h4>
+            <p>The completion screen is the final onboarding frame before the app opens Chat.</p>
+            <div class="product"><div class="desktop onboarding-screen completion-screen"></div></div>
+            <ul class="notes">
+              <li>Start chatting writes the completion state.</li>
+              <li>A draft Chat session is prepared if needed.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>4.2 Later launch after completion</h4>
+            <p>After completion is stored, later app launches skip onboarding and open the main Chat surface.</p>
+            <div class="product"><div class="desktop chat-screen"></div></div>
+            <ul class="notes">
+              <li>Welcome does not appear again during normal launch.</li>
+              <li>Resetting onboarding is a separate debug recovery action.</li>
+            </ul>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>4.3 Reset onboarding</h4>
+            <p>If onboarding is reset, the next launch returns to the Welcome screen instead of the Chat surface.</p>
+            <div class="product"><div class="desktop onboarding-screen welcome-screen"></div></div>
+            <ul class="notes">
+              <li>The user re-enters Journey 1 from the beginning.</li>
+              <li>Provider setup must be completed again before first Chat.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
       <section class="band" id="detail-states">
-        <div class="band-title"><h3>Detail states</h3><span>Onboarding state changes that are not separate journeys</span></div>
+        <div class="band-title"><h3>Detail states</h3><span>Implemented branches inside onboarding</span></div>
         <div class="flow">
           <article class="card detail">
-            <h4>1. Provider setup pending</h4>
-            <p>The user has entered Provider setup. The UI preserves the selected provider, model, API key, and base URL inputs. Continue remains controlled before verification; the user can verify, change provider, or configure later.</p>
+            <h4>2.10 Provider entry and edits</h4>
+            <p>Provider setup starts with Anthropic selected, an empty key, and the first default model selected. Switching provider clears the key, returned models, verification, skip state, and inline error.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>The form shows required, verifying, and verified states inline.</li>
-                <li>Skipping does not block onboarding completion, but the next conversation can enter the provider-readiness repair path.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">idle</span> Empty key</strong><p>Verify key and Continue are disabled. Helper text says the user can change this later in Settings.</p></div>
+                <div class="route-item"><strong><span class="badge warn">invalid</span> Typed but blocked</strong><p>Malformed remote keys and bad local URLs show inline validation before any verification call can run.</p></div>
+                <div class="route-item"><strong><span class="badge info">ready</span> Inputs complete</strong><p>Verify key, or Test connection for Local Models, becomes enabled. Continue is still disabled.</p></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card detail">
-            <h4>2. Personality and local preference saved</h4>
-            <p>After the user completes personality, notifications, and local-run preferences, step progress advances and the UI shows lightweight saving-to-saved feedback.</p>
+            <h4>2.11 More Models and provider switching</h4>
+            <p>More Models expands the provider grid. OpenRouter adds a nested provider dropdown; Local Models changes the credential field into a service URL and the model field into free text.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>Optional fields do not force the user to stay.</li>
-                <li>Going back preserves entered content.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">more</span> Expanded grid</strong><p>Additional provider cards appear in the same step; no navigation occurs.</p></div>
+                <div class="route-item"><strong><span class="badge info">openrouter</span> Provider dropdown</strong><p>The form adds a provider select above the API key and keeps model selection in the same card.</p></div>
+                <div class="route-item"><strong><span class="badge info">local</span> Local endpoint</strong><p>The API key input becomes a URL field and the verify action becomes Test connection.</p></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card detail">
-            <h4>3. First usable Chat handoff</h4>
-            <p>After the user clicks Finish, the onboarding shell closes and the normal Chat home opens. The client records onboarding complete and shows the main surface ready for task input.</p>
+            <h4>2.12 Verification route</h4>
+            <p>The verification action runs inside the same form. Remote providers call the verifier; Local Models only probes transport reachability.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>The sidebar, composer, and runtime/model chips appear together.</li>
-                <li>This is the end of Journey 01; later workspace creation belongs to a separate journey.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">verifying</span> Checking...</strong><p>The credential and model fields are disabled. Remote button copy is Checking...; local copy is Testing....</p></div>
+                <div class="route-item"><strong><span class="badge ok">verified</span> Success</strong><p>The credential row shows Verified. Continue becomes enabled, Verify again/Test again remains available, and the model selector can be opened.</p></div>
+                <div class="route-item"><strong><span class="badge err">error</span> Failure</strong><p>The form keeps the typed value and shows an inline recovery message.</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>2.13 Skip verification route</h4>
+            <p>Skip verification appears only after inputs are otherwise valid and verification has not been satisfied. The browser-style confirm dialog is the branch point.</p>
+            <div class="state-panel">
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge warn">confirm</span> User clicks skip</strong><p>The confirmation warns that first-message errors may appear later if the key is wrong or the network blocks verification.</p></div>
+                <div class="route-item"><strong><span class="badge info">cancel</span> User cancels</strong><p>The form returns to the unverified state. Continue remains disabled.</p></div>
+                <div class="route-item"><strong><span class="badge ok">skipped</span> User confirms</strong><p>The row shows Verification skipped. Continue becomes enabled without calling the verifier.</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>2.14 Provider save, back, and advance</h4>
+            <p>Back returns to Welcome without persisting the provider. Continue saves the provider only after verification is satisfied or skipped, then advances to Notifications.</p>
+            <div class="state-panel">
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">back</span> Back before Continue</strong><p>Welcome reappears and no provider is saved.</p></div>
+                <div class="route-item"><strong><span class="badge info">submitting</span> Saving and continuing...</strong><p>The Continue button changes copy while provider config is saved.</p></div>
+                <div class="route-item"><strong><span class="badge ok">advance</span> Save succeeds</strong><p>The app records connected provider/model and moves to Step 3 of 4.</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card detail">
+            <h4>3.2 Notification branches</h4>
+            <p>Maybe later advances immediately. Turn on notifications asks the desktop app to request permission; the step advances after the request completes.</p>
+            <div class="state-panel">
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">skip</span> Maybe later</strong><p>No OS permission request is made, and Completion appears.</p></div>
+                <div class="route-item"><strong><span class="badge info">request</span> Turn on notifications</strong><p>The app requests notification permission and may show a test notification.</p></div>
+                <div class="route-item"><strong><span class="badge ok">continue</span> Request resolves</strong><p>The flow advances regardless of the returned permission status.</p></div>
+              </div>
             </div>
           </article>
         </div>
@@ -881,72 +2310,104 @@ button:hover { background: #f3f6f8; }
         <div class="band-title"><h3>State language</h3><span>User-facing copy for each onboarding state</span></div>
         <div class="flow">
           <article class="card state">
-            <h4>1. Primary actions</h4>
-            <p>Buttons such as Get started, Continue, and Finish setup express only the current step advance and do not carry extra explanation.</p>
+            <h4>2.15 Provider action language</h4>
+            <p>Provider setup uses stateful button copy tied to the current form state.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>Progress copy such as Step 1 of 5 stays fixed at the top.</li>
-                <li>Verify connection is used for provider verification and is not conflated with Save.</li>
-              </ul>
+              <div class="copy-list">
+                <div class="copy-row"><strong>Verify key</strong><span>Remote provider input is valid but not yet verified.</span></div>
+                <div class="copy-row"><strong>Checking...</strong><span>Remote verification is running and form inputs are disabled.</span></div>
+                <div class="copy-row"><strong>Verify again</strong><span>Remote provider is already verified; user can re-run verification.</span></div>
+                <div class="copy-row"><strong>Test connection</strong><span>Local Models uses endpoint language instead of key language.</span></div>
+                <div class="copy-row"><strong>Saving and continuing...</strong><span>Provider save is in progress after Continue.</span></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card state">
-            <h4>2. Optional actions</h4>
-            <p>Copy such as Skip for now, Maybe later, and Back clearly indicates that the current context will not be lost.</p>
+            <h4>2.16 Provider status language</h4>
+            <p>Status copy appears beside the field or under the form so the user sees what changed without leaving Provider setup.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>When the user skips provider or notification setup, the UI gives lightweight confirmation.</li>
-                <li>Back actions remain lower priority.</li>
-              </ul>
+              <div class="copy-list">
+                <div class="copy-row"><strong>Verified</strong><span>The key or local endpoint has passed verification and Continue is enabled.</span></div>
+                <div class="copy-row"><strong>Default model menu</strong><span>After verification, the selected model is shown in a dropdown and can be changed before Continue.</span></div>
+                <div class="copy-row"><strong>Verification skipped</strong><span>The user confirmed the advanced skip branch and may continue without verification.</span></div>
+                <div class="copy-row"><strong>Settings helper</strong><span>Neutral helper copy says the user can change provider settings later.</span></div>
+                <div class="copy-row"><strong>Skip warning</strong><span>The confirmation warns that the first message may fail if the key is wrong.</span></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card state">
-            <h4>3. Status copy</h4>
-            <p>States such as Saving, Verified, Complete, and Needs setup directly describe the current client state.</p>
+            <h4>0.1 Whole-flow language</h4>
+            <p>The non-provider steps use direct action labels and do not expose implementation details.</p>
             <div class="state-panel">
               <ul class="notes">
-                <li>State appears near the relevant form or step first.</li>
-                <li>Do not use decision-process wording.</li>
+                <li>Welcome uses Get started.</li>
+                <li>Notifications uses Turn on notifications and Maybe later.</li>
+                <li>Completion uses Start chatting.</li>
               </ul>
             </div>
           </article>
         </div>
       </section>
       <section class="band" id="errors">
-        <div class="band-title"><h3>Errors and recovery</h3><span>Recoverable onboarding branches</span></div>
+        <div class="band-title"><h3>Errors and recovery</h3><span>Summary index for branches drawn above</span></div>
         <div class="flow">
           <article class="card error">
-            <h4>1. Provider validation failed</h4>
-            <p>If API key, base URL, or model verification fails, inputs are preserved and the form shows an inline error. The user can verify again, change provider, or configure later.</p>
+            <h4>2.17 Provider input validation summary</h4>
+            <p>Provider Setup blocks basic invalid input before verification starts.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>Failure does not clear fields.</li>
-                <li>After skipping, the user returns to the main app; starting a later task can trigger the repair entry again.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge err">2.2</span> Missing credential</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge err">2.3</span> Remote key validation failed</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge err">2.4</span> Local endpoint validation failed</strong><p>Shown as a full branch journey above.</p></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card error">
-            <h4>2. Notification permission declined</h4>
-            <p>If the user denies or closes system notification permission, onboarding still completes. The setting remains disabled and can be enabled later in Settings.</p>
+            <h4>2.18 Provider verification failure summary</h4>
+            <p>Verification failures keep the user inside Provider Setup with recovery actions.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>A system denial is not treated as flow failure.</li>
-                <li>Explanatory entry points stay near the notification step.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge err">2.5</span> Key rejected</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge err">2.6</span> Provider unreachable</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge err">2.7</span> Unexpected validation result</strong><p>Shown as a full branch journey above.</p></div>
+              </div>
             </div>
           </article>
           <div class="arrow"></div>
           <article class="card error">
-            <h4>3. Onboarding resume</h4>
-            <p>After an unexpected quit or refresh, the client restores the unfinished step or re-enters Welcome. Saved local configuration is not requested again.</p>
+            <h4>2.19 Provider skip and save recovery summary</h4>
+            <p>Advanced skip and provider-save failure are recoverable branches inside Provider Setup.</p>
             <div class="state-panel">
-              <ul class="notes">
-                <li>Recoverable state takes priority over starting from scratch.</li>
-                <li>After completion, later launches no longer show onboarding.</li>
-              </ul>
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge warn">2.8</span> Skip confirmation</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge warn">2.8.1</span> Verification skipped</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge err">2.9</span> Provider save failed</strong><p>Shown as a full branch journey above.</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>3.3 Notification recovery summary</h4>
+            <p>Notification permission is optional and does not block first chat.</p>
+            <div class="state-panel">
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge info">3.1</span> Notification permission unresolved</strong><p>Shown as a full branch journey above.</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="arrow"></div>
+          <article class="card error">
+            <h4>4.4 Completion and relaunch summary</h4>
+            <p>Completion writes the first-launch state; later launches and reset are documented as separate branch states.</p>
+            <div class="state-panel">
+              <div class="route-list">
+                <div class="route-item"><strong><span class="badge ok">4.1</span> Start chatting handoff</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge info">4.2</span> Later launch after completion</strong><p>Shown as a full branch journey above.</p></div>
+                <div class="route-item"><strong><span class="badge warn">4.3</span> Reset onboarding</strong><p>Shown as a full branch journey above.</p></div>
+              </div>
             </div>
           </article>
         </div>
@@ -1003,7 +2464,7 @@ function resetView() {
 function fit() {
   const rect = viewport.getBoundingClientRect();
   const sx = (rect.width - 50) / 5150;
-  const sy = (rect.height - 50) / 2860;
+  const sy = (rect.height - 50) / 18800;
   scale = Math.max(0.22, Math.min(0.7, Math.min(sx, sy)));
   x = 12;
   y = 12;
@@ -1060,11 +2521,11 @@ viewport.addEventListener('wheel', (event) => {
 }, { passive: false });
 
 function progress(current) {
-  return `<div class="step-head">Step ${current} of 5<div class="progress">${[1,2,3,4,5].map(i => `<span class="${i < current ? 'done' : i === current ? 'active' : ''}"></span>`).join('')}</div></div>`;
+  return `<div class="step-head">Step ${current} of 4<div class="progress">${[1,2,3,4].map(i => `<span class="${i < current ? 'done' : i === current ? 'active' : ''}"></span>`).join('')}</div></div>`;
 }
 
 function onboardingShell(step, body, classes = '') {
-  return `<div class="onboarding"><div class="on-window">${progress(step)}<div class="step-body ${classes}">${body}</div></div></div>`;
+  return `<div class="onboarding"><div class="on-window"><div class="window-dots"><span></span><span></span><span></span></div>${progress(step)}<div class="step-body ${classes}">${body}</div></div></div>`;
 }
 
 function providerCards(selected = 'Anthropic') {
@@ -1073,73 +2534,93 @@ function providerCards(selected = 'Anthropic') {
 }
 
 function providerBody(variant) {
-  const keyText = variant === 'empty' ? 'Paste your API key' : 'sk-*******************************';
-  const status = variant === 'verified'
+  const isLocal = variant === 'local-url-error';
+  const selectedProvider = isLocal ? 'Local Models' : variant === 'verified-model-menu' ? 'OpenRouter' : 'Anthropic';
+  const keyText = variant === 'empty' || variant === 'missing'
+    ? (isLocal ? 'http://localhost:11434' : 'Paste your API key')
+    : variant === 'invalid-key'
+      ? 'sk-short'
+      : isLocal
+        ? 'localhost:11434'
+        : 'sk-*******************************';
+  const isVerified = variant === 'verified' || variant === 'verified-model-menu' || variant === 'save-error';
+  const status = isVerified
     ? '<span class="verified-label">Verified</span>'
     : variant === 'skipped'
       ? '<span class="skip-label">Verification skipped</span>'
       : '';
-  const hint = variant === 'error'
+  const hint = variant === 'error' || variant === 'key-rejected'
     ? '<p class="hint error">The provider rejected this key. Check the key and try again.</p>'
-    : variant === 'skipped'
-      ? '<p class="hint">You skipped verification. If the key is wrong, the first message may fail.</p>'
-      : '<p class="hint">You can change this later in Settings.</p>';
-  const verifyLabel = variant === 'verified' ? 'Verify again' : variant === 'error' ? 'Retry verify' : 'Verify key';
-  const canContinue = variant === 'verified' || variant === 'skipped';
+    : variant === 'network-error'
+      ? '<p class="hint error">Could not reach the provider. Check your connection and try again.</p>'
+      : variant === 'validation-error'
+        ? '<p class="hint error">Could not verify this key right now. Try again or edit the provider settings.</p>'
+        : variant === 'invalid-key'
+          ? '<p class="hint error">This key does not look complete. Check that it starts with sk- and was copied in full.</p>'
+          : variant === 'missing'
+            ? '<p class="hint error">Enter a provider key before running verification.</p>'
+            : variant === 'local-url-error'
+              ? '<p class="hint error">Enter a local service URL that starts with http:// or https://.</p>'
+              : variant === 'save-error'
+                ? '<p class="hint error">Could not save provider settings. Edit the fields or try Continue again.</p>'
+                : variant === 'skipped'
+                  ? '<p class="hint">You skipped verification. If the key is wrong, the first message may fail.</p>'
+                  : '<p class="hint">You can change this later in Settings.</p>';
+  const verifyLabel = isLocal ? 'Test connection' : isVerified ? 'Verify again' : 'Verify key';
+  const canContinue = isVerified || variant === 'skipped';
+  const canVerify = !['empty', 'missing', 'invalid-key', 'local-url-error'].includes(variant);
+  const isModelMenu = variant === 'verified-model-menu';
+  const modelValue = isModelMenu ? '~anthropic/claude-fable-latest' : 'Claude Opus 4.6';
+  const modelMenu = isModelMenu
+    ? `<div class="model-menu">
+        ${[
+          '~anthropic/claude-fable-latest',
+          '~anthropic/claude-haiku-latest',
+          '~anthropic/claude-opus-latest',
+          '~anthropic/claude-sonnet-latest',
+          '~google/gemini-flash-latest',
+          '~google/gemini-pro-latest',
+          '~moonshotai/kimi-latest',
+          '~openai/gpt-latest',
+          '~openai/gpt-mini-latest',
+          'ai21/jamba-large-1.7',
+        ].map((name, index) => `<div class="model-option ${index === 0 ? 'selected' : ''}"><span>${name}</span>${index === 0 ? '<span class="check">✓</span>' : ''}</div>`).join('')}
+      </div>`
+    : '';
   return onboardingShell(2, `
-    <div>
+    <div style="position:relative">
       <p class="kicker">Connect AI Provider</p>
       <h2 class="title">Choose your AI service<br>and connect it</h2>
       <p class="subtitle" style="margin-left:0">Pick the AI service you want to use, then paste in its API key.</p>
-      ${providerCards(variant === 'skipped' ? 'OpenRouter' : 'Anthropic')}
+      ${providerCards(selectedProvider)}
       <div class="setup-card">
         <div class="field-stack">
-          <div class="field"><label>API Key ${status}</label><div class="input mono">${keyText}</div></div>
-          <div class="field"><label>Default model</label><div class="input">${variant === 'skipped' ? 'openrouter/auto' : 'Claude Sonnet 4.5'}</div></div>
+          ${isModelMenu ? '<div class="field"><label>Provider</label><div class="input selectable" style="max-width:160px"><span>Anthropic</span><span>⌄</span></div></div>' : ''}
+          <div class="field"><label>${isLocal ? 'Local service URL' : 'API Key'} ${status}</label><div class="input mono">${keyText}</div></div>
+          <div class="field"><label>Default model</label><div class="input selectable"><span>${modelValue}</span><span>${isModelMenu ? '✓' : ''}</span></div>${modelMenu}</div>
         </div>
         ${hint}
       </div>
       <div class="btn-row split">
         <button class="text-link">Back</button>
         <div style="display:flex;gap:12px;align-items:center">
-          <span class="ui-btn">${verifyLabel}</span>
+          <span class="ui-btn ${canVerify ? '' : 'disabled'}">${verifyLabel}</span>
           <span class="ui-btn ${canContinue ? 'primary' : 'disabled'}">Continue</span>
         </div>
       </div>
-      ${variant === 'filled' || variant === 'error' ? '<div style="text-align:right;margin-top:8px"><button class="text-link">Skip verification (advanced)</button></div>' : ''}
-    </div>
-  `, 'wide');
-}
-
-function personalityBody(state) {
-  const saving = state === 'saving';
-  const error = state === 'error';
-  return onboardingShell(3, `
-    <div>
-      <p class="kicker">Make It Yours</p>
-      <h2 class="title">Choose your agent's personality</h2>
-      <p class="subtitle" style="margin-left:0">Select how your agent should sound and behave.</p>
-      <div class="tone-grid">
-        <div class="tone-card"><div class="initial">P</div><div><strong>Professional</strong><span>Precise, efficient, and professional</span></div><div class="radio"></div></div>
-        <div class="tone-card selected"><div class="initial">F</div><div><strong>Friendly</strong><span>Warm, casual, and empathetic</span></div><div class="radio filled"></div></div>
-        <div class="tone-card"><div class="initial">W</div><div><strong>Witty</strong><span>Humorous, playful, and lighthearted</span></div><div class="radio"></div></div>
-        <div class="tone-card"><div class="initial">C</div><div><strong>Concise</strong><span>Minimal, direct, no fluff</span></div><div class="radio"></div></div>
-      </div>
-      <div class="field" style="margin-top:14px"><label>Add custom instructions (optional)</label><div class="text-area">Prefer bullet points over paragraphs.</div></div>
-      <div style="margin-top:14px"><label style="font-size:14px;font-weight:760">Preview</label><div class="preview"><strong>SOUL.md - Who You Are</strong>You are a warm, approachable AI assistant who genuinely cares about helping people.<br><br><b>Core Truths</b><br>Be genuinely helpful. Have a heart. Be approachable.</div></div>
-      ${error ? '<p class="hint error">Failed to save personality settings. Please try again.</p>' : ''}
-      <div class="btn-row split"><p class="hint">You can customize this anytime in Settings.</p><div style="display:flex;gap:12px"><button class="text-link">Skip</button><span class="ui-btn primary">${saving ? 'Saving...' : 'Save & Continue'}</span></div></div>
+      ${variant === 'filled' || variant === 'error' || variant === 'key-rejected' || variant === 'network-error' || variant === 'validation-error' ? '<div style="text-align:right;margin-top:8px"><button class="text-link">Skip verification (advanced)</button></div>' : ''}
+      ${variant === 'skip-confirm' ? '<div class="confirm-overlay"><div class="confirm-dialog"><h5>Skip verification?</h5><p>If the key is wrong or the provider cannot be reached, your first message may fail. You can still continue and fix this later in Settings.</p><div class="confirm-actions"><span class="ui-btn">Cancel</span><span class="ui-btn primary">Skip verification</span></div></div></div>' : ''}
     </div>
   `, 'wide');
 }
 
 function notificationBody(denied = false) {
-  return onboardingShell(4, `
+  return onboardingShell(3, `
     <div class="center" style="width:100%">
-      <div class="notify-art"><div class="bell-box">!</div><div class="mini-badge b1">O</div><div class="mini-badge b2">S</div><div class="mini-badge b3">D</div><div class="mini-badge b4">W</div><div class="toast"><b>OpenClaw</b><br>Hello, I am the AI that can actually get things done.<span style="float:right;color:#999">now</span></div></div>
+      <div class="notify-art"><div class="bell-box"></div><div class="mini-badge b1">N</div><div class="mini-badge b2">↗</div><div class="mini-badge b3">□</div><div class="mini-badge b4">○</div><div class="toast"><span class="toast-icon">N</span><b>NoraHarness</b>Hello, I'm the AI that can actually get things done.<span class="now">now</span></div></div>
       <p class="kicker">Notifications</p>
       <h2 class="title" style="font-size:38px">Stay in the loop</h2>
-      <p class="subtitle" style="font-size:17px;max-width:540px">Turn on notifications to get timely reply alerts from OpenClaw and message updates from connected channels.</p>
+      <p class="subtitle" style="font-size:17px;max-width:620px">Turn on notifications to get timely reply alerts from NoraHarness and message updates from connected channels.</p>
       <p class="${denied ? 'hint error' : 'small-copy'}">${denied ? 'Notifications are blocked in System Settings. You can continue and change this later.' : 'You can always change this later in System Settings.'}</p>
       <div class="btn-row"><span class="ui-btn">Maybe later</span><span class="ui-btn primary">Turn on notifications</span></div>
     </div>
@@ -1147,14 +2628,14 @@ function notificationBody(denied = false) {
 }
 
 function completionBody() {
-  return onboardingShell(5, `
+  return onboardingShell(4, `
     <div class="center" style="width:100%">
       <div class="ready-icon">OK</div>
       <p class="kicker">Ready</p>
-      <h2 class="title" style="font-size:38px">You are all set</h2>
-      <p class="subtitle" style="font-size:17px;max-width:560px">OpenClaw is connected to OpenRouter with auto as the default model.</p>
+      <h2 class="title" style="font-size:42px">You're all set</h2>
+      <p class="subtitle" style="font-size:21px;max-width:660px">NoraHarness is connected to <strong>Mistral</strong> with <strong>codestral-2508</strong> as the default model.</p>
       <div class="btn-row"><span class="ui-btn primary">Start chatting</span></div>
-      <p class="small-copy">You can also connect Telegram or Discord in Settings - Channels.</p>
+      <p class="small-copy" style="margin-top:42px;font-size:17px">You can also connect Telegram or Discord in <strong>Settings → Channels</strong></p>
     </div>
   `, 'center');
 }
@@ -1175,13 +2656,19 @@ document.querySelectorAll('.welcome-screen').forEach(el => {
 document.querySelectorAll('.provider-empty').forEach(el => { el.innerHTML = providerBody('empty'); });
 document.querySelectorAll('.provider-filled').forEach(el => { el.innerHTML = providerBody('filled'); });
 document.querySelectorAll('.provider-verified').forEach(el => { el.innerHTML = providerBody('verified'); });
+document.querySelectorAll('.provider-verified-model-menu').forEach(el => { el.innerHTML = providerBody('verified-model-menu'); });
 document.querySelectorAll('.provider-skipped').forEach(el => { el.innerHTML = providerBody('skipped'); });
 document.querySelectorAll('.provider-error').forEach(el => { el.innerHTML = providerBody('error'); });
-document.querySelectorAll('.personality-screen').forEach(el => { el.innerHTML = personalityBody('normal'); });
-document.querySelectorAll('.personality-saving').forEach(el => { el.innerHTML = personalityBody('saving'); });
-document.querySelectorAll('.personality-error').forEach(el => { el.innerHTML = personalityBody('error'); });
+document.querySelectorAll('.provider-missing').forEach(el => { el.innerHTML = providerBody('missing'); });
+document.querySelectorAll('.provider-invalid-key').forEach(el => { el.innerHTML = providerBody('invalid-key'); });
+document.querySelectorAll('.provider-local-url-error').forEach(el => { el.innerHTML = providerBody('local-url-error'); });
+document.querySelectorAll('.provider-key-rejected').forEach(el => { el.innerHTML = providerBody('key-rejected'); });
+document.querySelectorAll('.provider-network-error').forEach(el => { el.innerHTML = providerBody('network-error'); });
+document.querySelectorAll('.provider-validation-error').forEach(el => { el.innerHTML = providerBody('validation-error'); });
+document.querySelectorAll('.provider-skip-confirm').forEach(el => { el.innerHTML = providerBody('skip-confirm'); });
+document.querySelectorAll('.provider-save-error').forEach(el => { el.innerHTML = providerBody('save-error'); });
 document.querySelectorAll('.notifications-screen').forEach(el => { el.innerHTML = notificationBody(false); });
-document.querySelectorAll('.notification-denied').forEach(el => { el.innerHTML = notificationBody(true); });
+document.querySelectorAll('.notifications-denied').forEach(el => { el.innerHTML = notificationBody(true); });
 document.querySelectorAll('.completion-screen').forEach(el => { el.innerHTML = completionBody(); });
 
 document.querySelectorAll('.chat-screen').forEach(el => {
