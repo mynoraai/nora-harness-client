@@ -16,6 +16,16 @@ This folder covers Agent Authoring in the Electron IDE. Use it when you need to 
 | `AUTH-04`  | [mobile-preview.md](./mobile-preview.md) | One-time mobile preview QR dialog                                       |
 | `AUTH-05`  | [publish-export.md](./publish-export.md) | Publish to Catalog dialog and package export component boundary         |
 
+## Design Wireframes
+
+Forward-looking design, not source-anchored evidence. Use these to see the proposed shape before it ships.
+
+| Wireframe                                                                       | Covers                                                                                                                                                                            |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [unified-publish-flow.wireframe.html](./unified-publish-flow.wireframe.html)    | Proposed end-to-end publish journey: author and publish to test, validate on the test mobile, promote, review and approve, live on the public mobile. Includes the Release hub, the reused dialogs, the two-track board, status language, the review state machine, and error states. |
+
+Provenance: the decisions behind this wireframe are recorded in the HardwareHarness ADRs `056-unified-publish-flow-ux` (publish flow UX) and `057-test-prod-tracks` (test and production tracks via one catalog). Open the file in a browser; it is a pan and zoom canvas.
+
 ## Shared Entry Contract
 
 | User action                       | UI precondition                                                     | UI result                                                                | Backend/API path           | Evidence                                                                                                                                                                                                                                                                                                    | Test coverage                                                                                                                                                                                                             |

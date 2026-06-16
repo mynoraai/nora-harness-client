@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unified Publish Flow Canvas</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f5f3; --grid: #deded8; --ink: #171717; --muted: #666666; --line: #c9c9c3;
+        --panel: #ffffff; --panel-2: #f0f0ed; --soft: #e8e8e3; --dark: #2f2f2f;
+        --blue: #2f5d8c; --green: #2f6f4e; --yellow: #8a6a18; --red: #8a2f2f;
+        --shadow: 0 18px 50px rgba(23, 23, 23, 0.12);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; overflow: hidden; background: var(--bg); color: var(--ink); }
+      button { font: inherit; }
+      .topbar { position: fixed; inset: 0 0 auto 0; z-index: 20; display: grid; grid-template-columns: minmax(260px, 1fr) auto; gap: 16px; align-items: center; height: 64px; padding: 10px 18px; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); }
+      .title strong { display: block; font-size: 15px; }
+      .title span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .toolbar { display: flex; align-items: center; gap: 8px; }
+      .tool-btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 7px 10px; font-size: 12px; cursor: pointer; }
+      .tool-btn:hover { background: var(--panel-2); }
+      .viewport { position: fixed; inset: 64px 0 0 0; overflow: hidden; background: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; cursor: grab; }
+      .viewport.dragging { cursor: grabbing; }
+      .canvas { position: absolute; left: 0; top: 0; width: 3100px; height: 3050px; transform-origin: 0 0; }
+
+      .frame { position: absolute; width: 470px; padding: 18px; border: 1px solid #111111; border-radius: 16px; background: var(--panel); box-shadow: var(--shadow); }
+      .frame.large { width: 560px; }
+      .frame.wide { width: 820px; }
+      .frame.spine { border-width: 2px; }
+      .frame h2 { margin: 0; font-size: 17px; }
+      .frame .step-no { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #111; color: #fff; font-size: 12px; margin-right: 6px; vertical-align: middle; }
+      .frame p { color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .caption { margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+      .wire-ui { margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+      .wire-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 38px; padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--panel-2); }
+      .wire-title { font-size: 12px; font-weight: 650; }
+      .wire-actions { display: flex; gap: 6px; }
+      .content { padding: 12px; }
+      .mini-btn { border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 5px 8px; font-size: 11px; cursor: pointer; }
+      .mini-btn.primary { border-color: #111; background: #111; color: #fff; }
+      .mini-btn.ghost { color: var(--muted); }
+      .mini-btn.disabled { opacity: 0.45; }
+
+      .status-pill { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; font-size: 10px; white-space: nowrap; }
+      .status-pill.ok { color: var(--green); border-color: rgba(47, 111, 78, 0.35); }
+      .status-pill.warn { color: var(--yellow); border-color: rgba(138, 106, 24, 0.35); }
+      .status-pill.block { color: var(--red); border-color: rgba(138, 47, 47, 0.35); }
+      .status-pill.muted { color: var(--muted); }
+      .chip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid rgba(138,106,24,0.35); border-radius: 999px; padding: 3px 9px; color: var(--yellow); font-size: 11px; }
+
+      .artifact-row { display: grid; grid-template-columns: 22px minmax(0,1fr) auto; gap: 9px; align-items: center; margin-top: 7px; padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+      .artifact-row .rownum { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 11px; font-weight: 650; }
+      .artifact-row strong { display: block; font-size: 12px; }
+      .artifact-row .meta { margin-top: 2px; color: var(--muted); font-size: 11px; }
+
+      .field { display: grid; gap: 5px; margin-bottom: 10px; }
+      .field label { color: var(--muted); font-size: 11px; }
+      .field .val { min-height: 28px; display: flex; align-items: center; padding: 0 9px; border: 1px solid var(--line); border-radius: 7px; background: #fff; font-size: 12px; }
+      .field .val.readonly { background: #f4f4f1; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+      .kv { display: grid; grid-template-columns: 130px minmax(0,1fr); gap: 4px 10px; font-size: 11px; margin-top: 6px; }
+      .kv span:nth-child(odd) { color: var(--muted); }
+      .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+      .seg span { padding: 5px 11px; font-size: 11px; color: var(--muted); border-right: 1px solid var(--line); }
+      .seg span:last-child { border-right: 0; }
+      .seg span.on { background: #111; color: #fff; }
+      .dropzone { display: grid; place-items: center; gap: 4px; min-height: 64px; border: 1px dashed var(--line); border-radius: 9px; background: #fafafa; color: var(--muted); font-size: 11px; text-align: center; }
+      .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+      .thumb { width: 52px; height: 52px; border: 1px solid var(--line); border-radius: 8px; background: #f0f0ed; display: grid; place-items: center; color: var(--muted); font-size: 16px; }
+      .thumb.add { border-style: dashed; }
+      .phase-line { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 11px; color: var(--muted); }
+      .phase-line .dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-size: 9px; }
+      .phase-line .dot.done { border-color: var(--green); color: var(--green); }
+      .phase-line .dot.now { border-color: #111; color: #111; font-weight: 700; }
+      .check { color: var(--green); font-size: 11px; margin-top: 6px; }
+      .result-banner { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1px solid rgba(47,111,78,0.35); border-radius: 9px; background: #f1f7f3; color: var(--green); font-size: 12px; font-weight: 600; }
+      .result-banner.warn { border-color: rgba(138,106,24,0.35); background: #f8f4e8; color: var(--yellow); }
+      .result-banner.err { border-color: rgba(138,47,47,0.35); background: #f9efef; color: var(--red); }
+      .logbox { margin-top: 6px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; background: #f7f7f4; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; line-height: 1.5; color: #444; white-space: pre-wrap; }
+      .code-tag { display: inline-block; margin-top: 6px; padding: 2px 7px; border: 1px solid rgba(138,47,47,0.35); border-radius: 6px; color: var(--red); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+      .errtab { margin-top: 10px; display: grid; grid-template-columns: 320px minmax(0,1fr); gap: 6px 18px; font-size: 11px; align-items: baseline; }
+      .errtab .grp { grid-column: 1 / -1; margin-top: 10px; font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink); font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 3px; }
+      .errtab .grp:first-child { margin-top: 0; }
+      .errtab .ec { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; color: var(--red); }
+      .errtab .when { color: var(--muted); }
+      .legend-grid { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 8px 12px; margin-top: 8px; font-size: 11px; color: var(--muted); align-items: center; }
+
+      .ide-tabs { display: flex; gap: 4px; margin-bottom: 6px; font-size: 10px; }
+      .ide-tabs .tab { padding: 3px 8px; border: 1px solid var(--line); border-bottom: 0; border-radius: 7px 7px 0 0; color: var(--muted); background: #f4f4f1; }
+      .ide-tabs .tab.on { color: #111; font-weight: 650; background: #fff; border-bottom: 2px solid #111; }
+      .ide-mock { display: grid; grid-template-columns: 84px minmax(0,1fr) 88px; gap: 6px; margin-top: 2px; }
+      .ide-pane { border: 1px solid var(--line); border-radius: 8px; padding: 7px; font-size: 10px; color: var(--muted); background: #fafafa; }
+      .ide-pane.editor { background: #fff; }
+      .ide-pane .h { color: #111; font-weight: 650; margin-bottom: 4px; font-size: 10px; }
+      .ide-pane .row { padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .ide-pane .row.on { color: var(--ink); font-weight: 650; }
+
+      .track-head { display: grid; grid-template-columns: 110px 1fr 24px 1fr auto; gap: 8px; padding: 0 8px; margin-top: 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .track-head span:nth-child(2) { color: var(--yellow); }
+      .track-head span:nth-child(4) { color: var(--green); }
+      .track-grid { display: grid; gap: 8px; margin-top: 6px; }
+      .track-row { display: grid; grid-template-columns: 110px 1fr 24px 1fr auto; gap: 8px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+      .track-row > strong { font-size: 12px; }
+      .track-cell { border: 1px dashed var(--line); border-radius: 8px; padding: 6px 8px; }
+      .track-cell.test { background: #fbf8ee; }
+      .track-cell.prod { background: #f1f7f3; }
+      .track-cell .v { display: block; font-size: 12px; font-weight: 600; }
+      .track-cell .s { font-size: 10px; color: var(--muted); }
+      .track-row .to { text-align: center; color: #111; font-weight: 700; }
+      .marker { color: var(--green); font-size: 10px; }
+
+      .phone { position: absolute; width: 230px; padding: 12px; border: 2px solid #111; border-radius: 26px; background: #fff; box-shadow: var(--shadow); }
+      .phone .notch { width: 64px; height: 5px; background: #dcdcd7; border-radius: 3px; margin: 0 auto 10px; }
+      .phone .screen { border: 1px solid var(--line); border-radius: 16px; min-height: 196px; padding: 12px; background: #fafafa; }
+      .phone .phead { display: flex; align-items: center; justify-content: space-between; }
+      .phone .phead strong { font-size: 12px; }
+      .phone .pstep { font-size: 11px; font-weight: 700; }
+      .build-badge { border-radius: 999px; padding: 2px 8px; font-size: 10px; border: 1px solid var(--line); }
+      .build-badge.test { color: var(--yellow); border-color: rgba(138,106,24,0.35); background: #fbf8ee; }
+      .build-badge.prod { color: var(--green); border-color: rgba(47,111,78,0.35); background: #f1f7f3; }
+      .app-card { margin-top: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: #fff; }
+      .app-card .ico { width: 38px; height: 38px; border-radius: 10px; background: #e9e9e4; display: inline-grid; place-items: center; color: var(--muted); }
+      .app-card .nm { font-size: 12px; font-weight: 600; margin-top: 8px; }
+      .app-card .vr { font-size: 11px; color: var(--muted); }
+
+      .lane-label { position: absolute; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .lane-label.hero { color: #111; font-size: 13px; }
+      .band-rule { position: absolute; border-top: 1px dashed var(--line); }
+      .connector { position: absolute; height: 2px; background: #111; transform-origin: left center; }
+      .connector.thick { height: 3px; }
+      .connector::after { content: ""; position: absolute; right: -1px; top: -4px; border-left: 8px solid #111; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+      .vrail { position: absolute; width: 2px; background: #111; }
+      .arrow-label { position: absolute; z-index: 2; border: 1px solid #111; border-radius: 6px; background: #fff7c8; padding: 3px 7px; font-size: 11px; font-weight: 650; white-space: nowrap; }
+      .arrow-label.err { border-color: var(--red); background: #f9efef; color: var(--red); }
+      .arrow-label.soft { background: #fff; color: var(--muted); font-weight: 600; }
+
+      .mini-map { position: fixed; right: 18px; bottom: 18px; z-index: 22; width: 208px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.94); box-shadow: var(--shadow); padding: 12px; max-height: 70vh; overflow: auto; }
+      .mini-map strong { display: block; margin-bottom: 8px; font-size: 12px; }
+      .mini-map button { display: block; width: 100%; margin-top: 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 7px; text-align: left; color: var(--muted); font-size: 11px; cursor: pointer; }
+      .mini-map button.head { color: #111; font-weight: 650; background: var(--panel-2); }
+      .mini-map button:hover { color: var(--ink); background: var(--panel-2); }
+      .hotspot { outline: 2px solid transparent; cursor: pointer; }
+      .hotspot:hover { outline-color: #111; }
+      .callout-active { animation: pulse 900ms ease-out 1; }
+      @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47,93,140,0.45); } 100% { box-shadow: 0 0 0 18px rgba(47,93,140,0); } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title">
+        <strong>Unified Publish Flow — end to end (decided)</strong>
+        <span>Edit Agent in the IDE → Publish → submit for review → review (flash &amp; test on a real device) → approve → Publish to production → live for public · ADR 056 + 057</span>
+      </div>
+      <div class="toolbar" aria-label="Canvas controls">
+        <button class="tool-btn" data-zoom="-">Zoom out</button>
+        <button class="tool-btn" data-zoom="+">Zoom in</button>
+        <button class="tool-btn" data-reset>Fit</button>
+      </div>
+    </header>
+
+    <main class="viewport" id="viewport" aria-label="Wireframe canvas">
+      <section class="canvas" id="canvas">
+
+        <!-- ============ THE CHAIN (spine) ============ -->
+        <div class="lane-label hero" style="left: 60px; top: 116px">The chain · submit → review → approve → publish → live</div>
+
+        <article class="frame spine" id="s0-ide" style="left: 60px; top: 152px">
+          <h2><span class="step-no">1</span>Open in the IDE</h2>
+          <div class="wire-ui">
+            <div class="wire-header">
+              <span class="wire-title"><span class="seg"><span>Chat</span><span class="on">Code</span></span> &nbsp;·&nbsp; …/weather-station</span>
+              <div class="wire-actions">
+                <button class="mini-btn primary hotspot" data-jump="s1-author">Edit Agent</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="ide-tabs"><span class="tab on">Agent · Weather Station</span><span class="tab">hello</span><span class="tab">+</span></div>
+              <div class="ide-mock">
+                <div class="ide-pane">
+                  <div class="h">Agent</div>
+                  <div class="row on">Soul</div>
+                  <div class="row">Style</div>
+                  <div class="row">Tools</div>
+                  <div class="row">Heartbeat</div>
+                  <div class="row">Skills</div>
+                  <div class="row">Capabilities</div>
+                </div>
+                <div class="ide-pane editor">
+                  <div class="h">agent/SOUL.md</div>
+                  <div class="row">CoreS3 Assistant</div>
+                  <div class="row">Identity · Personality</div>
+                  <div class="row">Communication Style</div>
+                </div>
+                <div class="ide-pane">
+                  <div class="h">Files</div>
+                  <div class="row">▸ agent/</div>
+                  <div class="row">▸ build/</div>
+                  <div class="row">▸ docs/</div>
+                  <div class="row">SOUL.md</div>
+                </div>
+              </div>
+              <div class="caption" style="margin-top:8px">The project open in the IDE (Code view, agent authoring tab). Click <strong>Edit Agent</strong> (top-right) to open the authoring surface — that is where the single Publish entry lives.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame spine" id="s1-author" style="left: 580px; top: 152px">
+          <h2><span class="step-no">2</span>Author &amp; Publish</h2>
+          <div class="wire-ui">
+            <div class="wire-header">
+              <span class="wire-title">Agent · Weather Station</span>
+              <div class="wire-actions">
+                <button class="mini-btn primary hotspot" data-jump="s2-hub">Publish</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="caption">The agent authoring tab. One <strong>Publish</strong> entry opens the Release hub — no peer publish buttons. Local edits stay <strong>draft</strong> until submitted.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large spine" id="s2-hub" style="left: 1100px; top: 152px">
+          <h2><span class="step-no">3</span>Release hub → Submit for review</h2>
+          <div class="wire-ui">
+            <div class="wire-header">
+              <span class="wire-title">Publish · Weather Station · app_8f3a2c</span>
+              <span class="chip">● to review</span>
+            </div>
+            <div class="content">
+              <div class="artifact-row"><span class="rownum">1</span><div><strong>App record</strong><div class="meta">app_8f3a2c</div></div><span class="status-pill ok">created</span></div>
+              <div class="artifact-row"><span class="rownum">2</span><div><strong>Icon &amp; screenshots</strong><div class="meta">add any time</div></div><span class="status-pill muted">optional</span></div>
+              <div class="artifact-row"><span class="rownum">3</span><div><strong>Agent package</strong><div class="meta">v1.4.0 · from manifest</div></div><span class="status-pill muted">draft</span></div>
+              <div class="artifact-row"><span class="rownum">4</span><div><strong>Firmware</strong><div class="meta">v0.9.4 · beta</div></div><span class="status-pill muted">draft</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px">
+                <span class="caption" style="margin:0">Submit sends the version to <strong>pending_review</strong>.</span>
+                <button class="mini-btn primary hotspot" data-jump="lane-detail">Submit for review</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame spine" id="s4-review" style="left: 1710px; top: 152px">
+          <h2><span class="step-no">4</span>Review → approve</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Reviewer console (backend)</span></div>
+            <div class="content">
+              <div class="artifact-row"><span class="rownum">▸</span><div><strong>Agent package v1.4.0</strong><div class="meta">in_review</div></div><span style="display:flex; gap:5px"><button class="mini-btn">Reject</button><button class="mini-btn primary">Approve</button></span></div>
+              <div class="phase-line"><span class="dot done">✓</span> Download the exact build · sha256 verified</div>
+              <div class="phase-line"><span class="dot done">✓</span> Flash to a bench device · boot · connect</div>
+              <div class="logbox">flash cores3 ✓   boot ✓   wifi + ws ✓   soak 10m ✓   → all checks passed</div>
+              <div class="result-banner warn" style="margin-top:10px">✓ Approved → status = approved (not live yet)</div>
+              <div class="caption">The reviewer downloads the exact content-addressed artifact, <strong>flashes it to a real device</strong>, and runs the hardware-in-the-loop checks (flash · boot · connect · soak) before deciding. Tested bytes = shipped bytes (sha256). Approve makes it eligible; it does <strong>not</strong> set live.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame spine" id="s5-release" style="left: 2230px; top: 152px">
+          <h2><span class="step-no">5</span>Publish to production</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish to production · Weather Station</span></div>
+            <div class="content">
+              <div class="kv"><span>Transition</span><span>approved → published</span><span>Public consumers</span><span>v1.3.2 → v1.4.0</span></div>
+              <div class="check">✓ Reviewed and approved · same build, no rebuild</div>
+              <div style="display:flex; justify-content:flex-end; margin-top:8px"><button class="mini-btn primary hotspot" data-jump="s6-prod">Publish to production</button></div>
+              <div class="caption">Author releases: <strong>approved → published</strong> and sets <code>liveVersionId</code>.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="phone" id="s6-prod" style="left: 2750px; top: 152px">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="phead"><span class="pstep"><span class="step-no">6</span></span><span class="build-badge prod">public build</span></div>
+            <div class="caption" style="margin-top:6px"><strong>Production mobile.</strong> Sees only <strong>published</strong> (the liveVersionId version).</div>
+            <div class="app-card">
+              <div class="ico">▦</div>
+              <div class="nm">Weather Station</div>
+              <div class="vr">v1.4.0 · published · live</div>
+              <div class="check">✓ public update delivered</div>
+            </div>
+          </div>
+        </article>
+
+        <div class="connector thick" style="left: 532px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 1052px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 1662px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 2182px; top: 250px; width: 46px"></div>
+        <div class="connector thick" style="left: 2702px; top: 250px; width: 46px"></div>
+        <div class="arrow-label" style="left: 498px; top: 224px">Edit Agent</div>
+        <div class="arrow-label" style="left: 1018px; top: 224px">Publish</div>
+        <div class="arrow-label" style="left: 1576px; top: 224px">submit for review</div>
+        <div class="arrow-label" style="left: 2096px; top: 224px">approved → release</div>
+        <div class="arrow-label" style="left: 2628px; top: 224px">published → live</div>
+
+        <div class="band-rule" style="left: 40px; top: 700px; width: 2960px"></div>
+
+        <!-- ============ DETAIL: hub steps open these dialogs ============ -->
+        <div class="lane-label" style="left: 60px; top: 724px" id="lane-detail">Detail · what each hub step opens (reused dialogs)</div>
+        <!-- rail from hub down to detail band -->
+        <div class="vrail" style="left: 1380px; top: 660px; height: 100px"></div>
+        <div class="connector" style="left: 1380px; top: 760px; width: 1px"></div>
+        <div class="arrow-label soft" style="left: 1220px; top: 672px">each step → its dialog</div>
+
+        <article class="frame large" id="d-create" style="left: 60px; top: 768px">
+          <h2>Step 1 · Submit app record</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">App record · Weather Station</span></div>
+            <div class="content">
+              <div class="phase-line"><span class="dot done">✓</span> Package built · 14 files</div>
+              <div class="field"><label>Display name</label><div class="val">Weather Station</div></div>
+              <div class="field"><label>Description</label><div class="val" style="min-height:40px; align-items:flex-start; padding-top:7px; color:var(--muted)">Desk weather companion for m5stack-cores3.</div></div>
+              <div class="field"><label>Agent package version</label><div class="val readonly">1.0.0</div></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn primary">Submit</button></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="d-media" style="left: 660px; top: 768px">
+          <h2>Step 2 · Add media</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">App info · Weather Station</span></div>
+            <div class="content">
+              <div class="field"><label>Icon image · 512×512 PNG</label><div class="dropzone">Drop icon or click to upload<br /><span style="font-size:10px">alt text required</span></div></div>
+              <div class="field"><label>Screenshots</label><div class="thumbs"><div class="thumb">▦</div><div class="thumb">▦</div><div class="thumb">▦</div><div class="thumb add">＋</div></div></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Cancel</button><button class="mini-btn primary">Save</button></div>
+              <div class="caption">Optional · update any time. Does not change the package version.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="d-update" style="left: 1260px; top: 768px">
+          <h2>Step 3 · Publish update</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish update · Weather Station</span></div>
+            <div class="content">
+              <div class="phase-line"><span class="dot done">✓</span> Package rebuilt · 3 files changed</div>
+              <div class="kv"><span>App id</span><span>app_8f3a2c</span><span>Live version</span><span>v1.3.2</span></div>
+              <div class="field" style="margin-top:8px"><label>New version · read from manifest</label><div style="display:flex; align-items:center; gap:8px"><div class="val readonly" style="flex:1">v1.4.0</div><span class="seg"><span class="on">patch</span><span>minor</span><span>major</span></span></div></div>
+              <div class="field"><label>Review notes · what changed, what to verify (optional)</label><div class="val" style="min-height:40px; align-items:flex-start; padding-top:7px; color:var(--muted)">Fixed humidity read; verify display refresh on cold boot.</div></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn primary">Submit for review</button></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="d-firmware" style="left: 1860px; top: 768px">
+          <h2>Step 4 · Publish firmware</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish firmware · Weather Station</span></div>
+            <div class="content">
+              <div class="field"><label>Firmware binary (auto-detected)</label><div class="val readonly">.pio/build/cores3/firmware.bin</div></div>
+              <div class="field"><label>Firmware version · read from HH_FIRMWARE_VERSION</label><div style="display:flex; align-items:center; gap:8px"><div class="val readonly" style="flex:1">0.9.4</div><span class="seg"><span class="on">patch</span><span>minor</span><span>major</span></span></div></div>
+              <div class="field"><label>Channel</label><div class="seg"><span>stable</span><span class="on">beta</span><span>dev</span></div></div>
+              <div class="field"><label>Release notes (optional)</label><div class="val" style="min-height:36px; align-items:flex-start; padding-top:7px; color:var(--muted)">OTA stability fix; verify reconnect after Wi-Fi drop.</div></div>
+              <div class="phase-line"><span class="dot now">2</span> Build → Upload (two phases)</div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Build only</button><button class="mini-btn primary">Build &amp; upload</button></div>
+              <div class="caption">Needs the app to exist. Never changes the agent package version.</div>
+            </div>
+          </div>
+        </article>
+
+        <div class="band-rule" style="left: 40px; top: 1320px; width: 2960px"></div>
+
+        <!-- ============ STATE: two-track board + status language ============ -->
+        <div class="lane-label" style="left: 60px; top: 1344px">State · two tracks and status language</div>
+
+        <article class="frame wide" id="b-board" style="left: 60px; top: 1388px">
+          <h2>Test and Production side by side</h2>
+          <p>One catalog. Publishing to production re-points to the tested version (same SHA, no rebuild).</p>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Release · Weather Station · app_8f3a2c</span></div>
+            <div class="content">
+              <div class="track-head"><span>Artifact</span><span>Test track</span><span></span><span>Production track</span><span></span></div>
+              <div class="track-grid">
+                <div class="track-row">
+                  <strong>Agent package</strong>
+                  <div class="track-cell test"><span class="v">v1.4.0</span><span class="s">latest · in review</span></div>
+                  <div class="to">→</div>
+                  <div class="track-cell prod"><span class="v">v1.3.2</span><span class="s">live · <span class="marker">● liveVersionId</span></span></div>
+                  <button class="mini-btn primary hotspot" data-jump="s5-release">Publish to prod →</button>
+                </div>
+                <div class="track-row">
+                  <strong>Firmware</strong>
+                  <div class="track-cell test"><span class="v">v0.9.4</span><span class="s">beta · m5stack-cores3</span></div>
+                  <div class="to">→</div>
+                  <div class="track-cell prod"><span class="v">v0.9.3</span><span class="s">stable · <span class="marker">● latest for device</span></span></div>
+                  <button class="mini-btn primary hotspot" data-jump="s5-release">Publish to prod →</button>
+                </div>
+              </div>
+              <div class="caption">Publish to production: approved → published, sets liveVersionId. Firmware: stable-channel release of the same binary. The test track keeps the version after release.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="b-legend" style="left: 920px; top: 1388px">
+          <h2>Status language</h2>
+          <p>Pills are the backend review states. Visibility is a separate overlay, not a status.</p>
+          <div class="legend-grid">
+            <span><span class="status-pill muted">Draft</span></span><span>Local in the IDE; not submitted.</span>
+            <span><span class="status-pill warn">Pending review</span></span><span>Submitted; in the review queue.</span>
+            <span><span class="status-pill warn">In review</span></span><span>A reviewer has opened it.</span>
+            <span><span class="status-pill" style="border-color: rgba(47,93,140,0.4); color: var(--blue)">Approved</span></span><span>Passed review, not live yet — awaiting the author's Publish to production.</span>
+            <span><span class="status-pill ok">Published</span></span><span>Live to the public (liveVersionId points here).</span>
+            <span><span class="status-pill block">Rejected</span></span><span>Terminal; create a new version.</span>
+            <span><span class="status-pill block">Revoked</span></span><span>Was published, then removed.</span>
+          </div>
+          <div class="caption" style="margin-top:10px; border-top:1px dashed var(--line); padding-top:8px">
+            <strong>Visibility (derived, not a status).</strong>
+            <span style="color:var(--green)">● live</span> = liveVersionId points here (published is not live).
+            <span style="color:var(--green)">● latest for device</span> = newest published firmware for a channel + device model.
+          </div>
+        </article>
+
+        <article class="frame large" id="b-states" style="left: 1500px; top: 1388px">
+          <h2>Review state machine · per version</h2>
+          <p>Adds one state — <code>approved</code> (passed review, not live). Approve and release are separate steps.</p>
+          <div class="wire-ui">
+            <div class="content">
+              <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:11px">
+                <span class="status-pill muted">draft</span>
+                <span style="color:var(--muted)">— Submit for review →</span>
+                <span class="status-pill warn">pending_review</span>
+                <span style="color:var(--muted)">— open →</span>
+                <span class="status-pill warn">in_review</span>
+                <span style="color:var(--muted)">— approve →</span>
+                <span class="status-pill" style="border-color: rgba(47,93,140,0.4); color: var(--blue)">approved</span>
+                <span style="color:var(--muted)">— Publish to production →</span>
+                <span class="status-pill ok">published</span>
+              </div>
+              <div style="margin-top:8px; font-size:11px; color:var(--muted)">
+                in_review — reject → <span class="status-pill block">rejected</span> &nbsp;·&nbsp; published — revoke → <span class="status-pill block">revoked</span> &nbsp;·&nbsp; Publish to production sets <code>liveVersionId</code>
+              </div>
+              <div class="caption" style="margin-top:8px; border-top:1px dashed var(--line); padding-top:8px">
+                <code>draft</code> = local (not submitted). Test build sees pending_review / in_review / approved; public build sees <code>published</code> (liveVersionId). <code>approved</code> = passed review, awaiting the author's Publish to production.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div class="band-rule" style="left: 40px; top: 1800px; width: 2960px"></div>
+
+        <!-- ============ ERROR STATES ============ -->
+        <div class="lane-label" style="left: 60px; top: 1824px">Errors · in-dialog states + complete error reference (no id conflict — app_id is auto-assigned)</div>
+
+        <article class="frame large" id="e-version" style="left: 60px; top: 1868px">
+          <h2>Error · version exists</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish update · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Version v1.4.0 already in the catalog</div>
+              <div class="caption" style="margin-top:8px">Bump the version in the agent manifest, then rebuild and publish again.</div>
+              <span class="code-tag">VERSION_CONFLICT</span>
+              <div class="kv" style="margin-top:10px"><span>Tried</span><span>v1.4.0 (already exists)</span><span>Suggested</span><span>v1.4.1</span></div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">Ask agent to bump</button><button class="mini-btn primary">Rebuild and retry</button></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="e-build" style="left: 660px; top: 1868px">
+          <h2>Error · build failed</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish firmware · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Build failed — nothing uploaded</div>
+              <div class="logbox">cores3/app_main.cpp:42:7: error: 'HH_DEVICE_MODEL'
+  was not declared in this scope
+*** [.pio/build/cores3/firmware.bin] Error 1</div>
+              <div class="caption" style="margin-top:8px">Build runs before upload, so a failure never reaches the cloud. Version + channel preserved.</div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">View full log</button><button class="mini-btn primary">Retry build</button></div>
+              <div class="caption" style="margin-top:10px; border-top:1px dashed var(--line); padding-top:8px">After a good build: <span class="code-tag">FIRMWARE_VERSION_EXISTS</span> bump version · <span class="code-tag">FIRMWARE_TOO_LARGE</span> shrink image.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="e-upload" style="left: 1260px; top: 1868px">
+          <h2>Error · upload failed</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Submit · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Artifact upload failed — nothing submitted</div>
+              <div class="caption" style="margin-top:8px">The package / firmware built locally, but the cloud could not store or finalize the uploaded object. Retry; metadata, version, and build are preserved.</div>
+              <div class="kv" style="margin-top:8px">
+                <span>Agent package</span><span><span class="code-tag">BLOB_UPLOAD_FAILED</span> <span class="code-tag">PACKAGE_BLOB_NOT_FOUND</span></span>
+                <span>Firmware</span><span><span class="code-tag">FIRMWARE_UPLOAD_FAILED</span> <span class="code-tag">FIRMWARE_PENDING_OBJECT_NOT_FOUND</span></span>
+                <span>Storage down</span><span><span class="code-tag">FIRMWARE_STORAGE_UNAVAILABLE</span></span>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:6px"><button class="mini-btn">View details</button><button class="mini-btn primary">Retry upload</button></div>
+              <div class="caption" style="margin-top:8px; border-top:1px dashed var(--line); padding-top:8px">Repeats → check S3 perms (pending read, release write, copy, cleanup).</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="frame large" id="e-auth" style="left: 1860px; top: 1868px">
+          <h2>Error · auth required</h2>
+          <div class="wire-ui">
+            <div class="wire-header"><span class="wire-title">Publish · Weather Station</span></div>
+            <div class="content">
+              <div class="result-banner err">⚠ Sign in to publish</div>
+              <div class="caption" style="margin-top:8px">The session is missing or expired. Sign in; the hub returns to where you were with the draft and build preserved.</div>
+              <span class="code-tag">AUTH_REQUIRED</span>
+              <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px"><button class="mini-btn primary">Sign in</button></div>
+            </div>
+          </div>
+        </article>
+
+        <div class="lane-label" style="left: 60px; top: 2320px">Publish error reference · every failure by stage, with recovery</div>
+        <article class="frame" id="e-catalog" style="left: 60px; top: 2356px; width: 1180px">
+          <h2>Publish error reference</h2>
+          <p>Every failure a developer can hit while publishing, by stage. Each row: code → when → recovery. Grounded in cloud-catalog-client.ts guidance + noracloud route codes.</p>
+          <div class="errtab">
+            <div class="grp">Auth</div>
+            <span><span class="ec">AUTH_REQUIRED</span></span><span class="when">session missing / expired → sign in; hub state, draft, and build preserved</span>
+
+            <div class="grp">Build / export (local, before submit)</div>
+            <span><span class="ec">export-blocked</span></span><span class="when">package export blocked (invalid or missing files) → fix the flagged package surface</span>
+            <span><span class="ec">PACKAGE_INVALID</span> <span class="ec">MANIFEST_INVALID</span></span><span class="when">server rejects the package / manifest → fix the manifest, re-export</span>
+            <span><span class="ec">build failed</span></span><span class="when">firmware source compile error → fix source and rebuild (build runs before upload)</span>
+            <span><span class="ec">HH_FIRMWARE_VERSION</span> <span class="ec">HH_DEVICE_MODEL</span></span><span class="when">macros unreadable → set them in app_config.h / platformio.ini</span>
+
+            <div class="grp">Version</div>
+            <span><span class="ec">VERSION_CONFLICT</span></span><span class="when">agent version already in catalog → bump the manifest version, rebuild</span>
+            <span><span class="ec">FIRMWARE_VERSION_EXISTS</span></span><span class="when">firmware version exists → change HH_FIRMWARE_VERSION, rebuild</span>
+            <span><span class="ec">FIRMWARE_VERSION_INCOMPATIBLE</span></span><span class="when">firmware not compatible with the target → fix compatibility metadata</span>
+
+            <div class="grp">Upload (artifact → storage)</div>
+            <span><span class="ec">BLOB_UPLOAD_FAILED</span> <span class="ec">PACKAGE_BLOB_NOT_FOUND</span></span><span class="when">package upload / store failed → retry; metadata kept</span>
+            <span><span class="ec">FIRMWARE_UPLOAD_FAILED</span> <span class="ec">FIRMWARE_PENDING_OBJECT_NOT_FOUND</span></span><span class="when">firmware finalize / staged read failed → retry; check S3 perms</span>
+            <span><span class="ec">FIRMWARE_TOO_LARGE</span></span><span class="when">binary over the OTA limit → shrink the image</span>
+            <span><span class="ec">FIRMWARE_STORAGE_UNAVAILABLE</span></span><span class="when">storage down → retry later</span>
+            <span><span class="ec">BLOB_UPLOAD_FORBIDDEN</span></span><span class="when">not allowed to upload → re-auth / check ownership</span>
+
+            <div class="grp">Identity / ownership</div>
+            <span><span class="ec">APP_NOT_FOUND</span></span><span class="when">stored app_id does not resolve for this account → relink / deploy the workspace</span>
+            <span><span class="ec">APP_FORBIDDEN</span> <span class="ec">APP_OWNERSHIP_REQUIRED</span></span><span class="when">not the app owner → sign in as the owner</span>
+            <span><span class="ec">(no SLUG_CONFLICT)</span></span><span class="when">app_id is auto-assigned — first publish has no id conflict (retired)</span>
+
+            <div class="grp">Media (icon / screenshots)</div>
+            <span><span class="ec">MEDIA_CONTENT_TYPE_INVALID</span></span><span class="when">unsupported type → use PNG / JPEG / WebP</span>
+            <span><span class="ec">MEDIA_TOO_LARGE</span></span><span class="when">image too big → shrink it</span>
+            <span><span class="ec">MEDIA_DECODE_FAILED</span></span><span class="when">image can not be decoded → re-export the image</span>
+            <span><span class="ec">MEDIA_PENDING_NOT_FOUND</span></span><span class="when">staged media missing → re-upload</span>
+            <span><span class="ec">alt text required</span></span><span class="when">client validation → add alt text before save</span>
+
+            <div class="grp">Network / service</div>
+            <span><span class="ec">API_UNAVAILABLE</span> <span class="ec">TRANSPORT_ERROR</span></span><span class="when">offline or cloud unreachable → retry; export preserved</span>
+            <span><span class="ec">INTERNAL_SERVER_ERROR</span></span><span class="when">server 500 → retry; if it persists, report</span>
+
+            <div class="grp">Review outcome (post-submit)</div>
+            <span><span class="ec">rejected (+ notes)</span></span><span class="when">reviewer declined this version (terminal) → read notes, submit a NEW version, never overwrite</span>
+          </div>
+        </article>
+
+      </section>
+    </main>
+
+    <aside class="mini-map" aria-label="Canvas navigation">
+      <strong>Jump to frame</strong>
+      <button class="head" data-jump="s1-author">The chain</button>
+      <button data-jump="s0-ide">1 · Open in the IDE (Edit Agent)</button>
+      <button data-jump="s1-author">2 · Author &amp; Publish</button>
+      <button data-jump="s2-hub">3 · Submit for review</button>
+      <button data-jump="s4-review">4 · Review → approve (flash &amp; test)</button>
+      <button data-jump="s5-release">5 · Publish to production</button>
+      <button data-jump="s6-prod">6 · Production mobile</button>
+      <button class="head" data-jump="d-create">Detail · dialogs</button>
+      <button data-jump="d-create">Submit app record</button>
+      <button data-jump="d-media">Add media</button>
+      <button data-jump="d-update">Publish update</button>
+      <button data-jump="d-firmware">Publish firmware</button>
+      <button class="head" data-jump="b-board">State &amp; errors</button>
+      <button data-jump="b-board">Two-track board</button>
+      <button data-jump="b-legend">Status language</button>
+      <button data-jump="b-states">Review state machine</button>
+      <button data-jump="e-version">Version conflict</button>
+      <button data-jump="e-build">Build failed</button>
+      <button data-jump="e-upload">Upload failed</button>
+      <button data-jump="e-auth">Signed out</button>
+      <button data-jump="e-catalog">Error reference (all)</button>
+    </aside>
+
+    <script>
+      const viewport = document.getElementById("viewport");
+      const canvas = document.getElementById("canvas");
+      const zoomButtons = Array.from(document.querySelectorAll("[data-zoom]"));
+      const resetButton = document.querySelector("[data-reset]");
+      let zoom = 0.62;
+      let pan = { x: 30, y: 16 };
+      let drag = null;
+      function applyTransform() { canvas.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`; }
+      function centerFrame(id) {
+        const frame = document.getElementById(id);
+        if (!frame) return;
+        const rect = viewport.getBoundingClientRect();
+        const x = Number.parseFloat(frame.style.left || "0");
+        const y = Number.parseFloat(frame.style.top || "0");
+        pan = { x: rect.width / 2 - (x + frame.offsetWidth / 2) * zoom, y: rect.height / 2 - (y + frame.offsetHeight / 2) * zoom };
+        frame.classList.remove("callout-active"); void frame.offsetWidth; frame.classList.add("callout-active");
+        applyTransform();
+      }
+      zoomButtons.forEach((b) => b.addEventListener("click", () => { zoom += b.dataset.zoom === "+" ? 0.08 : -0.08; zoom = Math.max(0.4, Math.min(1.25, zoom)); applyTransform(); }));
+      resetButton.addEventListener("click", () => { zoom = 0.62; pan = { x: 30, y: 16 }; applyTransform(); });
+      document.querySelectorAll("[data-jump]").forEach((b) => b.addEventListener("click", () => centerFrame(b.dataset.jump)));
+      viewport.addEventListener("pointerdown", (e) => { if (e.target.closest("button, a")) return; drag = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y }; viewport.classList.add("dragging"); viewport.setPointerCapture(e.pointerId); });
+      viewport.addEventListener("pointermove", (e) => { if (!drag) return; pan = { x: drag.panX + e.clientX - drag.x, y: drag.panY + e.clientY - drag.y }; applyTransform(); });
+      viewport.addEventListener("pointerup", (e) => { drag = null; viewport.classList.remove("dragging"); viewport.releasePointerCapture(e.pointerId); });
+      viewport.addEventListener("wheel", (e) => {
+        if (!e.metaKey && !e.ctrlKey) return; e.preventDefault();
+        const old = zoom; zoom += e.deltaY < 0 ? 0.05 : -0.05; zoom = Math.max(0.4, Math.min(1.25, zoom));
+        const rect = viewport.getBoundingClientRect(); const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        pan.x = mx - ((mx - pan.x) / old) * zoom; pan.y = my - ((my - pan.y) / old) * zoom; applyTransform();
+      }, { passive: false });
+      applyTransform();
+    </script>
+  </body>
+</html>
