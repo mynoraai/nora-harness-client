@@ -1,0 +1,1529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat Code Runtime Workbench UI Contract</title>
+    <style>
+      :root {
+        --bg: #f6f3ee;
+        --panel: #fffdfa;
+        --panel-2: #fdf7ef;
+        --line: #e8dccd;
+        --line-strong: #d6c5b2;
+        --text: #2f2923;
+        --muted: #7d7165;
+        --soft: #a99b8d;
+        --accent: #8f7b65;
+        --accent-bg: #efe4d7;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+        --green: #047857;
+        --green-bg: #d1fae5;
+        --red: #b91c1c;
+        --red-bg: #fee2e2;
+        --amber: #a16207;
+        --amber-bg: #fef3c7;
+        --shadow: 0 24px 60px rgba(80, 60, 37, 0.14);
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 24px;
+        min-width: 1510px;
+        padding: 28px;
+      }
+
+      .artifact-title {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .artifact-title h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 650;
+        letter-spacing: 0;
+      }
+
+      .artifact-title p {
+        max-width: 760px;
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .frame {
+        width: 1200px;
+        height: 940px;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: #f8f1e8;
+        box-shadow: var(--shadow);
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 252px 1fr;
+        height: 100%;
+      }
+
+      .sidebar {
+        border-right: 1px solid var(--line);
+        background: #f2eadf;
+        padding: 14px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 34px;
+        margin-bottom: 16px;
+        font-weight: 650;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 24px;
+        height: 24px;
+        place-items: center;
+        border-radius: 6px;
+        background: #2f2923;
+        color: #fffdfa;
+        font-size: 12px;
+      }
+
+      .side-section {
+        margin-top: 18px;
+      }
+
+      .side-heading {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+        text-transform: uppercase;
+      }
+
+      .session-row {
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        gap: 9px;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        margin-bottom: 4px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        padding: 7px;
+        color: #4a4037;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .session-row.active {
+        background: #fff9f0;
+        box-shadow: inset 0 0 0 1px #eadcca;
+      }
+
+      .session-row:hover {
+        background: #fff9f0;
+      }
+
+      .session-icon {
+        display: grid;
+        width: 20px;
+        height: 20px;
+        place-items: center;
+        border-radius: 5px;
+        background: #fffdfa;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .session-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .session-meta {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .session-lock {
+        margin-left: 5px;
+        color: var(--amber);
+        font-weight: 700;
+      }
+
+      .main {
+        display: grid;
+        grid-template-rows: 48px 34px 1fr auto;
+        min-width: 0;
+        background: var(--panel);
+      }
+
+      .topbar,
+      .workbar {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 0 18px;
+      }
+
+      .topbar {
+        justify-content: space-between;
+        background: #fffdfa;
+      }
+
+      .top-title {
+        min-width: 0;
+      }
+
+      .top-title strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      .top-title span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .top-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fffdfa;
+        color: var(--muted);
+      }
+
+      .workbar {
+        gap: 10px;
+        background: #fbf4ec;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .path {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 22px;
+        border-radius: 999px;
+        padding: 0 8px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .pill-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 99px;
+        background: currentColor;
+      }
+
+      .pill.idle {
+        background: #efece7;
+        color: var(--muted);
+      }
+
+      .pill.spawning {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+
+      .pill.ready {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+
+      .pill.running {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+
+      .pill.broken {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 1fr 288px;
+        min-height: 0;
+      }
+
+      .workspace.draft {
+        display: block;
+        background: #fffdfa;
+      }
+
+      .draft-canvas {
+        display: none;
+        height: 100%;
+        background: #fffdfa;
+      }
+
+      .workspace.draft .draft-canvas {
+        display: block;
+      }
+
+      .workspace.draft .chat,
+      .workspace.draft .code-pane {
+        display: none;
+      }
+
+      .chat {
+        min-width: 0;
+        overflow: auto;
+        border-right: 1px solid var(--line);
+        padding: 20px 24px 28px;
+        background: #fffdfa;
+      }
+
+      .message {
+        max-width: 680px;
+        margin-bottom: 18px;
+      }
+
+      .message.user {
+        margin-left: auto;
+      }
+
+      .bubble {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdfa;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.48;
+      }
+
+      .message.user .bubble {
+        border-color: #e9d8c4;
+        background: #fbf4ec;
+      }
+
+      .block {
+        width: 100%;
+        margin: 10px 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdfa;
+        overflow: hidden;
+      }
+
+      .tool-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+
+      .tool-left {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tool-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 21px;
+        border-radius: 999px;
+        background: #f3eee8;
+        padding: 0 7px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .badge.running {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+
+      .badge.completed {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+
+      .badge.failed {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      .tool-body {
+        border-top: 1px solid var(--line);
+        padding: 10px 12px 12px;
+      }
+
+      pre {
+        margin: 0;
+        overflow: auto;
+        border-radius: 6px;
+        background: #f5efe7;
+        padding: 10px;
+        color: #3b332b;
+        font-size: 11px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+
+      .status-line {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 8px 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .permission {
+        border-color: #efd48a;
+        background: #fff9e7;
+        padding: 12px;
+      }
+
+      .permission-head {
+        display: flex;
+        gap: 9px;
+      }
+
+      .permission strong {
+        display: block;
+        font-size: 13px;
+      }
+
+      .permission small {
+        display: block;
+        overflow: hidden;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .permission-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .btn {
+        height: 30px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fffdfa;
+        padding: 0 11px;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        border-color: #2f2923;
+        background: #2f2923;
+        color: #fffdfa;
+      }
+
+      .btn:disabled,
+      .selector:disabled,
+      .send:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .modified {
+        padding: 11px 12px;
+      }
+
+      .modified-title {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 9px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .file-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .file-chip {
+        height: 26px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fffdfa;
+        padding: 0 8px;
+        color: #4b4035;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+      }
+
+      .code-pane {
+        display: grid;
+        grid-template-rows: 36px 1fr 158px;
+        min-width: 0;
+        background: #f7f0e8;
+      }
+
+      .tabs {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border-bottom: 1px solid var(--line);
+        padding: 5px 8px 0;
+      }
+
+      .tab {
+        height: 30px;
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: 7px 7px 0 0;
+        background: #fffdfa;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .editor {
+        overflow: hidden;
+        padding: 14px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.7;
+        color: #4b4035;
+      }
+
+      .terminal {
+        border-top: 1px solid var(--line);
+        background: #2f2923;
+        padding: 10px;
+        color: #f9ead7;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        line-height: 1.55;
+      }
+
+      .composer {
+        position: relative;
+        border-top: 1px solid var(--line);
+        background: #f8f1e8;
+        padding: 16px 24px 22px;
+      }
+
+      .prompt-box {
+        border: 1px solid #ede4d8;
+        border-radius: 26px;
+        background: #fffdfa;
+        padding: 12px;
+        box-shadow: 0 18px 48px rgba(135, 107, 74, 0.12);
+      }
+
+      .prompt-text {
+        min-height: 54px;
+        color: var(--text);
+        font-size: 15px;
+      }
+
+      .draft-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #efd48a;
+        border-radius: 8px;
+        background: #fff9e7;
+        padding: 9px 11px;
+        color: #6b4d0f;
+        font-size: 12px;
+      }
+
+      .draft-banner strong {
+        font-weight: 700;
+      }
+
+      .draft-banner.locked {
+        border-color: var(--line);
+        background: #f6f1eb;
+        color: var(--muted);
+      }
+
+      .prompt-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 10px;
+      }
+
+      .tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .selector {
+        display: inline-flex;
+        align-items: center;
+        max-width: 220px;
+        height: 32px;
+        gap: 8px;
+        border: 1px solid #eee3d6;
+        border-radius: 999px;
+        background: #fffdfa;
+        padding: 0 10px;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .selector span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .logo {
+        display: grid;
+        width: 18px;
+        height: 18px;
+        flex: none;
+        place-items: center;
+        border-radius: 5px;
+        background: #efe4d7;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .selector.warn {
+        color: var(--amber);
+      }
+
+      .send {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: var(--accent-bg);
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .menu {
+        position: absolute;
+        bottom: 74px;
+        left: 102px;
+        z-index: 5;
+        display: none;
+        width: 300px;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: #fffdfa;
+        box-shadow: 0 18px 50px rgba(70, 49, 31, 0.18);
+      }
+
+      .menu.open {
+        display: block;
+      }
+
+      .menu.model {
+        left: 276px;
+        width: 360px;
+      }
+
+      .menu-title {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .menu input {
+        width: calc(100% - 20px);
+        height: 34px;
+        margin: 10px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 0 10px;
+        outline: none;
+      }
+
+      .menu-group {
+        padding: 5px 0 10px;
+      }
+
+      .menu-heading {
+        padding: 6px 12px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .menu-item {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 9px;
+        border: 0;
+        background: transparent;
+        padding: 8px 12px;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .menu-item:hover {
+        background: #fbf4ec;
+      }
+
+      .check {
+        margin-left: auto;
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .empty {
+        padding: 20px 12px 24px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .control-panel {
+        align-self: start;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: #fffdfa;
+        padding: 16px;
+        box-shadow: 0 12px 36px rgba(80, 60, 37, 0.08);
+      }
+
+      .control-panel h2 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+
+      .control-panel p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .control-group {
+        border-top: 1px solid var(--line);
+        padding: 13px 0;
+      }
+
+      .control-label {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+        text-transform: uppercase;
+      }
+
+      .segmented {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .segmented button {
+        height: 28px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fffdfa;
+        padding: 0 9px;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .segmented button.active {
+        border-color: #2f2923;
+        background: #2f2923;
+        color: #fffdfa;
+      }
+
+      .contract-readout {
+        display: grid;
+        gap: 7px;
+        margin-top: 8px;
+        border-radius: 7px;
+        background: #f6f1eb;
+        padding: 10px;
+        font-size: 12px;
+      }
+
+      .readout-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .readout-row span:first-child {
+        color: var(--muted);
+      }
+
+      .readout-row span:last-child {
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="artifact-title">
+        <div>
+          <h1>Chat / Code Runtime Workbench UI Contract</h1>
+          <p>
+            HTML interaction wireframe for the runtime-neutral workbench controls and message blocks.
+            Use the controls on the right to review locked runtime selection, model catalog states,
+            ACP block rendering, modified files, and AcpRuntimeStatusPill states.
+          </p>
+        </div>
+      </div>
+
+      <section class="frame" aria-label="NoraHarness workbench frame">
+        <div class="app">
+          <aside class="sidebar">
+            <div class="brand"><span class="brand-mark">NH</span> NoraHarness</div>
+            <div class="side-section">
+              <div class="side-heading">Sessions</div>
+              <button class="session-row active" data-session-id="draft" type="button">
+                <span class="session-icon">D</span>
+                <div>
+                  <div class="session-title">Draft Session</div>
+                  <div class="session-meta">
+                    runtime:<span id="side-runtime-draft">codex</span><span class="session-lock">editable</span>
+                  </div>
+                </div>
+              </button>
+              <button class="session-row" data-session-id="codex" type="button">
+                <span class="session-icon">X</span>
+                <div>
+                  <div class="session-title">Codex Session</div>
+                  <div class="session-meta">codex <span class="session-lock">locked</span></div>
+                </div>
+              </button>
+              <button class="session-row" data-session-id="claude" type="button">
+                <span class="session-icon">A</span>
+                <div>
+                  <div class="session-title">Claude Session</div>
+                  <div class="session-meta">claude <span class="session-lock">locked</span></div>
+                </div>
+              </button>
+              <button class="session-row" data-session-id="openclaw" type="button">
+                <span class="session-icon">O</span>
+                <div>
+                  <div class="session-title">OpenClaw Session</div>
+                  <div class="session-meta">openclaw <span class="session-lock">locked</span></div>
+                </div>
+              </button>
+            </div>
+          </aside>
+
+          <section class="main">
+            <header class="topbar">
+              <div class="top-title">
+                <strong id="top-session-title">Draft Session</strong>
+                <span id="top-session-subtitle">Draft session: runtime can still be changed before creation.</span>
+              </div>
+              <div class="top-actions">
+                <button class="icon-btn" aria-label="Search">S</button>
+                <button class="icon-btn" aria-label="Settings">G</button>
+              </div>
+            </header>
+
+            <div class="workbar">
+              <span class="path" id="workspace-path">/workspace/hardware-harness/apps/electron</span>
+              <span class="pill ready" id="runtime-pill">
+                <span class="pill-dot"></span><span id="pill-label">Codex ready</span>
+              </span>
+            </div>
+
+            <section class="workspace draft" id="workspace">
+              <div class="draft-canvas" aria-label="Draft session has no transcript"></div>
+              <div class="chat" aria-label="Chat transcript">
+                <div class="message user">
+                  <div class="bubble">Refine the runtime controls and verify Codex modified files replay after reload.</div>
+                </div>
+
+                <div class="message">
+                  <div class="status-line" id="status-block">
+                    <span>~</span><span>Runtime context updated</span><span>8,120/128,000 (6%)</span>
+                  </div>
+
+                  <div class="block" id="tool-block">
+                    <div class="tool-head" id="tool-head" tabindex="0" role="button" aria-expanded="true">
+                      <div class="tool-left">
+                        <span>W</span>
+                        <span class="tool-title">Apply patch to ChatComposer.tsx</span>
+                        <span class="badge running" id="tool-badge"><span class="pill-dot"></span>Running</span>
+                      </div>
+                      <span id="tool-chevron">v</span>
+                    </div>
+                    <div class="tool-body" id="tool-body">
+                      <pre>*** Update File: apps/electron/src/renderer/src/components/chat/ChatComposer.tsx
+@@
+ runtimeId: "codex"
+ modelId: "openai-codex/gpt-5.5"</pre>
+                    </div>
+                  </div>
+
+                  <div class="block permission" id="permission-card">
+                    <div class="permission-head">
+                      <span>!</span>
+                      <div>
+                        <strong>Permission required (Write)</strong>
+                        <small>edit_file - src/renderer/src/components/chat/ChatComposer.tsx</small>
+                      </div>
+                    </div>
+                    <div class="permission-actions">
+                      <button class="btn primary" id="approve-btn">Approve</button>
+                      <button class="btn" id="deny-btn">Deny</button>
+                    </div>
+                  </div>
+
+                  <div class="block modified" id="modified-files">
+                    <div class="modified-title"><span>F</span> Modified 3 files</div>
+                    <div class="file-list">
+                      <button class="file-chip">src/renderer/src/components/chat/ChatComposer.tsx</button>
+                      <button class="file-chip">src/renderer/src/lib/acp-ui-chunk-bridge.ts</button>
+                      <button class="file-chip">src/renderer/test/runtime-ui.test.tsx:42</button>
+                    </div>
+                  </div>
+
+                  <div class="bubble">
+                    Runtime and model are bound at send time as a pair. The selected runtime owns
+                    the model catalog; changing runtime clears the model and reloads the catalog.
+                  </div>
+                </div>
+              </div>
+
+              <aside class="code-pane" aria-label="Code workspace">
+                <div class="tabs">
+                  <div class="tab">ChatComposer.tsx</div>
+                  <div class="tab">runtime-ui.test.tsx</div>
+                </div>
+                <div class="editor">
+                  <div>function handleRuntimeSelect(id: RuntimeId) {</div>
+                  <div>&nbsp;&nbsp;setSessionRuntime(sessionKey, id)</div>
+                  <div>&nbsp;&nbsp;clearSessionModel(sessionKey)</div>
+                  <div>&nbsp;&nbsp;loadRuntimeModels({ runtimeId: id })</div>
+                  <div>}</div>
+                  <br />
+                  <div>function handleSubmit() {</div>
+                  <div>&nbsp;&nbsp;persistVisibleFallbackModel()</div>
+                  <div>&nbsp;&nbsp;send({ runtimeId, modelId })</div>
+                  <div>}</div>
+                </div>
+                <div class="terminal">
+                  $ pnpm --filter noraharness test src/renderer/test/runtime-ui.test.tsx<br />
+                  runtime selector locked state ... pass<br />
+                  model fallback before send ... pass
+                </div>
+              </aside>
+            </section>
+
+            <footer class="composer">
+              <div class="draft-banner" id="session-banner">
+                <span><strong id="session-banner-title">New session</strong> - choose runtime and model before the first send.</span>
+                <span id="session-banner-state">Runtime selector enabled</span>
+              </div>
+              <div class="prompt-box">
+                <div class="prompt-text">Assign a task or ask any question</div>
+                <div class="prompt-footer">
+                  <div class="tools">
+                    <button class="selector" aria-label="Add attachment">+</button>
+                    <button class="selector" id="runtime-trigger">
+                      <span class="logo" id="runtime-logo">O</span><span id="runtime-label">Codex</span>
+                    </button>
+                    <button class="selector" id="model-trigger">
+                      <span class="logo" id="model-logo">O</span><span id="model-label">openai-codex/gpt-5.5</span>
+                    </button>
+                  </div>
+                  <button class="send" id="send-button" aria-label="Send" title="Send and create session">^</button>
+                </div>
+              </div>
+
+              <div class="menu" id="runtime-menu">
+                <div class="menu-title">Runtime Selector</div>
+                <input placeholder="Search runtimes..." />
+                <div class="menu-group">
+                  <div class="menu-heading">Runtime</div>
+                  <button class="menu-item" data-runtime="openclaw"><span class="logo">S</span>OpenClaw<span class="check"></span></button>
+                  <button class="menu-item" data-runtime="claude"><span class="logo">A</span>Claude Code<span class="check"></span></button>
+                  <button class="menu-item" data-runtime="codex"><span class="logo">O</span>Codex<span class="check"></span></button>
+                </div>
+              </div>
+
+              <div class="menu model" id="model-menu">
+                <div class="menu-title">Model Selector</div>
+                <input placeholder="Search models..." />
+                <div id="model-menu-content"></div>
+              </div>
+            </footer>
+          </section>
+        </div>
+      </section>
+
+      <aside class="control-panel" aria-label="Wireframe state controls">
+        <h2>State Controls</h2>
+        <p>Controls outside the app frame represent review states, not product UI.</p>
+
+        <div class="control-group">
+          <div class="control-label">Runtime Status Pill</div>
+          <div class="segmented" data-control="pill">
+            <button data-value="none">undefined</button>
+            <button data-value="idle">idle</button>
+            <button data-value="spawning">spawning</button>
+            <button data-value="ready" class="active">ready</button>
+            <button data-value="running">running</button>
+            <button data-value="broken">broken</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">Runtime Selector Guard</div>
+          <div class="segmented" data-control="guard">
+            <button data-value="normal" class="active">normal</button>
+            <button data-value="streaming">streaming</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">Model Catalog State</div>
+          <div class="segmented" data-control="models">
+            <button data-value="ready" class="active">ready</button>
+            <button data-value="loading">loading</button>
+            <button data-value="error">error</button>
+            <button data-value="empty">empty</button>
+            <button data-value="unavailable">unavailable</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">ACP Message Blocks</div>
+          <div class="segmented" data-control="blocks">
+            <button data-value="all" class="active">all</button>
+            <button data-value="resolved">permission resolved</button>
+            <button data-value="no-workspace">no workspace</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">Runtime / Model Linkage</div>
+          <div class="contract-readout">
+            <div class="readout-row"><span>Runtime</span><span id="readout-runtime">codex</span></div>
+            <div class="readout-row"><span>Model source</span><span id="readout-source">runtime</span></div>
+            <div class="readout-row"><span>Model</span><span id="readout-model">openai-codex/gpt-5.5</span></div>
+            <div class="readout-row"><span>Session</span><span id="readout-session">new draft</span></div>
+            <div class="readout-row"><span>Runtime selector</span><span id="readout-runtime-selector">enabled</span></div>
+            <div class="readout-row"><span>Send enabled</span><span id="readout-send">yes</span></div>
+            <div class="readout-row"><span>Guard reason</span><span id="readout-guard">new session</span></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      const runtimes = {
+        openclaw: {
+          label: "OpenClaw",
+          logo: "S",
+          source: "gateway",
+          models: [
+            { group: "OpenAI", id: "gpt-5.5" },
+            { group: "Anthropic", id: "claude-sonnet-4.6" },
+            { group: "Local", id: "qwen3-coder" }
+          ]
+        },
+        claude: {
+          label: "Claude Code",
+          logo: "A",
+          source: "runtime",
+          models: [
+            { group: "Claude Code", id: "claude-code/sonnet-4.6" },
+            { group: "Claude Code", id: "claude-code/opus-4.6" }
+          ]
+        },
+        codex: {
+          label: "Codex",
+          logo: "O",
+          source: "runtime",
+          models: [
+            { group: "OpenAI", id: "openai-codex/gpt-5.5" },
+            { group: "OpenAI", id: "openai-codex/gpt-5.5-high" },
+            { group: "OpenAI", id: "openai-codex/gpt-5.4" }
+          ]
+        }
+      }
+
+      const sessions = {
+        draft: {
+          id: "draft",
+          title: "Draft Session",
+          created: false,
+          runtime: "codex",
+          model: "openai-codex/gpt-5.5",
+          subtitle: "New session: runtime can still be changed."
+        },
+        codex: {
+          id: "codex",
+          title: "Codex Session",
+          created: true,
+          runtime: "codex",
+          model: "openai-codex/gpt-5.5",
+          subtitle: "Created session: Codex runtime is fixed."
+        },
+        claude: {
+          id: "claude",
+          title: "Claude Session",
+          created: true,
+          runtime: "claude",
+          model: "claude-code/sonnet-4.6",
+          subtitle: "Created session: Claude Code runtime is fixed."
+        },
+        openclaw: {
+          id: "openclaw",
+          title: "OpenClaw Session",
+          created: true,
+          runtime: "openclaw",
+          model: "gpt-5.5",
+          subtitle: "Created session: OpenClaw runtime is fixed."
+        }
+      }
+
+      const state = {
+        activeSessionId: "draft",
+        runtime: "codex",
+        model: "openai-codex/gpt-5.5",
+        modelState: "ready",
+        guard: "normal",
+        pill: "ready",
+        blocks: "all",
+        toolOpen: true
+      }
+
+      const byId = (id) => document.getElementById(id)
+
+      function closeMenus() {
+        byId("runtime-menu").classList.remove("open")
+        byId("model-menu").classList.remove("open")
+      }
+
+      function setActive(group, value) {
+        document.querySelectorAll(`[data-control="${group}"] button`).forEach((button) => {
+          button.classList.toggle("active", button.dataset.value === value)
+        })
+      }
+
+      function activeSession() {
+        return sessions[state.activeSessionId] || sessions.draft
+      }
+
+      function syncSelectionFromSession() {
+        const session = activeSession()
+        state.runtime = session.runtime
+        state.model = session.model
+        state.modelState = "ready"
+      }
+
+      function selectSession(id) {
+        if (!sessions[id]) {
+          return
+        }
+        state.activeSessionId = id
+        state.guard = "normal"
+        setActive("guard", "normal")
+        syncSelectionFromSession()
+        closeMenus()
+        render()
+      }
+
+      function selectRuntime(id) {
+        if (!canChangeRuntime()) {
+          return
+        }
+        state.runtime = id
+        const firstModel = runtimes[id].models[0]
+        state.model = firstModel ? firstModel.id : ""
+        sessions.draft.runtime = state.runtime
+        sessions.draft.model = state.model
+        state.modelState = "ready"
+        setActive("models", "ready")
+        closeMenus()
+        render()
+      }
+
+      function selectModel(id) {
+        if (state.modelState === "loading" || state.modelState === "error" || state.modelState === "empty") {
+          return
+        }
+        state.model = id
+        if (state.activeSessionId === "draft") {
+          sessions.draft.model = id
+        }
+        state.modelState = "ready"
+        setActive("models", "ready")
+        closeMenus()
+        render()
+      }
+
+      function renderRuntimeMenu() {
+        document.querySelectorAll("[data-runtime]").forEach((item) => {
+          item.querySelector(".check").textContent = item.dataset.runtime === state.runtime ? "✓" : ""
+        })
+      }
+
+      function renderModelMenu() {
+        const content = byId("model-menu-content")
+        content.innerHTML = ""
+        if (state.modelState === "loading") {
+          content.innerHTML = '<div class="empty">Loading models...</div>'
+          return
+        }
+        if (state.modelState === "error") {
+          content.innerHTML = '<div class="empty">Failed to load runtime models. Retry from the trigger.</div>'
+          return
+        }
+        if (state.modelState === "empty") {
+          content.innerHTML = '<div class="empty">No enabled models.</div>'
+          return
+        }
+        const groups = new Map()
+        for (const model of runtimes[state.runtime].models) {
+          if (!groups.has(model.group)) {
+            groups.set(model.group, [])
+          }
+          groups.get(model.group).push(model)
+        }
+        for (const [group, models] of groups) {
+          const section = document.createElement("div")
+          section.className = "menu-group"
+          section.innerHTML = `<div class="menu-heading">${group}</div>`
+          for (const model of models) {
+            const button = document.createElement("button")
+            button.className = "menu-item"
+            button.dataset.model = model.id
+            button.innerHTML = `<span class="logo">${runtimes[state.runtime].logo}</span>${model.id}<span class="check">${model.id === state.model ? "✓" : ""}</span>`
+            button.addEventListener("click", () => selectModel(model.id))
+            section.appendChild(button)
+          }
+          content.appendChild(section)
+        }
+      }
+
+      function renderPill() {
+        const pill = byId("runtime-pill")
+        const label = byId("pill-label")
+        if (state.pill === "none") {
+          pill.className = "pill hidden"
+          return
+        }
+        pill.className = `pill ${state.pill}`
+        label.textContent = `${runtimes[state.runtime].label} ${state.pill}`
+      }
+
+      function canChangeRuntime() {
+        return !activeSession().created && state.guard === "normal"
+      }
+
+      function runtimeLockReason() {
+        if (activeSession().created) {
+          return "created session"
+        }
+        if (state.guard === "streaming") {
+          return "active turn"
+        }
+        return "new session"
+      }
+
+      function createSessionFromDraft() {
+        if (activeSession().created) {
+          return
+        }
+        const nextSessionId = state.runtime
+        state.activeSessionId = nextSessionId
+        state.guard = "normal"
+        state.pill = "ready"
+        setActive("guard", "normal")
+        syncSelectionFromSession()
+        closeMenus()
+        render()
+      }
+
+      function renderBlocks() {
+        byId("permission-card").classList.toggle("hidden", state.blocks === "resolved")
+        const noWorkspace = state.blocks === "no-workspace"
+        byId("workspace-path").textContent = noWorkspace
+          ? "Select a working directory before sending"
+          : "/workspace/hardware-harness/apps/electron"
+        document.querySelectorAll(".file-chip").forEach((button) => {
+          button.disabled = noWorkspace
+        })
+      }
+
+      function renderTool() {
+        byId("tool-body").classList.toggle("hidden", !state.toolOpen)
+        byId("tool-chevron").textContent = state.toolOpen ? "v" : ">"
+        byId("tool-head").setAttribute("aria-expanded", String(state.toolOpen))
+        const badge = byId("tool-badge")
+        badge.className = state.pill === "broken" ? "badge failed" : state.pill === "ready" ? "badge completed" : "badge running"
+        badge.innerHTML = `<span class="pill-dot"></span>${state.pill === "broken" ? "Failed" : state.pill === "ready" ? "Completed" : "Running"}`
+      }
+
+      function renderModelTrigger() {
+        const trigger = byId("model-trigger")
+        const label = byId("model-label")
+        trigger.classList.remove("warn")
+        if (state.modelState === "loading") {
+          label.textContent = "Loading..."
+        } else if (state.modelState === "error") {
+          label.textContent = "Retry"
+          trigger.classList.add("warn")
+        } else if (state.modelState === "empty") {
+          label.textContent = "No enabled models"
+        } else if (state.modelState === "unavailable") {
+          label.textContent = "openai-codex/legacy-preview"
+          trigger.classList.add("warn")
+        } else {
+          label.textContent = state.model || "Select model"
+        }
+        byId("model-logo").textContent = runtimes[state.runtime].logo
+      }
+
+      function render() {
+        const runtimeEditable = canChangeRuntime()
+        const session = activeSession()
+        byId("runtime-label").textContent = runtimes[state.runtime].label
+        byId("runtime-logo").textContent = runtimes[state.runtime].logo
+        byId("side-runtime-draft").textContent = sessions.draft.runtime
+        document.querySelectorAll("[data-session-id]").forEach((row) => {
+          row.classList.toggle("active", row.dataset.sessionId === state.activeSessionId)
+        })
+        byId("runtime-trigger").disabled = !runtimeEditable
+        byId("runtime-trigger").title =
+          session.created
+            ? "Runtime is locked after session creation"
+            : state.guard === "streaming"
+              ? "Runtime cannot change while streaming"
+              : "Select runtime before creating the session"
+        byId("top-session-title").textContent = session.title
+        byId("top-session-subtitle").textContent = session.subtitle
+
+        const banner = byId("session-banner")
+        banner.classList.toggle("locked", session.created)
+        byId("session-banner-title").textContent = session.created
+          ? "Created session"
+          : "Draft session"
+        byId("session-banner-state").textContent = runtimeEditable
+          ? "Runtime selector enabled"
+          : session.created
+            ? "Runtime selector locked"
+            : "Runtime selector paused while streaming"
+        byId("workspace").classList.toggle("draft", !session.created)
+
+        const sendEnabled =
+          state.modelState !== "loading" &&
+          state.modelState !== "error" &&
+          state.modelState !== "empty" &&
+          Boolean(state.model)
+        byId("send-button").disabled = !sendEnabled
+
+        renderRuntimeMenu()
+        renderModelMenu()
+        renderPill()
+        renderBlocks()
+        renderTool()
+        renderModelTrigger()
+
+        byId("readout-runtime").textContent = state.runtime
+        byId("readout-source").textContent = runtimes[state.runtime].source
+        byId("readout-model").textContent =
+          state.modelState === "unavailable" ? "fallback persists before send" : state.model || "none"
+        byId("readout-session").textContent =
+          session.created ? session.title : "Draft Session"
+        byId("readout-runtime-selector").textContent = runtimeEditable ? "enabled" : "disabled"
+        byId("readout-send").textContent = sendEnabled ? "yes" : "no"
+        byId("readout-guard").textContent = runtimeLockReason()
+      }
+
+      byId("runtime-trigger").addEventListener("click", (event) => {
+        event.stopPropagation()
+        if (!canChangeRuntime()) {
+          return
+        }
+        byId("model-menu").classList.remove("open")
+        byId("runtime-menu").classList.toggle("open")
+      })
+
+      byId("model-trigger").addEventListener("click", (event) => {
+        event.stopPropagation()
+        if (state.modelState === "error") {
+          state.modelState = "loading"
+          setActive("models", "loading")
+          render()
+          window.setTimeout(() => {
+            state.modelState = "ready"
+            state.model = runtimes[state.runtime].models[0]?.id || ""
+            setActive("models", "ready")
+            render()
+          }, 900)
+          return
+        }
+        byId("runtime-menu").classList.remove("open")
+        byId("model-menu").classList.toggle("open")
+      })
+
+      document.querySelectorAll("[data-runtime]").forEach((item) => {
+        item.addEventListener("click", () => selectRuntime(item.dataset.runtime))
+      })
+
+      document.querySelectorAll("[data-session-id]").forEach((item) => {
+        item.addEventListener("click", () => selectSession(item.dataset.sessionId))
+      })
+
+      byId("tool-head").addEventListener("click", () => {
+        state.toolOpen = !state.toolOpen
+        renderTool()
+      })
+
+      byId("approve-btn").addEventListener("click", () => {
+        state.blocks = "resolved"
+        setActive("blocks", "resolved")
+        render()
+      })
+
+      byId("deny-btn").addEventListener("click", () => {
+        state.blocks = "resolved"
+        setActive("blocks", "resolved")
+        render()
+      })
+
+      byId("send-button").addEventListener("click", () => {
+        const sendEnabled =
+          state.modelState !== "loading" &&
+          state.modelState !== "error" &&
+          state.modelState !== "empty" &&
+          Boolean(state.model)
+        if (!sendEnabled) {
+          return
+        }
+        createSessionFromDraft()
+      })
+
+      document.querySelectorAll("[data-control]").forEach((group) => {
+        group.addEventListener("click", (event) => {
+          const target = event.target
+          if (!(target instanceof HTMLButtonElement)) {
+            return
+          }
+          const key = group.dataset.control
+          const value = target.dataset.value
+          setActive(key, value)
+          if (key === "pill") {
+            state.pill = value
+          } else if (key === "guard") {
+            state.guard = value
+          } else if (key === "models") {
+            state.modelState = value
+            if (value === "ready") {
+              state.model = runtimes[state.runtime].models[0]?.id || ""
+            }
+          } else if (key === "blocks") {
+            state.blocks = value
+          }
+          render()
+        })
+      })
+
+      document.addEventListener("click", closeMenus)
+      render()
+    </script>
+  </body>
+</html>

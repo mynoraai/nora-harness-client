@@ -1,10 +1,10 @@
 # Code IDE Contracts
 
-Source rows: `CODE-01` through `CODE-13`
+Source rows: `CODE-01` through `CODE-14`
 
 ## What This Covers
 
-This folder covers the Code-mode workspace: workspace groups, Code sessions, the tab bar, file and diff tabs, the right panel, device tab, terminal, device log, and empty/error states.
+This folder covers the Code-mode workspace: workspace groups, Code sessions, runtime selection, the tab bar, file and diff tabs, the right panel, device tab, terminal, device log, and empty/error states.
 
 Agent Authoring content opened from `Edit Agent` belongs to `agent-authoring/`. This folder only covers the Code-mode entry point and the tab container that opens it.
 
@@ -13,8 +13,9 @@ Agent Authoring content opened from `Edit Agent` belongs to `agent-authoring/`. 
 1. Start with `code-mode-runtime.md#purpose` for the Code IDE surface and boundaries.
 2. Read `code-mode-runtime.md#core-responsibilities` to understand the split between the Code frame, workspace sidebar, working directory bar, tabs, right panel, and bottom panel.
 3. Follow `code-mode-runtime.md#step-by-step-reader-guide` before reading the interaction table.
-4. Use `code-mode-runtime.md#data-and-events` when tracing IPC/state shapes.
-5. Use this README table as the row index for `CODE-*` evidence and test mapping.
+4. Read `chat-code-runtime-workbench.md#purpose` when changing Draft/Codex/Claude/OpenClaw runtime selection or runtime-model linkage.
+5. Use `code-mode-runtime.md#data-and-events` when tracing IPC/state shapes.
+6. Use this README table as the row index for `CODE-*` evidence and test mapping.
 
 ## Contract Split
 
@@ -33,7 +34,10 @@ Agent Authoring content opened from `Edit Agent` belongs to `agent-authoring/`. 
 | `CODE-11` | `code-mode-runtime.md` | Diff loading, error, no output, header, counts, hunk rows, old/new line numbers                                                        | `apps/electron/src/renderer/src/components/code/DiffTab.tsx:103`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:115`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:158`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:166`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:180`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:188`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:210`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:223`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:234`; `apps/electron/src/renderer/src/components/code/DiffTab.tsx:237`                                                                                                                                                                      | L2 partial; L3 no test                                                                                      |
 | `CODE-12` | `code-mode-runtime.md` | No active tab or incomplete active-tab placeholder                                                                                     | `apps/electron/src/renderer/src/components/code/TabContentArea.tsx:19`; `apps/electron/src/renderer/src/components/code/TabContentArea.tsx:25`; `apps/electron/src/renderer/src/components/code/TabContentArea.tsx:30`; `apps/electron/src/renderer/src/components/code/TabContentArea.tsx:41`; `apps/electron/src/renderer/src/components/code/EmptyTabPlaceholder.tsx:5`; `apps/electron/src/renderer/src/components/code/EmptyTabPlaceholder.tsx:6`                                                                                                                                                                                                                                                                                                                                                                                                  | L3 no test                                                                                                  |
 | `CODE-13` | `code-mode-runtime.md` | Cloud deploy component exists but is not reachable from visible top tabs                                                               | `apps/electron/src/renderer/src/components/code/RightPanel.tsx:17`; `apps/electron/src/renderer/src/components/code/RightPanel.tsx:134`; `apps/electron/src/renderer/src/components/code/RightPanel.tsx:159`; `apps/electron/src/renderer/src/components/code/CloudTab.tsx:35`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Not exposed; absence test planned                                                                           |
+| `CODE-14` | `chat-code-runtime-workbench.md`; `chat-code-runtime-workbench.html` | Draft Session runtime selection, Codex/Claude/OpenClaw bound-session runtime lock, runtime/model linkage, ACP message block placement | `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:831`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:844`; `apps/electron/src/renderer/src/components/chat/ChatComposer.tsx:868`; `apps/electron/src/renderer/src/stores/session-store.ts:120`; `apps/electron/src/renderer/src/stores/session-store.ts:1177`; `apps/electron/src/renderer/src/lib/acp-stdio-runtime-chat-transport.ts:375`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:398`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:433`; `apps/electron/src/renderer/src/components/chat/WorkingDirBar.tsx:121` | L2/L3 planned                                                                                               |
 
 ## Detail Files
 
 - `code-mode-runtime.md` covers the Code layout, workspace/session management, tabs, file/diff/device panels, terminal/device log, and empty states.
+- `chat-code-runtime-workbench.md` covers Draft/Codex/Claude/OpenClaw session runtime selection, model linkage, runtime status pill states, and ACP message blocks.
+- `chat-code-runtime-workbench.html` is the interactive wireframe for that contract.
