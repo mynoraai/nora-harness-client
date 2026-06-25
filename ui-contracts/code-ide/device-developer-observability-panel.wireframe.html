@@ -79,6 +79,31 @@
   .ovstrip b{font-family:var(--mono);font-weight:600}
   .ovstrip .sep{width:1px;height:14px;background:var(--line)}
   .harness{font-family:var(--mono);font-weight:600;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:9999px}
+  /* multi-device selector (form a: dropdown + single panel) */
+  .devsel{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-weight:600;font-size:12px;color:var(--text);
+    background:var(--panel-strong);border:1px solid var(--line-strong);border-radius:9px;padding:4px 10px;cursor:pointer}
+  .devsel-c{font-family:var(--sans);font-weight:600;font-size:10px;color:var(--text3);background:var(--accent-soft);padding:1px 6px;border-radius:9999px}
+  .devmenu{margin:8px 14px 0;border:1px solid var(--line-strong);border-radius:11px;background:var(--panel-strong);
+    box-shadow:0 12px 30px -18px rgba(0,0,0,.35);overflow:hidden}
+  .devmenu-row{display:flex;align-items:center;gap:9px;padding:8px 12px;font-size:12.5px;border-bottom:1px solid var(--line);cursor:pointer}
+  .devmenu-row:hover{background:rgba(193,112,50,.06)}
+  .devmenu-row:last-child{border-bottom:0}
+  .devmenu-row.on{background:var(--accent-soft)}
+  .devmenu-row.on b{color:var(--accent)}
+  .devmenu-row.stale{opacity:.5}
+  .dm-dot{width:9px;height:9px;border-radius:9999px;display:inline-block}
+  /* harness identity column — aligned structure: [kind] [primary id] [handle] [source] */
+  .dm-h{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text2)}
+  .dm-kind{font-weight:600;color:var(--text3)}
+  .dm-id2{color:var(--text)}                         /* project (local) / install (cloud) — the real identity */
+  .dm-handle{color:var(--text3)}                     /* :port (local) / channel (cloud) — secondary */
+  .dm-src{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.03em;color:var(--text3);
+    background:var(--accent-soft);padding:1px 6px;border-radius:9999px}
+  .dm-stale{font-family:var(--sans);font-size:9.5px;color:var(--text3);font-style:italic}
+  /* device-management header (TOP, above the strip) */
+  .devbar{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--ws-sidebar)}
+  .devbar-cur{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--text2)}
+  .devbar-cur .ok{color:var(--ok);font-weight:700}
   .capribbon{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px dashed var(--line);background:rgba(255,255,255,.4);font-size:11px}
   .capribbon .kw{font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-size:10px;margin-right:2px}
   .cap-ok{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:9999px;background:rgba(91,138,91,.14);color:var(--ok)}
@@ -179,7 +204,7 @@
 <body>
   <div class="topbar">
     <h1>Device Developer Observability Panel</h1>
-    <span class="sub">wireframe · proposed · warm tokens (noraharness-design.md) · capability-gated · baseline nora-dev</span>
+    <span class="sub">wireframe · proposed · warm tokens (noraharness-design.md) · capability-gated · global multi-device · log-backed (adr/126) · baseline nora-dev</span>
     <span class="spacer"></span>
     <div class="ctrl"><button id="zout">−</button><button id="zin">+</button><button id="fit">Fit</button><button id="reset">Reset</button></div>
   </div>
@@ -241,7 +266,34 @@
         <div class="rp">
           <div class="rp-tabs"><div class="rp-tab">All Files</div><div class="rp-tab">Changes</div><div class="rp-tab on">Device</div><div class="rp-tab">Preview</div></div>
 
-          <!-- overview strip: vital signs only -->
+          <!-- TOP: device-management header — grouped selector lives above the strip -->
+          <div class="devbar">
+            <span class="devsel"><span class="ds-tw">▾</span> Devices<span class="devsel-c">3</span></span>
+            <span class="devbar-cur"><span class="ok">●</span> M5Stack CoreS3 <span style="color:var(--text3)">selected</span></span>
+          </div>
+
+          <!-- selector open: FLAT device list. the device is the entity; each row carries its
+               harness as an attribute (kind · primary id [project/install] · handle [:port/channel] · source) -->
+          <div class="devmenu">
+            <div class="devmenu-row on">
+              <span class="dm-dot" style="background:var(--ok)"></span><b>M5Stack CoreS3</b>
+              <span class="dm-h"><span class="dm-kind">⌂ local</span><span class="dm-id2" title="/Volumes/…/TEST_Project/test-015/ai-voice-chat">test-015/ai-voice-chat</span><span class="dm-handle">:20002</span><span class="dm-src">vibe</span></span>
+            </div>
+            <div class="devmenu-row">
+              <span class="dm-dot" style="background:var(--ok)"></span><b>CoreS3 #3</b>
+              <span class="dm-h"><span class="dm-kind">⌂ local</span><span class="dm-id2" title="/Volumes/…/TEST_Project/test-015/ai-voice-chat">test-015/ai-voice-chat</span><span class="dm-handle">:20002</span><span class="dm-src">vibe</span></span>
+            </div>
+            <div class="devmenu-row">
+              <span class="dm-dot" style="background:var(--ok)"></span><b>ESP-BOX-3</b>
+              <span class="dm-h"><span class="dm-kind">☁ cloud</span><span class="dm-id2">ins_2jx…3y</span><span class="dm-handle">ch dev</span></span>
+            </div>
+            <div class="devmenu-row stale">
+              <span class="dm-dot" style="background:var(--text3)"></span><b>CoreS3 #2</b>
+              <span class="dm-h"><span class="dm-kind">⌂ local</span><span class="dm-id2" title="/Volumes/…/scratch/demo">scratch/demo</span><span class="dm-handle">:20012</span><span class="dm-src">dev</span><span class="dm-stale">stale 4m</span></span>
+            </div>
+          </div>
+
+          <!-- overview strip: vital signs of the SELECTED device only (selector moved up to the devbar) -->
           <div class="ovstrip">
             <span style="color:var(--ok);font-weight:700">●</span><b>M5Stack CoreS3</b>
             <span class="sep"></span><span class="k">uptime</span><b>1h23m</b>
@@ -249,7 +301,7 @@
             <span class="sep"></span><span class="k">ip</span><b>192.168.99.108</b>
             <span class="sep"></span><span class="k">🔋</span><b>82% ⚡</b>
             <span class="sep"></span><span class="k">rssi</span><b>-54 dBm</b>
-            <span class="sep"></span><span class="harness">harness · local ✓</span>
+            <span class="sep"></span><span class="harness">harness · local · ai-voice-chat ✓</span>
           </div>
 
           <!-- capability ribbon: drives which blocks render -->
@@ -341,7 +393,7 @@
 
           <div class="rp-bottom"><span class="bt">Terminal</span><span class="bt on">Device Log</span></div>
         </div>
-        <div class="cap" style="padding:8px 14px 12px">Dense · monospace numerics · copper bars/sparklines · warm paper — bound to <b>noraharness-design.md</b>. Core blocks (Memory/CPU/Stack/Connectivity) always show; <b>Voice</b> & <b>Audio</b> appear only when the capability ribbon has them.</div>
+        <div class="cap" style="padding:8px 14px 12px">Dense · monospace numerics · copper bars/sparklines · warm paper — bound to <b>noraharness-design.md</b>. Core blocks (Memory/CPU/Stack/Connectivity) always show; <b>Voice</b> & <b>Audio</b> appear only when the capability ribbon has them. The <b>device-management header</b> (top) lists <b>every device, flat</b>, across all local/cloud harnesses — the panel is <b>global, not bound to the open workspace</b> (reads the per-device log store, <b>adr/126</b>). <b>The device is the entity; the harness is an attribute of each device</b> (where it's currently attached: kind · project [local] / install [cloud] · port/channel), shown on the row — no grouping level. A single device skips the picker entirely.</div>
       </div>
 
       <!-- TASK EXPLORER (expanded compute) -->
@@ -382,7 +434,7 @@
               <tr><td>#39</td><td style="color:#9a6b1e">402⚠</td><td>2210</td><td>312</td><td>3.31s</td></tr>
             </tbody>
           </table>
-          <div class="note"><b>Source:</b> gateway already emits <code>[voice-timing]</code> stage records (STT/LLM/TTS + C0/C1/C2). Only a UI sink is missing — Path B.</div>
+          <div class="note"><b>Source:</b> gateway already emits <code>[voice-timing]</code> stage records (STT/LLM/TTS + C0/C1/C2). Path B sink appends them to the device's <code>voice-timing.jsonl</code>; the panel tails the log. <b>adr/126</b>.</div>
         </div>
       </div>
 
@@ -398,10 +450,10 @@
           <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">CAPABILITY-GATED RENDER</div>
           <div class="note" style="margin:0 0 8px">Core blocks (Memory · CPU · Stack · Connectivity/Power/OTA) always render. Voice ⟂ <code>voice</code>+harness · Audio ⟂ <code>mic/speaker</code> · render-FPS ⟂ <code>display</code> · camera ⟂ <code>camera</code>. Source = the same capability manifest the Device Manifest panel uses.</div>
           <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">TWO TRANSPORT PATHS</div>
-          <div class="flow"><span class="node">firmware <code>state.update{metrics}</code></span><span class="arr">→</span><span class="node">harness <code>device.status</code></span><span class="arr">→</span><span class="node">WorkspaceDeviceStatus</span><span class="arr">→</span><span class="node">DeviceTab</span></div>
-          <div class="note" style="margin:0 0 6px">Path A · resources/health. 3-place contract (frame ↔ RPC ↔ TS type). The refactor proved it via <code>toolManifest</code>.</div>
-          <div class="flow"><span class="node"><code>voice-loop-timing</code> sink</span><span class="arr">→</span><span class="node">harness event</span><span class="arr">→</span><span class="node">stream manager</span><span class="arr">→</span><span class="node">waterfall</span></div>
-          <div class="note" style="margin:0 0 10px">Path B · voice timing. Records already produced; wire a production sink.</div>
+          <div class="flow"><span class="node">firmware <code>state.update{metrics}</code></span><span class="arr">→</span><span class="node">harness <code>updateDeviceState</code></span><span class="arr">→</span><span class="node"><code>&lt;obsRoot&gt;/&lt;id&gt;/metrics.json</code></span><span class="arr">→</span><span class="node"><code>ObservabilityStore</code></span><span class="arr">→</span><span class="node">DeviceTab (global)</span></div>
+          <div class="note" style="margin:0 0 6px">Path A · resources/health. <code>metrics{}</code> is written <b>whole</b> to a per-device log (overwrite); the app reads the log dir, <b>not</b> the active workspace. Discovery = list the dir. <b>adr/126</b>.</div>
+          <div class="flow"><span class="node"><code>voice-loop-timing</code> sink</span><span class="arr">→</span><span class="node"><code>&lt;obsRoot&gt;/&lt;id&gt;/voice-timing.jsonl</code></span><span class="arr">→</span><span class="node"><code>ObservabilityStore</code></span><span class="arr">→</span><span class="node">waterfall</span></div>
+          <div class="note" style="margin:0 0 10px">Path B · voice timing. The production sink <b>appends</b> each turn's stage records to the device's log — durable, survives the panel being closed (the event stream can't be re-pulled). <b>adr/126</b>.</div>
           <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">TRANSPORT &amp; TOGGLE</div>
           <div class="note" style="margin:0 0 10px">All metrics ride the WS <code>state.update</code> frame — <b>not serial</b> (structured, works for WiFi + cloud harness; serial/Device-Log stays for human logs). Cheap metrics always-on; expensive ones (per-core/per-task CPU, FPS, full task table) double-gated: <b>compile-time</b> <code>GENERATE_RUN_TIME_STATS</code> + <b>runtime</b> <code>metrics.subscribe{level}</code> sent only while the panel is open — no cost when unobserved, no reflash.</div>
           <div class="phase"><span class="pn">P0 · light up what's wired</span><div class="pd">Overview strip + harness local/cloud + heap/RSSI/battery/OTA + uptime. Mostly 🟢.</div></div>
@@ -421,7 +473,7 @@
           <div class="pm done"><b>RESOLVED · CPU</b>Per-core load + per-task breakdown (not one aggregate). Accepts 🔴 runtime-stats cost. Stack shown as used/total bars.</div>
           <div class="pm y"><b>PM DECISION · refresh cadence</b>Resources piggyback the <code>state.update</code> interval; voice is per-turn. One combined refresh, or per-block?</div>
           <div class="pm y"><b>PM DECISION · frame budget</b><code>state.update</code> has a max payload. Full <code>metrics{}</code> snapshot each interval, or deltas?</div>
-          <div class="pm y"><b>PM DECISION · multi-device</b>Stream supports a device array. One selected device, or a compact multi-device strip with drill-in?</div>
+          <div class="pm done"><b>RESOLVED · multi-device</b>A <b>device-management header at the top</b> (above the strip) opens a <b>flat device list</b> — the device is the entity; each row carries its <b>harness</b> as an attribute (kind · project [local] / install [cloud] · :port / channel · source). No grouping level (device → device, not device → project → device). <b>Collapsible</b> selector; pick a row → its dense panel below. Single device skips the picker; empty state with none. Devices come from the <b>per-device log store</b> across <b>all</b> harnesses — not just the open workspace. <b>adr/126</b>.</div>
           <div class="note">Decided answers fold into the Path-A / Path-B ADRs (PRD <i>Downstream Design</i>). Proposed wireframe — every value is sample telemetry, not live.</div>
         </div>
       </div>
@@ -438,7 +490,7 @@
   const clamp=(s)=>Math.min(2.2,Math.max(0.25,s));
   sched();
   let dragging=false,sx=0,sy=0,ox=0,oy=0;
-  vp.addEventListener('pointerdown',e=>{dragging=true;vp.classList.add('grabbing');sx=e.clientX;sy=e.clientY;ox=tx;oy=ty;vp.setPointerCapture(e.pointerId);});
+  vp.addEventListener('pointerdown',e=>{if(e.target.closest('.devsel,.devmenu-row'))return;dragging=true;vp.classList.add('grabbing');sx=e.clientX;sy=e.clientY;ox=tx;oy=ty;vp.setPointerCapture(e.pointerId);});
   vp.addEventListener('pointermove',e=>{if(!dragging)return;tx=ox+(e.clientX-sx);ty=oy+(e.clientY-sy);sched();});
   const end=()=>{dragging=false;vp.classList.remove('grabbing');};
   vp.addEventListener('pointerup',end);vp.addEventListener('pointercancel',end);
@@ -454,6 +506,25 @@
   document.getElementById('reset').onclick=()=>{scale=0.66;tx=30;ty=16;sched();};
   document.getElementById('fit').onclick=()=>{const r=vp.getBoundingClientRect();const s=clamp(Math.min(r.width/1480,r.height/2780)*0.96);scale=s;tx=(r.width-1480*s)/2;ty=14;sched();};
   document.querySelectorAll('.jump button[data-go]').forEach(b=>{b.onclick=()=>{const el=document.getElementById(b.dataset.go);const x=parseFloat(el.style.left),y=parseFloat(el.style.top);scale=clamp(0.92);tx=80-x*scale;ty=40-y*scale;sched();};});
+})();
+
+// device-selector interactivity (collapse the selector, pick a device from the flat list)
+(function(){
+  const root=document.getElementById('prop'); if(!root) return;
+  const menu=root.querySelector('.devmenu');
+  const devsel=root.querySelector('.devsel');
+  const dstw=devsel&&devsel.querySelector('.ds-tw');
+  let open=true;
+  if(devsel){devsel.addEventListener('click',()=>{open=!open;if(menu)menu.style.display=open?'':'none';if(dstw)dstw.textContent=open?'▾':'▸';});}
+  root.querySelectorAll('.devmenu-row').forEach(d=>{
+    d.addEventListener('click',()=>{
+      root.querySelectorAll('.devmenu-row.on').forEach(x=>x.classList.remove('on'));
+      d.classList.add('on');
+      const name=(d.querySelector('b')||{}).textContent||'';
+      const cur=root.querySelector('.devbar-cur'); if(cur)cur.innerHTML='<span class="ok">●</span> '+name+' <span style="color:var(--text3)">selected</span>';
+      const sn=root.querySelector('.ovstrip b'); if(sn)sn.textContent=name;
+    });
+  });
 })();
 </script>
 </body>
