@@ -41,7 +41,7 @@
     background-image:radial-gradient(rgba(43,36,29,.07) 1px,transparent 1px);background-size:26px 26px;
     touch-action:none;overscroll-behavior:contain}
   .viewport.grabbing{cursor:grabbing}
-  .stage{position:absolute;top:0;left:0;transform-origin:0 0;width:3320px;height:3980px}
+  .stage{position:absolute;top:0;left:0;transform-origin:0 0;width:3320px;height:3820px}
   .band{position:absolute;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
   .band .bd{font-weight:500;letter-spacing:.01em;text-transform:none;color:var(--text3);font-size:11px;margin-left:8px}
 
@@ -364,14 +364,14 @@ USB Serial Ports (4):
       </div>
 
       <!-- ================= BAND B · ROUTE PATH ================= -->
-      <div class="band" id="bandB" style="left:40px;top:560px">Route path <span class="bd">each route drawn as a full-app / terminal row using the record IDs</span></div>
+      <div class="band" id="bandB" style="left:40px;top:686px">Route path <span class="bd">each route drawn as a full-app / terminal row using the record IDs</span></div>
 
       <!-- R2 label + connector -->
-      <div class="band" id="r2" style="left:40px;top:596px;color:var(--accent)">R2 · gateway sign-in recovery</div>
-      <div class="rpath" style="left:300px;top:594px"><span class="rnode">1</span><span class="arr">→</span><span class="rnode">2</span><span class="arr">→</span><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5</span><span class="arr">→</span><span class="rnode">5.1</span><span class="arr">→</span><span class="rnode">5.2</span><span class="arr">→</span><span class="rnode">6 · 6.1</span><span class="arr">→</span><span class="rnode ok">3</span></div>
+      <div class="band" id="r2" style="left:40px;top:712px;color:var(--accent)">R2 · gateway sign-in recovery</div>
+      <div class="rpath" style="left:300px;top:738px"><span class="rnode">1</span><span class="arr">→</span><span class="rnode">2</span><span class="arr">→</span><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5</span><span class="arr">→</span><span class="rnode">5.1</span><span class="arr">→</span><span class="rnode">5.2</span><span class="arr">→</span><span class="rnode">6 · 6.1</span><span class="arr">→</span><span class="rnode ok">3</span></div>
 
       <!-- R2 / 2.1 gateway not authorized + sign-in card -->
-      <div class="frame" style="left:40px;top:626px;width:632px">
+      <div class="frame" style="left:40px;top:772px;width:632px">
         <div class="ftitle"><span class="id bad">2.1</span><h2>Gateway chat — Not Authorized + sign-in card</h2><span class="tag" style="background:var(--danger-soft);color:#b23036">signed out</span></div>
         <div class="screen" style="height:474px">
           <div class="scaler" style="transform:scale(.55)">
@@ -420,7 +420,7 @@ USB Serial Ports (4):
       </div>
 
       <!-- R2 / 5.1 browser -->
-      <div class="frame" style="left:712px;top:626px;width:560px">
+      <div class="frame" style="left:712px;top:772px;width:560px">
         <div class="ftitle"><span class="id">5.1</span><h2>Browser sign-in (system browser)</h2><span class="tag">outside the app</span></div>
         <div class="screen" style="height:400px">
           <div class="scaler" style="transform:scale(.55)">
@@ -443,7 +443,7 @@ USB Serial Ports (4):
       </div>
 
       <!-- R2 / 5.2 signed in app -->
-      <div class="frame" style="left:1312px;top:626px;width:560px">
+      <div class="frame" style="left:1312px;top:772px;width:560px">
         <div class="ftitle"><span class="id ok">5.2</span><h2>Back in app — signed in</h2><span class="tag">account active</span></div>
         <div class="screen" style="height:400px">
           <div class="scaler" style="transform:scale(.55)">
@@ -472,7 +472,7 @@ USB Serial Ports (4):
       </div>
 
       <!-- R3 note -->
-      <div class="frame" style="left:40px;top:1120px;width:632px">
+      <div class="frame" style="left:40px;top:1472px;width:632px">
         <div class="ftitle"><span class="id bad">2.2</span><h2>In-app agent (Claude / Codex) — Not Authorized</h2><span class="tag" style="background:var(--danger-soft);color:#b23036">signed out · R3</span></div>
         <div class="screen" style="height:474px">
           <div class="scaler" style="transform:scale(.55)">
@@ -519,11 +519,11 @@ USB Serial Ports (4):
       </div>
 
       <!-- R4/R5 terminal -->
-      <div class="band" id="r4" style="left:712px;top:1096px;color:var(--accent)">R4 / R5 · terminal client</div>
-      <div class="rpath" style="left:712px;top:1122px"><span class="rnode">4</span><span class="arr">→</span><span class="rnode bad">4.1</span><span class="arr">→</span><span class="rnode">7</span><span class="arr">→</span><span class="rnode">7.1</span><span class="arr">→</span><span class="rnode ok">7.2</span></div>
+      <div class="band" id="r4" style="left:712px;top:1412px;color:var(--accent)">R4 / R5 · terminal client</div>
+      <div class="rpath" style="left:712px;top:1438px"><span class="rnode">4</span><span class="arr">→</span><span class="rnode bad">4.1</span><span class="arr">→</span><span class="rnode">7</span><span class="arr">→</span><span class="rnode">7.1</span><span class="arr">→</span><span class="rnode ok">7.2</span></div>
 
       <!-- R4 terminal not authorized -->
-      <div class="frame" style="left:712px;top:1150px;width:600px">
+      <div class="frame" style="left:712px;top:1472px;width:600px">
         <div class="ftitle"><span class="id bad">4.1</span><h2>Terminal client — Not Authorized (text)</h2><span class="tag">standalone terminal</span></div>
         <div class="screen" style="height:392px">
           <div class="scaler" style="transform:scale(.58)">
@@ -542,7 +542,7 @@ in this client's environment.</div>
       </div>
 
       <!-- R5 terminal device login -->
-      <div class="frame" style="left:1352px;top:1150px;width:560px">
+      <div class="frame" style="left:1352px;top:1472px;width:560px">
         <div class="ftitle"><span class="id ok">7 · 7.2</span><h2>Terminal browser sign-in → authorized</h2><span class="tag">hw_fw_login</span></div>
         <div class="screen" style="height:392px">
           <div class="scaler" style="transform:scale(.58)">
@@ -562,11 +562,11 @@ and enter code:  <span class="ok">WDJF-7Q2K</span></div>
       </div>
 
       <!-- R6 mid-session gap -->
-      <div class="band" id="r6" style="left:40px;top:1660px;color:var(--caution)">R6 · mid-session sign-in gap (partial)</div>
-      <div class="rpath" style="left:430px;top:1658px"><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5 · 5.2</span><span class="arr">→</span><span class="rnode" style="border-color:var(--caution);color:#9a6b1e">6.2 blocked</span><span class="arr">→</span><span class="rnode">restart / open agent</span><span class="arr">→</span><span class="rnode ok">6.2.1 → 3</span></div>
+      <div class="band" id="r6" style="left:40px;top:2096px;color:var(--caution)">R6 · mid-session sign-in gap (partial)</div>
+      <div class="rpath" style="left:430px;top:2122px"><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5 · 5.2</span><span class="arr">→</span><span class="rnode" style="border-color:var(--caution);color:#9a6b1e">6.2 blocked</span><span class="arr">→</span><span class="rnode">restart / open agent</span><span class="arr">→</span><span class="rnode ok">6.2.1 → 3</span></div>
 
       <!-- 6.2 still not authorized after mid-session login -->
-      <div class="frame" style="left:40px;top:1690px;width:632px">
+      <div class="frame" style="left:40px;top:2156px;width:632px">
         <div class="ftitle"><span class="id warn">6.2</span><h2>Signed in mid-session — still Not Authorized (gateway only)</h2><span class="tag" style="background:var(--caution-soft);color:#9a6b1e">gap</span></div>
         <div class="screen" style="height:474px">
           <div class="scaler" style="transform:scale(.55)">
@@ -610,7 +610,7 @@ and enter code:  <span class="ok">WDJF-7Q2K</span></div>
       </div>
 
       <!-- 6.2.1 after restart completed -->
-      <div class="frame" style="left:712px;top:1690px;width:632px">
+      <div class="frame" style="left:712px;top:2156px;width:632px">
         <div class="ftitle"><span class="id ok">6.2.1</span><h2>After restart / opening an agent — Completed</h2><span class="tag">recovered</span></div>
         <div class="screen" style="height:474px">
           <div class="scaler" style="transform:scale(.55)">
@@ -650,7 +650,7 @@ and enter code:  <span class="ok">WDJF-7Q2K</span></div>
       </div>
 
       <!-- PM note on the gap -->
-      <div class="frame" style="left:1384px;top:1690px;width:520px">
+      <div class="frame" style="left:1384px;top:2156px;width:520px">
         <div class="ftitle"><span class="id warn">◆</span><h2>Gap note</h2></div>
         <div class="sum">
           <div class="pm y"><b>PM decision · mid-session prepare</b>Sign-in does not currently prepare firmware access on its own. Wire sign-in to prepare access immediately so a gateway-only user does not have to restart or open an agent?</div>
@@ -660,9 +660,9 @@ and enter code:  <span class="ok">WDJF-7Q2K</span></div>
       </div>
 
       <!-- ================= BAND D · DETAIL STATES ================= -->
-      <div class="band" id="bandD" style="left:40px;top:2220px">Detail states <span class="bd">reused surfaces (compact)</span></div>
+      <div class="band" id="bandD" style="left:40px;top:2796px">Detail states <span class="bd">reused surfaces (compact)</span></div>
 
-      <div class="frame" style="left:40px;top:2256px;width:430px">
+      <div class="frame" style="left:40px;top:2830px;width:430px">
         <div class="ftitle"><span class="id">card</span><h2>Sign-in hint card (app-owned)</h2></div>
         <div class="sum">
           <div class="signin" style="max-width:none;margin:0 0 8px">
@@ -675,7 +675,7 @@ and enter code:  <span class="ok">WDJF-7Q2K</span></div>
         </div>
       </div>
 
-      <div class="frame" style="left:494px;top:2256px;width:430px">
+      <div class="frame" style="left:494px;top:2830px;width:430px">
         <div class="ftitle"><span class="id">5.1</span><h2>Browser sign-in page</h2></div>
         <div class="sum">
           <div class="q">https://…noraharness…/login?client_id=electron
@@ -685,7 +685,7 @@ email: 001@example.com   password: ••••••</div>
         </div>
       </div>
 
-      <div class="frame" style="left:948px;top:2256px;width:430px">
+      <div class="frame" style="left:948px;top:2830px;width:430px">
         <div class="ftitle"><span class="id">7.1</span><h2>Device approval page</h2></div>
         <div class="sum">
           <div class="q">https://…noraharness…/device
@@ -695,7 +695,7 @@ Enter code:  WDJF-7Q2K
         </div>
       </div>
 
-      <div class="frame" style="left:1402px;top:2256px;width:460px">
+      <div class="frame" style="left:1402px;top:2830px;width:460px">
         <div class="ftitle"><span class="id">2.2·src</span><h2>Runtime picker (opens in-app agent)</h2></div>
         <div class="sum" style="padding:12px">
           <div class="dlg" style="box-shadow:none">
@@ -709,9 +709,9 @@ Enter code:  WDJF-7Q2K
       </div>
 
       <!-- ================= BAND L · STATE LANGUAGE ================= -->
-      <div class="band" id="bandL" style="left:40px;top:2680px">State language <span class="bd">pills &amp; copy</span></div>
+      <div class="band" id="bandL" style="left:40px;top:3199px">State language <span class="bd">pills &amp; copy</span></div>
 
-      <div class="frame" style="left:40px;top:2716px;width:560px">
+      <div class="frame" style="left:40px;top:3233px;width:560px">
         <div class="ftitle"><span class="id">pills</span><h2>Tool-call pills</h2></div>
         <div class="sum">
           <div class="pillrow">
@@ -723,7 +723,7 @@ Enter code:  WDJF-7Q2K
         </div>
       </div>
 
-      <div class="frame" style="left:624px;top:2716px;width:640px">
+      <div class="frame" style="left:624px;top:3233px;width:640px">
         <div class="ftitle"><span class="id">copy</span><h2>Refusal wording — app vs terminal</h2></div>
         <div class="sum">
           <div class="k"><b>In-app (card):</b> “Sign in to use firmware tools … Sign in once — every firmware tool here and in your terminal is authorized automatically. → Sign in to NoraHarness”.</div>
@@ -735,9 +735,9 @@ pasting), or create a key on the NoraHarness dashboard.</div>
       </div>
 
       <!-- ================= BAND E · ERRORS AND RECOVERY ================= -->
-      <div class="band" id="bandE" style="left:40px;top:3020px">Errors and recovery <span class="bd">compact</span></div>
+      <div class="band" id="bandE" style="left:40px;top:3515px">Errors and recovery <span class="bd">compact</span></div>
 
-      <div class="frame" style="left:40px;top:3056px;width:420px">
+      <div class="frame" style="left:40px;top:3549px;width:420px">
         <div class="ftitle"><span class="id warn">6.2</span><h2>Mid-session sign-in gap</h2></div>
         <div class="sum">
           <div class="k">Signed in mid-session, gateway only → still <span style="color:#9a6b1e;font-weight:700">Not Authorized</span>. Firmware access is prepared at app start / on opening an in-app agent, not on the sign-in event.</div>
@@ -745,7 +745,7 @@ pasting), or create a key on the NoraHarness dashboard.</div>
         </div>
       </div>
 
-      <div class="frame" style="left:484px;top:3056px;width:420px">
+      <div class="frame" style="left:484px;top:3549px;width:420px">
         <div class="ftitle"><span class="id bad">9.1</span><h2>Service unreachable</h2></div>
         <div class="sum">
           <div class="pillrow"><span class="lp bad">✕ Not Authorized</span></div>
@@ -754,7 +754,7 @@ pasting), or create a key on the NoraHarness dashboard.</div>
         </div>
       </div>
 
-      <div class="frame" style="left:928px;top:3056px;width:420px">
+      <div class="frame" style="left:928px;top:3549px;width:420px">
         <div class="ftitle"><span class="id bad">9.2</span><h2>Access revoked</h2></div>
         <div class="sum">
           <div class="k">If the account's firmware access is revoked on the dashboard, a previously working tool returns to <span style="color:#b23036;font-weight:700">Not Authorized</span> on its next call.</div>
@@ -788,7 +788,7 @@ pasting), or create a key on the NoraHarness dashboard.</div>
   document.getElementById('zin').onclick=()=>zoomTo(1.2);
   document.getElementById('zout').onclick=()=>zoomTo(1/1.2);
   document.getElementById('reset').onclick=()=>{scale=0.62;tx=30;ty=16;sched();};
-  document.getElementById('fit').onclick=()=>{const r=vp.getBoundingClientRect();const s=clamp(Math.min(r.width/3320,r.height/3980)*0.96);scale=s;tx=(r.width-3320*s)/2;ty=14;sched();};
+  document.getElementById('fit').onclick=()=>{const r=vp.getBoundingClientRect();const s=clamp(Math.min(r.width/3320,r.height/3820)*0.96);scale=s;tx=(r.width-3320*s)/2;ty=14;sched();};
   document.querySelectorAll('.jump button[data-go]').forEach(b=>{b.onclick=()=>{const el=document.getElementById(b.dataset.go);const x=parseFloat(el.style.left),y=parseFloat(el.style.top);scale=clamp(0.62);tx=90-x*scale;ty=60-y*scale;sched();};});
 })();
 </script>
