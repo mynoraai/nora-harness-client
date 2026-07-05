@@ -43,7 +43,8 @@ Signed-out is fail-closed: firmware tools refuse to run until the user has an ac
 | 5.1 | Detail state | 5 | Browser sign-in | Enters account email + password in the browser page | The system browser opens the NoraHarness sign-in page | — | 5.2 |
 | 5.2 | Main step | 5.1 | Return to app | — | Browser hands back to the app; bottom-left now shows the account name and **Sign out** | Account signed in | 6 |
 | 6 | Main step | 5.2 | Firmware access prepared | — | No visible change in chat; access is prepared for the account | Firmware credential written for all clients | 6.1 |
-| 6.1 | State | 6 | Tools authorized everywhere | Runs a firmware tool in any client | Gateway chat, in-app agent, and terminal client all return real results | — | 3 |
+| 6.1 | State | 6 | Tools authorized everywhere | Runs a firmware tool in any client | Gateway chat, in-app agent, and terminal client all return real results | — | 5.3 |
+| 5.3 | Main step | 6.1 | After sign-in — conversation continues | Asks again, or the assistant re-calls the firmware tool | Same conversation: the earlier **Not Authorized** card stays as history (dimmed); a new call to the same tool now shows green **Completed** with the real answer. The sign-in card is gone | Refusal loop closed for this conversation | 3 |
 
 ### State inventory — Terminal browser sign-in (zero-key)
 
@@ -67,8 +68,8 @@ Signed-out is fail-closed: firmware tools refuse to run until the user has an ac
 | Route | Composition | Result / next state |
 |-------|-------------|---------------------|
 | R1 Signed-in gateway happy path | 1 → 2 → 3 → 3.1 | Firmware tool runs, real result shown and expandable |
-| R2 Gateway sign-in recovery | 1 → 2 → 2.1 → 5 → 5.1 → 5.2 → 6 → 6.1 → 3 | Refused, user signs in, tool authorized |
-| R3 In-app agent sign-in recovery | 1 → 2 → 2.2 → 5 → 5.1 → 5.2 → 6 → 6.1 → 3 | Same recovery from an in-app Claude / Codex conversation |
+| R2 Gateway sign-in recovery | 1 → 2 → 2.1 → 5 → 5.1 → 5.2 → 6 → 6.1 → 5.3 → 3 | Refused, user signs in, back in the same conversation the tool now completes |
+| R3 In-app agent sign-in recovery | 1 → 2 → 2.2 → 5 → 5.1 → 5.2 → 6 → 6.1 → 5.3 → 3 | Same recovery from an in-app Claude / Codex conversation |
 | R4 Terminal not authorized | 4 → 4.1 | Terminal refusal with sign-in guidance |
 | R5 Terminal browser sign-in | 4 → 4.1 → 7 → 7.1 → 7.2 | Terminal signs in via browser, tool authorized |
 | R6 Mid-session sign-in gap | 2.1 → 5 → 5.2 → 6.2 → 6.2.1 → 3 | Sign-in did not auto-prepare access; reset prepares it |
@@ -98,6 +99,8 @@ Signed-out is fail-closed: firmware tools refuse to run until the user has an ac
 **3.1 Expanded firmware result.** Reused expandable tool card; shows the raw firmware status payload.
 
 **5.1 Browser sign-in.** The system browser opens the NoraHarness sign-in page. The user enters account email and password. On success the browser hands control back to the app.
+
+**5.3 After sign-in — the conversation continues.** Sign-in does not rewrite the card that refused earlier; that **Not Authorized** card stays in the scrollback as history. What changes is the *next* call: the user asks again (or the assistant re-calls the firmware tool) in the same conversation, and this time the tool returns green **Completed** with the real answer, and the sign-in card is gone. Today this is a fresh call, not an automatic retry of the refused one — the wireframe flags whether it should become an auto-retry as an open interaction decision.
 
 **7.1 Approve in browser.** For terminal browser sign-in, an approval page confirms a short code the terminal printed. Approving completes the terminal's sign-in.
 

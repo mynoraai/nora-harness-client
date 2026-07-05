@@ -368,7 +368,7 @@ USB Serial Ports (4):
 
       <!-- R2 label + connector -->
       <div class="band" id="r2" style="left:40px;top:712px;color:var(--accent)">R2 · gateway sign-in recovery</div>
-      <div class="rpath" style="left:300px;top:738px"><span class="rnode">1</span><span class="arr">→</span><span class="rnode">2</span><span class="arr">→</span><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5</span><span class="arr">→</span><span class="rnode">5.1</span><span class="arr">→</span><span class="rnode">5.2</span><span class="arr">→</span><span class="rnode">6 · 6.1</span><span class="arr">→</span><span class="rnode ok">3</span></div>
+      <div class="rpath" style="left:300px;top:738px"><span class="rnode">1</span><span class="arr">→</span><span class="rnode">2</span><span class="arr">→</span><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5</span><span class="arr">→</span><span class="rnode">5.1</span><span class="arr">→</span><span class="rnode">5.2</span><span class="arr">→</span><span class="rnode">6 · 6.1</span><span class="arr">→</span><span class="rnode ok">5.3</span><span class="arr">→</span><span class="rnode ok">3</span></div>
 
       <!-- R2 / 2.1 gateway not authorized + sign-in card -->
       <div class="frame" style="left:40px;top:772px;width:632px">
@@ -468,7 +468,59 @@ USB Serial Ports (4):
             </div>
           </div>
         </div>
-        <div class="cap">The browser hands back; the app's bottom-left flips from <b>Log in</b> to the account name <b>001</b> + <b>Sign out</b> (highlighted). Next firmware call → step <b>3 Completed</b> (first card in the row above).</div>
+        <div class="cap">The browser hands back; the app's bottom-left flips from <b>Log in</b> to the account name <b>001</b> + <b>Sign out</b> (highlighted). But the refused tool card in the conversation is still sitting there — see <b>5.3</b> for what the user does next.</div>
+      </div>
+
+      <!-- R2 / 5.3 back in the conversation — after sign-in -->
+      <div class="frame" style="left:1912px;top:772px;width:632px">
+        <div class="ftitle"><span class="id ok">5.3</span><h2>After sign-in — the conversation continues</h2><span class="tag">authorized</span></div>
+        <div class="screen" style="height:474px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">写一个能和 ai chat 的硬件…</div>
+                <div class="sb-sp"></div>
+                <div class="authrow" style="background:var(--ok-soft);border-radius:9px;padding:11px 10px"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <!-- earlier refused call, now historical/faded -->
+                  <div class="tc" style="opacity:.45">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch bad">✕ Not Authorized</span><span class="tc-cv">▸</span></div>
+                  </div>
+                  <div class="think" style="color:var(--ok)"><span class="sparkle" style="color:var(--ok)">✓</span> Signed in — retrying</div>
+                  <!-- fresh authorized call -->
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch ok">✓ Completed</span><span class="tc-cv">▸</span></div>
+                  </div>
+                  <div class="amsg">已连接，检测到 <b>M5Stack CoreS3</b>。继续初始化项目吗？</div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div></div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab on">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>M5Stack CoreS3</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">Back in the same conversation: the earlier <b>Not Authorized</b> card stays as history (faded), and the firmware tool is called again — now green <b>Completed</b>. This closes the loop from the refusal card. Rejoins the main happy path at <b>3</b>.</div>
+        <div class="sum" style="border-top:1px solid var(--line);padding-top:10px">
+          <div class="pm y"><b>PM decision · after sign-in</b>Does the refused call <b>auto-retry</b> and the sign-in card auto-dismiss the moment sign-in completes, or does the user have to <b>re-ask / the assistant re-call</b>? Today it is a fresh call, not an automatic retry.</div>
+        </div>
       </div>
 
       <!-- R3 note -->
