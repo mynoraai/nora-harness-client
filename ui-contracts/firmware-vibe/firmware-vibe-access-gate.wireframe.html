@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Firmware tools sign-in gate — wireframe</title>
+<style>
+  :root{
+    --bg:#ece6da; --ws-bg:#f8f6f1; --ws-sidebar:#f3efe7;
+    --panel:rgba(255,255,255,0.72); --panel-strong:rgba(255,255,255,0.92);
+    --line:rgba(43,36,29,0.08); --line-strong:rgba(193,112,50,0.18);
+    --text:#2a241d; --text2:#6c645d; --text3:#8d857c;
+    --accent:#c17032; --accent-soft:rgba(193,112,50,0.12);
+    --caution:#d39a3f; --caution-soft:rgba(211,154,63,0.16);
+    --danger:#e5484d; --danger-soft:rgba(229,72,77,0.12);
+    --ok:#5b8a5b; --ok-soft:rgba(91,138,91,0.14);
+    --amber-bg:#fdf3e0; --amber-line:rgba(193,112,50,0.4); --amber-text:#8a5a1e;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:var(--sans);color:var(--text);background:var(--bg)}
+  .topbar{position:fixed;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;
+    gap:16px;padding:0 18px;background:rgba(39,28,18,0.94);color:#faf1e7;border-bottom:1px solid rgba(220,165,108,0.4)}
+  .topbar h1{font-size:14px;font-weight:600;margin:0}
+  .topbar .sub{font-size:12px;color:rgba(243,226,208,.8);font-weight:400}
+  .topbar .spacer{flex:1}
+  .ctrl{display:flex;gap:6px}
+  .ctrl button{height:28px;min-width:34px;padding:0 10px;border-radius:8px;border:1px solid rgba(220,165,108,.35);
+    background:rgba(250,241,231,.08);color:#faf1e7;font-size:12px;font-weight:500;cursor:pointer}
+  .ctrl button:hover{background:rgba(250,241,231,.18)}
+  .jump{position:fixed;top:66px;left:12px;z-index:25;width:198px;background:var(--panel-strong);
+    border:1px solid var(--line);border-radius:14px;padding:8px;backdrop-filter:blur(6px);box-shadow:0 8px 24px -16px rgba(0,0,0,.25)}
+  .jump .lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:6px 8px 4px}
+  .jump button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--text);
+    font-size:12.5px;padding:7px 9px;border-radius:9px;cursor:pointer;font-weight:500}
+  .jump button:hover{background:var(--accent-soft);color:var(--accent)}
+  .jump .legend{margin-top:6px;border-top:1px solid var(--line);padding:8px 9px 4px;font-size:11px;color:var(--text2);line-height:1.7}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:9999px;margin-right:5px;vertical-align:middle}
+  .viewport{position:fixed;inset:54px 0 0 0;overflow:hidden;cursor:grab;
+    background-image:radial-gradient(rgba(43,36,29,.07) 1px,transparent 1px);background-size:26px 26px;
+    touch-action:none;overscroll-behavior:contain}
+  .viewport.grabbing{cursor:grabbing}
+  .stage{position:absolute;top:0;left:0;transform-origin:0 0;width:3320px;height:3980px}
+  .band{position:absolute;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+  .band .bd{font-weight:500;letter-spacing:.01em;text-transform:none;color:var(--text3);font-size:11px;margin-left:8px}
+
+  .frame{position:absolute;background:var(--ws-bg);border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 14px 40px -24px rgba(0,0,0,.3);overflow:hidden}
+  .ftitle{display:flex;align-items:center;gap:8px;padding:10px 13px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .ftitle .id{font:600 11px/1 var(--mono);color:#fff;background:var(--accent);padding:4px 7px;border-radius:6px}
+  .ftitle .id.ok{background:var(--ok)} .ftitle .id.bad{background:var(--danger)} .ftitle .id.warn{background:var(--caution)}
+  .ftitle h2{font-size:12.5px;margin:0;font-weight:600}
+  .ftitle .tag{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:9999px;background:rgba(43,36,29,.07);color:var(--text2)}
+  .cap{font-size:11px;color:var(--text2);line-height:1.45;padding:9px 13px 11px}
+  .cap b{color:var(--text)}
+
+  /* ---- product app frame (modeled ~1180x840, scaled per card) ---- */
+  .screen{overflow:hidden;background:var(--ws-bg)}
+  .scaler{transform-origin:top left}
+  .app{width:1180px;height:840px;display:flex;background:var(--ws-bg);font-family:var(--sans);color:var(--text)}
+  .sb{width:250px;background:var(--ws-sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 12px;gap:11px}
+  .sb-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+  .sb-brand .m{margin-left:auto;color:var(--text3)}
+  .sb-new{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13.5px;color:var(--text2)}
+  .sb-search{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13px;color:var(--text3)}
+  .sb-lbl{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:6px 0 2px}
+  .ws{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;font-size:13.5px;color:var(--text2)}
+  .ws.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .ws .c{margin-left:auto;font-size:11px;color:var(--text3);background:var(--panel);border-radius:9999px;padding:1px 7px}
+  .cv{padding:7px 9px;border-radius:8px;font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cv.on{background:var(--panel-strong);color:var(--text);font-weight:600}
+  .sb-sp{flex:1}
+  .authrow{display:flex;align-items:center;gap:9px;border-top:1px solid var(--line);padding-top:11px;font-size:13.5px;color:var(--text2)}
+  .authrow .login{display:flex;align-items:center;gap:8px;color:var(--text2)}
+  .authrow .acct{font-weight:600;color:var(--text)}
+  .authrow .role{font-size:11px;color:var(--text3);border:1px solid var(--line);border-radius:9999px;padding:1px 8px}
+  .authrow .so{margin-left:auto;font-size:12.5px;color:var(--text3)}
+
+  .main2{flex:1;display:flex;flex-direction:column;min-width:0}
+  .tabbar{display:flex;align-items:center;gap:6px;padding:9px 14px 0;border-bottom:1px solid var(--line);background:var(--ws-bg)}
+  .ctab{max-width:340px;display:flex;align-items:center;gap:8px;background:var(--panel-strong);border:1px solid var(--line);border-bottom:none;border-radius:9px 9px 0 0;padding:8px 12px;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ctab .x{color:var(--text3)}
+  .newc{color:var(--text3);font-size:15px;padding:4px 6px}
+  .chead{padding:14px 20px 6px}
+  .chead h3{margin:0;font-size:17px;font-weight:600}
+  .chead .rt{font-size:12.5px;color:var(--text2);margin-top:3px;font-family:var(--mono)}
+  .stream{flex:1;overflow:hidden;padding:8px 20px 6px;display:flex;flex-direction:column;gap:12px}
+  .umsg{align-self:flex-end;max-width:70%;background:var(--accent-soft);color:var(--text);border-radius:13px;padding:9px 13px;font-size:13.5px}
+  .amsg{font-size:13.5px;color:var(--text);line-height:1.5;max-width:88%}
+  .think{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text3)}
+  .think .sparkle{color:var(--accent)}
+
+  /* tool-call card (the focal element) */
+  .tc{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden;max-width:560px}
+  .tc-hd{display:flex;align-items:center;gap:10px;padding:11px 13px}
+  .tc-ic{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:var(--ws-bg);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:14px}
+  .tc-nm{font-size:13.5px;font-weight:600;font-family:var(--mono)}
+  .tc-ch{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:9999px;border:1px solid}
+  .tc-ch.run{border-color:var(--line-strong);background:var(--accent-soft);color:var(--accent)}
+  .tc-ch.ok{border-color:rgba(91,138,91,.3);background:var(--ok-soft);color:var(--ok)}
+  .tc-ch.bad{border-color:rgba(229,72,77,.3);background:var(--danger-soft);color:#b23036}
+  .tc-cv{color:var(--text3);font-size:14px;margin-left:2px}
+  .tc-out{border-top:1px solid var(--line);padding:11px 13px}
+  .tc-out .h4{font-size:11px;font-weight:700;color:var(--text3);margin:0 0 6px}
+  .tc-code{font-family:var(--mono);font-size:11px;line-height:1.55;color:var(--text);background:var(--ws-bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;white-space:pre-wrap;word-break:break-word}
+
+  /* app-owned sign-in hint card (amber) */
+  .signin{margin-top:2px;border:1px solid var(--amber-line);background:var(--amber-bg);border-radius:12px;padding:12px 14px;max-width:560px;display:flex;gap:10px;align-items:flex-start}
+  .signin .warn{color:var(--accent);font-size:16px;margin-top:1px}
+  .signin .t{font-size:13.5px;font-weight:700;color:var(--amber-text)}
+  .signin .b{font-size:12.5px;color:var(--amber-text);line-height:1.5;margin:4px 0 9px}
+  .signin .btn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border-radius:9px;padding:7px 13px;font-size:12.5px;font-weight:600}
+
+  .composer{margin:6px 16px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel-strong);padding:11px 13px}
+  .composer .ph{font-size:13.5px;color:var(--text3);padding:4px 2px 12px}
+  .composer .row{display:flex;align-items:center;gap:8px}
+  .rtchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:5px 10px}
+  .rtchip .g{width:12px;height:12px;border-radius:3px;background:var(--accent-soft)}
+  .composer .send{margin-left:auto;width:32px;height:32px;border-radius:9px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+
+  /* right workbench */
+  .rpc{width:290px;background:var(--ws-bg);border-left:1px solid var(--line);display:flex;flex-direction:column}
+  .rpc-tabs{display:flex;gap:2px;padding:10px 12px 0;border-bottom:1px solid var(--line);background:var(--ws-sidebar)}
+  .rpc-tab{font-size:12.5px;font-weight:500;color:var(--text2);padding:8px 12px;border-radius:8px 8px 0 0}
+  .rpc-tab.on{background:var(--ws-bg);color:var(--text);font-weight:600}
+  .rpc-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--text3);font-size:12.5px}
+  .rpc-body .rf{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 11px;font-size:12px;color:var(--text2)}
+  .rpc-bottom{display:flex;gap:2px;padding:8px 12px;border-top:1px solid var(--line);background:var(--ws-sidebar);font-size:12px;color:var(--text2)}
+  .rpc-bottom .bt{padding:5px 11px;border-radius:7px}
+  .rpc-bottom .bt.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+  /* terminal frame */
+  .term{width:1000px;height:620px;background:#1b1712;border-radius:12px;color:#ecdcc6;font-family:var(--mono);font-size:14.5px;line-height:1.65;padding:18px 20px;overflow:hidden;border:1px solid rgba(220,165,108,.22)}
+  .term .p{color:#d99a52}.term .dim{color:#9c8a72}.term .ok{color:#8fbf7f}.term .bad{color:#e88a86}
+  .term .tccard{border:1px solid rgba(220,165,108,.28);border-radius:9px;padding:9px 12px;margin:8px 0;color:#ecdcc6;background:rgba(250,241,231,.03)}
+  .term .pill-bad{color:#e88a86;font-weight:700}.term .pill-ok{color:#8fbf7f;font-weight:700}
+
+  /* browser frame */
+  .brow{width:980px;height:620px;background:#fff;border-radius:12px;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+  .brow-bar{height:44px;background:#efe9df;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--line)}
+  .brow-url{flex:1;background:#fff;border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-family:var(--mono);font-size:12.5px;color:var(--text2)}
+  .brow-body{flex:1;display:flex;align-items:center;justify-content:center;background:#faf8f4}
+  .card-auth{width:420px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 28px;box-shadow:0 20px 50px -30px rgba(0,0,0,.3)}
+  .card-auth h4{margin:0 0 4px;font-size:20px;font-weight:700}
+  .card-auth .s{font-size:13.5px;color:var(--text2);margin-bottom:18px}
+  .fld{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text3);margin-bottom:11px}
+  .fld.on{color:var(--text)}
+  .card-auth .cbtn{background:var(--accent);color:#fff;border-radius:10px;padding:12px;text-align:center;font-size:14.5px;font-weight:600;margin-top:5px}
+  .card-auth .goog{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:14px;color:var(--text2);margin-bottom:14px}
+  .card-auth .or{text-align:center;font-size:12px;color:var(--text3);margin:6px 0 12px}
+  .card-auth .code{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:.18em;text-align:center;color:var(--accent);background:var(--accent-soft);border-radius:10px;padding:14px;margin:6px 0 16px}
+
+  /* runtime picker dialog (detail) */
+  .dlg{width:520px;background:var(--panel-strong);border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px -34px rgba(0,0,0,.5)}
+  .dlg h4{margin:0;padding:14px 16px;font-size:14px;font-weight:600;border-bottom:1px solid var(--line)}
+  .rtrow{display:flex;align-items:center;gap:11px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+  .rtrow:last-child{border-bottom:0}
+  .rtrow.on{background:var(--accent-soft)}
+  .rtrow .ri{width:26px;height:26px;border-radius:7px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .rtrow .rn{font-weight:600}
+  .rtrow .rs{font-size:12px;color:var(--ok);margin-left:6px}
+  .rtrow .cd{margin-left:auto;font-size:12.5px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--line-strong);border-radius:8px;padding:6px 11px;font-weight:600}
+
+  /* compact summary cards for detail / language / errors bands */
+  .sum{padding:12px 14px 14px}
+  .sum .pillrow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
+  .lp{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:9999px;border:1px solid}
+  .lp.run{border-color:var(--line-strong);background:var(--accent-soft);color:var(--accent)}
+  .lp.ok{border-color:rgba(91,138,91,.3);background:var(--ok-soft);color:var(--ok)}
+  .lp.bad{border-color:rgba(229,72,77,.3);background:var(--danger-soft);color:#b23036}
+  .sum .k{font-size:12.5px;color:var(--text);line-height:1.55}
+  .sum .k b{font-weight:700}
+  .sum .q{font-family:var(--mono);font-size:11.5px;color:var(--text2);background:var(--ws-bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:7px 0;line-height:1.5;white-space:pre-wrap}
+  .note{font-size:11px;color:var(--text2);line-height:1.5}
+  .pm{border-radius:11px;padding:10px 12px;margin:9px 0 0;font-size:12px;line-height:1.5}
+  .pm.y{background:#fff3cd;border:1px solid #f1d98a}
+  .pm.done{background:rgba(91,138,91,.12);border:1px solid rgba(91,138,91,.3)}
+  .pm b{display:block;margin-bottom:3px;font-size:11px}
+
+  /* route path connector strip */
+  .rpath{position:absolute;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--text2)}
+  .rnode{background:var(--panel-strong);border:1px solid var(--line-strong);border-radius:8px;padding:5px 10px;color:var(--text);font-weight:600}
+  .rnode.bad{border-color:rgba(229,72,77,.4);color:#b23036}
+  .rnode.ok{border-color:rgba(91,138,91,.4);color:var(--ok)}
+  .arr{color:var(--accent);font-weight:800}
+  .arrbig{position:absolute;color:var(--accent);font-weight:800;font-size:20px}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Firmware tools sign-in gate</h1>
+    <span class="sub">wireframe · Journey 1 · implemented (mid-session prepare = partial) · warm tokens (noraharness-design.md) · one account → gateway + in-app agent + terminal</span>
+    <span class="spacer"></span>
+    <div class="ctrl"><button id="zout">−</button><button id="zin">+</button><button id="fit">Fit</button><button id="reset">Reset</button></div>
+  </div>
+
+  <nav class="jump">
+    <div class="lbl">Jump</div>
+    <button data-go="bandA">Main happy path</button>
+    <button data-go="bandB">Route path</button>
+    <button data-go="r2">· R2 gateway sign-in</button>
+    <button data-go="r4">· R4/R5 terminal</button>
+    <button data-go="r6">· R6 mid-session gap</button>
+    <button data-go="bandD">Detail states</button>
+    <button data-go="bandL">State language</button>
+    <button data-go="bandE">Errors and recovery</button>
+    <div class="legend">
+      <div><span class="dot" style="background:#5b8a5b"></span>Completed — tool ran</div>
+      <div><span class="dot" style="background:#e5484d"></span>Not Authorized — signed out</div>
+      <div><span class="dot" style="background:#c17032"></span>Sign-in / running</div>
+    </div>
+  </nav>
+
+  <div class="viewport" id="vp">
+    <div class="stage" id="stage">
+
+      <!-- ================= BAND A · MAIN HAPPY PATH ================= -->
+      <div class="band" id="bandA" style="left:40px;top:24px">Main happy path <span class="bd">R1 · signed in · gateway chat · 1 → 2 → 3 → 3.1</span></div>
+
+      <!-- A/step2 Running -->
+      <div class="frame" style="left:40px;top:58px;width:632px">
+        <div class="ftitle"><span class="id">2</span><h2>Assistant runs a firmware tool</h2><span class="tag">signed in</span></div>
+        <div class="screen" style="height:462px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <!-- sidebar -->
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="ws">▸ 154 <span class="c">1</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">写一个能和 ai chat 的硬件…</div>
+                <div class="cv">你现在能使用哪些 toolcall</div>
+                <div class="sb-sp"></div>
+                <div class="authrow"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <!-- main -->
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="umsg">调用一次 firmware-vibe 的 hw_fw_status 工具。</div>
+                  <div class="think"><span class="sparkle">✦</span> Thought for a few seconds</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch run">◷ Running</span><span class="tc-cv">▸</span></div>
+                  </div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div>
+                </div>
+              </div>
+              <!-- right panel -->
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>No visible files in this workspace.</div><div class="rf">⟳ Refresh files</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">The firmware tool call renders as a <b>card inline in the chat stream</b> (center column), between the user message and the composer. The whole app is present: workspace/conversation list left, workbench right. Account <b>001</b> is signed in (bottom-left).</div>
+      </div>
+
+      <!-- A/step3 Completed -->
+      <div class="frame" style="left:712px;top:58px;width:632px">
+        <div class="ftitle"><span class="id ok">3</span><h2>Authorized result — Completed</h2><span class="tag">signed in</span></div>
+        <div class="screen" style="height:462px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="ws">▸ 154 <span class="c">1</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">写一个能和 ai chat 的硬件…</div>
+                <div class="cv">你现在能使用哪些 toolcall</div>
+                <div class="sb-sp"></div>
+                <div class="authrow"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="umsg">调用一次 firmware-vibe 的 hw_fw_status 工具。</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch ok">✓ Completed</span><span class="tc-cv">▸</span></div>
+                  </div>
+                  <div class="amsg">已连接到设备。检测到 <b>M5Stack CoreS3</b>（/dev/cu.usbmodem2101）。需要我继续初始化项目吗？</div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div>
+                </div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>No visible files in this workspace.</div><div class="rf">⟳ Refresh files</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">Same surface, card settles to a green <b>Completed</b> pill and the assistant continues with the real answer. The green pill is the proof the tool actually ran — the app forces a red pill whenever the result is a refusal, so green = real result.</div>
+      </div>
+
+      <!-- A/3.1 Expanded -->
+      <div class="frame" style="left:1384px;top:58px;width:632px">
+        <div class="ftitle"><span class="id ok">3.1</span><h2>Expanded firmware result</h2><span class="tag">click to expand</span></div>
+        <div class="screen" style="height:462px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">写一个能和 ai chat 的硬件…</div>
+                <div class="sb-sp"></div>
+                <div class="authrow"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch ok">✓ Completed</span><span class="tc-cv">▾</span></div>
+                    <div class="tc-out"><div class="h4">Result</div>
+                      <div class="tc-code">Project: (none — run hw_fw_init to create one)
+USB Serial Ports (4):
+  /dev/cu.usbmodem2101  [M5Stack CoreS3 (ESP32-S3)]
+  /dev/cu.usbmodem5B5F…  (USB Single Serial)
+  /dev/cu.debug-console
+  /dev/cu.Bluetooth-Incoming-Port</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div>
+                </div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab on">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>Device tab — detected board</div><div class="rf">M5Stack CoreS3</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">Clicking the card expands a <b>Result</b> block with the raw firmware status — project state, USB serial ports, detected <b>M5Stack CoreS3</b>. The right <b>Device</b> tab reflects the same board.</div>
+      </div>
+
+      <!-- ================= BAND B · ROUTE PATH ================= -->
+      <div class="band" id="bandB" style="left:40px;top:560px">Route path <span class="bd">each route drawn as a full-app / terminal row using the record IDs</span></div>
+
+      <!-- R2 label + connector -->
+      <div class="band" id="r2" style="left:40px;top:596px;color:var(--accent)">R2 · gateway sign-in recovery</div>
+      <div class="rpath" style="left:300px;top:594px"><span class="rnode">1</span><span class="arr">→</span><span class="rnode">2</span><span class="arr">→</span><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5</span><span class="arr">→</span><span class="rnode">5.1</span><span class="arr">→</span><span class="rnode">5.2</span><span class="arr">→</span><span class="rnode">6 · 6.1</span><span class="arr">→</span><span class="rnode ok">3</span></div>
+
+      <!-- R2 / 2.1 gateway not authorized + sign-in card -->
+      <div class="frame" style="left:40px;top:626px;width:632px">
+        <div class="ftitle"><span class="id bad">2.1</span><h2>Gateway chat — Not Authorized + sign-in card</h2><span class="tag" style="background:var(--danger-soft);color:#b23036">signed out</span></div>
+        <div class="screen" style="height:474px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">写一个能和 ai chat 的硬件…</div>
+                <div class="sb-sp"></div>
+                <div class="authrow"><span class="login">⎆ Log in</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="umsg">调用一次 firmware-vibe 的 hw_fw_status 工具。</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch bad">✕ Not Authorized</span><span class="tc-cv">▸</span></div>
+                    <div class="signin" style="border-radius:0;border-left:0;border-right:0;border-bottom:0;margin:0;max-width:none">
+                      <span class="warn">⚠</span>
+                      <div><div class="t">Sign in to use firmware tools</div>
+                        <div class="b">Firmware tools need your NoraHarness account. Sign in once — every firmware tool here and in your terminal is authorized automatically.</div>
+                        <span class="btn">⎆ Sign in to NoraHarness</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div>
+                </div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>No visible files in this workspace.</div><div class="rf">⟳ Refresh files</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">Signed out (bottom-left shows <b>Log in</b>). The tool card shows a red <b>Not Authorized</b> pill, and the app-owned <b>Sign in to use firmware tools</b> card is attached directly under it — inside the chat stream, in the tool card's place. The button routes to sign-in (5).</div>
+      </div>
+
+      <!-- R2 / 5.1 browser -->
+      <div class="frame" style="left:712px;top:626px;width:560px">
+        <div class="ftitle"><span class="id">5.1</span><h2>Browser sign-in (system browser)</h2><span class="tag">outside the app</span></div>
+        <div class="screen" style="height:400px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="brow">
+              <div class="brow-bar"><span>←　→　⟳</span><span class="brow-url">https://…noraharness…/login?client_id=electron</span></div>
+              <div class="brow-body">
+                <div class="card-auth">
+                  <h4>Welcome back</h4><div class="s">Sign in to your NoraHarness account</div>
+                  <div class="goog">Continue with Google</div>
+                  <div class="or">— or —</div>
+                  <div class="fld on">001@example.com</div>
+                  <div class="fld">••••••••••</div>
+                  <div class="cbtn">Continue with Email</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">Clicking <b>Log in</b> or the card button opens the NoraHarness sign-in page in the <b>system browser</b> (a separate window, not part of the app). User signs in; the browser then hands back to the app.</div>
+      </div>
+
+      <!-- R2 / 5.2 signed in app -->
+      <div class="frame" style="left:1312px;top:626px;width:560px">
+        <div class="ftitle"><span class="id ok">5.2</span><h2>Back in app — signed in</h2><span class="tag">account active</span></div>
+        <div class="screen" style="height:400px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app" style="height:696px">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="ws">▸ 155 <span class="c">1</span></div>
+                <div class="sb-sp"></div>
+                <div class="authrow" style="background:var(--ok-soft);border-radius:9px;padding:11px 10px"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream"><div class="amsg" style="color:var(--text3)">Signed in as 001. Ready.</div></div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">The browser hands back; the app's bottom-left flips from <b>Log in</b> to the account name <b>001</b> + <b>Sign out</b> (highlighted). Next firmware call → step <b>3 Completed</b> (first card in the row above).</div>
+      </div>
+
+      <!-- R3 note -->
+      <div class="frame" style="left:40px;top:1120px;width:632px">
+        <div class="ftitle"><span class="id bad">2.2</span><h2>In-app agent (Claude / Codex) — Not Authorized</h2><span class="tag" style="background:var(--danger-soft);color:#b23036">signed out · R3</span></div>
+        <div class="screen" style="height:474px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="sb-lbl">Conversations · Today</div>
+                <div class="cv on">Claude draft</div>
+                <div class="sb-sp"></div>
+                <div class="authrow"><span class="login">⎆ Log in</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">Claude draft<span class="x">✕</span></div><span class="newc">＋</span></div>
+                <div class="chead"><h3>Claude draft</h3><div class="rt">Claude · Opus</div></div>
+                <div class="stream">
+                  <div class="umsg">调用 firmware-vibe 的 hw_fw_status。</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">mcp__firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch bad">✕ Not Authorized</span><span class="tc-cv">▸</span></div>
+                    <div class="signin" style="border-radius:0;border-left:0;border-right:0;border-bottom:0;margin:0;max-width:none">
+                      <span class="warn">⚠</span>
+                      <div><div class="t">Sign in to use firmware tools</div>
+                        <div class="b">Firmware tools need your NoraHarness account. Sign in once — every firmware tool here and in your terminal is authorized automatically.</div>
+                        <span class="btn">⎆ Sign in to NoraHarness</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>Claude</span><span class="rtchip"><span class="g"></span>Opus</span><span class="send">↑</span></div></div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>No visible files in this workspace.</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><b>Identical</b> red pill + sign-in card inside an in-app <b>Claude / Codex</b> conversation (runtime chip reads Claude · Opus). Same recovery as R2: <b>2.2 → 5 → 5.1 → 5.2 → 6 → 6.1 → 3</b>. One card handles both gateway and in-app agent.</div>
+      </div>
+
+      <!-- R4/R5 terminal -->
+      <div class="band" id="r4" style="left:712px;top:1096px;color:var(--accent)">R4 / R5 · terminal client</div>
+      <div class="rpath" style="left:712px;top:1122px"><span class="rnode">4</span><span class="arr">→</span><span class="rnode bad">4.1</span><span class="arr">→</span><span class="rnode">7</span><span class="arr">→</span><span class="rnode">7.1</span><span class="arr">→</span><span class="rnode ok">7.2</span></div>
+
+      <!-- R4 terminal not authorized -->
+      <div class="frame" style="left:712px;top:1150px;width:600px">
+        <div class="ftitle"><span class="id bad">4.1</span><h2>Terminal client — Not Authorized (text)</h2><span class="tag">standalone terminal</span></div>
+        <div class="screen" style="height:392px">
+          <div class="scaler" style="transform:scale(.58)">
+            <div class="term">
+              <div class="dim">~/fw-project · claude</div>
+              <div style="margin-top:6px">&gt; call firmware-vibe hw_fw_status</div>
+              <div class="tccard">🔧 mcp__firmware-vibe__hw_fw_status　<span class="pill-bad">✕ not authorized</span></div>
+              <div style="margin-top:6px;line-height:1.7"><span class="bad">NOT_AUTHORIZED:</span> firmware-vibe requires a NoraHarness API key.
+Run the <span class="p">hw_fw_login</span> tool to sign in from your browser (no key pasting),
+or create a key on the NoraHarness dashboard (Settings → API Keys) and set it
+in this client's environment.</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">A terminal Claude Code / Codex has <b>no app UI</b>, so the refusal is <b>plain text</b> — and it uses the <b>terminal wording</b> (run <code>hw_fw_login</code> / dashboard key), not the app's "Sign in to NoraHarness" card. This is why the app never puts "managed" wording into the shared credential.</div>
+      </div>
+
+      <!-- R5 terminal device login -->
+      <div class="frame" style="left:1352px;top:1150px;width:560px">
+        <div class="ftitle"><span class="id ok">7 · 7.2</span><h2>Terminal browser sign-in → authorized</h2><span class="tag">hw_fw_login</span></div>
+        <div class="screen" style="height:392px">
+          <div class="scaler" style="transform:scale(.58)">
+            <div class="term">
+              <div>&gt; run hw_fw_login</div>
+              <div class="tccard">To sign in, open:  <span class="p">https://…noraharness…/device</span>
+and enter code:  <span class="ok">WDJF-7Q2K</span></div>
+              <div class="dim">waiting for approval…</div>
+              <div class="ok">✓ signed in — credential cached</div>
+              <div style="margin-top:10px">&gt; call firmware-vibe hw_fw_status</div>
+              <div class="tccard">🔧 hw_fw_status　<span class="pill-ok">✓ completed</span>
+<span class="dim">USB Serial Ports (4): …usbmodem2101 [M5Stack CoreS3]</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><b>Zero-key</b> terminal sign-in: <b>7</b> prints a short code + <code>/device</code> link → <b>7.1</b> approve in browser → <b>7.2</b> credential cached and the firmware tool returns a real result. Same one credential the app uses.</div>
+      </div>
+
+      <!-- R6 mid-session gap -->
+      <div class="band" id="r6" style="left:40px;top:1660px;color:var(--caution)">R6 · mid-session sign-in gap (partial)</div>
+      <div class="rpath" style="left:430px;top:1658px"><span class="rnode bad">2.1</span><span class="arr">→</span><span class="rnode">5 · 5.2</span><span class="arr">→</span><span class="rnode" style="border-color:var(--caution);color:#9a6b1e">6.2 blocked</span><span class="arr">→</span><span class="rnode">restart / open agent</span><span class="arr">→</span><span class="rnode ok">6.2.1 → 3</span></div>
+
+      <!-- 6.2 still not authorized after mid-session login -->
+      <div class="frame" style="left:40px;top:1690px;width:632px">
+        <div class="ftitle"><span class="id warn">6.2</span><h2>Signed in mid-session — still Not Authorized (gateway only)</h2><span class="tag" style="background:var(--caution-soft);color:#9a6b1e">gap</span></div>
+        <div class="screen" style="height:474px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="sb-sp"></div>
+                <div class="authrow" style="background:var(--ok-soft);border-radius:9px;padding:11px 10px"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="umsg">再调用一次 hw_fw_status。</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch bad">✕ Not Authorized</span><span class="tc-cv">▸</span></div>
+                    <div class="signin" style="border-radius:0;border:0;margin:0;max-width:none;background:var(--caution-soft)">
+                      <span class="warn">⚠</span>
+                      <div><div class="t" style="color:#9a6b1e">Signed in, but firmware access not prepared yet this session</div>
+                        <div class="b" style="color:#9a6b1e">Restart the app, or open an in-app Claude / Codex conversation, to finish preparing firmware access.</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div></div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>No visible files in this workspace.</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><b>The gap:</b> account shows signed-in (bottom-left = 001) but a gateway-only user who signed in mid-session still sees <b>Not Authorized</b> because firmware access is prepared at app start / on opening an in-app agent, not on the sign-in event itself.</div>
+      </div>
+
+      <!-- 6.2.1 after restart completed -->
+      <div class="frame" style="left:712px;top:1690px;width:632px">
+        <div class="ftitle"><span class="id ok">6.2.1</span><h2>After restart / opening an agent — Completed</h2><span class="tag">recovered</span></div>
+        <div class="screen" style="height:474px">
+          <div class="scaler" style="transform:scale(.55)">
+            <div class="app">
+              <div class="sb">
+                <div class="sb-brand">NoraHarness<span class="m">‹</span></div>
+                <div class="sb-new">＋ New conversation</div>
+                <div class="sb-search">⌕ Search conversations…</div>
+                <div class="sb-lbl">Workspaces</div>
+                <div class="ws on">▸ 156 <span class="c">3</span></div>
+                <div class="sb-sp"></div>
+                <div class="authrow" style="background:var(--ok-soft);border-radius:9px;padding:11px 10px"><span class="acct">001</span><span class="role">admin</span><span class="so">Sign out</span></div>
+              </div>
+              <div class="main2">
+                <div class="tabbar"><div class="ctab">写一个能和 ai chat 的硬件…<span class="x">✕</span></div></div>
+                <div class="chead"><h3>写一个能和 ai chat 的硬件…</h3><div class="rt">NoraHarness · deepseek-v4-pro</div></div>
+                <div class="stream">
+                  <div class="umsg">再调用一次 hw_fw_status。</div>
+                  <div class="tc">
+                    <div class="tc-hd"><span class="tc-ic">🔧</span><span class="tc-nm">firmware-vibe__hw_fw_status</span>
+                      <span class="tc-ch ok">✓ Completed</span><span class="tc-cv">▸</span></div>
+                  </div>
+                  <div class="amsg">凭证已就位，检测到 <b>M5Stack CoreS3</b>。</div>
+                </div>
+                <div class="composer"><div class="ph">Assign a task or ask any question</div>
+                  <div class="row"><span class="rtchip"><span class="g"></span>NoraHarness</span><span class="rtchip"><span class="g"></span>deepseek-v4-pro</span><span class="send">↑</span></div></div>
+              </div>
+              <div class="rpc">
+                <div class="rpc-tabs"><div class="rpc-tab">All Files</div><div class="rpc-tab">Changes</div><div class="rpc-tab on">Device</div><div class="rpc-tab">Preview</div></div>
+                <div class="rpc-body"><div>M5Stack CoreS3</div></div>
+                <div class="rpc-bottom"><span class="bt on">Terminal</span><span class="bt">Device Log</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">After a restart (or opening an in-app agent conversation), firmware access is prepared for account 001 and the same call returns a green <b>Completed</b> result. Rejoins the main happy path at <b>3</b>.</div>
+      </div>
+
+      <!-- PM note on the gap -->
+      <div class="frame" style="left:1384px;top:1690px;width:520px">
+        <div class="ftitle"><span class="id warn">◆</span><h2>Gap note</h2></div>
+        <div class="sum">
+          <div class="pm y"><b>PM decision · mid-session prepare</b>Sign-in does not currently prepare firmware access on its own. Wire sign-in to prepare access immediately so a gateway-only user does not have to restart or open an agent?</div>
+          <div class="pm done"><b>Resolved · fail-closed everywhere</b>All three clients refuse firmware tools when signed out — no silent success — and share one prepared credential once it exists.</div>
+          <div class="note" style="margin-top:8px">This is the only <b>partial</b> state in the journey; everything else is implemented and verified across gateway, in-app agent, and terminal.</div>
+        </div>
+      </div>
+
+      <!-- ================= BAND D · DETAIL STATES ================= -->
+      <div class="band" id="bandD" style="left:40px;top:2220px">Detail states <span class="bd">reused surfaces (compact)</span></div>
+
+      <div class="frame" style="left:40px;top:2256px;width:430px">
+        <div class="ftitle"><span class="id">card</span><h2>Sign-in hint card (app-owned)</h2></div>
+        <div class="sum">
+          <div class="signin" style="max-width:none;margin:0 0 8px">
+            <span class="warn">⚠</span>
+            <div><div class="t">Sign in to use firmware tools</div>
+              <div class="b">Firmware tools need your NoraHarness account. Sign in once — every firmware tool here and in your terminal is authorized automatically.</div>
+              <span class="btn">⎆ Sign in to NoraHarness</span></div>
+          </div>
+          <div class="note">Shown under a refused firmware tool in gateway chat and in-app agent (2.1 / 2.2). Same copy in both. Button → sign-in (5).</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:494px;top:2256px;width:430px">
+        <div class="ftitle"><span class="id">5.1</span><h2>Browser sign-in page</h2></div>
+        <div class="sum">
+          <div class="q">https://…noraharness…/login?client_id=electron
+Continue with Google  ·  Continue with Email
+email: 001@example.com   password: ••••••</div>
+          <div class="note">System browser, separate from the app. On success it hands back to the app via a return link; the app flips to signed-in (5.2).</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:948px;top:2256px;width:430px">
+        <div class="ftitle"><span class="id">7.1</span><h2>Device approval page</h2></div>
+        <div class="sum">
+          <div class="q">https://…noraharness…/device
+Enter code:  WDJF-7Q2K
+[ Approve ]</div>
+          <div class="note">For terminal browser sign-in (hw_fw_login). Confirms the short code the terminal printed; approving completes the terminal's sign-in (7.2).</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:1402px;top:2256px;width:460px">
+        <div class="ftitle"><span class="id">2.2·src</span><h2>Runtime picker (opens in-app agent)</h2></div>
+        <div class="sum" style="padding:12px">
+          <div class="dlg" style="box-shadow:none">
+            <h4>Runtime Selector</h4>
+            <div class="rtrow"><span class="ri">◈</span><span class="rn">NoraHarness</span><span class="rs">runtime ready</span></div>
+            <div class="rtrow on"><span class="ri">✦</span><span class="rn">Claude</span><span class="rs">Ready</span><span class="cd">Create draft</span></div>
+            <div class="rtrow"><span class="ri">◇</span><span class="rn">Codex</span><span class="rs">Ready</span><span class="cd">Create draft</span></div>
+          </div>
+          <div class="note" style="margin-top:8px">Where surface 2.2 originates — creating a Claude / Codex draft starts an in-app agent conversation that reaches the same firmware tools.</div>
+        </div>
+      </div>
+
+      <!-- ================= BAND L · STATE LANGUAGE ================= -->
+      <div class="band" id="bandL" style="left:40px;top:2680px">State language <span class="bd">pills &amp; copy</span></div>
+
+      <div class="frame" style="left:40px;top:2716px;width:560px">
+        <div class="ftitle"><span class="id">pills</span><h2>Tool-call pills</h2></div>
+        <div class="sum">
+          <div class="pillrow">
+            <span class="lp run">◷ Running</span>
+            <span class="lp ok">✓ Completed</span>
+            <span class="lp bad">✕ Not Authorized</span>
+          </div>
+          <div class="k"><b>Running</b> — firmware tool in progress. <b>Completed</b> — real result (green; guaranteed no refusal). <b>Not Authorized</b> — refused, signed out (red). In-app agent errors also show <b>Failed</b> for non-auth failures.</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:624px;top:2716px;width:640px">
+        <div class="ftitle"><span class="id">copy</span><h2>Refusal wording — app vs terminal</h2></div>
+        <div class="sum">
+          <div class="k"><b>In-app (card):</b> “Sign in to use firmware tools … Sign in once — every firmware tool here and in your terminal is authorized automatically. → Sign in to NoraHarness”.</div>
+          <div class="q" style="margin-top:9px">NOT_AUTHORIZED: firmware-vibe requires a NoraHarness API key.
+Run the hw_fw_login tool to sign in from your browser (no key
+pasting), or create a key on the NoraHarness dashboard.</div>
+          <div class="note"><b>Terminal</b> gets the wording above (no app card). The app deliberately keeps its “managed / Sign in to NoraHarness” wording out of the shared credential so a terminal user never sees app-only phrasing.</div>
+        </div>
+      </div>
+
+      <!-- ================= BAND E · ERRORS AND RECOVERY ================= -->
+      <div class="band" id="bandE" style="left:40px;top:3020px">Errors and recovery <span class="bd">compact</span></div>
+
+      <div class="frame" style="left:40px;top:3056px;width:420px">
+        <div class="ftitle"><span class="id warn">6.2</span><h2>Mid-session sign-in gap</h2></div>
+        <div class="sum">
+          <div class="k">Signed in mid-session, gateway only → still <span style="color:#9a6b1e;font-weight:700">Not Authorized</span>. Firmware access is prepared at app start / on opening an in-app agent, not on the sign-in event.</div>
+          <div class="note" style="margin-top:6px"><b>Recovery →</b> restart the app or open an in-app Claude / Codex conversation (6.2.1) → Completed.</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:484px;top:3056px;width:420px">
+        <div class="ftitle"><span class="id bad">9.1</span><h2>Service unreachable</h2></div>
+        <div class="sum">
+          <div class="pillrow"><span class="lp bad">✕ Not Authorized</span></div>
+          <div class="k">If the NoraHarness service can't be reached, the tool <b>fails closed</b> with an “unreachable” note. It never silently allows the tool to run.</div>
+          <div class="note" style="margin-top:6px"><b>Recovery →</b> restore connectivity, retry (back to 2 → 3).</div>
+        </div>
+      </div>
+
+      <div class="frame" style="left:928px;top:3056px;width:420px">
+        <div class="ftitle"><span class="id bad">9.2</span><h2>Access revoked</h2></div>
+        <div class="sum">
+          <div class="k">If the account's firmware access is revoked on the dashboard, a previously working tool returns to <span style="color:#b23036;font-weight:700">Not Authorized</span> on its next call.</div>
+          <div class="note" style="margin-top:6px"><b>Recovery →</b> restore access / re-issue credential, then 5 → 6 → 3.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function(){
+  const vp=document.getElementById('vp'), stage=document.getElementById('stage');
+  let scale=0.62, tx=30, ty=16, raf=null;
+  const apply=()=>{raf=null;stage.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;};
+  const sched=()=>{if(!raf)raf=requestAnimationFrame(apply);};
+  const clamp=(s)=>Math.min(2.4,Math.max(0.18,s));
+  sched();
+  let dragging=false,sx=0,sy=0,ox=0,oy=0;
+  vp.addEventListener('pointerdown',e=>{dragging=true;vp.classList.add('grabbing');sx=e.clientX;sy=e.clientY;ox=tx;oy=ty;vp.setPointerCapture(e.pointerId);});
+  vp.addEventListener('pointermove',e=>{if(!dragging)return;tx=ox+(e.clientX-sx);ty=oy+(e.clientY-sy);sched();});
+  const end=()=>{dragging=false;vp.classList.remove('grabbing');};
+  vp.addEventListener('pointerup',end);vp.addEventListener('pointercancel',end);
+  vp.addEventListener('wheel',e=>{
+    e.preventDefault();
+    if(e.ctrlKey||e.metaKey){const r=vp.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;const ns=clamp(scale*(1-e.deltaY*0.0015));const k=ns/scale;tx=px-(px-tx)*k;ty=py-(py-ty)*k;scale=ns;}
+    else{tx-=e.deltaX;ty-=e.deltaY;}
+    sched();
+  },{passive:false});
+  const zoomTo=(f)=>{const r=vp.getBoundingClientRect(),px=r.width/2,py=r.height/2;const ns=clamp(scale*f),k=ns/scale;tx=px-(px-tx)*k;ty=py-(py-ty)*k;scale=ns;sched();};
+  document.getElementById('zin').onclick=()=>zoomTo(1.2);
+  document.getElementById('zout').onclick=()=>zoomTo(1/1.2);
+  document.getElementById('reset').onclick=()=>{scale=0.62;tx=30;ty=16;sched();};
+  document.getElementById('fit').onclick=()=>{const r=vp.getBoundingClientRect();const s=clamp(Math.min(r.width/3320,r.height/3980)*0.96);scale=s;tx=(r.width-3320*s)/2;ty=14;sched();};
+  document.querySelectorAll('.jump button[data-go]').forEach(b=>{b.onclick=()=>{const el=document.getElementById(b.dataset.go);const x=parseFloat(el.style.left),y=parseFloat(el.style.top);scale=clamp(0.62);tx=90-x*scale;ty=60-y*scale;sched();};});
+})();
+</script>
+</body>
+</html>
