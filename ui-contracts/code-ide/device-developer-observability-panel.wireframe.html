@@ -199,12 +199,29 @@
   .note{font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5}
   .star{color:var(--accent)}
   code{font-family:var(--mono);font-size:.92em;background:rgba(43,36,29,.05);padding:1px 4px;border-radius:4px}
+  /* observability master switch (adr/138) — one global toggle, default OFF, no source readout */
+  .obsw{margin-left:14px;display:inline-flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text2);cursor:pointer;user-select:none}
+  .obsw-lab{font-weight:600;color:var(--text)}
+  .swt{position:relative;width:34px;height:18px;border-radius:9999px;background:rgba(43,36,29,.2);transition:background .15s}
+  .swt > i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:9999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .15s}
+  .obsw.on .swt{background:var(--accent)}
+  .obsw.on .swt > i{left:18px}
+  .obsw-st{font-family:var(--mono);font-size:11px;min-width:18px;color:var(--text2)}
+  .obsw.on .obsw-st{color:var(--accent);font-weight:600}
+  .obsw .hint{font-style:italic;color:var(--text3);font-size:10px}
+  .obs-off-banner{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);display:none;z-index:6;
+    background:var(--panel-strong);border:1px solid var(--line-strong);border-radius:12px;padding:15px 19px;
+    font-size:12.5px;color:var(--text);box-shadow:0 16px 44px -20px rgba(0,0,0,.45);text-align:center;max-width:310px;line-height:1.5}
+  .obs-off-banner b{display:block;font-size:13.5px;margin-bottom:4px}
+  .obs-off-banner .en{margin-top:9px;font-size:12px;font-weight:600;color:#fff;background:var(--accent);border:0;border-radius:9px;padding:7px 15px;cursor:pointer}
+  #prop.obs-off .obs-off-banner{display:block}
+  #prop.obs-off .ovstrip,#prop.obs-off .capribbon,#prop.obs-off .block{opacity:.2;filter:grayscale(.92)}
 </style>
 </head>
 <body>
   <div class="topbar">
     <h1>Device Developer Observability Panel</h1>
-    <span class="sub">wireframe · proposed · warm tokens (noraharness-design.md) · capability-gated · global multi-device · log-backed (adr/126) · baseline nora-dev</span>
+    <span class="sub">wireframe · proposed · warm tokens (noraharness-design.md) · capability-gated · global multi-device · log-backed (adr/126) · obs master switch default-off (adr/138) · baseline nora-dev</span>
     <span class="spacer"></span>
     <div class="ctrl"><button id="zout">−</button><button id="zin">+</button><button id="fit">Fit</button><button id="reset">Reset</button></div>
   </div>
@@ -263,6 +280,12 @@
       <!-- PROPOSED DASHBOARD -->
       <div class="frame" id="prop" style="left:40px;top:470px;width:960px">
         <div class="ftitle"><span class="id">2</span><h2>Proposed — warm dense observability dashboard</h2><span class="tag tag-prop">Proposed</span></div>
+        <!-- OFF state (the product default). The toggle above flips this; shown ON so the dense design is visible. -->
+        <div class="obs-off-banner">
+          <b>Observability is off</b>
+          Default state. The device stays online and its live values still show in the strip — but heap / CPU / stack / voice metrics are not collected, and the serial port is left free for <code>cat</code> / flash.
+          <button class="en" id="obsEnable">Enable observability</button>
+        </div>
         <div class="rp">
           <div class="rp-tabs"><div class="rp-tab">All Files</div><div class="rp-tab">Changes</div><div class="rp-tab on">Device</div><div class="rp-tab">Preview</div></div>
 
@@ -270,6 +293,14 @@
           <div class="devbar">
             <span class="devsel"><span class="ds-tw">▾</span> Devices<span class="devsel-c">3</span></span>
             <span class="devbar-cur"><span class="ok">●</span> M5Stack CoreS3 <span style="color:var(--text3)">selected</span></span>
+            <!-- adr/138: one GLOBAL observability master switch, default OFF. OFF stops the whole subsystem
+                 (serial reader + WS metrics + full-pull + RTT ping); ON = serial-first, WS fallback. No source readout. -->
+            <span class="obsw on" id="obsToggle" title="Global · default OFF. ON claims the device serial port for the fast lane; falls back to WS when the port is busy.">
+              <span class="obsw-lab">Observability</span>
+              <span class="swt"><i></i></span>
+              <span class="obsw-st">On</span>
+              <span class="hint">default off</span>
+            </span>
           </div>
 
           <!-- selector open: FLAT device list. the device is the entity; each row carries its
@@ -453,8 +484,10 @@
           <div class="note" style="margin:0 0 6px">Path A · resources/health. <code>metrics{}</code> is written <b>whole</b> to a per-device log (overwrite); the app reads the log dir, <b>not</b> the active workspace. Discovery = list the dir. <b>adr/126</b>.</div>
           <div class="flow"><span class="node"><code>voice-loop-timing</code> sink</span><span class="arr">→</span><span class="node"><code>&lt;obsRoot&gt;/&lt;id&gt;/voice-timing.jsonl</code></span><span class="arr">→</span><span class="node"><code>ObservabilityStore</code></span><span class="arr">→</span><span class="node">waterfall</span></div>
           <div class="note" style="margin:0 0 10px">Path B · voice timing. The production sink <b>appends</b> each turn's stage records to the device's log — durable, survives the panel being closed (the event stream can't be re-pulled). <b>adr/126</b>.</div>
-          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">TRANSPORT &amp; TOGGLE</div>
-          <div class="note" style="margin:0 0 10px">All metrics ride the WS <code>state.update</code> frame — <b>not serial</b> (structured, works for WiFi + cloud harness; serial/Device-Log stays for human logs). Cheap metrics always-on; expensive ones (per-core/per-task CPU, FPS, full task table) double-gated: <b>compile-time</b> <code>GENERATE_RUN_TIME_STATS</code> + <b>runtime</b> <code>metrics.subscribe{level}</code> sent only while the panel is open — no cost when unobserved, no reflash.</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">MASTER SWITCH (adr/138)</div>
+          <div class="note" style="margin:0 0 10px">One <b>global</b> runtime switch <code>HH_OBS</code>, <b>default OFF</b> — the toggle in the device-management header. OFF stops the <b>whole</b> subsystem in one place (host serial reader + WS <code>state.update</code> metric persistence + the <code>full</code> metrics pull + the 5&nbsp;s RTT ping); the device is left at firmware <code>baseline</code>, the serial port is free, and <b>device online/offline, control, and voice are untouched</b> (they ride the same WS connection but a different code path). ON = <b>serial-first, WS fallback</b>: read the device serial fast lane if the port is readable, else the WS frame — the gateway arbitrates by frame freshness, so the UI shows <b>no transport/source readout</b>, just on/off. Runtime switch, <b>not a reflash</b>; the firmware compile gate <code>HH_FEATURE_OBS_SERIAL</code> is a separate, lower layer.</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin:6px 0 2px">PER-METRIC GATING (when ON)</div>
+          <div class="note" style="margin:0 0 10px">With observability ON, cheap metrics are always-on; expensive ones (per-core/per-task CPU, FPS, full task table) stay double-gated: <b>compile-time</b> <code>GENERATE_RUN_TIME_STATS</code> + <b>runtime</b> <code>metrics.subscribe{level}</code> — no cost when unobserved, no reflash.</div>
           <div class="phase"><span class="pn">P0 · light up what's wired</span><div class="pd">Overview strip + harness local/cloud + heap/RSSI/battery/OTA + uptime. Mostly 🟢.</div></div>
           <div class="phase"><span class="pn">P1 · voice waterfall</span><div class="pd">Path B sink → per-turn STT/LLM/TTS + p50/p95. Capability-gated.</div></div>
           <div class="phase"><span class="pn">P2 · full resource frame</span><div class="pd">SRAM/PSRAM/DMA detail, stack usage, record session, reconnects. 🟡.</div></div>
@@ -473,6 +506,7 @@
           <div class="pm y"><b>PM DECISION · refresh cadence</b>Resources piggyback the <code>state.update</code> interval; voice is per-turn. One combined refresh, or per-block?</div>
           <div class="pm y"><b>PM DECISION · frame budget</b><code>state.update</code> has a max payload. Full <code>metrics{}</code> snapshot each interval, or deltas?</div>
           <div class="pm done"><b>RESOLVED · multi-device</b>A <b>device-management header at the top</b> (above the strip) opens a <b>flat device list</b> — the device is the entity; each row carries its <b>harness</b> as an attribute (kind · project [local] / install [cloud] · :port / channel · source). No grouping level (device → device, not device → project → device). <b>Collapsible</b> selector; pick a row → its dense panel below. Single device skips the picker; empty state with none. Devices come from the <b>per-device log store</b> across <b>all</b> harnesses — not just the open workspace. <b>adr/126</b>.</div>
+          <div class="pm done"><b>RESOLVED · observability master switch (adr/138)</b>One <b>global</b> toggle in the device-management header, <b>default OFF</b>. OFF disables the entire subsystem at one gate (serial reader + WS metric persistence + <code>full</code> pull + RTT ping) — port free, device stays online, control/voice intact. ON = <b>serial-first with WS fallback</b>, arbitrated by the gateway; <b>no source/transport readout in the UI</b>, just on/off. Runtime switch (no reflash); separate from the firmware <code>HH_FEATURE_OBS_SERIAL</code> compile gate.</div>
           <div class="note">Decided answers fold into the Path-A / Path-B ADRs (PRD <i>Downstream Design</i>). Proposed wireframe — every value is sample telemetry, not live.</div>
         </div>
       </div>
@@ -524,6 +558,22 @@
       const sn=root.querySelector('.ovstrip b'); if(sn)sn.textContent=name;
     });
   });
+})();
+
+// observability master switch (adr/138): one global toggle, default OFF. Flips the populated
+// dashboard between its ON (shown) and OFF (default, dimmed + banner) states. No source readout.
+(function(){
+  const prop=document.getElementById('prop'); if(!prop) return;
+  const tog=document.getElementById('obsToggle');
+  const st=tog&&tog.querySelector('.obsw-st');
+  const enable=document.getElementById('obsEnable');
+  function set(on){
+    if(tog)tog.classList.toggle('on',on);
+    prop.classList.toggle('obs-off',!on);
+    if(st)st.textContent=on?'On':'Off';
+  }
+  if(tog)tog.addEventListener('click',()=>set(!tog.classList.contains('on')));
+  if(enable)enable.addEventListener('click',()=>set(true));
 })();
 </script>
 </body>
