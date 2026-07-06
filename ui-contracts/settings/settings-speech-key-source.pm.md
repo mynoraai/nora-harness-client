@@ -34,10 +34,10 @@ how the active source is presented.**
 
 ## Current state
 
-Today there is a **Voice** settings tab (voice wake, microphone, trigger words), and a **Providers**
-tab for model provider keys. There is **no place for a user to supply their own speech-to-text or
-text-to-speech key** — the cloud agent always uses the platform's built-in speech key. A user who wants
-to use their own speech provider account cannot.
+Today there is **no place for a user to supply their own speech-to-text or text-to-speech key** — the
+cloud agent always uses the platform's built-in speech key. A user who wants to use their own speech
+provider account cannot. The **Providers** tab already proves the "bring your own key" pattern for model
+keys; speech keys need the same.
 
 The **Providers** tab already proves the "bring your own key" pattern (masked field, saved credential);
 the same pattern applies to speech keys on the Voice tab.
@@ -61,9 +61,8 @@ the app makes the active source and the fallback obvious and safe.
   </tr>
 </table>
 
-**Decided: a dedicated Voice tab.** Speech keys live on their own **Voice** settings tab (alongside
-voice wake and microphone), separate from model providers. This keeps speech concerns together. The
-Voice tab exists in the app but is currently hidden; this surfaces it as its own tab.
+**Decided: a dedicated Voice tab.** The **Voice** settings tab holds only the speech-to-text and
+text-to-speech key configuration — separate from model providers. Nothing else lives on it.
 
 <table>
   <tr>

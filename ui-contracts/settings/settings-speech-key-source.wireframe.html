@@ -173,15 +173,7 @@ function nav(active){
   const items=[['gear','General'],['file','Workspace'],['key','Providers'],['mic','Voice'],['shield','Permissions'],['device','Remote control'],['info','About']];
   return items.map(([ic,l])=>`<a class="${l===active?'on':''}"><span class="ic">${IC[ic]}</span>${l}</a>`).join('');
 }
-/* existing voice-settings group (context, current Voice tab) */
-const voiceGroup = `
-  <div class="grp">Voice wake</div>
-  <div class="scard">
-    <div class="r"><div class="rl"><div class="rt">Voice wake</div><div class="rd">Listen for a trigger word.</div></div>
-      <div class="rr"><div class="tog on"></div></div></div>
-    <div class="r"><div class="rl"><div class="rt">Microphone</div><div class="rd">Audio input device.</div></div>
-      <div class="rr"><div class="sel">Default microphone <span style="color:var(--tertiary)">▾</span></div></div></div>
-  </div>`;
+/* Voice tab holds only the STT/TTS config keys — no other groups. */
 
 /* ---------- speech section per state ---------- */
 function sttRow(inner){return inner;}
@@ -241,7 +233,7 @@ function win(state,confirm){
     <div class="titlebar"><span class="tl r"></span><span class="tl y"></span><span class="tl g"></span></div>
     <div class="body">
       <div class="sb"><div class="back">← Back to app</div><div class="stitle">Settings</div><div class="ssub">NoraHarness preferences</div><div class="nav">${nav('Voice')}</div></div>
-      <div class="pane"><h2>Voice</h2><div class="pdesc">Voice wake, audio, and speech keys for the cloud agent.</div>${voiceGroup}${speech(state)}</div>
+      <div class="pane"><h2>Voice</h2><div class="pdesc">Speech-to-text and text-to-speech keys for the cloud agent.</div>${speech(state)}</div>
     </div>${overlay}</div>`;
 }
 /* card wrapper with id pill + caption; SCALE controls the visible size */
@@ -268,7 +260,7 @@ let html='';
 
 /* MAIN HAPPY PATH */
 const main=[
-  ['1','Entry','Providers page → Speech keys group. Both capabilities on Platform default; nothing required.',1],
+  ['1','Entry','Voice tab → speech keys. Both capabilities on Platform default; nothing required.',1],
   ['2','Review source','Each row shows its source; toggle Platform | My key.',2],
   ['3.1','STT · use my own key','Masked key field + Save. Choice staged, not yet uploaded.','3.1'],
   ['4','Uploading','Key uploaded encrypted and validated.',4],
