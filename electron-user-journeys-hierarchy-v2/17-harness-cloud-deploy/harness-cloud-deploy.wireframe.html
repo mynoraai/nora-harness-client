@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journey 17 - Harness Cloud Deploy</title>
+<style>
+:root{--bg:#eaf0f6;--grid:#dbe3ec;--ink:#232830;--muted:#6b7480;--line:#c9d2dc;--blue:#2f80c1;--accent:#c17032;--green:#2e9d64;--red:#ca5a46;--shadow:0 16px 34px rgba(38,55,77,.13)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
+.topbar{height:92px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:fixed;top:0;left:0;right:0;z-index:10}
+.topbar h1{font-size:23px;margin:0 0 7px}
+.topbar p{margin:0;color:var(--muted);font-size:13px;max-width:1080px}
+.controls{display:flex;gap:8px}
+.controls button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;font-weight:700;color:#344054;cursor:pointer}
+.jump{position:fixed;top:92px;bottom:0;left:0;width:318px;background:#f7fafd;border-right:1px solid var(--line);z-index:8;overflow:auto;padding:20px}
+.jump h2{font-size:13px;letter-spacing:.09em;color:#69727c;text-transform:uppercase;margin:18px 0 8px}
+.jump a{display:block;text-decoration:none;color:#20252c;background:#fff;border:1px solid #b9c5d0;border-radius:9px;padding:13px 15px;margin:9px 0;font-weight:800;cursor:pointer}
+.jump a:hover{border-color:var(--blue);background:#f0f7ff}
+.jump .routes a{font-size:12px;font-weight:700;color:#4f5c6b;padding:10px 13px}
+.viewport{position:fixed;top:92px;left:318px;right:0;bottom:0;overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+.viewport.dragging{cursor:grabbing;user-select:none}
+.stage{position:absolute;left:0;top:0;width:max-content;padding:52px;transform-origin:0 0}
+.band{margin:0 0 70px}
+.band-title{display:flex;align-items:baseline;gap:12px;margin:0 0 18px}
+.band-title h2{font-size:22px;margin:0}
+.band-title span{color:var(--muted);font-size:13px}
+.flow{display:flex;align-items:flex-start;gap:26px}
+.route-row{margin:0 0 46px}
+.route-title{background:#fff;border-left:7px solid var(--blue);border-radius:8px;box-shadow:var(--shadow);padding:15px 20px;margin:0 0 18px;max-width:1020px}
+.route-title h3{margin:0 0 8px;font-size:18px}
+.route-title code{display:inline-block;color:#4f6ea8;background:#eef4ff;border-radius:6px;padding:6px 9px}
+.route-title p{margin:8px 0 0;color:var(--muted);font-size:13px}
+.card{width:1140px;background:#fff;border:2px solid #2b3139;border-top:7px solid #8bc2ec;border-radius:10px;box-shadow:var(--shadow);padding:18px;flex:0 0 auto}
+.card.branch{border-top-color:#86cf9a}
+.card.error{border-top-color:#e8957c}
+.card>header{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:4px}
+.card h3{font-size:20px;margin:0}
+.card>.cap{font-size:14px;color:#5f6873;margin:8px 0 14px}
+.arrow{align-self:center;font-size:40px;color:#8798a7;flex:0 0 auto}
+.pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:800}
+.pill.main{background:#e4f3ff;color:#1d71ab}.pill.branch{background:#e7f7ed;color:#237b4d}.pill.end{background:#efe9ff;color:#5a44b8}.pill.error{background:#ffe6e0;color:#a33b2b}
+.note{max-width:920px;background:#fff;border:1px dashed #c7b8f0;border-left:4px solid #8a6ff0;border-radius:8px;padding:12px 15px;color:#4a4560;font-size:13px;box-shadow:var(--shadow);margin:14px 0 0}
+.note b{color:#5a44b8}
+/* compact */
+.compact-grid{display:grid;grid-template-columns:repeat(3,400px);gap:22px}
+.compact-card{background:#fff;border:1px solid #2b3139;border-left:8px solid var(--blue);border-radius:9px;box-shadow:var(--shadow);padding:16px;min-height:118px}
+.compact-card.detail{border-left-color:#6abf7a}.compact-card.language{border-left-color:#d6a83e}.compact-card.error{border-left-color:#e58f79}
+.compact-card h3{margin:0 0 8px;font-size:16px}
+.compact-card h3 b{display:inline-block;background:#eef4ff;color:#4474af;border-radius:7px;padding:2px 7px;font-size:12px;margin-right:6px}
+.compact-card p{margin:0 0 6px;color:#5f6b77;font-size:13px;line-height:1.45}
+.compact-card.empty{border-style:dashed;color:#8a92a0}
+/* ===== the NoraHarness product frame (faithful to screenshot) ===== */
+.nh{width:1102px;height:640px;border:1px solid #d3dae2;border-radius:12px;overflow:hidden;background:#fbfbfa;position:relative;box-shadow:0 6px 18px rgba(40,50,70,.08);display:grid;grid-template-columns:240px 1fr 328px;grid-template-rows:52px 1fr}
+.nh-head{border-bottom:1px solid #e7e5e1;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#3a3f47;gap:8px;background:#fff}
+.nh-head.h1c{border-right:1px solid #e7e5e1;font-weight:800}
+.nh-head.h2c{gap:8px;color:#6b6f77}
+.nh-head.h3c{border-left:1px solid #e7e5e1;gap:16px}
+.nh-head.h3c b{color:#232830}.nh-head .rt{color:#8a8f97}.nh-head .rt.on{color:#232830;font-weight:800;border-bottom:2px solid var(--accent);padding-bottom:4px}
+.ic{opacity:.6}
+/* left column */
+.nh-side{border-right:1px solid #e7e5e1;background:#f6f5f2;padding:12px 12px 0;overflow:hidden;font-size:13px;display:flex;flex-direction:column}
+.nh-side .newc{border:1px solid #e2ded6;background:#fff;border-radius:9px;padding:9px 10px;font-weight:700;color:#3a3730;display:flex;gap:8px;align-items:center}
+.nh-side .srch{border:1px solid #e6e2da;background:#fff;border-radius:9px;padding:8px 10px;color:#a49c92;margin:9px 0;font-size:12px}
+.nh-side .wshead{display:flex;align-items:center;gap:6px;color:#7a746b;font-size:11px;letter-spacing:.06em;font-weight:800;margin:8px 2px}
+.nh-side .wshead .sp{margin-left:auto;color:#b3aa9d}
+.wsrow{display:flex;align-items:center;gap:7px;border-radius:8px;padding:7px 8px;margin:2px 0;font-weight:600;color:#40382f}
+.wsrow .n{margin-left:auto;color:#9a9084;font-size:11px;background:#efeae1;border-radius:6px;padding:1px 7px;font-weight:700}
+.wsrow.active{background:#f0e6d8}
+.convrow{border-radius:8px;padding:7px 9px 7px 26px;margin:2px 0;font-weight:700;color:#5a5348;display:flex;align-items:center}
+.convrow small{margin-left:auto;color:#9a9084;font-weight:600}
+.convrow.active{background:#e9d9c3;color:#4a4034}
+.nh-side .foot{margin-top:auto;border-top:1px solid #e7e2da;padding:10px 2px;display:flex;flex-direction:column;gap:8px;font-size:12px;color:#5e5852}
+.nh-side .foot .acct{display:flex;align-items:center;gap:8px}
+.nh-side .foot .badge{background:#efe9df;border-radius:6px;padding:1px 6px;font-size:10px;color:#7a6a53;font-weight:700}
+.nh-side .foot .so{margin-left:auto;color:#8a827a}
+/* center column */
+.nh-center{display:grid;grid-template-rows:38px 1fr 84px;overflow:hidden;background:#fbfbfa;border-right:1px solid #e7e5e1}
+.ctabs{display:flex;align-items:center;border-bottom:1px solid #eae7e2;padding:0 10px;gap:8px;font-size:12px;color:#5a5348}
+.ctabs .t{background:#fff;border:1px solid #eae7e2;border-bottom:0;border-radius:8px 8px 0 0;padding:6px 11px;font-weight:700;display:flex;gap:6px;align-items:center}
+.ctabs .plus{margin-left:auto;color:#9a9084;font-size:16px}
+.chat{padding:14px 20px;overflow:hidden;display:flex;flex-direction:column;gap:11px}
+.chat .say{color:#454b53;font-size:13px;line-height:1.5}
+.chat .say.zh{color:#3f454d}
+.tcard{border:1px solid #eae2d6;border-radius:11px;background:#fff;box-shadow:0 2px 7px rgba(120,90,50,.05);overflow:hidden}
+.tcard.err{border-color:#ecc0b4}
+.tc-head{display:flex;align-items:center;gap:9px;padding:11px 13px}
+.tc-head .ti{color:#8a8f97}
+.tc-head .nm{font-weight:700;font-size:13px;color:#3d4b63;flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.3}
+.tc-head .st{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800}
+.tc-head .ti{flex-shrink:0}
+.st.done{background:#e7f7ed;color:#237b4d}.st.run{background:#e4f3ff;color:#1d71ab}.st.err{background:#ffe6e0;color:#a33b2b}.st.amber{background:#fff3cf;color:#8a6200}
+.tc-head .cv{color:#c2b6a6;flex-shrink:0}
+.tc-body{border-top:1px solid #f1e9dc;padding:11px 13px;font-size:12px;color:#5f5952;line-height:1.55}
+.tc-body .pl{display:flex;gap:7px}.tc-body .pl .k{width:14px;text-align:center;color:#9a9084}
+.nextstep{margin-top:9px;background:#e8f7ee;border:1px solid #c0e6cf;border-radius:8px;padding:9px 11px;color:#237b4d;font-size:12px}
+.nextstep b{display:block;margin-bottom:3px}
+.gate{border:1px solid #ecd9a6;background:#fff8e6;border-radius:9px;padding:11px 12px;display:flex;align-items:center;gap:10px}
+.gate.grn{border-color:#c0e6cf;background:#e8f7ee}.gate.dng{border-color:#ecc0b4;background:#fdeeea}
+.gate p{margin:0;font-size:12px;color:#7a6a3d;font-weight:700;flex:1}
+.gate.grn p{color:#237b4d}.gate.dng p{color:#a33b2b}
+.btn{border:1px solid #d7cabe;border-radius:8px;background:#fff;padding:6px 12px;font-weight:800;font-size:12px;white-space:nowrap}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.composer{margin:0 16px 14px;border:1px solid #e7e0d5;border-radius:15px;background:#fff;padding:11px 12px;box-shadow:0 5px 14px rgba(120,90,50,.06)}
+.composer .ph{color:#b4aca1;font-size:13px;margin-bottom:9px}
+.composer .row{display:flex;gap:8px;align-items:center}
+.composer .chip{border:1px solid #e4dccf;border-radius:999px;background:#fff;padding:5px 11px;font-weight:700;font-size:11px;color:#5a5348;display:flex;gap:5px;align-items:center}
+.composer .plus{color:#9a9084;border:1px solid #e4dccf;border-radius:8px;width:26px;height:26px;display:grid;place-items:center}
+.composer .send{margin-left:auto;width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:15px}
+/* right column */
+.nh-right{background:#f6f5f2;display:grid;grid-template-rows:40px 1fr 34px;overflow:hidden}
+.rtabs{display:flex;align-items:center;gap:16px;border-bottom:1px solid #e7e5e1;padding:0 14px;font-size:12px;color:#8a8f97;background:#fff}
+.rtabs .on{color:#232830;font-weight:800;border-bottom:2px solid var(--accent);padding-bottom:2px}
+.rhead{display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;color:#3a3f47;font-weight:700}
+.rhead .er{background:#ffe6e0;color:#a33b2b;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:800}
+.rhead .play{margin-left:auto;width:24px;height:24px;border-radius:7px;border:1px solid #e0dbd3;display:grid;place-items:center;color:#8a827a}
+.rbody{padding:16px 14px;display:flex;flex-direction:column;gap:12px}
+.rprev{border:1px solid #e5e0d8;border-radius:10px;background:#fff;height:150px;display:grid;place-content:center;justify-items:center;text-align:center;color:#7a726b;gap:5px}
+.rprev .w{font-size:22px;color:#c99a52}
+.rprev b{color:#4a4a4a;font-size:13px}.rprev small{color:#9a938b}
+.rdiag{border:1px solid #f0cfc7;background:#fdeeea;border-radius:9px;padding:10px 11px;font-size:12px;color:#a33b2b}
+.rdiag b{display:flex;gap:6px;align-items:center;margin-bottom:4px}
+.rdiag code{color:#8a3a2c;font-size:11px}
+.rfoot{border-top:1px solid #e7e5e1;display:flex;align-items:center;gap:16px;padding:0 14px;font-size:12px;color:#6b6f77;background:#fff}
+.rfoot .on{color:#232830;font-weight:800}.rfoot .cv{margin-left:auto;color:#a49c92}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><h1>Journey 17 &middot; Harness Cloud Deploy</h1><p>Agent deploys the harness to the cloud. Desktop = deployer (deploy + ensure/wake); the ESP32 device connects to the runtime separately. Cloud deploy requires sign-in.</p></div>
+  <div class="controls"><button id="zoomOut">Zoom out</button><button id="zoomIn">Zoom in</button><button id="fit">Fit</button><button id="reset">Reset</button></div>
+</div>
+<div class="jump">
+  <h2>Bands</h2>
+  <a data-go="b-main">Main happy path</a>
+  <a data-go="b-route">Route path</a>
+  <a data-go="b-detail">Detail states</a>
+  <a data-go="b-lang">State language</a>
+  <a data-go="b-err">Errors and recovery</a>
+  <h2>Routes</h2>
+  <div class="routes">
+    <a data-go="r-happy">Happy path</a>
+    <a data-go="r-signin">Sign-in then deploy</a>
+    <a data-go="r-fail">Runtime failed</a>
+  </div>
+</div>
+<div class="viewport" id="viewport"><div class="stage" id="stage"></div></div>
+<script>
+/* ---------- one faithful NoraHarness product frame; only the chat area varies ---------- */
+function frame(chat, opt){
+  opt = opt || {};
+  const rtab = opt.rtab || 'Preview';
+  const rbody = opt.rbody!==undefined ? opt.rbody : (
+    '<div class="rprev"><div class="w">&#9888;</div><b>Preview unavailable</b><small>See diagnostics below.</small></div>'+
+    '<div class="rdiag"><b>&#9888; Preview diagnostic</b><code>Workspace folder does not exist</code></div>');
+  const tabs = ['All Files','Changes','Device','Preview'].map(t=>'<span class="rt'+(t===rtab?' on':'')+'">'+t+'</span>').join('');
+  return (
+  '<div class="nh">'+
+    '<div class="nh-head h1c"><span class="ic">&#9707;</span> NoraHarness</div>'+
+    '<div class="nh-head h2c"><span class="ic">&#128193;</span> /Users/edy/WorkTest/0702</div>'+
+    '<div class="nh-head h3c">'+tabs+'</div>'+
+    /* left */
+    '<div class="nh-side">'+
+      '<div class="newc"><span class="ic">&#8862;</span> New conversation</div>'+
+      '<div class="srch">&#128269;&nbsp; Search conversations&hellip;</div>'+
+      '<div class="wshead">&#9662; WORKSPACES <span class="sp">&#9662; &#10005; &#8862;</span></div>'+
+      '<div class="wsrow active"><span class="ic">&#9662;</span><span class="ic">&#128193;</span> 0702 <span class="n">1</span></div>'+
+      '<div class="convrow active">Codex - 0702 <small>2d</small></div>'+
+      '<div class="wsrow"><span class="ic">&#9656;</span><span class="ic">&#128193;</span> 0625-test <span class="n">7</span></div>'+
+      '<div class="wsrow"><span class="ic">&#9656;</span><span class="ic">&#128193;</span> 0624-test <span class="n">1</span></div>'+
+      '<div class="wsrow"><span class="ic">&#9656;</span><span class="ic">&#128193;</span> 0623 <span class="n">1</span></div>'+
+      '<div class="wsrow"><span class="ic">&#9656;</span><span class="ic">&#128193;</span> 0616 <span class="n">4</span></div>'+
+      '<div class="foot"><div class="acct"><span class="ic">&#9881;</span> Settings</div>'+
+        '<div class="acct">istom&hellip; <span class="badge">developer</span><span class="so">Sign out</span></div></div>'+
+    '</div>'+
+    /* center */
+    '<div class="nh-center">'+
+      '<div class="ctabs"><span class="t"><span class="ic">&#9634;</span> Codex - 0702 <span class="ic">&#10005;</span></span><span class="plus">+</span></div>'+
+      '<div class="chat">'+chat+'</div>'+
+      '<div class="composer"><div class="ph">Assign a task or ask any question</div>'+
+        '<div class="row"><span class="plus">+</span><span class="chip">&#9678; Codex</span><span class="chip">&#9678; GPT-5.4</span><span class="send">&#8593;</span></div></div>'+
+    '</div>'+
+    /* right */
+    '<div class="nh-right">'+
+      '<div class="rhead"><span class="ic">&#128444;</span> '+rtab+' <span class="er">Error</span><span class="play">&#9654;</span></div>'+
+      '<div class="rbody">'+rbody+'</div>'+
+      '<div class="rfoot"><span class="on">Terminal</span><span>Device Log</span><span class="cv">&#9662;</span></div>'+
+    '</div>'+
+  '</div>');
+}
+/* chat snippets */
+const say=t=>'<div class="say zh">'+t+'</div>';
+const umsg=t=>'<div class="say" style="align-self:flex-end;background:#efe6da;border:1px solid #e4d9c8;border-radius:12px 12px 4px 12px;padding:8px 11px;max-width:74%;color:#3c352e">'+t+'</div>';
+function tool(status, body){
+  const st={run:'<span class="st run">&#9203; Running</span>',done:'<span class="st done">&#10003; Completed</span>',err:'<span class="st err">&#9888; Error</span>',amber:'<span class="st amber">Sign-in required</span>'}[status];
+  return '<div class="tcard'+(status==='err'?' err':'')+'"><div class="tc-head"><span class="ti">&#128295;</span><span class="nm">tool_firmware-vibe_hw_application_harness_cloud_deploy</span>'+st+'<span class="cv">'+(status==='done'?'&#9656;':'&#9662;')+'</span></div>'+(body?'<div class="tc-body">'+body+'</div>':'')+'</div>';
+}
+const chats={
+  req: umsg('Deploy this project to the cloud.')+say('Working on it &mdash; I&rsquo;ll deploy the application harness to the cloud and wake the runtime.'),
+  running: umsg('Deploy this project to the cloud.')+say('Deploying the harness to the cloud&hellip;')+tool('run','<div class="pl"><span class="k">&#9679;</span> Uploading project bundle&hellip;</div><div class="pl"><span class="k">&#9679;</span> Requesting cloud runtime (ensure)&hellip;</div>'),
+  done: umsg('Deploy this project to the cloud.')+tool('done','<div class="pl"><span class="k">&#10003;</span> project 0702 &middot; cloud instance <b>prj_0702-rt</b></div><div class="nextstep"><b>Next step</b>Connect your device to this cloud instance to start using the harness.</div>')+say('Cloud runtime is running. The desktop is done &mdash; your device connects to it next.'),
+  handoff: tool('done','<div class="nextstep"><b>Next step &mdash; connect your device</b>Provision the device with this cloud instance (separate device flow). The device connects to the runtime; the desktop does not.</div>'),
+  gate: umsg('Deploy this project to the cloud.')+tool('amber','<div class="gate"><p>Sign in to NoraHarness to deploy to cloud.</p><span class="btn primary">Sign in</span></div>'),
+  signedin: tool('run','<div class="gate grn"><p>&#10003; Signed in as Ada. Resuming deploy&hellip;</p></div>'),
+  errFail: tool('err','<div class="gate dng"><p>Cloud runtime failed to start. Retry, or check the model / config.</p><span class="btn">Retry deploy</span></div>')
+};
+/* ---------- stage builder ---------- */
+const stage=document.getElementById('stage');
+function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+function card(id,cls,title,pill,cap,chat,opt){
+  const c=el('<div class="card '+cls+'"'+(id?' id="'+id+'"':'')+'><header><h3>'+title+'</h3><span class="pill '+pill+'">'+pill.replace(/^\w/,m=>m.toUpperCase())+'</span></header><div class="cap">'+cap+'</div></div>');
+  c.appendChild(el(frame(chat,opt||{})));
+  return c;
+}
+function band(id,title,sub,build){
+  const b=el('<section class="band" id="'+id+'"><div class="band-title"><h2>'+title+'</h2><span>'+sub+'</span></div></section>');
+  build(b); stage.appendChild(b);
+}
+function flowRow(nodes){const f=el('<div class="flow"></div>');nodes.forEach((n,i)=>{if(i)f.appendChild(el('<div class="arrow">&rarr;</div>'));f.appendChild(n);});return f;}
+
+/* Band 1: main happy path */
+band('b-main','Main happy path','1 &rarr; 2 &rarr; 3 &rarr; 4 &middot; ask agent &rarr; running &rarr; completed &rarr; device handoff',b=>{
+  b.appendChild(flowRow([
+    card('','','1 Deploy Request','main','User asks the agent to deploy this project to the cloud.',chats.req),
+    card('','','2 Cloud Deploy Running','main','A cloud deploy tool card appears; Running while the bundle uploads and the runtime is requested.',chats.running),
+    card('','','3 Cloud Deploy Completed','main','Tool card flips to Completed with a project + cloud instance summary and a Next-step note.',chats.done,{rtab:'Device',rbody:'<div class="rprev"><b>Cloud instance running</b><small>Device connects via provisioning.</small></div>'}),
+    (()=>{const c=card('','branch','4 Device Provisioning Handoff','end','Desktop&rsquo;s deploy job is done. Next-step points to device provisioning (separate channel). Desktop does not connect.',chats.handoff,{rtab:'Device',rbody:'<div class="rprev"><b>Handoff</b><small>Device provisioning is a separate journey.</small></div>'});c.appendChild(el('<div class="note"><b>Handoff boundary.</b> This journey ends at the deploy result + handoff note. The device&harr;runtime connection (device_ws + BLE provisioning) is owned by firmware + NoraHarness cloud &mdash; a separate channel, out of scope here.</div>'));return c;})()
+  ]));
+});
+/* Band 2: routes */
+band('b-route','Route path','every route as a full-frame row',b=>{
+  const R=[
+    ['r-happy','Happy path','1 &rarr; 2 &rarr; 3 &rarr; 4','Signed in, deployment + key set. Runs to Completed and hands off.',[
+      card('','','2 Running','main','Deploy tool card Running.',chats.running),
+      card('','','3 &rarr; 4 Completed + Handoff','main','Completed with Next-step note.',chats.done,{rtab:'Device',rbody:'<div class="rprev"><b>Cloud instance running</b><small>Provisioning next.</small></div>'})]],
+    ['r-signin','Sign-in then deploy','1 &rarr; 2 &rarr; 2.1 &rarr; 2.1.1 &rarr; 3 &rarr; 4','Not signed in: inline gate on the tool card &rarr; sign in &rarr; deploy resumes.',[
+      card('','branch','2.1 Sign-in Gate','branch','Inline amber gate, reuses the publish sign-in gate.',chats.gate),
+      card('','branch','2.1.1 Signed In &rarr; Resume','branch','Gate turns green; card returns to Running.',chats.signedin)]],
+    ['r-fail','Runtime failed','1 &rarr; 2 &rarr; 3.3 &rarr; 2','Runtime failed to start &rarr; retry. No device handoff until running.',[
+      card('','error','3.3 Runtime Failed','error','Tool card Error; retry, no handoff.',chats.errFail)]]
+  ];
+  R.forEach(([id,t,code,desc,cards])=>{
+    const row=el('<div class="route-row" id="'+id+'"><div class="route-title"><h3>'+t+'</h3><code>'+code+'</code><p>'+desc+'</p></div></div>');
+    row.appendChild(flowRow(cards)); b.appendChild(row);
+  });
+});
+/* Band 3: detail */
+band('b-detail','Detail states','reused surfaces opened inside the journey',b=>{
+  const g=el('<div class="compact-grid"></div>');
+  [['2','Tool card expanded','The Running deploy card expanded shows upload + ensure progress lines. Same tool-card component as local deploy, cloud variant.'],
+   ['3','Completed summary','Collapsed success card: project + cloud instance name + the Next-step note "Connect your device to this cloud instance."']]
+  .forEach(([n,t,p])=>g.appendChild(el('<div class="compact-card detail"><h3><b>'+n+'</b>'+t+'</h3><p>'+p+'</p></div>')));
+  b.appendChild(g);
+});
+/* Band 4: state language */
+band('b-lang','State language','status vocabulary on the tool card and gate',b=>{
+  const g=el('<div class="compact-grid"></div>');
+  g.appendChild(el('<div class="compact-card language"><h3>Tool card status</h3><p><b>Running</b> (pulsing clock) &middot; <b>Completed</b> (green check) &middot; <b>Error</b> (red) &middot; optional <b>Pending / Awaiting approval</b>. Reused from the existing tool card.</p></div>'));
+  g.appendChild(el('<div class="compact-card language"><h3>Sign-in gate states</h3><p><b>unauthenticated</b> (amber) &middot; <b>authenticated</b> (green "Signed in as &hellip;") &middot; <b>sign-in failed</b> &middot; <b>account mismatch</b>.</p></div>'));
+  g.appendChild(el('<div class="compact-card language empty"><h3>Cloud runtime status</h3><p>No live runtime-status surface in this journey &mdash; a deferred, out-of-scope slice.</p></div>'));
+  b.appendChild(g);
+});
+/* Band 5: errors */
+band('b-err','Errors and recovery','every error shows one clear next action',b=>{
+  const g=el('<div class="compact-grid"></div>');
+  [['2.1.2','Sign-in failed','"Sign-in failed &mdash; try again" + Sign in. Retry; blocks until success.'],
+   ['2.1.3','Account mismatch','"This account can&rsquo;t deploy this project. Sign out and sign back in with the project&rsquo;s account." + Sign out.'],
+   ['3.1','Not deployed yet','"No cloud deployment yet &mdash; run a cloud deploy first." Retry.'],
+   ['3.3','Runtime failed','"Cloud runtime failed to start &mdash; retry, or check the model/config." Retry; no device handoff until running.']]
+  .forEach(([n,t,p])=>g.appendChild(el('<div class="compact-card error"><h3><b>'+n+'</b>'+t+'</h3><p>'+p+'</p></div>')));
+  b.appendChild(g);
+});
+
+/* ---------- pan / zoom / jump (fixed) ---------- */
+const viewport=document.getElementById('viewport');
+let scale=.5,x=40,y=30,drag=false,sx=0,sy=0,bx=0,by=0,raf=0;
+function apply(){raf=0;stage.style.transform='translate('+x+'px,'+y+'px) scale('+scale+')';}
+function schedule(){if(!raf)raf=requestAnimationFrame(apply);}
+function zoomAt(cx,cy,next){const r=viewport.getBoundingClientRect();const wx=(cx-r.left-x)/scale,wy=(cy-r.top-y)/scale;scale=Math.max(.12,Math.min(1.5,next));x=cx-r.left-wx*scale;y=cy-r.top-wy*scale;schedule();}
+viewport.addEventListener('pointerdown',e=>{drag=true;viewport.classList.add('dragging');sx=e.clientX;sy=e.clientY;bx=x;by=y;viewport.setPointerCapture(e.pointerId);});
+viewport.addEventListener('pointermove',e=>{if(!drag)return;x=bx+e.clientX-sx;y=by+e.clientY-sy;schedule();});
+viewport.addEventListener('pointerup',e=>{drag=false;viewport.classList.remove('dragging');try{viewport.releasePointerCapture(e.pointerId);}catch(_){}});
+viewport.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){zoomAt(e.clientX,e.clientY,scale*(e.deltaY>0?.9:1.1));}else{x-=e.deltaX;y-=e.deltaY;schedule();}},{passive:false});
+document.getElementById('zoomOut').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*.85);
+document.getElementById('zoomIn').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*1.18);
+document.getElementById('fit').onclick=()=>{scale=.16;x=40;y=30;schedule();};
+document.getElementById('reset').onclick=()=>{scale=.5;x=40;y=30;schedule();};
+/* fixed jump: place target's stage-local top-left at a fixed viewport offset */
+function jumpTo(id){
+  const t=document.getElementById(id);if(!t)return;
+  const sr=stage.getBoundingClientRect(),tr=t.getBoundingClientRect();
+  const localX=(tr.left-sr.left)/scale, localY=(tr.top-sr.top)/scale;
+  x=48-localX*scale; y=40-localY*scale; schedule();
+}
+document.querySelectorAll('.jump a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jumpTo(a.getAttribute('data-go'));}));
+apply();
+</script>
+</body>
+</html>
