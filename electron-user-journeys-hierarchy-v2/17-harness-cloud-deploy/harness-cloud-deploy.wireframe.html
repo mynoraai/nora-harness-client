@@ -31,7 +31,7 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSy
 .route-title h3{margin:0 0 8px;font-size:18px}
 .route-title code{display:inline-block;color:#4f6ea8;background:#eef4ff;border-radius:6px;padding:6px 9px}
 .route-title p{margin:8px 0 0;color:var(--muted);font-size:13px}
-.card{width:1000px;background:#fff;border:2px solid #2b3139;border-top:7px solid #8bc2ec;border-radius:10px;box-shadow:var(--shadow);padding:18px;flex:0 0 auto}
+.card{width:1140px;background:#fff;border:2px solid #2b3139;border-top:7px solid #8bc2ec;border-radius:10px;box-shadow:var(--shadow);padding:18px;flex:0 0 auto}
 .card.branch{border-top-color:#86cf9a}
 .card.error{border-top-color:#e8957c}
 .card>header{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:4px}
@@ -51,7 +51,7 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSy
 .compact-card p{margin:0 0 6px;color:#5f6b77;font-size:13px;line-height:1.45}
 .compact-card.empty{border-style:dashed;color:#8a92a0}
 /* ===== the NoraHarness product frame (faithful to screenshot) ===== */
-.nh{width:962px;height:620px;border:1px solid #d3dae2;border-radius:12px;overflow:hidden;background:#fbfbfa;position:relative;box-shadow:0 6px 18px rgba(40,50,70,.08);display:grid;grid-template-columns:236px 1fr 300px;grid-template-rows:52px 1fr}
+.nh{width:1102px;height:640px;border:1px solid #d3dae2;border-radius:12px;overflow:hidden;background:#fbfbfa;position:relative;box-shadow:0 6px 18px rgba(40,50,70,.08);display:grid;grid-template-columns:240px 1fr 328px;grid-template-rows:52px 1fr}
 .nh-head{border-bottom:1px solid #e7e5e1;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#3a3f47;gap:8px;background:#fff}
 .nh-head.h1c{border-right:1px solid #e7e5e1;font-weight:800}
 .nh-head.h2c{gap:8px;color:#6b6f77}
@@ -86,10 +86,11 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSy
 .tcard.err{border-color:#ecc0b4}
 .tc-head{display:flex;align-items:center;gap:9px;padding:11px 13px}
 .tc-head .ti{color:#8a8f97}
-.tc-head .nm{font-weight:700;font-size:13px;color:#3d4b63}
-.tc-head .st{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800}
+.tc-head .nm{font-weight:700;font-size:13px;color:#3d4b63;flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.3}
+.tc-head .st{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800}
+.tc-head .ti{flex-shrink:0}
 .st.done{background:#e7f7ed;color:#237b4d}.st.run{background:#e4f3ff;color:#1d71ab}.st.err{background:#ffe6e0;color:#a33b2b}.st.amber{background:#fff3cf;color:#8a6200}
-.tc-head .cv{color:#c2b6a6}
+.tc-head .cv{color:#c2b6a6;flex-shrink:0}
 .tc-body{border-top:1px solid #f1e9dc;padding:11px 13px;font-size:12px;color:#5f5952;line-height:1.55}
 .tc-body .pl{display:flex;gap:7px}.tc-body .pl .k{width:14px;text-align:center;color:#9a9084}
 .nextstep{margin-top:9px;background:#e8f7ee;border:1px solid #c0e6cf;border-radius:8px;padding:9px 11px;color:#237b4d;font-size:12px}
