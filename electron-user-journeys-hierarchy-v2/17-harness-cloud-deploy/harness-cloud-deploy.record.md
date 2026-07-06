@@ -31,8 +31,6 @@ The user asks the agent to deploy the current project's application harness to t
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `3.1` | Error | `2` | Nothing deployed yet. | Reads the card. | Tool card `Error`: "No cloud deployment yet — run a cloud deploy first." | Server returned `RUNTIME_NOT_DEPLOYED`. | `2` on retry |
-| `3.2` | Error | `2` | No model key configured. | Reads the card. | Tool card `Error`: "No model key for this project — configure a model key, then retry." + a pointer to the one-time key setup. | Server returned `LLM_KEY_NOT_CONFIGURED`. | `3.2.1` then `2` |
-| `3.2.1` | Recovery | `3.2` | One-time model key setup. | Configures a provider key once. | The provider key setup surface (existing Providers pattern); on success returns to the conversation. | A server-held key is configured for the project. | `2` on retry |
 | `3.3` | Error | `2` | Runtime failed to start. | Reads the card. | Tool card `Error`: "Cloud runtime failed to start — retry, or check the model/config." | Server returned a `RUNTIME_FAILED`/`RUNTIME_UNREACHABLE`-class outcome; no credentials. Must not hand off. | `2` on retry |
 
 ### Route table
@@ -44,7 +42,6 @@ The user asks the agent to deploy the current project's application harness to t
 | Sign-in failed loop | `1 -> 2 -> 2.1 -> 2.1.2 -> 2.1` | Blocked until sign-in succeeds. |
 | Account mismatch | `1 -> 2 -> 2.1 -> 2.1.3 -> 2.1` | Blocked until the project's account signs in. |
 | Not deployed yet | `1 -> 2 -> 3.1 -> 2` | Retry after a first cloud deploy. |
-| Missing model key | `1 -> 2 -> 3.2 -> 3.2.1 -> 2 -> 3 -> 4` | Configure key once, retry, succeed. |
 | Runtime failed | `1 -> 2 -> 3.3 -> 2` | Retry; no handoff until running. |
 
 ## Main Path
@@ -53,7 +50,7 @@ The user asks the agent to deploy the current project's application harness to t
 User entry: the user is in a conversation on a project workspace. User action: asks the agent to "deploy to cloud". Visible UI state: the request appears in the conversation; the agent starts working. Client state change: the agent selects the cloud deploy tool. Exit: `2`.
 
 ### 2 Cloud Deploy Tool Running
-User entry: from `1`. User action: waits. Visible UI state: a tool card titled `hw_application_harness_cloud_deploy` with a `Running` status pill and a pulsing clock; the card can be expanded to see progress. Client state change: the bundle is uploaded and a cloud runtime is requested. Exit: `2.1` (not signed in), `3` (success), or an error branch (`3.1`/`3.2`/`3.3`).
+User entry: from `1`. User action: waits. Visible UI state: a tool card titled `hw_application_harness_cloud_deploy` with a `Running` status pill and a pulsing clock; the card can be expanded to see progress. Client state change: the bundle is uploaded and a cloud runtime is requested. Exit: `2.1` (not signed in), `3` (success), or an error branch (`3.1`/`3.3`).
 
 ### 3 Cloud Deploy Completed
 User entry: from `2` or a resolved branch. User action: reads the result. Visible UI state: tool card flips to `Completed` (green check) and auto-collapses to a summary showing the project and cloud instance, plus a **Next step** note: "Connect your device to this cloud instance." Client state change: a cloud runtime is running; credentials exist server-side (not shown to the user). Exit: `4`.
@@ -78,12 +75,6 @@ Trigger: signed in, but the account is not the project's owner (`FORBIDDEN`). Vi
 ### 3.1 Not Deployed Yet
 Trigger: `RUNTIME_NOT_DEPLOYED`. Visible UI state: tool card `Error`, "No cloud deployment yet — run a cloud deploy first." Recovery: retry (the deploy path itself creates the deployment). Blocks handoff.
 
-### 3.2 Missing Model Key
-Trigger: `LLM_KEY_NOT_CONFIGURED`. Visible UI state: tool card `Error`, "No model key for this project — configure a model key, then retry." + pointer to key setup. Recovery: `3.2.1`. Blocks handoff.
-
-### 3.2.1 Model Key Setup
-Trigger: user opens key setup from `3.2`. Visible UI state: the existing provider-key setup surface; on success returns to the conversation. Next state: `2` on retry. Blocks until a key exists.
-
 ### 3.3 Runtime Failed
 Trigger: `RUNTIME_FAILED` / `RUNTIME_UNREACHABLE`. Visible UI state: tool card `Error`, "Cloud runtime failed to start — retry, or check the model/config." Recovery: retry. Must not hand off (no credentials). Blocks handoff.
 
@@ -92,7 +83,7 @@ Trigger: `RUNTIME_FAILED` / `RUNTIME_UNREACHABLE`. Visible UI state: tool card `
 - `2 tool card (expanded)`: the running tool card expanded shows upload/ensure progress lines. Same card component as local deploy, cloud variant.
 - `3 completed summary`: collapsed success card with project + cloud instance name + Next-step note.
 
-No other detail dialogs are opened by this journey (key setup reuses the existing Providers surface, documented as `3.2.1`).
+No other detail dialogs are opened by this journey.
 
 ## State Language
 
@@ -105,7 +96,6 @@ No other detail dialogs are opened by this journey (key setup reuses the existin
 - `2.1.2 Sign-in failed`: retry sign-in; blocks until success.
 - `2.1.3 Account mismatch`: sign out + sign in with project's account; blocks until correct account.
 - `3.1 Not deployed yet`: retry deploy.
-- `3.2 Missing model key` -> `3.2.1`: configure a key once, then retry.
 - `3.3 Runtime failed`: retry; no device handoff until the runtime is running.
 
 Every error is shown on the tool card (or the inline gate for auth), with a single clear next action. No error crosses to the user as an opaque failure.

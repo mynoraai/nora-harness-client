@@ -141,7 +141,6 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSy
   <div class="routes">
     <a data-go="r-happy">Happy path</a>
     <a data-go="r-signin">Sign-in then deploy</a>
-    <a data-go="r-key">Missing model key</a>
     <a data-go="r-fail">Runtime failed</a>
   </div>
 </div>
@@ -203,7 +202,6 @@ const chats={
   handoff: tool('done','<div class="nextstep"><b>Next step &mdash; connect your device</b>Provision the device with this cloud instance (separate device flow). The device connects to the runtime; the desktop does not.</div>'),
   gate: umsg('Deploy this project to the cloud.')+tool('amber','<div class="gate"><p>Sign in to NoraHarness to deploy to cloud.</p><span class="btn primary">Sign in</span></div>'),
   signedin: tool('run','<div class="gate grn"><p>&#10003; Signed in as Ada. Resuming deploy&hellip;</p></div>'),
-  errKey: tool('err','<div class="gate dng"><p>No model key for this project. Configure a model key, then retry.</p><span class="btn">Configure key</span></div>'),
   errFail: tool('err','<div class="gate dng"><p>Cloud runtime failed to start. Retry, or check the model / config.</p><span class="btn">Retry deploy</span></div>')
 };
 /* ---------- stage builder ---------- */
@@ -238,9 +236,6 @@ band('b-route','Route path','every route as a full-frame row',b=>{
     ['r-signin','Sign-in then deploy','1 &rarr; 2 &rarr; 2.1 &rarr; 2.1.1 &rarr; 3 &rarr; 4','Not signed in: inline gate on the tool card &rarr; sign in &rarr; deploy resumes.',[
       card('','branch','2.1 Sign-in Gate','branch','Inline amber gate, reuses the publish sign-in gate.',chats.gate),
       card('','branch','2.1.1 Signed In &rarr; Resume','branch','Gate turns green; card returns to Running.',chats.signedin)]],
-    ['r-key','Missing model key','1 &rarr; 2 &rarr; 3.2 &rarr; 3.2.1 &rarr; 2 &rarr; 3','No model key &rarr; one-time key setup &rarr; retry succeeds.',[
-      card('','error','3.2 No Model Key','error','Tool card Error, points to key setup.',chats.errKey),
-      card('','branch','3.2.1 Key Setup &rarr; Retry','branch','Reuses the existing Providers key surface, then retry.',chats.running)]],
     ['r-fail','Runtime failed','1 &rarr; 2 &rarr; 3.3 &rarr; 2','Runtime failed to start &rarr; retry. No device handoff until running.',[
       card('','error','3.3 Runtime Failed','error','Tool card Error; retry, no handoff.',chats.errFail)]]
   ];
@@ -253,8 +248,7 @@ band('b-route','Route path','every route as a full-frame row',b=>{
 band('b-detail','Detail states','reused surfaces opened inside the journey',b=>{
   const g=el('<div class="compact-grid"></div>');
   [['2','Tool card expanded','The Running deploy card expanded shows upload + ensure progress lines. Same tool-card component as local deploy, cloud variant.'],
-   ['3','Completed summary','Collapsed success card: project + cloud instance name + the Next-step note "Connect your device to this cloud instance."'],
-   ['3.2.1','Model key setup','Reuses the existing Providers key surface; no new dialog invented. On save, returns to the conversation to retry.']]
+   ['3','Completed summary','Collapsed success card: project + cloud instance name + the Next-step note "Connect your device to this cloud instance."']]
   .forEach(([n,t,p])=>g.appendChild(el('<div class="compact-card detail"><h3><b>'+n+'</b>'+t+'</h3><p>'+p+'</p></div>')));
   b.appendChild(g);
 });
@@ -272,7 +266,6 @@ band('b-err','Errors and recovery','every error shows one clear next action',b=>
   [['2.1.2','Sign-in failed','"Sign-in failed &mdash; try again" + Sign in. Retry; blocks until success.'],
    ['2.1.3','Account mismatch','"This account can&rsquo;t deploy this project. Sign out and sign back in with the project&rsquo;s account." + Sign out.'],
    ['3.1','Not deployed yet','"No cloud deployment yet &mdash; run a cloud deploy first." Retry.'],
-   ['3.2','Missing model key','"No model key for this project &mdash; configure a model key, then retry." &rarr; key setup (3.2.1).'],
    ['3.3','Runtime failed','"Cloud runtime failed to start &mdash; retry, or check the model/config." Retry; no device handoff until running.']]
   .forEach(([n,t,p])=>g.appendChild(el('<div class="compact-card error"><h3><b>'+n+'</b>'+t+'</h3><p>'+p+'</p></div>')));
   b.appendChild(g);

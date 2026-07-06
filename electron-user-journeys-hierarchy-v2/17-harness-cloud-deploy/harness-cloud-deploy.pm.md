@@ -74,7 +74,6 @@ Cloud deploy/wake returns clear error classes, each mapping to a user-actionable
 | Not signed in / session expired | "Sign in and retry" (triggers decision 2's sign-in card) |
 | Account does not match the project | "Sign out and sign back in with the project's account" |
 | Nothing deployed yet | "Run a cloud deploy first" |
-| No model key configured | "Configure a model key first" (one-time setup) |
 
 <table>
   <tr><td bgcolor="#fff3cd"><strong>PM decision 4 — handoff to "device connects to cloud" after deploy</strong></td></tr>
@@ -106,7 +105,7 @@ By the recommended options (1A / 2A / 3-tool-card / 4A):
 ## Assumptions and dependencies
 
 - **Assumption:** cloud deploy reuses the agent-tool paradigm (decision 1A) — pending PM confirmation.
-- **Dependency:** the server deploy/wake contract + error classes (exist); the one-time model-key configuration (held on the cloud-account side); **the device provisioning line** (NoraHarness cloud device-binding + BLE + mobile) — determines where the "how the device connects next" guidance can point.
+- **Dependency:** the server deploy/wake contract + error classes (exist); **the device provisioning line** (NoraHarness cloud device-binding + BLE + mobile) — determines where the "how the device connects next" guidance can point.
 - **Dependency:** sign-in uses the existing account session + gate card (exist).
 
 ## Benefits
@@ -120,7 +119,6 @@ By the recommended options (1A / 2A / 3-tool-card / 4A):
 
 - Agent-driven is less discoverable for users unused to "asking the agent to do things" (no prominent "Deploy to cloud" button).
 - "How the device connects next" crosses into another product line; the journey has a handoff break — the desktop can only guide, not close the loop.
-- The one-time model-key setup adds a step to the first cloud deploy.
 - Without a status surface (decision 5), users can't see the live cloud-instance status.
 
 ## Open questions
