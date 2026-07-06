@@ -21,7 +21,7 @@ The user asks the agent to deploy the current project's application harness to t
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `2.1` | Branch | `2` | Not signed in. | Reads the gate. | The tool card shows an inline sign-in gate: "Sign in to NoraClaw to deploy to cloud" + `Sign in` (amber), mirroring the publish sign-in gate. | The client detected no cloud session (`AUTH_REQUIRED`). Blocks progress. | `2.1.1`, `2.1.2`, or `2.1.3` |
+| `2.1` | Branch | `2` | Not signed in. | Reads the gate. | The tool card shows an inline sign-in gate: "Sign in to NoraHarness to deploy to cloud" + `Sign in` (amber), mirroring the publish sign-in gate. | The client detected no cloud session (`AUTH_REQUIRED`). Blocks progress. | `2.1.1`, `2.1.2`, or `2.1.3` |
 | `2.1.1` | Branch | `2.1` | Sign-in succeeds. | Clicks `Sign in`, completes login. | The gate turns green "Signed in as …", then the tool card resumes to `Running`. | A cloud session is established; the agent retries the deploy. | `3` or an error branch |
 | `2.1.2` | Recovery | `2.1` | Sign-in fails / cancelled. | Cancels or the login errors. | The gate stays; a short error line "Sign-in failed — try again" appears with `Sign in`. | No session; deploy stays blocked. | `2.1` |
 | `2.1.3` | Recovery | `2.1` | Account does not match the project. | Signs in with a different account than the project owner. | The card shows "This account can't deploy this project. Sign out and sign back in with the project's account." + `Sign out`. | Session exists but is `FORBIDDEN` for this project. Blocks progress. | `2.1` |
@@ -64,7 +64,7 @@ User entry: from `3`. User action: proceeds to connect the device (separate prov
 ## Branch Journeys
 
 ### 2.1 Sign-in Gate
-Trigger: step `2` finds no cloud session (`AUTH_REQUIRED`). Visible UI state: inline amber gate inside the tool card — "Sign in to NoraClaw to deploy to cloud" + `Sign in`, reusing the publish sign-in gate language and style. Allowed actions: `Sign in`, or dismiss. Blocks progress until resolved.
+Trigger: step `2` finds no cloud session (`AUTH_REQUIRED`). Visible UI state: inline amber gate inside the tool card — "Sign in to NoraHarness to deploy to cloud" + `Sign in`, reusing the publish sign-in gate language and style. Allowed actions: `Sign in`, or dismiss. Blocks progress until resolved.
 
 ### 2.1.1 Sign-in Success
 Trigger: user completes login. Visible UI state: gate turns green "Signed in as <name>"; tool card returns to `Running`. Next state: `3` or an error branch. Does not block.

@@ -9,7 +9,7 @@
 ## Current state (today, from the user's view)
 
 - **Local deploy is done by asking the agent in the conversation**, not by a UI button. The user asks the agent to "deploy", and a tool card (`hw_application_harness_deploy`) appears in the conversation, moving from Running to **Completed / Error**. It starts a **local** harness; the right-side Device / Preview tabs and the bottom Terminal / Device Log reflect the running harness independently.
-- **Sign-in** uses the cloud account (NoraClaw). Two entry points already exist: the sidebar account footer (logged out shows `Log in`; logged in shows name + role + `Sign out`), and the publish dialog's sign-in gate (logged out shows an amber "Sign in to NoraClaw to publish" + Sign in; logged in shows a green "Signed in as …").
+- **Sign-in** uses the cloud account (NoraHarness). Two entry points already exist: the sidebar account footer (logged out shows `Log in`; logged in shows name + role + `Sign out`), and the publish dialog's sign-in gate (logged out shows an amber "Sign in to NoraHarness to publish" + Sign in; logged in shows a green "Signed in as …").
 - **Cloud deploy is essentially absent from the user's view today.** Backend plumbing (deploy to cloud + wake the cloud instance) is partly built on the engineering side, but there is **no agent tool and no UI entry point** to trigger it. The user cannot "deploy to cloud" today.
 
 ## Implementation maturity
@@ -59,7 +59,7 @@ How is cloud deploy triggered? Three options:
 </table>
 
 Cloud deploy **requires sign-in**. When an unauthenticated user triggers cloud deploy, how do we guide them?
-- **A (recommended): an inline sign-in card**, reusing the publish dialog pattern — "Sign in to NoraClaw to deploy to cloud" + Sign in, then auto-resume the deploy after login. Non-disruptive, with existing language and visuals.
+- **A (recommended): an inline sign-in card**, reusing the publish dialog pattern — "Sign in to NoraHarness to deploy to cloud" + Sign in, then auto-resume the deploy after login. Non-disruptive, with existing language and visuals.
 - B: a full-panel blocking sign-in card (like the agent-runtime sign-in "I've signed in — refresh"). Stronger blocking feel, fits a must-sign-in-first case, but heavier than A.
 - Sub-states to cover: **checking sign-in / unauthenticated / signing in / sign-in failed / account does not match the project (needs re-login)**.
 
@@ -106,7 +106,7 @@ By the recommended options (1A / 2A / 3-tool-card / 4A):
 ## Assumptions and dependencies
 
 - **Assumption:** cloud deploy reuses the agent-tool paradigm (decision 1A) — pending PM confirmation.
-- **Dependency:** the server deploy/wake contract + error classes (exist); the one-time model-key configuration (held on the cloud-account side); **the device provisioning line** (noracloud device-binding + BLE + mobile) — determines where the "how the device connects next" guidance can point.
+- **Dependency:** the server deploy/wake contract + error classes (exist); the one-time model-key configuration (held on the cloud-account side); **the device provisioning line** (NoraHarness cloud device-binding + BLE + mobile) — determines where the "how the device connects next" guidance can point.
 - **Dependency:** sign-in uses the existing account session + gate card (exist).
 
 ## Benefits
