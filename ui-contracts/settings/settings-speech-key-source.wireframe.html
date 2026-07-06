@@ -194,13 +194,13 @@ function speech(state){
       break;
     case '3.1': // STT my key expanded
       stt=row('Speech-to-text','Voice input transcription.',toggle('my'));
-      expand=`<div class="expand"><div class="fl"><div class="inp">Paste your speech-to-text key<span class="rep">Paste</span></div><span class="btn pri">Save key</span><span class="btn">Cancel</span></div></div>`;
+      expand=`<div class="expand"><div class="fl"><div class="sel">Provider · openai-asr <span style="color:var(--tertiary)">▾</span></div><div class="inp">Paste your speech-to-text key<span class="rep">Paste</span></div><span class="btn pri">Save key</span><span class="btn">Cancel</span></div></div>`;
       tts=row('Text-to-speech','Spoken reply voice.',badge('plat'));
       break;
     case '3.2': // TTS my key expanded (provider select)
       stt=row('Speech-to-text','Voice input transcription.',badge('plat'));
       tts=row('Text-to-speech','Spoken reply voice.',toggle('my'));
-      expand=`<div class="expand"><div class="fl"><div class="sel">Provider · qwen-realtime <span style="color:var(--tertiary)">▾</span></div><div class="inp">Paste your text-to-speech key<span class="rep">Paste</span></div><span class="btn pri">Save key</span></div></div>`;
+      expand=`<div class="expand"><div class="fl"><div class="sel">Provider · qwen-realtime <span style="color:var(--tertiary)">▾</span></div><div class="inp">Paste your text-to-speech key<span class="rep">Paste</span></div><span class="btn pri">Save key</span><span class="btn">Cancel</span></div></div>`;
       break;
     case 4: // uploading
       stt=row('Speech-to-text','Voice input transcription.',toggle('my'));

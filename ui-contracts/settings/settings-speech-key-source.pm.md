@@ -75,11 +75,13 @@ own key for one but not the other.
 
 <table>
   <tr>
-    <td bgcolor="#fff3cd"><strong>PM decision 3 — TTS provider choice:</strong> When a user brings their own text-to-speech key, do we let them pick the provider (e.g. two supported voices), or infer it?</td>
+    <td bgcolor="#fff3cd"><strong>PM decision 3 — Provider choice (both STT and TTS):</strong> Both speech-to-text (openai-asr / qwen-asr) and text-to-speech (openai / qwen-realtime) support more than one provider. Let the user pick the provider for each, or infer it?</td>
   </tr>
 </table>
 
-Recommendation: **let them pick**, because the key only makes sense against a specific provider account.
+Recommendation: **let them pick, consistently for both.** A key only makes sense against a specific
+provider account, and STT and TTS should present the same picker + key shape — not a picker for one and
+a bare key for the other.
 
 <table>
   <tr>
@@ -104,7 +106,7 @@ wrong account and makes "why isn't my key used" undiagnosable.
 
 A "Speech keys" group on the Voice tab with two rows — **Speech-to-text** and **Text-to-speech** —
 each showing a source badge: **Platform default** or **Your key**. Toggling a row to "Use my own key"
-reveals a masked key field (and, for text-to-speech, a provider picker). Saving uploads the key
+reveals a provider picker + masked key field (both STT and TTS support more than one provider). Saving uploads the key
 encrypted; a quick validation confirms it; the row then shows "Your key ✓" with a short fingerprint.
 Reverting to platform default removes the user key after a confirm. Each row always names the *source*,
 never the key value.

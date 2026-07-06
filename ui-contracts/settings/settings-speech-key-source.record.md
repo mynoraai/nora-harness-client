@@ -19,7 +19,7 @@ decimal IDs scoped to the step where the state starts.
 | -- | ---- | ----------- | ------------------ | ----------- | ---------------- | ------------------- | ----------------- |
 | 1 | Main step | — | Speech keys section entry | Open Settings → Voice → Speech keys | Speech-to-text and Text-to-speech rows, each with a source badge | Reads the saved source per capability | 2 |
 | 2 | Main step | 1 | Review the active source | Read the two source badges | Each row shows "Platform default" or "Your key" (+ provider for TTS) | none | 3 |
-| 3 | Main step | 2 | Choose a source | Toggle a row to "Use my own key" | Row expands a masked key field (and a provider picker for TTS) | Stages the choice, not yet saved | 4 |
+| 3 | Main step | 2 | Choose a source | Toggle a row to "Use my own key" | Row expands a provider picker + masked key field | Stages the choice, not yet saved | 4 |
 | 4 | Main step | 3 | Upload the key | Click "Save key" | Uploading / validating indicator on the row | Uploads the key encrypted and validates it | 5 |
 | 5 | Main step | 4 | Active-source end state | — | Row shows "Your key ✓" and a short fingerprint, or "Platform default" | Saved; the agent uses it on its next start | stable |
 
@@ -27,7 +27,7 @@ decimal IDs scoped to the step where the state starts.
 
 | ID | Type | Parent step | What it represents | Trigger | Visible UI state | Allowed actions | Recovery / next | Blocks progress |
 | -- | ---- | ----------- | ------------------ | ------- | ---------------- | --------------- | --------------- | --------------- |
-| 3.1 | Branch | 3 | Speech-to-text — use my own key | Toggle STT to "my key" | Masked key field for the STT provider | Enter key, Save, Cancel | 4 on save | No |
+| 3.1 | Branch | 3 | Speech-to-text — use my own key | Toggle STT to "my key" | Provider picker + masked key field | Pick provider, Enter key, Save, Cancel | 4 on save | No |
 | 3.2 | Branch | 3 | Text-to-speech — use my own key | Toggle TTS to "my key" | Provider picker + masked key field | Pick provider, Enter key, Save, Cancel | 4 on save | No |
 | 3.3 | Branch | 3 | Revert a capability to platform default | Toggle a row back to "Platform default" | Confirm prompt: user key will be removed | Confirm, Cancel | 5 on confirm | No |
 
@@ -95,8 +95,9 @@ uses on its **next** start; a running agent is not changed mid-session.
 
 ### 3.1 Speech-to-text — Use My Own Key
 
-A masked key field for the speech-to-text provider. The field never shows a previously saved value; it
-offers "replace". Saving proceeds to step 4.
+A provider picker (openai-asr / qwen-asr) plus a masked key field. The saved key belongs to the chosen
+provider; the field never shows a previously saved value. Saving proceeds to step 4. (Same shape as
+text-to-speech — both speech capabilities support more than one provider.)
 
 ### 3.2 Text-to-speech — Use My Own Key
 
