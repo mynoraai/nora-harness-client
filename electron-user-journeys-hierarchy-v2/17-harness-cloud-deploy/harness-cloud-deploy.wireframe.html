@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journey 17 - Harness Cloud Deploy</title>
+<style>
+:root{--bg:#edf5fb;--grid:#d7e3ec;--ink:#252a31;--muted:#687482;--line:#c9d3dd;--blue:#2f80c1;--orange:#c98245;--green:#2e9d64;--red:#ca5a46;--cream:#fbfaf7;--rail:#eee8de;--shadow:0 16px 34px rgba(38,55,77,.12)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
+.topbar{height:96px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:fixed;top:0;left:0;right:0;z-index:10}
+.topbar h1{font-size:24px;margin:0 0 8px}
+.topbar p{margin:0;color:var(--muted);font-size:14px}
+.controls{display:flex;gap:8px}
+.controls button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;font-weight:700;color:#344054;cursor:pointer}
+.jump{position:fixed;top:96px;bottom:0;left:0;width:330px;background:#f8fbfe;border-right:1px solid var(--line);z-index:8;overflow:auto;padding:22px}
+.jump h2{font-size:14px;letter-spacing:.08em;color:#69727c;text-transform:uppercase}
+.jump a{display:block;text-decoration:none;color:#20252c;background:#fff;border:1px solid #b9c5d0;border-radius:9px;padding:14px 16px;margin:10px 0;font-weight:800}
+.jump .routes a{font-size:12px;font-weight:700;color:#596879;padding:10px 12px}
+.viewport{position:fixed;top:96px;left:330px;right:0;bottom:0;overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+.viewport.dragging{cursor:grabbing;user-select:none}
+.stage{position:absolute;left:0;top:0;width:max-content;min-width:24000px;padding:56px 56px 160px;transform-origin:0 0}
+.band{margin:0 0 74px}
+.band-title{display:flex;align-items:baseline;gap:12px;margin:0 0 18px}
+.band-title h2{font-size:20px;margin:0}
+.band-title span{color:var(--muted);font-size:13px}
+.flow{display:flex;align-items:center;gap:22px}
+.route-row{margin:0 0 50px}
+.route-title{background:#fff;border-left:7px solid var(--blue);border-radius:8px;box-shadow:var(--shadow);padding:16px 20px;margin:0 0 16px;max-width:1040px}
+.route-title h3{margin:0 0 8px;font-size:18px}
+.route-title code{display:block;color:#5573a7;background:#eef4ff;border-radius:6px;padding:7px 9px;width:max-content;max-width:980px;white-space:normal}
+.route-title p{margin:8px 0 0;color:var(--muted);font-size:13px}
+.journey-card{width:820px;min-height:820px;background:#fff;border:2px solid #2e343b;border-top:7px solid #8bc2ec;border-radius:8px;box-shadow:var(--shadow);padding:18px;flex:0 0 auto}
+.journey-card.branch{border-top-color:#86cf9a}
+.journey-card.error{border-top-color:#e8957c}
+.journey-card header{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.journey-card h3{font-size:21px;margin:0}
+.journey-card>p{font-size:14px;color:#5f6873;margin:10px 0 14px}
+.arrow{font-size:42px;color:#8798a7;flex:0 0 auto}
+.pill,.badge{display:inline-flex;align-items:center;white-space:nowrap;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800;background:#eef2f6;color:#55606c}
+.pill.main,.pill.blue{background:#e4f3ff;color:#1d71ab}
+.pill.branch{background:#e7f7ed;color:#237b4d}
+.pill.error{background:#ffe6e0;color:#a33b2b}
+.badge.green{background:#e7f7ed;color:#237b4d}
+.badge.amber{background:#fff3cf;color:#8a6200}
+.badge.danger{background:#ffe6e0;color:#a33b2b}
+.badge.run{background:#e4f3ff;color:#1d71ab}
+/* product app frame */
+.product{height:660px;border:1px solid #cbd5df;border-radius:8px;overflow:hidden;background:var(--cream);position:relative}
+.windowbar{height:34px;display:flex;align-items:center;gap:8px;background:#f3eee7;border-bottom:1px solid #ded6cc;padding:0 10px;font-size:12px;color:#5d5751}
+.dot{width:9px;height:9px;border-radius:50%}
+.dot.r{background:#ff605c}.dot.y{background:#ffbd44}.dot.g{background:#00ca4e}
+.app-grid{height:626px;display:grid;grid-template-columns:196px 1fr 300px}
+.app-sidebar{background:#eee8de;border-right:1px solid #ddd2c5;padding:12px;position:relative;font-size:13px}
+.app-sidebar .newbtn{border:1px solid #ddd7cf;border-radius:8px;background:#fff;padding:8px;font-weight:800;text-align:center;margin-bottom:8px}
+.app-sidebar h5{text-transform:uppercase;color:#746e66;font-size:11px;margin:14px 0 6px}
+.ws{border-radius:8px;padding:8px 9px;margin:5px 0;font-weight:700}
+.ws.active{background:#e5d4c3}
+.ws small{float:right;color:#746e66;font-weight:600}
+.app-sidebar footer{position:absolute;bottom:12px;left:12px;right:12px;border-top:1px solid #ddd2c5;padding-top:10px;color:#5e5852;font-weight:700}
+.app-center{background:#fffdf8;display:grid;grid-template-rows:40px 1fr 92px;border-right:1px solid #ded6cc}
+.tabsbar{display:flex;align-items:end;border-bottom:1px solid #ded6cc;background:#faf6ef}
+.tab{padding:9px 16px;border-bottom:3px solid transparent;font-size:13px;font-weight:700;color:#6a635d}
+.tab.active{border-bottom-color:#b66f32;background:#fffdf8;color:#2b2621}
+.chat{padding:16px 18px;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.umsg{align-self:flex-end;background:#efe6da;border:1px solid #e2d6c6;border-radius:12px 12px 4px 12px;padding:9px 12px;max-width:70%;font-size:13px;color:#3c352e}
+.aline{color:#6a635d;font-size:13px;line-height:1.4}
+/* the deploy tool card inside the chat */
+.toolcard{border:1px solid #e6dccd;border-radius:12px;background:#fff;box-shadow:0 3px 10px rgba(120,90,50,.06);overflow:hidden}
+.toolcard.err{border-color:#eab9ab}
+.toolcard>.tc-head{display:flex;align-items:center;gap:9px;padding:11px 13px}
+.tc-head .ic{width:22px;height:22px;border-radius:6px;background:#f3e7dd;display:grid;place-items:center;color:#b76e32;font-size:13px}
+.tc-head .name{font-weight:800;font-size:13px;color:#33507a}
+.tc-head .chev{margin-left:auto;color:#b7ab9c}
+.tc-body{border-top:1px solid #f0e6d8;padding:11px 13px;font-size:12px;color:#5f5952;line-height:1.5}
+.progline{display:flex;gap:7px;align-items:center;margin:4px 0}
+.progline .k{width:15px;text-align:center}
+.nextstep{margin-top:9px;background:#e8f7ee;border:1px solid #bfe6cd;border-radius:8px;padding:9px 11px;color:#237b4d;font-size:12px;font-weight:700}
+.nextstep b{display:block;margin-bottom:2px}
+/* inline sign-in gate (reuses publish gate) */
+.gate{border:1px solid #ecd9a6;background:#fff8e6;border-radius:8px;padding:11px 13px}
+.gate.grn{border-color:#bfe6cd;background:#e8f7ee}
+.gate.dng{border-color:#eab9ab;background:#fdeeea}
+.gate p{margin:0 0 8px;font-size:12px;color:#7a6a3d;font-weight:700}
+.gate.grn p{color:#237b4d}.gate.dng p{color:#a33b2b}
+.btn{border:1px solid #d7cabe;border-radius:8px;background:#fff;padding:6px 12px;font-weight:800;font-size:12px;cursor:default}
+.btn.primary{background:#cf8542;color:#fff;border-color:#cf8542}
+.btn.ghost{background:#fff}
+.composer{margin:0 16px 14px;border:1px solid #e6dfd4;border-radius:16px;background:#fff;padding:10px;box-shadow:0 6px 18px rgba(120,90,50,.06)}
+.composer span{display:block;color:#aaa;font-size:12px;margin-bottom:7px}
+.composer .row{display:flex;gap:8px;align-items:center}
+.composer .chip{border:1px solid #e2d8ca;border-radius:999px;background:#fff;padding:5px 10px;font-weight:800;font-size:11px}
+.composer .send{margin-left:auto;width:28px;height:28px;border-radius:8px;background:#cf8542;color:#fff;display:grid;place-items:center}
+.right-panel{display:grid;grid-template-rows:40px 1fr;background:#eee8de}
+.right-panel nav{display:flex;gap:6px;align-items:center;border-bottom:1px solid #ded6cc;padding:0 10px;font-size:12px}
+.right-panel nav b{background:#fff;border-radius:8px 8px 0 0;padding:9px 10px;font-weight:800;color:#33302b}
+.right-panel nav i{color:#8a827a;padding:9px 6px;font-style:normal}
+.right-empty{display:grid;place-items:center;text-align:center;color:#8a827a;font-size:12px;padding:20px}
+.note{max-width:360px;background:#fff;border:1px dashed #c7b8f0;border-left:4px solid #8a6ff0;border-radius:8px;padding:12px 14px;color:#4a4560;font-size:13px;box-shadow:var(--shadow);margin:14px 0 0}
+.note b{color:#5a44b8}
+/* compact bands */
+.compact-grid{display:grid;grid-template-columns:repeat(3,380px);gap:22px}
+.compact-card{background:#fff;border:1px solid #2e343b;border-left:8px solid var(--blue);border-radius:8px;box-shadow:var(--shadow);padding:16px;min-height:120px}
+.compact-card.detail{border-left-color:#6abf7a}
+.compact-card.language{border-left-color:#d6a83e}
+.compact-card.error{border-left-color:#e58f79}
+.compact-card h3{margin:0 0 8px;font-size:16px}
+.compact-card h3 span{display:inline-block;background:#eef4ff;color:#4474af;border-radius:8px;padding:2px 7px;font-size:12px;margin-right:6px}
+.compact-card p{margin:0 0 6px;color:#65717d;font-size:13px;line-height:1.45}
+.empty-card{border-style:dashed;color:#8a92a0;display:grid;place-items:center;text-align:center}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><h1>Journey 17 &middot; Harness Cloud Deploy</h1><p>Agent deploys the harness to the cloud. Desktop = deployer (deploy + ensure); the device connects to the runtime separately. Requires sign-in.</p></div>
+  <div class="controls"><button id="zoomOut">Zoom out</button><button id="zoomIn">Zoom in</button><button id="fit">Fit</button><button id="reset">Reset</button></div>
+</div>
+
+<div class="jump">
+  <h2>Bands</h2>
+  <a href="#b-main">Main happy path</a>
+  <a href="#b-route">Route path</a>
+  <a href="#b-detail">Detail states</a>
+  <a href="#b-lang">State language</a>
+  <a href="#b-err">Errors and recovery</a>
+  <h2 style="margin-top:20px">Routes</h2>
+  <div class="routes">
+    <a href="#r-happy">Happy path</a>
+    <a href="#r-signin">Sign-in then deploy</a>
+    <a href="#r-key">Missing model key</a>
+    <a href="#r-fail">Runtime failed</a>
+  </div>
+</div>
+
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
+
+<!-- ===================== BAND 1: MAIN HAPPY PATH ===================== -->
+<section class="band" id="b-main">
+  <div class="band-title"><h2>Main happy path</h2><span>1 &rarr; 2 &rarr; 3 &rarr; 4 &middot; ask agent &rarr; deploy running &rarr; completed &rarr; device handoff</span></div>
+  <div class="flow">
+
+    <!-- 1 Deploy Request -->
+    <div class="journey-card">
+      <header><h3>1 Deploy Request</h3><span class="pill main">Main</span></header>
+      <p>User asks the agent to deploy this project to the cloud.</p>
+      <div class="product">
+        <div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>&nbsp; NoraHarness &mdash; /Users/edy/WorkTest/0702</div>
+        <div class="app-grid">
+          <div class="app-sidebar">
+            <div class="newbtn">+ New conversation</div>
+            <h5>Workspaces</h5>
+            <div class="ws active">0702 <small>1</small></div>
+            <div class="ws">0625-test <small>7</small></div>
+            <div class="ws">0624 <small>1</small></div>
+            <footer>istom&hellip; &middot; developer</footer>
+          </div>
+          <div class="app-center">
+            <div class="tabsbar"><div class="tab active">Codex - 0702</div></div>
+            <div class="chat">
+              <div class="umsg">Deploy this project to the cloud.</div>
+              <div class="aline">Working on it &mdash; I'll deploy the application harness to the cloud and wake the runtime.</div>
+            </div>
+            <div class="composer"><span>Assign a task or ask any question</span><div class="row"><span class="chip">Codex</span><span class="chip">GPT-5.4</span><span class="send">&uarr;</span></div></div>
+          </div>
+          <div class="right-panel">
+            <nav><b>Preview</b><i>All Files</i><i>Changes</i><i>Device</i></nav>
+            <div class="right-empty">Preview updates after deploy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">&rarr;</div>
+
+    <!-- 2 Running -->
+    <div class="journey-card">
+      <header><h3>2 Cloud Deploy Running</h3><span class="pill main">Main</span></header>
+      <p>A cloud deploy tool card appears; status is Running while the bundle uploads and the runtime is requested.</p>
+      <div class="product">
+        <div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>&nbsp; NoraHarness &mdash; /Users/edy/WorkTest/0702</div>
+        <div class="app-grid">
+          <div class="app-sidebar">
+            <div class="newbtn">+ New conversation</div>
+            <h5>Workspaces</h5>
+            <div class="ws active">0702 <small>1</small></div>
+            <div class="ws">0625-test <small>7</small></div>
+            <footer>istom&hellip; &middot; developer</footer>
+          </div>
+          <div class="app-center">
+            <div class="tabsbar"><div class="tab active">Codex - 0702</div></div>
+            <div class="chat">
+              <div class="umsg">Deploy this project to the cloud.</div>
+              <div class="aline">Deploying the harness to the cloud&hellip;</div>
+              <div class="toolcard">
+                <div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge run">&#9203; Running</span><span class="chev">&#9662;</span></div>
+                <div class="tc-body">
+                  <div class="progline"><span class="k">&#9679;</span> Uploading project bundle&hellip;</div>
+                  <div class="progline"><span class="k">&#9679;</span> Requesting cloud runtime (ensure)&hellip;</div>
+                </div>
+              </div>
+            </div>
+            <div class="composer"><span>Assign a task or ask any question</span><div class="row"><span class="chip">Codex</span><span class="chip">GPT-5.4</span><span class="send">&uarr;</span></div></div>
+          </div>
+          <div class="right-panel">
+            <nav><b>Preview</b><i>All Files</i><i>Changes</i><i>Device</i></nav>
+            <div class="right-empty">Waiting for cloud runtime&hellip;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">&rarr;</div>
+
+    <!-- 3 Completed -->
+    <div class="journey-card">
+      <header><h3>3 Cloud Deploy Completed</h3><span class="pill main">Main</span></header>
+      <p>Tool card flips to Completed with a project + cloud instance summary and a Next-step note.</p>
+      <div class="product">
+        <div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>&nbsp; NoraHarness &mdash; /Users/edy/WorkTest/0702</div>
+        <div class="app-grid">
+          <div class="app-sidebar">
+            <div class="newbtn">+ New conversation</div>
+            <h5>Workspaces</h5>
+            <div class="ws active">0702 <small>1</small></div>
+            <footer>istom&hellip; &middot; developer</footer>
+          </div>
+          <div class="app-center">
+            <div class="tabsbar"><div class="tab active">Codex - 0702</div></div>
+            <div class="chat">
+              <div class="umsg">Deploy this project to the cloud.</div>
+              <div class="toolcard">
+                <div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge green">&#10003; Completed</span><span class="chev">&#9656;</span></div>
+                <div class="tc-body">
+                  <div class="progline"><span class="k">&#10003;</span> project 0702 &middot; cloud instance <b>prj_0702-rt</b></div>
+                  <div class="nextstep"><b>Next step</b>Connect your device to this cloud instance to start using the harness.</div>
+                </div>
+              </div>
+              <div class="aline">Cloud runtime is running. The desktop is done &mdash; your device connects to it next.</div>
+            </div>
+            <div class="composer"><span>Assign a task or ask any question</span><div class="row"><span class="chip">Codex</span><span class="chip">GPT-5.4</span><span class="send">&uarr;</span></div></div>
+          </div>
+          <div class="right-panel">
+            <nav><b>Device</b><i>Preview</i><i>All Files</i><i>Changes</i></nav>
+            <div class="right-empty">Device connects to the cloud instance via provisioning.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">&rarr;</div>
+
+    <!-- 4 Handoff -->
+    <div class="journey-card branch">
+      <header><h3>4 Device Provisioning Handoff</h3><span class="pill branch">End</span></header>
+      <p>Desktop's deploy job is done. The Next-step note points to device provisioning (separate channel). Desktop does not connect to the runtime.</p>
+      <div class="product">
+        <div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>&nbsp; NoraHarness &mdash; /Users/edy/WorkTest/0702</div>
+        <div class="app-grid">
+          <div class="app-sidebar">
+            <div class="newbtn">+ New conversation</div>
+            <h5>Workspaces</h5>
+            <div class="ws active">0702 <small>1</small></div>
+            <footer>istom&hellip; &middot; developer</footer>
+          </div>
+          <div class="app-center">
+            <div class="tabsbar"><div class="tab active">Codex - 0702</div></div>
+            <div class="chat">
+              <div class="toolcard">
+                <div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge green">&#10003; Completed</span><span class="chev">&#9656;</span></div>
+                <div class="tc-body"><div class="nextstep"><b>Next step &mdash; connect your device</b>Provision the device with this cloud instance (separate device flow). The device connects to the runtime; the desktop does not.</div></div>
+              </div>
+            </div>
+            <div class="composer"><span>Assign a task or ask any question</span><div class="row"><span class="chip">Codex</span><span class="chip">GPT-5.4</span><span class="send">&uarr;</span></div></div>
+          </div>
+          <div class="right-panel">
+            <nav><b>Device</b><i>Preview</i><i>All Files</i></nav>
+            <div class="right-empty">Device provisioning is a separate journey (out of scope here).</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Handoff boundary.</b> This journey ends at the deploy result + handoff note. The device&harr;runtime connection (device_ws + BLE provisioning) is owned by firmware + noracloud, a separate channel.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== BAND 2: ROUTE PATH ===================== -->
+<section class="band" id="b-route">
+  <div class="band-title"><h2>Route path</h2><span>every route as a full frame row</span></div>
+
+  <!-- Route: happy -->
+  <div class="route-row" id="r-happy">
+    <div class="route-title"><h3>Happy path</h3><code>1 &rarr; 2 &rarr; 3 &rarr; 4</code><p>Signed in, deployment + key already set. Runs to Completed and hands off to the device.</p></div>
+    <div class="flow">
+      <div class="journey-card"><header><h3>2 Running</h3><span class="pill main">Main</span></header><p>Deploy tool card Running.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="umsg">Deploy to cloud.</div><div class="toolcard"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge run">&#9203; Running</span></div><div class="tc-body"><div class="progline"><span class="k">&#9679;</span> Uploading bundle&hellip;</div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Preview</b></nav><div class="right-empty">&hellip;</div></div></div></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="journey-card"><header><h3>3 &rarr; 4 Completed + Handoff</h3><span class="pill main">Main</span></header><p>Completed with Next-step note.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="toolcard"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge green">&#10003; Completed</span></div><div class="tc-body"><div class="nextstep"><b>Next step</b>Connect your device to this cloud instance.</div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Device</b></nav><div class="right-empty">Provisioning next.</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route: sign-in -->
+  <div class="route-row" id="r-signin">
+    <div class="route-title"><h3>Sign-in then deploy</h3><code>1 &rarr; 2 &rarr; 2.1 &rarr; 2.1.1 &rarr; 3 &rarr; 4</code><p>Not signed in: inline gate on the tool card &rarr; sign in &rarr; deploy resumes.</p></div>
+    <div class="flow">
+      <div class="journey-card branch"><header><h3>2.1 Sign-in Gate</h3><span class="pill branch">Branch</span></header><p>Inline amber gate, reuses the publish sign-in gate.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div><footer>Log in</footer></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="umsg">Deploy to cloud.</div><div class="toolcard"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge amber">Sign-in required</span></div><div class="tc-body"><div class="gate"><p>Sign in to NoraClaw to deploy to cloud.</p><span class="btn primary">Sign in</span></div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Preview</b></nav><div class="right-empty">Blocked until sign-in.</div></div></div></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="journey-card branch"><header><h3>2.1.1 Signed In &rarr; Resume</h3><span class="pill branch">Branch</span></header><p>Gate turns green; card returns to Running.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div><footer>Ada &middot; developer</footer></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="toolcard"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge run">&#9203; Running</span></div><div class="tc-body"><div class="gate grn"><p>&#10003; Signed in as Ada. Resuming deploy&hellip;</p></div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Preview</b></nav><div class="right-empty">&hellip;</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route: missing key -->
+  <div class="route-row" id="r-key">
+    <div class="route-title"><h3>Missing model key</h3><code>1 &rarr; 2 &rarr; 3.2 &rarr; 3.2.1 &rarr; 2 &rarr; 3 &rarr; 4</code><p>No model key configured &rarr; one-time key setup &rarr; retry succeeds.</p></div>
+    <div class="flow">
+      <div class="journey-card error"><header><h3>3.2 No Model Key</h3><span class="pill error">Error</span></header><p>Tool card Error, points to key setup.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="toolcard err"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge danger">&#9888; Error</span></div><div class="tc-body"><div class="gate dng"><p>No model key for this project. Configure a model key, then retry.</p><span class="btn">Configure key</span></div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Preview</b></nav><div class="right-empty">Blocked.</div></div></div></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="journey-card branch"><header><h3>3.2.1 Model Key Setup</h3><span class="pill branch">Branch</span></header><p>Reuses the existing Providers key surface.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>&nbsp; Settings</div><div class="app-grid" style="grid-template-columns:190px 1fr"><div class="app-sidebar"><h5>Settings</h5><div class="ws">General</div><div class="ws active">Providers</div><div class="ws">Permissions</div></div><div class="app-center" style="grid-template-rows:1fr"><div class="chat" style="gap:9px"><div class="aline" style="font-weight:800;color:#2b2621;font-size:16px">Providers</div><div class="gate" style="background:#fff;border-color:#eadfd2"><p style="color:#3c352e">Model provider key</p><div style="display:flex;gap:7px"><span class="btn ghost" style="flex:1;text-align:left;color:#9a9086">sk-&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span><span class="btn primary">Save</span></div></div><div class="gate grn"><p>&#10003; Key saved. Return to the conversation and retry.</p></div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route: runtime failed -->
+  <div class="route-row" id="r-fail">
+    <div class="route-title"><h3>Runtime failed</h3><code>1 &rarr; 2 &rarr; 3.3 &rarr; 2</code><p>Runtime failed to start &rarr; retry. No device handoff until running.</p></div>
+    <div class="flow">
+      <div class="journey-card error"><header><h3>3.3 Runtime Failed</h3><span class="pill error">Error</span></header><p>Tool card Error; retry, no handoff.</p>
+        <div class="product"><div class="windowbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="app-grid"><div class="app-sidebar"><div class="ws active">0702</div></div><div class="app-center"><div class="tabsbar"><div class="tab active">Codex - 0702</div></div><div class="chat"><div class="toolcard err"><div class="tc-head"><span class="ic">&#9881;</span><span class="name">hw_application_harness_cloud_deploy</span><span class="badge danger">&#9888; Error</span></div><div class="tc-body"><div class="gate dng"><p>Cloud runtime failed to start. Retry, or check the model / config.</p><span class="btn">Retry deploy</span></div></div></div></div><div class="composer"><span>&hellip;</span></div></div><div class="right-panel"><nav><b>Preview</b></nav><div class="right-empty">No handoff until running.</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===================== BAND 3: DETAIL STATES ===================== -->
+<section class="band" id="b-detail">
+  <div class="band-title"><h2>Detail states</h2><span>reused surfaces opened inside the journey</span></div>
+  <div class="compact-grid">
+    <div class="compact-card detail"><h3><span>2</span> Tool card expanded</h3><p>The Running deploy card expanded shows upload + ensure progress lines. Same tool-card component as local deploy, cloud variant.</p></div>
+    <div class="compact-card detail"><h3><span>3</span> Completed summary</h3><p>Collapsed success card: project + cloud instance name + the Next-step note "Connect your device to this cloud instance."</p></div>
+    <div class="compact-card detail"><h3><span>3.2.1</span> Model key setup</h3><p>Reuses the existing Providers key surface; no new dialog invented. On save, returns to the conversation to retry.</p></div>
+  </div>
+</section>
+
+<!-- ===================== BAND 4: STATE LANGUAGE ===================== -->
+<section class="band" id="b-lang">
+  <div class="band-title"><h2>State language</h2><span>status vocabulary used on the tool card and gate</span></div>
+  <div class="compact-grid">
+    <div class="compact-card language"><h3>Tool card status</h3><p><b>Running</b> (pulsing clock) &middot; <b>Completed</b> (green check) &middot; <b>Error</b> (red) &middot; optional <b>Pending / Awaiting approval</b>. Reused from the existing tool card.</p></div>
+    <div class="compact-card language"><h3>Sign-in gate states</h3><p><b>unauthenticated</b> (amber) &middot; <b>authenticated</b> (green "Signed in as &hellip;") &middot; <b>sign-in failed</b> &middot; <b>account mismatch</b>.</p></div>
+    <div class="compact-card language empty-card"><h3>Cloud runtime status</h3><p>No live runtime-status surface in this journey &mdash; a deferred, out-of-scope slice.</p></div>
+  </div>
+</section>
+
+<!-- ===================== BAND 5: ERRORS AND RECOVERY ===================== -->
+<section class="band" id="b-err">
+  <div class="band-title"><h2>Errors and recovery</h2><span>every error shows one clear next action</span></div>
+  <div class="compact-grid">
+    <div class="compact-card error"><h3><span>2.1.2</span> Sign-in failed</h3><p>"Sign-in failed &mdash; try again" + Sign in. Retry; blocks until success.</p></div>
+    <div class="compact-card error"><h3><span>2.1.3</span> Account mismatch</h3><p>"This account can't deploy this project. Sign out and sign back in with the project's account." + Sign out.</p></div>
+    <div class="compact-card error"><h3><span>3.1</span> Not deployed yet</h3><p>"No cloud deployment yet &mdash; run a cloud deploy first." Retry.</p></div>
+    <div class="compact-card error"><h3><span>3.2</span> Missing model key</h3><p>"No model key for this project &mdash; configure a model key, then retry." &rarr; key setup (3.2.1).</p></div>
+    <div class="compact-card error"><h3><span>3.3</span> Runtime failed</h3><p>"Cloud runtime failed to start &mdash; retry, or check the model/config." Retry; no device handoff until running.</p></div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script>
+const viewport=document.getElementById('viewport');const stage=document.getElementById('stage');
+let scale=.5,x=28,y=28,drag=false,startX=0,startY=0,baseX=0,baseY=0,raf=0;
+function apply(){raf=0;stage.style.transform='translate('+x+'px,'+y+'px) scale('+scale+')'}
+function schedule(){if(!raf)raf=requestAnimationFrame(apply)}
+function zoomAt(cx,cy,next){const rect=viewport.getBoundingClientRect();const wx=(cx-rect.left-x)/scale;const wy=(cy-rect.top-y)/scale;scale=Math.max(.12,Math.min(1.4,next));x=cx-rect.left-wx*scale;y=cy-rect.top-wy*scale;schedule()}
+viewport.addEventListener('pointerdown',e=>{drag=true;viewport.classList.add('dragging');startX=e.clientX;startY=e.clientY;baseX=x;baseY=y;viewport.setPointerCapture(e.pointerId)});
+viewport.addEventListener('pointermove',e=>{if(!drag)return;x=baseX+e.clientX-startX;y=baseY+e.clientY-startY;schedule()});
+viewport.addEventListener('pointerup',e=>{drag=false;viewport.classList.remove('dragging');viewport.releasePointerCapture(e.pointerId)});
+viewport.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){zoomAt(e.clientX,e.clientY,scale*(e.deltaY>0?.92:1.08))}else{x-=e.deltaX;y-=e.deltaY;schedule()}},{passive:false});
+document.getElementById('zoomOut').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*.85);
+document.getElementById('zoomIn').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*1.18);
+document.getElementById('fit').onclick=()=>{scale=.2;x=20;y=24;schedule()};
+document.getElementById('reset').onclick=()=>{scale=.5;x=28;y=28;schedule()};
+document.querySelectorAll('.jump a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const el=document.querySelector(a.getAttribute('href'));if(!el)return;const r=el.getBoundingClientRect();const vr=viewport.getBoundingClientRect();x+=vr.left+40-r.left;y+=vr.top+30-r.top;schedule()}));
+apply();
+</script>
+</body>
+</html>
