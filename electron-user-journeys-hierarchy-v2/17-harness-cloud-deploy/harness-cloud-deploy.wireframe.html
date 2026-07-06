@@ -107,7 +107,7 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSy
 .composer .plus{color:#9a9084;border:1px solid #e4dccf;border-radius:8px;width:26px;height:26px;display:grid;place-items:center}
 .composer .send{margin-left:auto;width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:15px}
 /* right column */
-.nh-right{background:#f6f5f2;display:grid;grid-template-rows:38px 40px 1fr 34px;overflow:hidden}
+.nh-right{background:#f6f5f2;display:grid;grid-template-rows:40px 1fr 34px;overflow:hidden}
 .rtabs{display:flex;align-items:center;gap:16px;border-bottom:1px solid #e7e5e1;padding:0 14px;font-size:12px;color:#8a8f97;background:#fff}
 .rtabs .on{color:#232830;font-weight:800;border-bottom:2px solid var(--accent);padding-bottom:2px}
 .rhead{display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;color:#3a3f47;font-weight:700}
@@ -182,7 +182,6 @@ function frame(chat, opt){
     '</div>'+
     /* right */
     '<div class="nh-right">'+
-      '<div class="rtabs">'+['All Files','Changes','Device','Preview'].map(t=>'<span class="'+(t===rtab?'on':'')+'">'+t+'</span>').join('')+'</div>'+
       '<div class="rhead"><span class="ic">&#128444;</span> '+rtab+' <span class="er">Error</span><span class="play">&#9654;</span></div>'+
       '<div class="rbody">'+rbody+'</div>'+
       '<div class="rfoot"><span class="on">Terminal</span><span>Device Log</span><span class="cv">&#9662;</span></div>'+
