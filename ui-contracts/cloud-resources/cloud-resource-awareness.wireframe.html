@@ -764,6 +764,126 @@
         color: var(--muted);
         font: 7.8px var(--mono);
       }
+      .agent-summary {
+        padding: 10px;
+      }
+      .agent-summary-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .agent-avatar {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 9px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 14px;
+        font-weight: 850;
+      }
+      .agent-summary h6 {
+        margin: 0 0 2px;
+        font-size: 11px;
+      }
+      .agent-identity {
+        color: var(--muted);
+        font-size: 8px;
+      }
+      .live-badge {
+        margin-left: auto;
+        padding: 3px 6px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 7px;
+        font-weight: 850;
+      }
+      .agent-behavior {
+        margin: 8px 0;
+        padding: 7px 8px;
+        border-left: 3px solid #8bb9d4;
+        color: #4f4a45;
+        background: #f5f9fb;
+        font-size: 8.2px;
+        line-height: 1.45;
+      }
+      .capability-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+      }
+      .capability {
+        padding: 6px;
+        border: 1px solid #e6dfd6;
+        border-radius: 7px;
+        background: #fbfaf8;
+      }
+      .capability span {
+        display: block;
+        margin-bottom: 2px;
+        color: var(--faint);
+        font-size: 6.8px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .capability b {
+        display: block;
+        font-size: 7.7px;
+        line-height: 1.25;
+      }
+      .config-footer {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px solid #eee9e2;
+        color: var(--muted);
+        font-size: 7.5px;
+      }
+      .config-footer b {
+        margin-left: auto;
+        color: var(--accent);
+      }
+      .session-resource {
+        display: grid;
+        grid-template-columns: 24px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 7px 9px;
+        border-bottom: 1px solid #eee9e2;
+      }
+      .session-resource:last-child {
+        border-bottom: 0;
+      }
+      .resource-glyph {
+        width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 9px;
+      }
+      .session-resource b {
+        display: block;
+        font-size: 8.4px;
+      }
+      .session-resource small {
+        display: block;
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 7.2px;
+      }
+      .resource-state {
+        color: var(--green);
+        font-size: 7.3px;
+        font-weight: 800;
+      }
       .usage-metrics {
         display: flex;
         gap: 18px;
@@ -979,6 +1099,24 @@
       .global-resource .orphan {
         color: var(--amber);
       }
+      .global-resource .agent-purpose {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 7.8px;
+      }
+      .global-resource .agent-capabilities {
+        color: #4f4a45;
+        font-size: 8.4px;
+        line-height: 1.4;
+      }
+      .global-resource .agent-state {
+        text-align: right;
+      }
+      .global-resource .agent-state b {
+        color: var(--green);
+        font-size: 8.5px;
+      }
       .global-usage {
         display: grid;
         grid-template-columns: repeat(3, 1fr) 1.6fr;
@@ -1078,8 +1216,8 @@
           Information
         </h1>
         <p>
-          One operation card in conversation · current coding-session resources
-          on the right · global deduplicated status inside Settings.
+          One operation card in conversation · readable Agent configuration and
+          current-session resources on the right · global status inside Settings.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1160,10 +1298,28 @@
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.3 Coding Session Resource Relationship</h4>
+              <h4>5.3 Readable Agent Configuration</h4>
               <p>
-                Rows show remote truth, the current session's relationship, and
-                sharing or activity elsewhere. They do not claim ownership.
+                Lead with identity, behavior, Live state, LLM, listening, and
+                speaking. A user should not need a Version ID to understand the
+                active Agent.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>5.4 Configuration Details</h4>
+              <p>
+                Group Identity, Behavior, Instructions, and Tools by meaning.
+                Markdown file names, provider IDs, digests, and remote IDs are
+                secondary technical details.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>5.5 Coding Session Resource Relationship</h4>
+              <p>
+                Named Devices, Cloud Runtime Sessions, and credential readiness
+                show status and relationship without implying session ownership.
               </p>
             </article>
             <article class="compact-card">
@@ -1308,13 +1464,13 @@
           title: "Current Coding Session Cloud",
           view: "session-cloud",
           caption:
-            "The right Cloud tab shows this coding session's resource working set and Coding Session Usage.",
+            "The right Cloud tab makes the active Agent behavior and capabilities readable, then shows related resources and Coding Session Usage.",
         },
         6: {
           title: "Settings Cloud System Information",
           view: "settings",
           caption:
-            "Settings contains global deduplicated Cloud Resources and explicitly scoped accumulated Usage.",
+            "Settings contains readable global Agent status, deduplicated Cloud Resources, and explicitly scoped accumulated Usage.",
         },
         2.1: {
           title: "Scope Covered By Instruction",
@@ -1344,7 +1500,7 @@
           title: "Resource Changed Elsewhere",
           view: "changed",
           caption:
-            "The current-session view keeps the relationship but refreshes the shared resource's remote truth.",
+            "The current-session view names the behavior or capability that changed elsewhere and refreshes remote truth.",
         },
         6.1: {
           title: "Resource Without Local Session Reference",
@@ -1474,7 +1630,37 @@
 
       function sessionCloudPanel(kind) {
         const changed = kind === "changed";
-        return `${rightTabs("Cloud", true)}<div class="cloud-panel"><div class="cloud-head"><div><h5>Cloud</h5><small>Current coding session · Desk Weather</small></div><span class="fresh">Fresh · just now</span></div>${changed ? `<div class="inline-notice amber"><b>Shared resource changed elsewhere.</b> Live is now ver_…b77; the last fact in this coding session was ver_…a81.</div>` : `<div class="inline-notice"><b>Session relationship, remote truth.</b> These resources are used or managed here; they are not owned by this coding session.</div>`}<div class="panel-space"><div class="space-title">Related Cloud Resources<small>Current coding session</small></div><div class="resource-row"><span class="key">Agent</span><span class="value">Desk Weather<span class="sub">Also used by 2 coding sessions</span></span><code>agt_…7f2</code></div><div class="resource-row"><span class="key">Live</span><span class="value">${changed ? "ver_…b77" : "ver_…a81"}<span class="sub">${changed ? "Changed outside this coding session" : "Agent-wide remote state"}</span></span><code>current</code></div><div class="resource-row"><span class="key">Versions</span><span class="value">1 used here · 4 total on Agent</span><code>›</code></div><div class="resource-row"><span class="key">Devices</span><span class="value">2 follow Live<span class="sub">Shared Agent impact</span></span><code>›</code></div><div class="resource-row"><span class="key">Cloud Runtime Sessions</span><span class="value">1 used here</span><code>ses_…91c</code></div><div class="resource-row"><span class="key">Credentials</span><span class="value">NoraCloud · Signed in<span class="sub">Device · Not issued</span></span><code>›</code></div></div><div class="panel-space"><div class="space-title">Coding Session Usage<small>Run Records</small></div><div class="usage-metrics"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>18</strong><span>runs</span></div><div><strong>14</strong><span>turns</span></div></div><div class="coverage">Current coding session · Recorded on this installation · Updated just now</div></div><div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn primary">View all in Settings</span></div></div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
+        const speaking = changed ? "Qwen TTS · Atlas" : "Qwen TTS · Cherry";
+        const behavior = changed
+          ? "Answers in one concise sentence. It asks before changing a connected device."
+          : "Answers in one or two concise sentences. It asks before changing a connected device.";
+        return `${rightTabs("Cloud", true)}<div class="cloud-panel">
+          <div class="cloud-head"><div><h5>Cloud</h5><small>Current coding session · Desk Weather</small></div><span class="fresh">Fresh · just now</span></div>
+          ${changed
+            ? `<div class="inline-notice amber"><b>Live configuration changed elsewhere.</b> Speaking changed from Cherry to Atlas after this coding session last used it.</div>`
+            : `<div class="inline-notice"><b>Current session context.</b> This panel shows the Agent configuration and Cloud resources used or managed here.</div>`}
+          <div class="panel-space">
+            <div class="space-title">Current Agent Configuration<small>${changed ? "Updated elsewhere" : "Live"}</small></div>
+            <div class="agent-summary">
+              <div class="agent-summary-head"><div class="agent-avatar">DW</div><div><h6>Desk Weather</h6><div class="agent-identity">A concise, voice-first weather assistant</div></div><span class="live-badge">LIVE</span></div>
+              <div class="agent-behavior">${behavior}</div>
+              <div class="capability-grid">
+                <div class="capability"><span>Reasoning · LLM</span><b>Qwen Turbo</b></div>
+                <div class="capability"><span>Listening · STT</span><b>Qwen ASR · Chinese</b></div>
+                <div class="capability"><span>Speaking · TTS</span><b>${speaking}</b></div>
+              </div>
+              <div class="config-footer"><span>${changed ? "Changed outside this coding session · 2m ago" : "Published 12m ago · Shorter replies and voice enabled"}</span><b>Configuration details ›</b></div>
+            </div>
+          </div>
+          <div class="panel-space">
+            <div class="space-title">Used By This Coding Session<small>Related resources</small></div>
+            <div class="session-resource"><span class="resource-glyph">▣</span><span><b>Desk Display</b><small>Device · Follows Live</small></span><span class="resource-state">Online</span></div>
+            <div class="session-resource"><span class="resource-glyph">◎</span><span><b>Desk Weather Runtime</b><small>Cloud Runtime Session · 1 turn here</small></span><span class="resource-state">Active</span></div>
+            <div class="session-resource"><span class="resource-glyph">✓</span><span><b>NoraCloud credentials</b><small>Signed in · Device credential not issued</small></span><span class="resource-state">Ready</span></div>
+          </div>
+          <div class="panel-space"><div class="space-title">Coding Session Usage<small>Run Records</small></div><div class="usage-metrics"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>18</strong><span>runs</span></div><div><strong>14</strong><span>turns</span></div></div><div class="coverage">Current coding session · Recorded on this installation · Updated just now</div></div>
+          <div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn primary">View all in Settings</span></div>
+        </div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
       }
 
       function centerContent(kind) {
@@ -1518,7 +1704,7 @@
       function settingsFrame(kind) {
         const stale = kind === "settings-stale";
         const orphan = kind === "settings-orphan";
-        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Recorded local Usage coverage is unchanged.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Each remote ID counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Versions</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Runtime Sessions</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather · agt_…7f2</strong><small>Live ver_…a81 · 4 Versions</small></div><span>2 Devices · 3 Runtime Sessions</span><span>Used by 3 coding sessions</span><span>12m ago</span></div><div class="global-resource"><div><strong>Kitchen Guide · agt_…410</strong><small>Live ver_…b52 · 3 Versions</small></div><span>1 Device · 2 Runtime Sessions</span><span class="${orphan ? "orphan" : ""}">${orphan ? "No local coding session reference" : "Used by 1 coding session"}</span><span>18d ago</span></div><div class="global-resource"><div><strong>Voice Lamp · agt_…933</strong><small>Live ver_…d20 · 5 Versions</small></div><span>1 Device · 2 Runtime Sessions</span><span>Used by 2 coding sessions</span><span>1h ago</span></div></section><section class="settings-card"><div class="settings-card-head"><h3>Recorded Usage</h3><span>All coding sessions on this installation · Last 30 days</span></div><div class="global-usage"><div><strong>128,420</strong><span>LLM tokens</span></div><div><strong>86</strong><span>runs</span></div><div><strong>64</strong><span>turns</span></div><p>Source: covered Run Records on this NoraHarness installation.<br>Not billing, cross-device total, or Cloud Runtime Usage.</p></div></section></main></div></div></div>`;
+        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Recorded local Usage coverage is unchanged.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Readable Agent status · each remote resource counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Saved configs</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Runtime Sessions</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather</strong><span class="agent-purpose">Concise, voice-first weather assistant · 4 saved configs</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Cherry voice</span><span>2 Devices · 3 Runtime Sessions<br><small>Used by 3 coding sessions</small></span><span class="agent-state"><b>Live</b><small>12m ago ›</small></span></div><div class="global-resource"><div><strong>Kitchen Guide</strong><span class="agent-purpose">Step-by-step cooking companion · 3 saved configs</span></div><span class="agent-capabilities"><b>Gemini Flash</b><br>Text only</span><span>1 Device · 2 Runtime Sessions<br><small class="${orphan ? "orphan" : ""}">${orphan ? "No local coding session reference" : "Used by 1 coding session"}</small></span><span class="agent-state"><b>Live</b><small>18d ago ›</small></span></div><div class="global-resource"><div><strong>Voice Lamp</strong><span class="agent-purpose">Voice-controlled ambient lighting · 5 saved configs</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Atlas voice</span><span>1 Device · 2 Runtime Sessions<br><small>Used by 2 coding sessions</small></span><span class="agent-state"><b>Live</b><small>1h ago ›</small></span></div></section><section class="settings-card"><div class="settings-card-head"><h3>Recorded Usage</h3><span>All coding sessions on this installation · Last 30 days</span></div><div class="global-usage"><div><strong>128,420</strong><span>LLM tokens</span></div><div><strong>86</strong><span>runs</span></div><div><strong>64</strong><span>turns</span></div><p>Source: covered Run Records on this NoraHarness installation.<br>Not billing, cross-device total, or Cloud Runtime Usage.</p></div></section></main></div></div></div>`;
       }
 
       function card(id) {

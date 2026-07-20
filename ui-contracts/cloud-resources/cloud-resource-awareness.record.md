@@ -21,7 +21,7 @@ inventory, resource references, and Usage summaries are proposed.
 | `2` | Main step | Journey 1   | Work reaches a persistent Cloud boundary.       | Reviews consequence and proceeds, adjusts supported scope, or defers. | One `Cloud Resource Operation` card shows what will be created, changed, recorded, and excluded.                                   | One operation identity waits with a pending or approved scope.             | `3`, `2.1`, or `2.2` |
 | `3` | Main step | Journey 1   | The approved Cloud operation runs.              | Watches stages or expands technical details.                          | The same operation card and ID show factual progress and returned resource IDs.                                                    | Confirmed results accumulate on the operation record.                      | `4`, `4.1`, or `4.2` |
 | `4` | Main step | Journey 1   | The operation reaches a stable result.          | Reviews result or opens the current-session Cloud view.               | The same card becomes a factual receipt with Created, Changed, Recorded, Persists, and Not done.                                   | The operation closes and resource references attach to the coding session. | `5` or end           |
-| `5` | Main step | Journey 1   | Current coding-session Cloud state is visible.  | Reviews related resources and current-session Usage.                  | Right `Cloud` shows resources used or managed by the active coding session, plus current Coding Session Usage.                     | Session references restore and remote resource state refreshes.            | `6` or end           |
+| `5` | Main step | Journey 1   | Current coding-session Cloud state is visible.  | Reviews the active Agent configuration, related resources, and current-session Usage. | Right `Cloud` shows readable Agent behavior and capabilities, resources used or managed by the active coding session, and Coding Session Usage. | Session references restore and remote configuration/resource state refreshes. | `6` or end           |
 | `6` | Main step | Journey 1   | The user opens global Cloud system information. | Clicks `View all in Settings`.                                        | Settings opens its `Cloud` category with deduplicated resource counts, status, credential attention, and scoped accumulated Usage. | Remote inventory and Usage summaries refresh independently.                | End                  |
 
 ### Branch States
@@ -31,7 +31,7 @@ inventory, resource references, and Usage summaries are proposed.
 | `2.1` | Branch | `2 Cloud Operation Decision`          | The user's instruction already covers the displayed scope.          | Reads the consequence while execution continues without redundant confirmation. | The same card says `Scope covered by instruction`; no second card appears.                                  | The exact displayed scope becomes approved.                         | `3`               |
 | `2.2` | Branch | `2 Cloud Operation Decision`          | The user defers Cloud work.                                         | Chooses `Not now` or continues locally.                                         | The same card says `Deferred`; no resource is claimed.                                                      | The operation closes without mutation.                              | `1` or end        |
 | `5.1` | Branch | `5 Current Coding Session Cloud`      | The active coding session has not used or managed a Cloud resource. | Reads the empty state or continues the conversation.                            | `No Cloud resources in this coding session` appears with `View all in Settings`.                            | The empty session reference set becomes known.                      | End or `6`        |
-| `5.2` | Branch | `5 Current Coding Session Cloud`      | A related resource changed elsewhere.                               | Reviews fresh remote state or returns to the conversation.                      | The row says `Changed outside this coding session` and shows the current remote state.                      | The session reference remains while cached resource state advances. | `2` or end        |
+| `5.2` | Branch | `5 Current Coding Session Cloud`      | A related configuration or resource changed elsewhere.              | Reviews fresh remote state or returns to the conversation.                      | A notice names the readable change, its source context, and the current remote state.                       | The session reference remains while cached remote state advances.   | `2` or end        |
 | `6.1` | Branch | `6 Settings Cloud System Information` | A remote resource has no local coding-session reference.            | Reviews the resource and last activity.                                         | The global inventory keeps the resource and labels `No local coding session reference`.                     | No local session ownership is invented.                             | End               |
 | `6.2` | Branch | `6 Settings Cloud System Information` | Global inventory refresh fails.                                     | Reviews saved values, retries, or closes Settings.                              | Last trusted counts remain with `Stale`; without a trusted snapshot the page shows `Unavailable`, not zero. | Historical values remain timestamped until a successful refresh.    | `6` or end        |
 
@@ -40,7 +40,9 @@ inventory, resource references, and Usage summaries are proposed.
 | ID    | Type         | Parent step                           | What it represents                                    | User action                           | Visible UI state                                                                                                                       | Client state change                           | Exit / next state |
 | ----- | ------------ | ------------------------------------- | ----------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------- |
 | `2.3` | Detail state | `2 Cloud Operation Decision`          | One card component covers different Cloud operations. | Expands scope or compares examples.   | First publish, Device registration, Live change, and bounded tests reuse the same component with consequence-specific fields.          | No mutation occurs.                           | `2`               |
-| `5.3` | Detail state | `5 Current Coding Session Cloud`      | Session resource relationship.                        | Scans rows.                           | A related Agent, Version, Device, Cloud Runtime Session, or Credential shows remote ID, current state, and sharing/activity elsewhere. | No ownership changes.                         | `5`               |
+| `5.3` | Detail state | `5 Current Coding Session Cloud`      | Readable Agent configuration summary.                  | Scans the primary card.               | Agent identity, behavior, current Live state, LLM, listening, speaking, and latest change are readable without interpreting IDs.       | No configuration changes.                     | `5`               |
+| `5.4` | Detail state | `5 Current Coding Session Cloud`      | Configuration details.                                | Opens configuration details.          | Identity, behavior, instructions, and tools are grouped by meaning; source file names and remote IDs appear only as secondary details. | No configuration changes.                     | `5`               |
+| `5.5` | Detail state | `5 Current Coding Session Cloud`      | Session resource relationship.                        | Scans related resources.              | Named Devices, Cloud Runtime Sessions, and credential readiness show current status and their relationship with this coding session.  | No ownership changes.                         | `5`               |
 | `6.3` | Detail state | `6 Settings Cloud System Information` | Global deduplication.                                 | Reviews counts or expands a resource. | Each remote ID is counted once even when several coding sessions reference it.                                                         | No mutation occurs.                           | `6`               |
 | `6.4` | Detail state | `6 Settings Cloud System Information` | Usage coverage.                                       | Reads totals and coverage.            | Settings labels the aggregation scope, period, source, and update time; the right panel labels current coding-session Usage.           | No account-wide or billing total is inferred. | `6`               |
 
@@ -152,8 +154,12 @@ User action: reviews the active coding session's resource working set and Usage.
 Visible UI state:
 
 - Header: `Cloud · Current coding session`, session title, freshness, and refresh.
-- `Related Cloud Resources`: Agent, Versions, Devices, Cloud Runtime Sessions, and Credential status
-  used or managed by this coding session.
+- `Current Agent Configuration`: Agent name, identity summary, behavior summary, current Live state,
+  LLM, listening, speaking, and the latest change summary.
+- `Configuration details` groups Identity, Behavior, Instructions, and Tools. Source Markdown file
+  names, remote IDs, digests, and Version history are secondary rather than default card content.
+- `Used By This Coding Session`: named Devices, Cloud Runtime Sessions, and Credential status that
+  have an actual relationship with this coding session.
 - Shared resources say `Also used by …` or `Changed outside this coding session` when applicable.
 - `Coding Session Usage`: tokens, runs, turns, and update time from this coding session's Run Records.
 - `View all in Settings` opens the global system-information level.
@@ -175,7 +181,10 @@ Visible UI state:
 - Settings keeps its existing left category navigation; `Cloud` is selected inside Settings.
 - System header: current NoraCloud identity/environment, signed-in state, freshness, and refresh.
 - `Cloud Resources`: deduplicated counts for Agents, Versions, Devices, and Cloud Runtime Sessions;
-  credential attention; resource list with coding-session relationship and last activity.
+  credential attention; readable Agent rows with purpose, LLM/listening/speaking capabilities,
+  Live status, related resources, coding-session relationship, and last activity.
+- Version IDs, resource IDs, file names, and digests appear only after opening Agent or technical
+  details.
 - `Recorded Usage`: aggregate values from all covered coding-session Run Records with installation,
   period, source, and update time.
 - Direct Cloud resource mutation is absent. Settings may link to the relevant coding session or the
@@ -230,10 +239,12 @@ Blocks progress: no.
 
 ### 5.2 Resource Changed Elsewhere
 
-Trigger: a referenced remote resource differs from the last fact recorded by this coding session.
+Trigger: a referenced Agent configuration or remote resource differs from the last fact recorded by
+this coding session.
 
-Visible UI state: the affected row shows the current value, prior value, and
-`Changed outside this coding session`.
+Visible UI state: the affected card names the user-meaningful difference, such as changed behavior,
+LLM, listening, speaking, Device binding, or runtime status. Prior and current values are shown with
+`Changed outside this coding session`; IDs remain in technical details.
 
 Allowed user actions: return to the conversation, refresh, or continue read-only work.
 
@@ -280,12 +291,37 @@ Allowed user actions: return to the operation.
 
 Exit / next state: `2 Cloud Operation Decision`.
 
-### 5.3 Coding Session Resource Relationship
+### 5.3 Readable Agent Configuration
+
+Trigger: the current-session Cloud view has an active Agent configuration.
+
+Visible UI state: the primary card identifies what the Agent is, how it is expected to behave, its
+current Live state, and its LLM, listening, and speaking capabilities. It uses readable product
+labels rather than requiring the user to interpret a Version ID.
+
+Allowed user actions: open configuration details, refresh, or return to chat.
+
+Exit / next state: `5 Current Coding Session Cloud`.
+
+### 5.4 Configuration Details
+
+Trigger: the user opens configuration details from the active Agent card.
+
+Visible UI state: the detail view groups Identity, Behavior, Instructions, and Tools. Technical
+source names such as `IDENTITY.md`, `SOUL.md`, `AGENTS.md`, and `TOOLS.md`, Version/resource IDs,
+digests, and provider identifiers remain secondary information.
+
+Allowed user actions: inspect the configuration, compare a prior Version, or close details.
+
+Exit / next state: `5 Current Coding Session Cloud`.
+
+### 5.5 Coding Session Resource Relationship
 
 Trigger: the current-session Cloud view has related resources.
 
-Visible UI state: each row shows a true remote ID, current remote status, the coding session's
-relationship, and sharing/activity elsewhere where permitted.
+Visible UI state: each row leads with a resource name, current remote status, the coding session's
+relationship, and sharing/activity elsewhere where permitted. Raw IDs are available only in
+technical details.
 
 Allowed user actions: refresh, return to chat, or open Settings Cloud.
 

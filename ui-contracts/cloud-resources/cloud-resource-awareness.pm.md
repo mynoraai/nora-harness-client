@@ -53,6 +53,9 @@ Confirm the minimum two-level information architecture for cloud-resource awaren
   <tr>
     <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Settings contains the global, deduplicated Cloud Resources & Usage system-information category. It is not an app-level navigation destination outside Settings.</td>
   </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Cloud views lead with a readable Agent configuration: identity, behavior, current Live state, and LLM/listening/speaking capabilities. Remote IDs, digests, file names, and Version counts are secondary technical details.</td>
+  </tr>
 </table>
 
 ## Proposed Design
@@ -60,15 +63,27 @@ Confirm the minimum two-level information architecture for cloud-resource awaren
 ### Conversation And Right Workbench
 
 The active coding session receives one stateful operation card when work reaches a persistent Cloud
-boundary. Its receipt opens the right-workbench `Cloud` tab. That tab shows the session's Cloud
-resource working set, current remote state, sharing/activity elsewhere, and Usage aggregated from
-the coding session's Run Records.
+boundary. Its receipt opens the right-workbench `Cloud` tab. That tab contains three information
+cards:
+
+1. `Current Agent Configuration`: Agent name, readable identity and behavior summaries, current
+   Live state, LLM, listening, speaking, and the latest change summary;
+2. `Used By This Coding Session`: named Devices, Cloud Runtime Sessions, and credential readiness
+   that have an actual relationship with this coding session;
+3. `Coding Session Usage`: Usage aggregated from this coding session's Run Records.
+
+The default view explains what the Agent is and how it behaves. Raw remote IDs, instruction file
+names, digests, and complete Version history are available only through configuration or technical
+details.
 
 ### Settings System Information
 
 Settings adds `Cloud` to its existing left category list. The page shows current NoraCloud identity
 and environment, deduplicated remote resource counts and states, credential status, and explicitly
-scoped accumulated Usage. `View all in Settings` from the right panel opens this category.
+scoped accumulated Usage. Agent rows use the same readable hierarchy as the session view: purpose,
+current LLM/listening/speaking capabilities, Live status, connected resources, and last activity.
+Version history and remote IDs remain available after opening an Agent's details. `View all in
+Settings` from the right panel opens this category.
 
 The global inventory is sourced from NoraCloud, not by unioning local coding-session references.
 Otherwise resources created on another device or no longer referenced by a local session would be
@@ -79,8 +94,8 @@ invisible.
 | Surface                     | Scope                                                                       | Answers                                                                                                                    |
 | --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Conversation operation card | One cloud operation in one coding session                                   | What is about to happen, what is running, and what actually happened?                                                      |
-| Right `Cloud` tab           | Active coding session                                                       | Which Cloud resources is this coding session using or managing, and what Usage has this coding session recorded?           |
-| Settings `Cloud`            | Current NoraCloud identity/environment plus this app's recorded Usage scope | How many remote resources exist overall, which need attention, and how much Usage is covered by the displayed aggregation? |
+| Right `Cloud` tab           | Active coding session                                                       | What Agent configuration is active here, which resources does this coding session use or manage, and what Usage has it recorded? |
+| Settings `Cloud`            | Current NoraCloud identity/environment plus this app's recorded Usage scope | Which readable Agent configurations and related remote resources exist overall, which need attention, and how much Usage is covered? |
 
 Cloud resources remain independent of coding-session and Workspace lifecycles. A resource can appear
 in several coding-session views but is counted once in Settings. Deleting or archiving a coding
@@ -94,6 +109,9 @@ session never deletes the remote resource.
 - No account-wide Usage claim when the available Run Records cover only this NoraHarness
   installation.
 - No mixing Coding Usage with NoraCloud Runtime Usage or context-window percentage.
+- No full Markdown content, secret, digest, or raw resource ID in the default summary cards.
+- No client-generated interpretation that can describe the same Live Version differently across
+  coding sessions or installations.
 
 ## Risks And Dependencies
 
@@ -104,6 +122,11 @@ session never deletes the remote resource.
   `Cloud Runtime Session` for the NoraCloud resource.
 - Global Usage must state whether it covers this installation, the signed-in user, or a server-side
   account aggregation.
+- NoraCloud must provide stable user-facing identity, behavior, and change summaries for a Version.
+  The summaries belong to the published configuration so the right panel and Settings show the
+  same meaning.
+- LLM, listening, and speaking labels need a friendly display name in addition to their technical
+  provider/model values.
 
 ## Open Questions
 
