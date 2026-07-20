@@ -1,16 +1,11 @@
 # Journey 1: Cloud Resource Awareness Across Conversation, Workspace, And Settings
 
-This record is the source of truth for `cloud-resource-awareness.wireframe.html`. It defines three
-connected scopes:
+This record is the source of truth for `cloud-resource-awareness.wireframe.html`.
+It covers one focused journey: local Workspace changes are ready, the user asks to update the bound
+NoraCloud Agent, approves one explicit proposal, and receives a factual result.
 
-1. one stateful Cloud operation card in the Conversation that performs the mutation;
-2. one right-workbench Cloud view for the current Workspace;
-3. one Settings Cloud category for the signed-in identity's global system information.
-
-The Conversation records the decision and receipt. The Workspace contains the local Agent
-definition and NoraCloud binding. NoraCloud resources persist independently of both. The Cloud UI
-in this journey is proposed; the surrounding Conversation, Workspace, right-workbench, and Settings
-shapes already exist.
+Ordinary Agent messages and tool calls already exist. The Cloud proposal, factual resource receipt,
+Workspace Cloud overview, and global Cloud system page inside Settings are proposed.
 
 ## Numbering And Route Tables
 
@@ -18,465 +13,318 @@ shapes already exist.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | Main step | Journey 1 | Local Agent work stays in existing UI. | Edits and verifies the Agent locally. | Existing conversation, file, tool, Terminal, Device, and Preview surfaces report local work; no Cloud card appears. | Workspace files may change; no Cloud resource changes. | `2` |
-| `2` | Main step | Journey 1 | An existing linked Agent is ready for a remote update. | Reviews changed sources and selects `Create Version`, `Create and make Live`, or `Not now`. | One Cloud operation card compares Workspace changes with Live and states Device impact. | One exact operation scope waits for a decision. | `3`, `2.1`, `2.2`, or `2.3` |
-| `3` | Main step | Journey 1 | The selected Version-and-Live update runs. | Watches factual stages or opens technical details. | The same card creates a Version, moves Live, and verifies the returned remote state. | Confirmed stage results accumulate on one operation record. | `4`, `3.1`, `3.2`, `4.1`, or `4.2` |
-| `4` | Main step | Journey 1 | The Agent update reaches a stable result. | Reviews the receipt or opens Workspace Cloud. | The same card states the created Version, Live transition, affected Devices, changed configuration, and work not performed. | The operation closes; the receipt remains in this Conversation. | `5` or end |
-| `5` | Main step | Journey 1 | Current Workspace Cloud state is visible. | Reviews local-vs-Live configuration and linked resources. | Right `Cloud` identifies the current Workspace, readable Agent configuration, source drift, bound Agent, Live Version, Devices, Cloud Conversation, and access readiness. | Workspace binding and remote facts refresh; no Conversation ownership is created. | `6` or end |
-| `6` | Main step | Journey 1 | Global Cloud system information is visible. | Opens `View all in Settings`. | Settings shows current NoraCloud identity, deduplicated resources, credential attention, and honest NoraCloud Usage availability. | Remote inventory and Usage availability refresh independently. | End |
+| `1` | Main step | Journey 1 | Local Agent change is in progress. | Asks for a behavior or model change. | The Agent explains the local scope; completed file tools are collapsed and the current validation tool is expanded as `Running`. | Workspace files change; NoraCloud and firmware remain unchanged. | `2` |
+| `2` | Main step | Journey 1 | Local work reaches a stable result. | Reviews the Assistant response and Workspace Changes. | A normal Assistant message summarizes the changes and states that firmware and NoraCloud were not changed. | The local turn closes with validated Workspace changes. | `3` after an explicit Cloud-update request, or end |
+| `3` | Main step | Journey 1 | One exact Cloud update waits for approval. | Reviews the proposal, clicks `Approve`, replies `Approve`, or chooses `Not now`. | The card names the Agent, current Live, new Version, Live transition, affected Devices, and excluded work. Only `Approve` and `Not now` are actions. | One proposal becomes the pending approval target; no mutation starts before approval. | `4` or `3.1` |
+| `4` | Main step | Journey 1 | The Cloud update reaches a stable result. | Reviews the receipt or opens Cloud overview. | The receipt separates the created Version, Live transition, affected Devices, and work that did not occur. There is no separate product-level execution screen. | The operation closes and the Workspace Cloud snapshot begins refreshing. | End, `4.1`, or `4.2` |
 
 ### Branch States
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `2.1` | Branch | `2 Agent Update Decision` | The user's instruction already explicitly requests the displayed Version-and-Live consequence. | Reads the consequence while execution continues without a redundant question. | The same card says `Scope covered by instruction`; all consequences remain visible. | The displayed scope becomes approved. | `3` |
-| `2.2` | Branch | `2 Agent Update Decision` | The user defers Cloud work. | Chooses `Not now`. | The same card says `Deferred`; local files remain available and no remote change is claimed. | The operation closes without mutation. | `1` or end |
-| `2.3` | Branch | `2 Agent Update Decision` | The user creates a new immutable Version without changing Live. | Chooses `Create Version`. | The card explicitly says Live remains v12 and Devices following Live are unaffected. | Version-only scope becomes approved. | `2.3.1` |
-| `2.3.1` | Branch | `2.3 Create Version Without Changing Live` | The non-Live Version is created. | Reviews the receipt or opens Workspace Cloud. | The same card says `Version v13 created`, `Live remains v12`, and `Device impact: none`. | The new Version persists; Live does not move. | `5` or end |
-| `5.1` | Branch | `5 Current Workspace Cloud` | The Workspace has no valid NoraCloud binding. | Reads the empty state or starts a publish request in Conversation. | `This Workspace is not linked to NoraCloud` appears; global Settings remains available. | Absence of a valid Workspace binding becomes known. | `2`, `6`, or end |
-| `5.2` | Branch | `5 Current Workspace Cloud` | Local configuration or remote Live changed since the last trusted comparison. | Reviews the new comparison or returns to Conversation. | The panel names `Changed locally` sources or a changed remote Live Version and prevents stale mutation assumptions. | Workspace comparison advances to current local and remote facts. | `2` or end |
-| `6.1` | Branch | `6 Settings Cloud System Information` | A remote Agent has no link from a local Workspace. | Reviews the Agent and last activity. | The global inventory keeps it and labels `No local Workspace link`. | No local ownership is invented. | `6` or end |
-| `6.2` | Branch | `6 Settings Cloud System Information` | Global inventory refresh fails. | Reviews saved values, retries, or closes Settings. | Last trusted values remain `Stale`; without a snapshot the page says `Unavailable`, never zero. | Historical values remain timestamped. | `6` or end |
+| `3.1` | Branch | `3 Cloud Update Proposal` | The user defers the update. | Clicks `Not now` or gives an equivalent reply. | The proposal settles to `Deferred`; validated Workspace changes remain available. | No Cloud mutation occurs. | `2` or end |
+| `4.1` | Branch | `4 Resource Receipt` | The result is partial or cannot be confirmed. | Reviews known facts and the next safe action. | Confirmed resources remain visible. Failed stages are distinct; an unknown outcome pauses duplicate mutation. | Recovery starts from confirmed state rather than repeating the whole operation. | `4` after recovery or end |
 
 ### Detail States
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `2.4` | Detail state | `2 Agent Update Decision` | One card supports several NoraCloud mutations. | Compares operation examples. | Existing-Agent update, first publish, release, Device registration, and bounded Cloud tests reuse the same component with operation-specific consequences. | No mutation occurs. | `2` |
-| `2.5` | Detail state | `2 Agent Update Decision` | First publish has a different invariant. | Reviews first-publish details. | The card says first publish creates the Agent and first Version and sets that Version Live; Version-only is not offered. | No mutation occurs. | `2` |
-| `5.3` | Detail state | `5 Current Workspace Cloud` | Readable Agent configuration. | Scans the primary card. | Identity, Behavior, Live Version, LLM, listening, and speaking are readable without interpreting IDs. | No configuration changes. | `5` |
-| `5.4` | Detail state | `5 Current Workspace Cloud` | Configuration source comparison. | Opens a source or compares with Live. | `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json` show `Live`, `Changed locally`, `Not published`, or `Missing`; full content opens in the main area. | No configuration changes. | `5` |
-| `5.5` | Detail state | `5 Current Workspace Cloud` | Workspace binding and linked resources. | Scans related resources. | The bound Agent, Live Version, Devices on that Agent, stored Cloud Conversation, and Cloud access readiness are visible without claiming Workspace ownership. | No ownership changes. | `5` |
-| `6.3` | Detail state | `6 Settings Cloud System Information` | Global resource deduplication. | Reviews counts or expands a resource. | Each NoraCloud resource is counted once; local Workspace links are secondary context. | No mutation occurs. | `6` |
-| `6.4` | Detail state | `6 Settings Cloud System Information` | NoraCloud Usage availability. | Reads totals or the unavailable state. | Complete NoraCloud LLM, STT, and TTS totals show only when account-wide metering exists; otherwise the card says `Unavailable`. | No total is inferred from coding Run Records. | `6` |
+| `1.1` | Detail state | `1 Local Agent Change In Progress` | Firmware is part of another local task. | Watches the actual firmware tool. | The active Build or Flash tool is expanded; completed file and preview tools remain collapsed. | Firmware evidence changes only when the corresponding tool returns. | `1` or `2` |
+| `3.2` | Detail state | `3 Cloud Update Proposal` | Approval input method. | Clicks `Approve` or sends `Approve` as a normal reply. | Button approval resolves the confirmation in place; conversational approval appears as a user message. Both accept the same one pending proposal exactly once. | The proposal becomes approved and execution starts. | `4` |
+| `4.2` | Detail state | `4 Resource Receipt` | Open the Workspace Cloud overview. | Clicks `Open Cloud overview`. | The right workbench selects `Cloud`, preserves the conversation, shows the last trusted snapshot, and refreshes. | The Workspace Cloud snapshot starts refreshing. | Journey 1, step `2` |
+| `4.3` | Detail state | `4 Resource Receipt` | Technical details. | Expands technical details. | Command summary, returned identifiers, diagnostics, and logs are available below the product result. | Expanding details changes no Cloud state. | `4` |
+| `4.5` | Detail state | `4 Resource Receipt` | Open the global Cloud system overview in Settings. | Opens `Settings`, then selects `Cloud`. | A proposed Settings category provides account-level entry points for Agents and Cloud Sessions plus cumulative Recorded Usage. Versions and Devices are reached through their owning Agents. | The global Cloud snapshot begins refreshing; no Cloud mutation occurs. | `4.5.1`, `4.5.2`, `4`, or end |
+| `4.5.1` | Detail state | `4.5 Global Cloud Overview In Settings` | Browse account Agents. | Opens `Agents`. | The list shows each Agent's name, masked ID, Live Version, and creation/update time. | The selected resource category becomes Agents; no Cloud mutation occurs. | `4.5.1.1` or `4.5` |
+| `4.5.1.1` | Detail state | `4.5.1 Agents List` | Inspect one Agent. | Opens an Agent row. | The detail shows Agent identity, current Live, creation/update time, Live configuration summary, Versions, and Devices. | The selected Agent becomes the Settings resource context. | `4.5.1.1.1`, `4.5.1.1.2`, or `4.5.1` |
+| `4.5.1.1.1` | Detail state | `4.5.1.1 Agent Detail` | Inspect an immutable Version. | Opens a Version row. | The detail shows Version status, description, LLM/voice/cron configuration, and published instruction filenames. Matching local files may be opened or compared; remote Markdown content is not fabricated. | No Cloud state changes. | `4.5.1.1` |
+| `4.5.1.1.2` | Detail state | `4.5.1.1 Agent Detail` | Inspect one Device. | Opens a Device row. | The detail shows owning Agent, connection, follow-Live or pinned track, resolved Version, last seen time, and current Session. | No Cloud state changes. | `4.5.1.1`, `4.5.2.1`, or end |
+| `4.5.2` | Detail state | `4.5 Global Cloud Overview In Settings` | Browse account Cloud Sessions. | Opens `Cloud Sessions` or `View by Session` from Recorded Usage. | The account-wide list supports active/ended and Device filters and shows Agent, Device, Version at start, last activity, turns, and recorded Usage. | The selected resource category becomes Sessions; no Cloud mutation occurs. | `4.5.2.1` or `4.5` |
+| `4.5.2.1` | Detail state | `4.5.2 Sessions List` | Inspect one Cloud Session. | Opens a Session row. | The detail shows status, Agent, Device, Version at start, timestamps, turn count, and available LLM/STT/TTS Usage. Logs/export remain secondary and no destructive action is offered. | No Cloud state changes. | `4.5.2` or end |
 
 ### State Language
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `0.1` | State language | Journey 1 | Operation status. | None. | `Waiting for decision`, `Scope covered`, `Running`, `Completed`, `Partial`, `Outcome unknown`, `Deferred`, or `Blocked`. | None. | None |
-| `0.2` | State language | Journey 1 | Resource freshness. | None. | `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a timestamp when one exists. | None. | None |
-| `0.3` | State language | Journey 1 | Scope terminology. | None. | `Conversation` is the NoraHarness interaction history; `Workspace` is the shared local project context; `Cloud Conversation` is the NoraCloud remote conversation. | None. | None |
-| `0.4` | State language | Journey 1 | Version terminology. | None. | `Version` is immutable; `Live` is the Agent pointer used by Devices following Live. `Candidate` is not a separate resource label. | None. | None |
-| `0.5` | State language | Journey 1 | Usage terminology. | None. | `NoraCloud Usage` means complete Cloud metering. Coding Agent tokens and Run Records are not Cloud Usage. | None. | None |
+| `0.1` | State language | Journey 1 | Proposal and result status. | None. | `Waiting for you`, `Deferred`, `Completed`, `Partial`, and `Outcome unknown`. | None. | None |
+| `0.2` | State language | Journey 1 | Version language. | None. | Real masked `ver_…` IDs with `Live`, `Non-Live`, or `Previous Live`; no invented v1/v2 numbering. | None. | None |
+| `0.3` | State language | Journey 1 | Approval language. | None. | `Approve` and `Not now`. Clicking or replying `Approve` accepts the same one pending proposal. | None. | None |
+| `0.4` | State language | Journey 1 | Secret language. | None. | Credential type, protected destination, and status may appear; secret values do not. | None. | None |
 
 ### Errors And Recovery
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `3.1` | Recovery summary | `3 Agent Update Running` | Required NoraCloud access is unavailable. | Opens the approved Settings surface or defers. | The same operation card becomes `Blocked`, names the access problem, and never displays a secret. | Only the consuming operation pauses. | `2` or end |
-| `3.2` | Recovery summary | `3 Agent Update Running` | Live moved after the user reviewed the operation. | Reviews current Live or cancels. | The card shows reviewed Live, current Live, and target; the previous decision is invalidated. | Live mutation stops until reviewed again. | `2` or end |
-| `4.1` | Recovery summary | `4 Agent Update Receipt` | Version creation succeeded but changing Live failed. | Reviews retained Version and current Live. | The same card says `Partial`, keeps the created Version, and states that Live and Devices did not change. | The Version persists; confirmed facts remain available. | `5` or end |
-| `4.2` | Recovery summary | `4 Agent Update Receipt` | Remote outcome cannot be proven. | Requests a safe read or stops. | The same card says `Outcome unknown`; duplicate mutation remains paused. | The operation remains unresolved. | End |
+| `4.4` | Recovery summary | `4 Resource Receipt` | Partial and unknown outcomes. | Reads confirmed resources and the next safe action. | Known IDs survive failure. Unknown outcomes stop automatic duplicate mutation until read-only discovery establishes reality. | Recovery resumes from the last confirmed stage. | `4` or end |
 
 ### Route Table
 
 | Route | Composition | Result / next state |
 | --- | --- | --- |
-| Update and make Live | `1 -> 2 -> 3 -> 4 -> 5 -> 6` | A Version is created, Live moves, Workspace truth refreshes, and Settings shows global state. |
-| Precise instruction | `1 -> 2 -> 2.1 -> 3 -> 4 -> 5` | Consequences stay visible without repeating a decision already made by the user. |
-| Create Version only | `1 -> 2 -> 2.3 -> 2.3.1 -> 5` | A new Version persists while Live and Devices remain unchanged. |
-| Defer Cloud work | `1 -> 2 -> 2.2 -> 1` | Local development continues without remote mutation. |
-| Partial result | `1 -> 2 -> 3 -> 4.1 -> 5 -> 6` | The created Version remains visible while Live stays unchanged. |
-| Outcome unknown | `1 -> 2 -> 3 -> 4.2` | Duplicate mutation stops until remote truth is known. |
-| Workspace comparison changed | `5 -> 5.2 -> 2` | Local and remote facts refresh before another mutation. |
-| Unlinked global Agent | `6 -> 6.1 -> 6` | Settings retains remote resources independently of local Workspace links. |
-| Global refresh recovery | `6 -> 6.2 -> 6` | Trusted global facts remain historical until refresh succeeds. |
+| Approve Cloud update | `1 -> 2 -> 3 -> 4` | Button approval or a typed `Approve` produces the same factual receipt. |
+| Defer Cloud update | `1 -> 2 -> 3 -> 3.1 -> 2` | Local validated changes remain available with no Cloud mutation. |
+| Result needs attention | `1 -> 2 -> 3 -> 4.1` | Confirmed facts remain visible and recovery avoids unsafe duplicate mutation. |
 
 ## Main Path
 
-### 1 Existing Local Agent Work
+### 1 Local Agent Change In Progress
 
-User entry: the user asks the coding Agent to modify an Agent linked to a Workspace.
+User entry: the user asks to change Agent behavior or its reasoning model.
 
-User action: edits or asks the coding Agent to edit identity, behavior, models, voice, firmware, or
-other local product files, then reviews local results.
-
-Visible UI state: ordinary conversation, files, tools, Terminal, Device, and Preview report local
-work. No Cloud resource-awareness card appears merely because local files changed.
-
-Client state change: Workspace files and local artifacts may change. NoraCloud remains unchanged.
-
-Exit / next state: `2 Agent Update Decision` when a remote mutation is about to occur.
-
-### 2 Agent Update Decision
-
-User entry: the next action would publish the current Workspace Agent definition.
-
-User action: chooses `Create Version`, `Create and make Live`, or `Not now`. If the original user
-instruction already explicitly includes the displayed outcome, the card records that scope without
-asking the same question again.
-
-Visible UI state: one operation card shows the linked Agent, current Live Version, changed source
-files, readable behavior/model changes, and Device impact. It explains that `Create Version` leaves
-Live unchanged and `Create and make Live` moves Live after creating the Version.
-
-Client state change: one exact operation scope becomes pending or approved. No mutation occurs
-while a required decision is pending.
-
-Exit / next state: `3 Agent Update Running`, `2.1 Scope Covered By Instruction`, `2.2 Cloud Work
-Deferred`, or `2.3 Create Version Without Changing Live`.
-
-### 3 Agent Update Running
-
-User entry: Version creation and Live movement are approved.
-
-User action: watches progress or expands technical details.
-
-Visible UI state: the same operation card advances through collecting the Workspace configuration,
-creating the Version, moving Live, and verifying current remote state. IDs appear only after they
-are returned. Completed stages remain visible after a later failure.
-
-Client state change: factual stage results accumulate on the same operation record.
-
-Exit / next state: `4 Agent Update Receipt`, `3.1 Cloud Access Blocked`, `3.2 Live Changed During
-Update`, `4.1 Partial Result`, or `4.2 Outcome Unknown`.
-
-### 4 Agent Update Receipt
-
-User entry: the update reaches a stable result.
-
-User action: reviews the result, continues the task, or opens Workspace Cloud.
-
-Visible UI state: the same card states the created Version, previous and current Live Versions,
-Devices following Live, changed Agent sources, verification time, and work not performed. It offers
-`Open Workspace Cloud` and configuration details.
-
-Client state change: the receipt remains in this Conversation. The Workspace binding and remote
-resources persist independently.
-
-Exit / next state: `5 Current Workspace Cloud` or end.
-
-### 5 Current Workspace Cloud
-
-User entry: the user selects `Cloud` beside `All Files`, `Changes`, `Device`, and `Preview`, or opens
-it from an operation receipt.
-
-User action: reviews the current Workspace's local Agent definition, comparison with Live, and
-linked NoraCloud resources.
+User action: watches ordinary Agent progress and may inspect completed tools.
 
 Visible UI state:
 
-- Header: `Cloud · Current Workspace`, Workspace name, freshness, and refresh.
-- `Agent Configuration`: readable Identity and Behavior, Live Version, LLM, listening, speaking,
-  and per-source status for `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json`.
-- `Linked Cloud Resources`: bound Agent, Live Version, Devices on the Agent, stored Cloud
-  Conversation when present, and NoraCloud access readiness.
-- `Compare with Live` opens a local-versus-Live comparison; selecting a source opens it in the main
-  area.
-- `View all in Settings` opens the global system-information level.
-- No `Used By This Coding Session` or Coding Session Usage card appears.
+- The Agent says it is changing the local Agent definition and not changing NoraCloud in this step.
+- Completed file tools are collapsed.
+- The current validation tool is expanded with `Running`.
+- No synthesized task-stage or file-summary card appears.
 
-Switching between Conversations in the same Workspace leaves this panel unchanged. Switching to a
-tab in another Workspace changes the panel to that Workspace. A Conversation with no Workspace
-context does not show Workspace panels.
+Client state change: local Agent files change; Cloud and firmware state do not.
 
-Client state change: local sources, Workspace binding, and remote facts refresh independently.
+Exit / next state: `2 Local Agent Change Ready`.
 
-Exit / next state: `6 Settings Cloud System Information` or end.
+### 2 Local Agent Change Ready
 
-### 6 Settings Cloud System Information
+User entry: local validation completes.
 
-User entry: the user opens Settings and selects `Cloud`, or clicks `View all in Settings` from the
-right panel.
+User action: reviews the normal Assistant message and Workspace Changes.
 
-User action: reviews global Cloud inventory, credential attention, and NoraCloud Usage
-availability.
+Visible UI state: the message names the behavioral and model changes, says firmware was not
+modified, and says NoraCloud was not changed. A Cloud proposal does not appear until the user asks
+for a Cloud update.
 
-Visible UI state:
+Client state change: the local turn closes with validated Workspace changes.
 
-- Settings keeps its left category navigation; `Cloud` is selected inside Settings.
-- Header: current NoraCloud identity/environment, signed-in state, freshness, and refresh.
-- `Cloud Resources`: deduplicated Agents, Versions, Devices, and Cloud Conversations; readable Agent
-  rows; current Live state; related resource counts; optional local Workspace link count.
-- `NoraCloud Usage`: complete account-level LLM, STT, and TTS totals when available. Otherwise it
-  says `Unavailable` and explains that coding Run Records are not substituted.
-- Direct Cloud mutation is absent. Settings may link back to a relevant Workspace or approved
-  credential surface.
+Exit / next state: end, or `3 Cloud Update Proposal`.
 
-Client state change: global inventory and Usage availability refresh from NoraCloud.
+### 3 Cloud Update Proposal
 
-Exit / next state: end.
+User entry: the user asks to update the bound NoraCloud Agent with the Workspace changes.
+
+User action: reviews the exact proposal, approves it by button or reply, or defers it.
+
+Visible UI state: the proposal names current Live, the new Version, the Live transition, affected
+Devices, and excluded firmware/device work. Actions are `Approve` and `Not now`; the user may also
+reply `Approve`.
+
+Client state change: one proposal becomes the pending approval target; no mutation occurs before
+approval.
+
+Exit / next state: `4 Resource Receipt` after execution, or `3.1 Cloud Update Deferred`.
+
+### 4 Resource Receipt
+
+User entry: the approved update reaches a stable result.
+
+User action: reviews consequences or opens Cloud overview.
+
+Visible UI state: created Version, Live transition, affected Devices, and explicitly excluded
+firmware, Device registration, and Cloud testing are separated. The PM journey does not insert a
+separate execution-progress screen between approval and receipt.
+
+Client state change: the operation closes and the Workspace Cloud snapshot begins refreshing.
+
+Exit / next state: end, `4.1 Result Needs Attention`, or `4.2 Open Cloud Overview`.
 
 ## Branch Journeys
 
-### 2.1 Scope Covered By Instruction
+### 3.1 Cloud Update Deferred
 
-Trigger: the user explicitly requested the same Agent, Version creation, Live movement, Device
-impact, and verification scope displayed by the card.
+Trigger: the user selects `Not now` or gives an equivalent reply.
 
-Visible UI state: the same card says `Scope covered by instruction`; consequences remain visible
-and redundant decision controls are absent.
+Visible UI state: the proposal settles to `Deferred`; local validated changes remain available.
 
-Allowed user actions: stop if still safe, inspect details, or let execution continue.
+Allowed user actions: continue local work or request the Cloud update later.
 
-Recovery / next state: `3 Agent Update Running`.
+Recovery / next state: `2 Local Agent Change Ready` or end.
 
-Blocks progress: no.
+Blocks progress: only the Cloud update.
 
-### 2.2 Cloud Work Deferred
+### 4.1 Result Needs Attention
 
-Trigger: the user chooses `Not now`.
+Trigger: some resource stages completed before failure, or the remote outcome cannot be confirmed.
 
-Visible UI state: the same card says `Deferred`, `No remote changes`, and `Local Workspace changes
-remain available`.
+Visible UI state: confirmed resources retain their IDs. Failed and unstarted stages remain distinct.
+For an unknown outcome, automatic retry is paused and a safe read-only check is offered.
 
-Allowed user actions: continue local work or request publication later.
+Allowed user actions: inspect technical details, check current Cloud state, or stop.
 
-Recovery / next state: `1 Existing Local Agent Work` or end.
+Recovery / next state: `4 Resource Receipt` after recovery, or end.
 
-Blocks progress: only the deferred Cloud outcome.
-
-### 2.3 Create Version Without Changing Live
-
-Trigger: the user chooses `Create Version`.
-
-Visible UI state: the card says a new immutable Version will be created, Live remains v12, and
-Devices following Live are unaffected.
-
-Allowed user actions: proceed, inspect details, or cancel before mutation.
-
-Recovery / next state: `2.3.1 Version-Only Receipt`.
-
-Blocks progress: no after approval.
-
-### 2.3.1 Version-Only Receipt
-
-Trigger: the Version-only operation completes.
-
-Visible UI state: the same card says `Version v13 created`, `Live remains v12`, changed sources, and
-`Device impact: none`.
-
-Allowed user actions: open Workspace Cloud, compare with Live, or continue locally.
-
-Recovery / next state: `5 Current Workspace Cloud` or end.
-
-Blocks progress: no.
-
-### 5.1 Workspace Not Linked
-
-Trigger: the current Workspace has no valid NoraCloud binding.
-
-Visible UI state: `This Workspace is not linked to NoraCloud`; no Agent, Version, Device, or Cloud
-Conversation relationship is invented. `View all in Settings` remains available.
-
-Allowed user actions: request first publish in Conversation, refresh, or open Settings.
-
-Recovery / next state: `2 Agent Update Decision`, `6 Settings Cloud System Information`, or end.
-
-Blocks progress: only Workspace-scoped Cloud inspection and mutation.
-
-### 5.2 Workspace Or Live Changed
-
-Trigger: a local source differs from Live, or remote Live differs from the last trusted comparison.
-
-Visible UI state: source rows name `Changed locally`, `Not published`, or `Missing`; a remote change
-names previous and current Live Versions. IDs remain in technical details.
-
-Allowed user actions: compare with Live, open a source, refresh, or return to Conversation.
-
-Recovery / next state: `2 Agent Update Decision` before mutation, or end.
-
-Blocks progress: only mutation based on stale facts.
-
-### 6.1 Remote Agent Without Local Workspace Link
-
-Trigger: NoraCloud inventory contains an Agent not linked by any local Workspace.
-
-Visible UI state: the Agent remains counted and says `No local Workspace link`, with remote last
-activity when available.
-
-Allowed user actions: inspect its remote status or close Settings.
-
-Recovery / next state: `6 Settings Cloud System Information`.
-
-Blocks progress: no.
-
-### 6.2 Global Inventory Refresh Failure
-
-Trigger: global Cloud refresh fails.
-
-Visible UI state: a trusted inventory stays visible as `Stale` with its timestamp. Without a
-trusted inventory, the page says `Unavailable`; it never replaces unknown state with zero counts.
-
-Allowed user actions: retry, check sign-in, or close Settings.
-
-Recovery / next state: `6 Settings Cloud System Information` after recovery, or end.
-
-Blocks progress: only actions requiring fresh remote truth.
+Blocks progress: only related Cloud mutation.
 
 ## Detail States
 
-### 2.4 One Component, Different Operations
+### 1.1 Firmware Tool Progress
 
-Trigger: the reviewer compares operation families.
+Trigger: the local task actually includes firmware work.
 
-Visible UI state: existing-Agent update, first publish, release, Device registration, and bounded
-Cloud tests reuse one stateful operation component. Each operation displays only its real resource
-and consumption consequences.
+Visible UI state: the active firmware tool is expanded with its real Running state; completed file
+and preview tools stay collapsed.
 
-Allowed user actions: return to the operation.
+Allowed user actions: inspect completed tools, watch the running tool, or stop the run.
 
-Exit / next state: `2 Agent Update Decision`.
+Exit / next state: `1 Local Agent Change In Progress` or `2 Local Agent Change Ready`.
 
-### 2.5 First Publish Rule
+### 3.2 Approval Input Method
 
-Trigger: the Workspace has no binding and the user requests first publish.
+Trigger: one proposal is pending.
 
-Visible UI state: the operation card says it will create the Agent and first Version and set that
-Version Live. It does not offer Version-only because first publish cannot produce that outcome.
+Visible UI state: clicking `Approve` resolves the confirmation in place. Sending `Approve` appears
+as a normal user message. Both accept the same proposal and lead to the same result.
 
-Allowed user actions: publish or defer.
+Allowed user actions: use either approval input, or select `Not now`.
 
-Exit / next state: `2 Agent Update Decision`.
+Exit / next state: `4 Resource Receipt` or `3.1 Cloud Update Deferred`.
 
-### 5.3 Readable Agent Configuration
+### 4.2 Open Cloud Overview
 
-Trigger: the Workspace is linked to an Agent.
+Trigger: the user clicks `Open Cloud overview`.
 
-Visible UI state: the primary card identifies what the Agent is, how it behaves, which Version is
-Live, and its LLM, listening, and speaking capabilities.
+Visible UI state: the right workbench selects `Cloud`, keeps the conversation active, restores the
+last trusted snapshot, and refreshes it.
 
-Allowed user actions: open configuration details, compare with Live, refresh, or return to chat.
+Allowed user actions: review, refresh, return to the conversation, or open Settings for the global
+Cloud inventory.
 
-Exit / next state: `5 Current Workspace Cloud`.
+Exit / next state: Journey 1, step `2`.
 
-### 5.4 Configuration Source Comparison
+### 4.3 Technical Details
 
-Trigger: the Agent configuration card is visible.
+Trigger: the user expands technical details from the receipt.
 
-Visible UI state: `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json` show deterministic
-comparison states. Identity and safe behavior excerpts remain readable; full Markdown opens in the
-main editor. `USER.md` body is not exposed by default.
+Visible UI state: command summary, returned identifiers, diagnostics, and logs appear below the
+product result.
 
-Allowed user actions: open a source, compare with Live, or close details.
+Allowed user actions: inspect or collapse details.
 
-Exit / next state: `5 Current Workspace Cloud`.
+Exit / next state: `4 Resource Receipt`.
 
-### 5.5 Workspace Binding And Linked Resources
+### 4.5 Global Cloud Overview In Settings
 
-Trigger: the Workspace has a valid NoraCloud binding.
+Trigger: the user opens `Settings` and selects the proposed `Cloud` category.
 
-Visible UI state: the bound Agent, its current Live Version, Devices on that Agent, the stored Cloud
-Conversation when present, and Cloud access readiness appear as linked facts. The panel never says
-the Workspace owns these remote resources.
+Visible UI state: the existing full-screen Settings shell remains intact. The proposed Cloud page
+shows an account-wide Agents entry, an account-wide Cloud Sessions entry, and cumulative Recorded
+Usage. Versions and Devices are described as children of an Agent rather than presented as
+unsupported account-wide totals. `View by Session` opens the same Sessions list rather than creating
+another unrelated Usage destination. Credential information is not repeated on this overview.
 
-Allowed user actions: refresh, return to Conversation, or open Settings Cloud.
+The page states its global account scope and update time. It does not present current coding-session
+context usage, Workspace-only totals, billing, balance, or remaining quota.
 
-Exit / next state: `5 Current Workspace Cloud`.
+Allowed user actions: refresh the global snapshot, open Agents, open Cloud Sessions, view Usage by
+Session, or return to the app.
 
-### 6.3 Global Resource Deduplication
+Exit / next state: `4.5.1 Agents List`, `4.5.2 Sessions List`, `4 Resource Receipt`, or end.
 
-Trigger: several local Workspaces link the same remote Agent or no local Workspace links it.
+### 4.5.1 Agents List
 
-Visible UI state: Settings counts the remote resource once and shows local Workspace links only as
-secondary context.
+Trigger: the user opens Agents from the global Cloud overview.
 
-Allowed user actions: inspect the resource or a linked Workspace.
+Visible UI state: the Settings shell remains. `Cloud / Agents` lists the account's Agents with name,
+masked ID, Live Version, and created/updated time. Versions and Devices are not presented as
+unsupported account-wide lists or counts.
 
-Exit / next state: `6 Settings Cloud System Information`.
+Allowed user actions: open an Agent or return to the Cloud overview.
 
-### 6.4 NoraCloud Usage Availability
+Exit / next state: `4.5.1.1 Agent Detail` or `4.5 Global Cloud Overview In Settings`.
 
-Trigger: Settings renders the NoraCloud Usage section.
+### 4.5.1.1 Agent Detail
 
-Visible UI state: complete account-level LLM, STT, and TTS totals appear only when NoraCloud reports
-complete coverage. Otherwise the section says `Unavailable` and explains the missing dependency.
+Trigger: the user selects one Agent.
 
-Allowed user actions: read or refresh.
+Visible UI state: Agent name and masked ID, current Live, created/updated time, and the Live
+configuration summary appear first. Versions show real IDs, Live/non-Live state, description, and
+creation time. Devices show name, connection, track/resolved Version, and last seen state.
 
-Exit / next state: `6 Settings Cloud System Information`.
+Allowed user actions: open a Version, open a Device, or return to Agents.
+
+Exit / next state: `4.5.1.1.1 Version Detail`, `4.5.1.1.2 Device Detail`, or `4.5.1 Agents List`.
+
+### 4.5.1.1.1 Version Detail
+
+Trigger: the user opens one Version.
+
+Visible UI state: the immutable Version shows Agent, real ID, Live/status, description, creation
+time, LLM, STT, TTS, and cron summary. The instruction bundle lists filenames such as `SOUL.md`,
+`IDENTITY.md`, `USER.md`, and Skill Markdown. Full remote Markdown is not shown because the current
+read API returns filename, size, and digest rather than content.
+
+When a known local Workspace contains the same file and its digest matches, the row offers
+`Open local file`. When the digest differs, it offers `Compare`. A file with no matching local source
+is labeled `Not available locally`. Digests and sizes remain under technical details.
+
+Allowed user actions: open a verified local file, compare a changed local file, expand technical
+details, or return to the Agent.
+
+Exit / next state: `4.5.1.1 Agent Detail`.
+
+### 4.5.1.1.2 Device Detail
+
+Trigger: the user opens one Device from Agent Detail.
+
+Visible UI state: Device name and masked ID, owning Agent, connection, follow-Live or pinned track,
+resolved Version, last seen time, and current Session are shown. Credential material is not shown.
+
+Allowed user actions: open the current Session when present or return to the Agent.
+
+Exit / next state: `4.5.2.1 Session Detail`, `4.5.1.1 Agent Detail`, or end.
+
+### 4.5.2 Sessions List
+
+Trigger: the user opens Cloud Sessions or selects `View by Session` from Recorded Usage.
+
+Visible UI state: an account-wide list shows active/ended status, Agent, optional Device, Version at
+start, last activity, turns, and available recorded Usage. Active/ended and Device filters are
+available. Entering from Usage sorts or focuses the same list by Usage without changing resource
+semantics.
+
+Allowed user actions: filter, open a Session, or return to the Cloud overview.
+
+Exit / next state: `4.5.2.1 Session Detail` or `4.5 Global Cloud Overview In Settings`.
+
+### 4.5.2.1 Session Detail
+
+Trigger: the user opens one Cloud Session.
+
+Visible UI state: Session ID and status, Agent, Device when present, Version at start, started/ended
+timestamps, last interaction, turn count, context tokens, and available LLM/STT/TTS Usage are shown.
+Logs and export are secondary read surfaces. No `End Session` action is included in this
+system-information proposal.
+
+Allowed user actions: inspect logs, export the Session record, open related resources, or return to
+Sessions.
+
+Exit / next state: `4.5.2 Sessions List` or end.
 
 ## State Language
 
-### 0.1 Operation Status
+### 0.1 Proposal And Result Status
 
-Visible language: `Waiting for decision`, `Scope covered`, `Running`, `Completed`, `Partial`,
-`Outcome unknown`, `Deferred`, and `Blocked`.
+Visible language: `Waiting for you`, `Deferred`, `Completed`, `Partial`, and `Outcome unknown`.
 
-Usage: the single operation card shows one status at a time.
+### 0.2 Version Language
 
-### 0.2 Resource Freshness
+Visible language: real masked `ver_…` IDs with `Live`, `Non-Live`, or `Previous Live`.
 
-Visible language: `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a trusted timestamp when one
-exists.
+### 0.3 Approval Language
 
-Usage: Workspace Cloud and Settings each state the scope of the refreshed data.
+Visible language: `Approve` and `Not now`. Button and conversational approval accept the same one
+pending proposal.
 
-### 0.3 Scope Terminology
+### 0.4 Secret Language
 
-Visible language: `Conversation`, `Current Workspace`, and `Cloud Conversation`.
-
-Usage: distinguish interaction history, shared local project context, and NoraCloud remote
-conversation.
-
-### 0.4 Version And Live Terminology
-
-Visible language: `Version v13 created`, `Live remains v12`, or `Live v12 → v13`.
-
-Usage: describe the real immutable Version and mutable Live pointer. Do not present `Candidate` as a
-separate resource.
-
-### 0.5 Usage Terminology
-
-Visible language: `NoraCloud Usage` or `Usage unavailable`.
-
-Usage: only complete NoraCloud metering. Coding Agent tokens and Run Records remain outside Cloud
-surfaces.
+Visible language: credential type, protected destination, and status. Secret values never appear.
 
 ## Errors And Recovery
 
-### 3.1 Cloud Access Blocked
+### 4.4 Partial And Unknown Outcomes
 
-Trigger: the operation requires missing, expired, or unsafe NoraCloud access.
-
-Visible UI state: the same operation card says `Blocked`, names the access requirement and safe
-Settings destination, and never displays or requests a secret in plain conversation text.
-
-Allowed user actions: configure safely, defer, or cancel.
-
-Recovery / next state: `2 Agent Update Decision` or end.
-
-### 3.2 Live Changed During Update
-
-Trigger: current Live differs from the Version the user reviewed before the Live mutation.
-
-Visible UI state: the same card shows reviewed Live, current Live, and target Version, then says the
-previous decision no longer applies.
-
-Allowed user actions: review the new state, plan again, or cancel.
-
-Recovery / next state: `2 Agent Update Decision` or end.
-
-### 4.1 Partial Result
-
-Trigger: Version creation succeeds but changing Live fails.
-
-Visible UI state: the same operation card says `Partial`, keeps the created Version, states that Live
-remains v12, and confirms that Devices following Live did not switch.
-
-Allowed user actions: inspect the Version, open Workspace Cloud, or continue later.
-
-Recovery / next state: `5 Current Workspace Cloud` or end.
-
-### 4.2 Outcome Unknown
-
-Trigger: a request may have reached NoraCloud but its result cannot be proven.
-
-Visible UI state: the same operation card shows the last confirmed fact, offers a safe read, and
-pauses duplicate mutation.
-
-Allowed user actions: check current state, inspect technical details, or stop.
-
-Recovery / next state: end after the safe read establishes reality, or remain unresolved.
+Known resource IDs and completed stages remain visible. Partial execution resumes from the failed
+stage. Unknown execution pauses duplicate mutation until read-only discovery or manual recovery
+establishes reality.
 
 ## Wireframe
 
-- Main happy path: local Agent edit → Agent update decision → Version creation and Live movement →
-  factual receipt → current Workspace Cloud → Settings Cloud.
-- Route path: full rows for precise instruction, Version-only, defer, partial, unknown, Workspace
-  comparison change, unlinked global Agent, and refresh recovery.
-- Detail states: operation families, first-publish rule, readable Agent configuration,
-  configuration sources, Workspace binding, global deduplication, and Usage availability.
-- State language: operation, freshness, scope, Version/Live, and Usage labels.
-- Errors and recovery: Cloud access, concurrent Live change, partial result, and unknown outcome.
+The matching artifact is `cloud-resource-awareness.wireframe.html`.

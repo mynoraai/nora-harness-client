@@ -1,77 +1,80 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cloud Resource Awareness — NoraHarness</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Cloud Resource Awareness — NoraHarness V2 Wireframe
+    </title>
     <style>
       :root {
-        --ink: #2d2a27;
-        --muted: #6f6962;
-        --faint: #928a81;
-        --paper: #fffdf9;
-        --canvas: #eeeae4;
-        --line: #d8d0c6;
-        --line-strong: #bfb3a6;
-        --accent: #bd6428;
-        --accent-soft: #f8e8db;
-        --blue: #3d7298;
-        --blue-soft: #e7f2f8;
-        --green: #4c7f59;
-        --green-soft: #eaf4eb;
-        --amber: #946417;
-        --amber-soft: #fff4d4;
+        --bg: #ece7de;
+        --paper: #fffdfa;
+        --panel: #f8f5ef;
+        --sidebar: #f1ede6;
+        --ink: #2d2924;
+        --muted: #6f685f;
+        --faint: #938a80;
+        --line: #d8d0c5;
+        --strong: #bdb2a5;
+        --accent: #bd6c2d;
+        --accent-soft: #f5e6d8;
+        --blue: #3f7298;
+        --blue-soft: #e7f0f6;
+        --green: #4f805c;
+        --green-soft: #e8f3eb;
+        --amber: #936317;
+        --amber-soft: #fff3cd;
         --red: #a74742;
-        --red-soft: #fce9e6;
+        --red-soft: #f8d7da;
         --mono:
           ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        --sans:
+          Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
       }
       * {
         box-sizing: border-box;
       }
       html,
       body {
+        margin: 0;
         width: 100%;
         height: 100%;
-        margin: 0;
         overflow: hidden;
+      }
+      body {
+        font-family: var(--sans);
         color: var(--ink);
-        background: var(--canvas);
-        font-family:
-          Inter,
-          ui-sans-serif,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
+        background: var(--bg);
       }
       button {
         font: inherit;
       }
+
       .topbar {
         position: fixed;
-        z-index: 20;
-        top: 0;
-        right: 0;
-        left: 0;
-        height: 76px;
+        inset: 0 0 auto 0;
+        z-index: 30;
+        min-height: 62px;
         display: flex;
         align-items: center;
         gap: 18px;
-        padding: 12px 18px;
-        border-bottom: 1px solid var(--line-strong);
-        background: rgba(255, 253, 249, 0.96);
-        backdrop-filter: blur(12px);
+        padding: 10px 18px;
+        color: #fff7ef;
+        background: rgba(45, 35, 27, 0.97);
+        border-bottom: 1px solid rgba(230, 174, 123, 0.35);
       }
       .topbar h1 {
         margin: 0;
-        font-size: 19px;
+        font-size: 15px;
       }
       .topbar p {
-        margin: 4px 0 0;
-        color: var(--muted);
-        font-size: 11px;
+        margin: 3px 0 0;
+        max-width: 1050px;
+        color: #dacabc;
+        font-size: 11.5px;
+        line-height: 1.35;
       }
       .spacer {
         flex: 1;
@@ -80,132 +83,154 @@
         display: flex;
         gap: 6px;
       }
-      .controls button,
-      .jump button {
-        border: 1px solid var(--line-strong);
-        border-radius: 7px;
-        color: var(--ink);
-        background: #fff;
+      .controls button {
+        height: 30px;
+        min-width: 34px;
+        padding: 0 10px;
+        border: 1px solid rgba(235, 183, 133, 0.35);
+        border-radius: 8px;
+        color: #fff7ef;
+        background: rgba(255, 255, 255, 0.07);
         cursor: pointer;
       }
-      .controls button {
-        min-width: 34px;
-        height: 32px;
-        padding: 0 10px;
-        font-weight: 750;
+      .controls button:hover {
+        background: rgba(255, 255, 255, 0.15);
       }
-      .controls button:hover,
-      .jump button:hover {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-      }
+
       .jump {
         position: fixed;
-        z-index: 15;
-        top: 76px;
-        bottom: 0;
-        left: 0;
-        width: 220px;
-        padding: 17px 13px;
-        border-right: 1px solid var(--line-strong);
-        background: rgba(247, 243, 237, 0.96);
+        top: 75px;
+        left: 12px;
+        z-index: 25;
+        width: 218px;
+        padding: 9px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.96);
+        box-shadow: 0 12px 30px -22px rgba(45, 35, 27, 0.55);
+        backdrop-filter: blur(8px);
       }
       .jump h2 {
-        margin: 0 7px 10px;
+        margin: 4px 8px 8px;
         color: var(--faint);
         font-size: 10px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
       .jump button {
+        display: block;
         width: 100%;
-        margin-bottom: 6px;
-        padding: 8px 9px;
+        margin: 0 0 3px;
+        padding: 7px 9px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--ink);
+        background: transparent;
         text-align: left;
-        font-size: 11px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .jump button:hover {
+        color: var(--accent);
+        background: var(--accent-soft);
       }
       .legend {
-        margin-top: 18px;
-        padding: 10px 8px;
+        margin-top: 8px;
+        padding: 9px 8px 3px;
         border-top: 1px solid var(--line);
         color: var(--muted);
-        font-size: 9px;
-        line-height: 1.8;
+        font-size: 10.5px;
+        line-height: 1.65;
       }
       .legend i {
         display: inline-block;
         width: 8px;
         height: 8px;
-        margin-right: 7px;
-        border-radius: 50%;
+        margin-right: 5px;
+        border-radius: 999px;
       }
+
       .viewport {
         position: fixed;
-        top: 76px;
-        right: 0;
-        bottom: 0;
-        left: 220px;
+        inset: 62px 0 0;
         overflow: hidden;
         cursor: grab;
+        user-select: none;
         touch-action: none;
         overscroll-behavior: contain;
-        background-color: #eeeae4;
-        background-image: radial-gradient(#d2cbc2 1px, transparent 1px);
-        background-size: 28px 28px;
+        background-color: #eeeae3;
+        background-image: radial-gradient(
+          rgba(65, 52, 40, 0.1) 1px,
+          transparent 1px
+        );
+        background-size: 24px 24px;
       }
       .viewport.dragging {
         cursor: grabbing;
-        user-select: none;
       }
       .stage {
-        width: max-content;
-        min-width: 100%;
-        padding: 28px 30px 160px;
+        position: absolute;
+        left: 250px;
+        top: 28px;
+        width: 3900px;
+        min-height: 3600px;
+        padding: 18px 24px 180px;
         transform-origin: 0 0;
         will-change: transform;
       }
       .band {
-        width: max-content;
-        margin-bottom: 34px;
+        margin: 0 0 38px;
       }
       .band-title {
         display: flex;
         align-items: baseline;
-        gap: 12px;
-        margin: 0 0 12px 2px;
+        gap: 10px;
+        margin: 0 0 12px;
       }
       .band-title h3 {
         margin: 0;
         font-size: 15px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
       .band-title span {
         color: var(--muted);
-        font-size: 11px;
+        font-size: 12px;
       }
       .flow {
         display: flex;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 20px;
         width: max-content;
       }
       .arrow {
-        width: 56px;
         align-self: center;
-        color: var(--accent);
-        text-align: center;
-        font-size: 26px;
-        font-weight: 900;
+        position: relative;
+        width: 24px;
+        height: 1px;
+        background: #8f8478;
       }
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: -4px;
+        width: 8px;
+        height: 8px;
+        border-top: 1px solid #8f8478;
+        border-right: 1px solid #8f8478;
+        transform: rotate(45deg);
+      }
+
       .wire-card {
-        width: 760px;
+        width: 650px;
+        min-height: 525px;
         overflow: hidden;
-        border: 2px solid #4a4540;
-        border-top: 7px solid var(--blue);
-        border-radius: 15px;
+        border: 1px solid #38322c;
+        border-top: 6px solid var(--blue);
+        border-radius: 12px;
         background: var(--paper);
-        box-shadow: 0 18px 34px -28px rgba(46, 36, 28, 0.75);
-      }
-      .wire-card.today {
-        border-top-color: #77716b;
+        box-shadow: 0 14px 32px -22px rgba(45, 35, 27, 0.55);
       }
       .wire-card.warning {
         border-top-color: var(--amber);
@@ -216,151 +241,437 @@
       .card-head {
         display: flex;
         align-items: center;
-        gap: 11px;
-        min-height: 48px;
-        padding: 9px 14px;
+        gap: 9px;
+        padding: 11px 14px 9px;
         border-bottom: 1px solid var(--line);
       }
       .card-head .id {
-        width: 28px;
-        height: 28px;
-        display: grid;
-        place-items: center;
-        border-radius: 8px;
+        padding: 4px 7px;
+        border-radius: 6px;
         color: #fff;
         background: var(--accent);
-        font-size: 12px;
-        font-weight: 850;
+        font: 700 11px/1 var(--mono);
       }
       .card-head h4 {
         margin: 0;
-        font-size: 15px;
+        font-size: 13px;
       }
-      .card-head .tag {
+      .tag {
         margin-left: auto;
-        padding: 5px 9px;
+        padding: 3px 8px;
         border-radius: 999px;
         color: var(--blue);
         background: var(--blue-soft);
-        font-size: 9px;
-        font-weight: 900;
-        letter-spacing: 0.09em;
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
       }
-      .wire-card.today .tag {
-        color: var(--muted);
-        background: #eeeae5;
-      }
       .caption {
-        min-height: 46px;
-        padding: 11px 15px;
+        min-height: 50px;
+        padding: 9px 14px 10px;
         color: var(--muted);
         font-size: 11px;
         line-height: 1.45;
       }
+
       .screen {
-        width: 724px;
-        height: 468px;
-        margin: 0 16px 16px;
+        width: 620px;
+        height: 395px;
+        margin: 0 14px 14px;
         overflow: hidden;
-        border: 1px solid var(--line-strong);
-        border-radius: 12px;
-        background: #f7f4ee;
+        border: 1px solid var(--strong);
+        border-radius: 10px;
+        background: var(--panel);
       }
-      .product-scale {
-        width: 1200px;
-        height: 760px;
-        transform: scale(0.6033);
-        transform-origin: 0 0;
+      .scale {
+        width: 1180px;
+        height: 750px;
+        transform: scale(0.525);
+        transform-origin: top left;
       }
       .app {
-        width: 1200px;
-        height: 760px;
-        display: grid;
-        grid-template-columns: 225px 615px 360px;
-        color: #34302d;
-        background: #fbfaf7;
+        display: flex;
+        width: 1180px;
+        height: 750px;
+        background: var(--panel);
+      }
+      .settings-app {
+        display: flex;
+        width: 1180px;
+        height: 750px;
+        background: #f7f5f1;
+      }
+      .settings-nav {
+        width: 285px;
+        padding: 38px 18px 20px;
+        border-right: 1px solid var(--line);
+        background: var(--sidebar);
+      }
+      .settings-back {
+        margin-bottom: 18px;
+        color: var(--muted);
         font-size: 12px;
       }
+      .settings-nav h5 {
+        margin: 0 8px 3px;
+        font-size: 19px;
+      }
+      .settings-nav p {
+        margin: 0 8px 17px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .settings-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 11px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .settings-nav-item.on {
+        color: var(--ink);
+        background: #fff;
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+      .settings-main {
+        flex: 1;
+        padding: 38px 58px;
+        overflow: hidden;
+      }
+      .settings-title {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 18px;
+      }
+      .settings-title h6 {
+        margin: 0;
+        font-size: 21px;
+      }
+      .settings-title span {
+        margin-left: auto;
+        color: var(--green);
+        font-size: 10px;
+        font-weight: 750;
+      }
+      .settings-scope {
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border: 1px solid #c4d7e5;
+        border-radius: 8px;
+        color: #356681;
+        background: var(--blue-soft);
+        font-size: 10.5px;
+      }
+      .settings-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+        margin-bottom: 12px;
+      }
+      .settings-stat {
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-stat-head {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+      }
+      .settings-stat-head b {
+        font-size: 11px;
+      }
+      .settings-stat-head strong {
+        margin-left: auto;
+        font-size: 17px;
+      }
+      .settings-stat p {
+        margin: 5px 0 7px;
+        color: var(--muted);
+        font-size: 9.5px;
+      }
+      .settings-stat-link {
+        color: var(--accent);
+        font-size: 9.5px;
+        font-weight: 750;
+      }
+      .settings-section-card {
+        margin-top: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-section-card h6 {
+        margin: 0;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .settings-usage {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 13px 12px;
+      }
+      .settings-usage strong {
+        display: block;
+        font-size: 18px;
+      }
+      .settings-usage span {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .settings-footnote {
+        padding: 0 12px 11px;
+        color: var(--faint);
+        font-size: 8.5px;
+      }
+      .settings-breadcrumb {
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-size: 9.5px;
+        font-weight: 700;
+      }
+      .settings-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .settings-filter {
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--muted);
+        background: #fff;
+        font-size: 9px;
+      }
+      .settings-list {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-list-head,
+      .settings-list-row {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr 1fr 1fr auto;
+        gap: 9px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 9px;
+      }
+      .settings-list-head {
+        color: var(--faint);
+        background: #f8f6f2;
+        font-weight: 750;
+      }
+      .settings-list-row:last-child {
+        border-bottom: 0;
+      }
+      .settings-list-row b,
+      .settings-list-row strong {
+        color: var(--ink);
+      }
+      .settings-list-row code {
+        color: var(--muted);
+        font: 8px var(--mono);
+      }
+      .settings-link {
+        color: var(--accent);
+        font-weight: 750;
+        white-space: nowrap;
+      }
+      .settings-pill {
+        display: inline-block;
+        width: fit-content;
+        padding: 2px 5px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .settings-pill.muted {
+        color: var(--muted);
+        background: #eeeae4;
+      }
+      .settings-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .settings-meta {
+        padding: 9px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .settings-meta span {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--faint);
+        font-size: 8px;
+      }
+      .settings-meta b,
+      .settings-meta code {
+        color: var(--ink);
+        font: 700 9px var(--sans);
+      }
+      .settings-subhead {
+        display: flex;
+        align-items: baseline;
+        margin: 11px 0 6px;
+        font-size: 10.5px;
+        font-weight: 800;
+      }
+      .settings-subhead span {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 8.5px;
+        font-weight: 500;
+      }
+      .config-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .config-cell {
+        padding: 8px 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .config-cell span {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--faint);
+        font-size: 7.5px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .config-cell b {
+        font-size: 9px;
+      }
+      .file-list {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .file-row {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr auto;
+        gap: 10px;
+        padding: 7px 9px;
+        border-bottom: 1px solid #eee9e2;
+        color: var(--muted);
+        font-size: 8.7px;
+      }
+      .file-row:last-child {
+        border-bottom: 0;
+      }
+      .file-row b {
+        color: var(--ink);
+      }
+      .settings-actions {
+        display: flex;
+        gap: 7px;
+        margin-top: 9px;
+      }
       .sidebar {
+        width: 220px;
+        padding: 16px 13px;
         display: flex;
         flex-direction: column;
-        border-right: 1px solid #cfc6ba;
-        background: #f0ece5;
+        gap: 10px;
+        background: var(--sidebar);
+        border-right: 1px solid var(--line);
       }
       .brand {
         display: flex;
         align-items: center;
-        gap: 11px;
-        padding: 20px 16px 12px;
+        gap: 8px;
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 750;
       }
       .traffic {
         display: flex;
-        gap: 4px;
+        gap: 5px;
+        margin-right: 7px;
       }
       .traffic i {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: #b9afa3;
+        background: #b8aea2;
       }
-      .mode {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        margin: 0 13px 12px;
-        padding: 3px;
-        border: 1px solid #d1c8bd;
-        border-radius: 9px;
-        background: #faf8f4;
-      }
-      .mode span {
-        padding: 7px;
-        border-radius: 7px;
-        text-align: center;
-        color: var(--muted);
-      }
-      .mode .on {
+      .new-conversation {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.55);
+        font-size: 12px;
         color: var(--ink);
-        background: #fff;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        font-weight: 750;
+        font-weight: 700;
       }
       .search {
-        margin: 0 13px 15px;
-        padding: 10px;
-        border: 1px solid #d7cec3;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
         border-radius: 8px;
         color: var(--faint);
-        background: #fff;
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 11.5px;
       }
-      .side-label {
-        padding: 0 14px 7px;
-        color: var(--faint);
-        font-size: 9px;
-        font-weight: 850;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-      .workspace {
+      .slbl {
         display: flex;
-        margin: 0 12px 7px;
-        padding: 9px 10px;
-        border-radius: 8px;
-        color: var(--accent);
-        background: var(--accent-soft);
-        font-weight: 750;
+        align-items: center;
+        gap: 5px;
+        margin-top: 4px;
+        padding: 3px 2px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
       }
+      .slbl .controls {
+        margin-left: auto;
+        color: var(--faint);
+        letter-spacing: 0.1em;
+      }
+      .workspace,
       .conversation {
         display: flex;
-        margin: 0 12px 4px;
-        padding: 9px 10px;
+        align-items: center;
+        padding: 7px 9px;
         border-radius: 8px;
+        font-size: 12px;
+      }
+      .workspace {
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.42);
+        font-weight: 700;
+      }
+      .session-tree {
+        margin-left: 13px;
+        padding-left: 9px;
+        border-left: 1px solid var(--strong);
       }
       .conversation.on {
-        background: #fff;
-        font-weight: 750;
+        background: rgba(255, 255, 255, 0.8);
+        font-weight: 650;
       }
       .conversation small {
         margin-left: auto;
@@ -369,194 +680,339 @@
       .grow {
         flex: 1;
       }
-      .settings-link {
-        margin: 0 12px 10px;
-        padding: 9px 10px;
+      .account {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10.5px;
+      }
+      .settings-entry {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 8px;
         border-radius: 8px;
         color: var(--muted);
+        font-size: 11.5px;
       }
-      .account {
-        margin: 0 13px 14px;
-        padding-top: 11px;
-        border-top: 1px solid #d6cdc2;
-        color: var(--muted);
-      }
+
       .center {
+        flex: 1;
         min-width: 0;
         display: flex;
         flex-direction: column;
         background: #fbfaf7;
       }
       .workspace-bar {
-        height: 44px;
+        height: 42px;
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 0 15px;
-        border-bottom: 1px solid #d9d1c7;
+        gap: 10px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--paper);
+        font-size: 11px;
       }
-      .workspace-bar .session-chip {
-        margin-left: auto;
-        padding: 5px 9px;
-        border: 1px solid #b7d3e4;
+      .workspace-bar strong {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .cloud-chip {
+        padding: 4px 8px;
+        border: 1px solid #b8cddd;
         border-radius: 999px;
         color: var(--blue);
         background: var(--blue-soft);
-        font-size: 10px;
-        font-weight: 750;
+        font-weight: 700;
       }
       .tabs {
-        height: 42px;
+        height: 39px;
         display: flex;
-        align-items: flex-end;
-        gap: 8px;
-        padding: 0 11px;
-        border-bottom: 1px solid #d9d1c7;
+        align-items: end;
+        gap: 4px;
+        padding: 7px 10px 0;
+        border-bottom: 1px solid var(--line);
       }
       .ctab {
-        padding: 9px 14px;
-        border: 1px solid #d9d1c7;
+        padding: 7px 12px;
+        border: 1px solid var(--line);
         border-bottom: 0;
-        border-radius: 8px 8px 0 0;
+        border-radius: 7px 7px 0 0;
         background: #fff;
+        font-size: 11px;
       }
       .stream {
         flex: 1;
-        padding: 20px 25px;
+        padding: 15px 20px;
         overflow: hidden;
       }
       .user-msg {
         margin-left: auto;
-        max-width: 75%;
-        padding: 10px 13px;
-        border-radius: 12px;
+        max-width: 72%;
+        padding: 8px 11px;
+        border-radius: 11px;
         background: var(--accent-soft);
-        font-size: 12px;
+        font-size: 11.5px;
       }
       .assistant {
-        margin: 14px 0 11px;
+        margin: 11px 0;
         color: var(--muted);
-        font-size: 11.5px;
-        line-height: 1.5;
+        font-size: 11px;
+        line-height: 1.45;
       }
-      .existing-tool,
-      .operation-card {
-        max-width: 530px;
+      .assistant strong {
+        color: var(--ink);
+      }
+      .tool-stack {
+        display: grid;
+        gap: 6px;
+        max-width: 525px;
+      }
+      .tool-call {
         overflow: hidden;
-        border: 1px solid #d6cdc1;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .tool-call.active {
+        border-color: #b8cddd;
+        background: #fbfdff;
+      }
+      .tool-head {
+        display: grid;
+        grid-template-columns: 14px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        min-height: 31px;
+        padding: 6px 9px;
+        color: var(--ink);
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .tool-head .chevron {
+        color: var(--faint);
+      }
+      .tool-head small {
+        color: var(--green);
+        font-size: 8.5px;
+        font-weight: 800;
+      }
+      .tool-call.active .tool-head small {
+        color: var(--blue);
+      }
+      .tool-body {
+        padding: 7px 10px 9px 30px;
+        border-top: 1px solid #e7eef3;
+        color: var(--muted);
+        font: 8.8px/1.55 var(--mono);
+      }
+      .composer {
+        margin: 0 14px 14px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        color: var(--faint);
+        background: #fff;
+        font-size: 11px;
+      }
+
+      .resource-card {
+        max-width: 525px;
+        overflow: hidden;
+        border: 1px solid var(--line);
         border-radius: 11px;
         background: #fff;
       }
-      .existing-tool-head,
-      .operation-head {
+      .resource-card.amber {
+        border-color: #ddc27e;
+      }
+      .resource-card.red {
+        border-color: #dfa5a1;
+      }
+      .rhead {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 12px;
-        border-bottom: 1px solid #e2dbd2;
+        padding: 9px 11px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11.5px;
         font-weight: 750;
       }
-      .tool-icon {
-        width: 24px;
-        height: 24px;
-        display: grid;
-        place-items: center;
-        border: 1px solid #d6cdc1;
-        border-radius: 6px;
-        color: var(--blue);
-        background: #faf8f4;
-      }
-      .pill {
+      .status {
         margin-left: auto;
-        padding: 4px 8px;
+        padding: 3px 7px;
         border-radius: 999px;
         color: var(--blue);
         background: var(--blue-soft);
-        font-size: 9px;
+        font-size: 8.5px;
         font-weight: 850;
       }
-      .pill.ok {
+      .status.ok {
         color: var(--green);
         background: var(--green-soft);
       }
-      .pill.warn {
+      .status.warn {
         color: var(--amber);
         background: var(--amber-soft);
       }
-      .pill.bad {
+      .status.bad {
         color: var(--red);
         background: var(--red-soft);
       }
-      .tool-body {
-        padding: 11px 13px;
+      .rbody {
+        padding: 8px 11px 10px;
+      }
+      .scope {
+        margin: 0 0 7px;
+        color: var(--faint);
+        font-size: 8.5px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .consequence-lead {
+        margin: 0 0 7px;
+        color: var(--ink);
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .transition {
+        display: grid;
+        grid-template-columns: 1fr auto 1.45fr;
+        gap: 7px;
+        align-items: center;
+        margin-bottom: 7px;
+        padding: 6px 8px;
+        border-radius: 7px;
         color: var(--muted);
-        font-size: 10.5px;
+        background: #f6f2ec;
+        font-size: 8.8px;
       }
-      .operation-card {
-        border-color: #cbbdad;
-      }
-      .operation-kicker {
+      .transition b {
         color: var(--blue);
-        font: 9px var(--mono);
-      }
-      .operation-title {
-        font-size: 12px;
-      }
-      .operation-body {
-        padding: 10px 12px 12px;
       }
       .impact-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 7px;
       }
-      .impact {
+      .impact-block {
         padding: 7px 8px;
         border: 1px solid #e7e0d7;
         border-radius: 7px;
         background: #fffdfa;
       }
-      .impact h5 {
-        margin: 0 0 5px;
+      .impact-block.created {
+        grid-row: span 2;
+      }
+      .impact-block h5 {
+        margin: 0 0 4px;
         color: var(--faint);
-        font-size: 8px;
+        font-size: 7.8px;
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-      .impact-line {
+      .impact-item {
         display: grid;
-        grid-template-columns: 70px 1fr;
-        gap: 6px;
+        grid-template-columns: 52px 1fr;
+        gap: 5px;
         padding: 2px 0;
-        font-size: 9.5px;
+        font-size: 8.8px;
         line-height: 1.35;
       }
-      .impact-line span {
+      .impact-item span {
         color: var(--faint);
       }
-      .impact-line b {
+      .impact-item b {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .operation-note {
+      .persist-note,
+      .excluded-note {
         margin-top: 7px;
-        padding: 7px 8px;
+        padding: 6px 8px;
         border-radius: 7px;
-        color: var(--muted);
-        background: #f4f1ec;
-        font-size: 9px;
+        font-size: 8.6px;
         line-height: 1.4;
       }
-      .operation-note.green {
-        color: #315f43;
+      .persist-note {
+        color: #2f5f43;
         background: var(--green-soft);
       }
-      .operation-note.amber {
-        color: #775110;
-        background: var(--amber-soft);
+      .excluded-note {
+        color: var(--muted);
+        background: #f6f2ec;
       }
-      .operation-note.red {
+      .row {
+        display: grid;
+        grid-template-columns: 90px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 0;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 9.5px;
+      }
+      .row:last-child {
+        border-bottom: 0;
+      }
+      .row .key {
+        color: var(--faint);
+      }
+      .row .value {
+        font-weight: 650;
+        line-height: 1.35;
+      }
+      .row code {
+        color: var(--muted);
+        font: 8.5px var(--mono);
+      }
+      .stage-list {
+        display: grid;
+        gap: 5px;
+        margin-top: 3px;
+      }
+      .stage-line {
+        display: grid;
+        grid-template-columns: 16px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 4px 6px;
+        border-radius: 6px;
+        background: #faf8f4;
+        font-size: 9.5px;
+      }
+      .stage-line .done {
+        color: var(--green);
+      }
+      .stage-line .active {
+        color: var(--blue);
+      }
+      .stage-line .failed {
+        color: var(--red);
+      }
+      .stage-line code {
+        color: var(--muted);
+        font: 8px var(--mono);
+      }
+      .notice {
+        margin-top: 7px;
+        padding: 7px 8px;
+        border: 1px solid #e3c984;
+        border-radius: 7px;
+        color: #765314;
+        background: var(--amber-soft);
+        font-size: 8.8px;
+        line-height: 1.4;
+      }
+      .notice.red {
+        border-color: #e3aaa6;
         color: var(--red);
         background: var(--red-soft);
       }
@@ -564,15 +1020,15 @@
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        margin-top: 9px;
+        margin-top: 8px;
       }
       .btn {
         display: inline-flex;
+        min-height: 27px;
         align-items: center;
         justify-content: center;
-        min-height: 28px;
         padding: 0 10px;
-        border: 1px solid #cbbfb2;
+        border: 1px solid var(--strong);
         border-radius: 7px;
         color: var(--ink);
         background: #fff;
@@ -584,590 +1040,146 @@
         border-color: var(--accent);
         background: var(--accent);
       }
-      .stage-list {
-        display: grid;
-        gap: 6px;
+      .btn.danger {
+        color: #fff;
+        border-color: var(--red);
+        background: var(--red);
       }
-      .stage-line {
-        display: grid;
-        grid-template-columns: 18px 1fr auto;
-        gap: 7px;
-        align-items: center;
-        padding: 6px 8px;
-        border-radius: 7px;
-        background: #f8f5f0;
-        font-size: 9.5px;
-      }
-      .stage-line code {
-        color: var(--muted);
-        font: 8.5px var(--mono);
-      }
-      .done {
-        color: var(--green);
-      }
-      .active {
-        color: var(--blue);
-      }
-      .failed {
-        color: var(--red);
-      }
-      .composer {
-        margin: 0 14px 14px;
-        padding: 11px 13px;
-        border: 1px solid #d6cdc1;
-        border-radius: 10px;
-        color: var(--faint);
-        background: #fff;
-        font-size: 10.5px;
-      }
+
       .right {
-        min-width: 0;
+        width: 310px;
         display: flex;
         flex-direction: column;
-        border-left: 1px solid #d2c9be;
-        background: #f6f3ed;
+        border-left: 1px solid var(--line);
+        background: #f8f6f1;
       }
       .right-tabs {
-        height: 51px;
         display: flex;
-        align-items: flex-end;
-        gap: 3px;
-        padding: 0 7px;
-        border-bottom: 1px solid #d2c9be;
+        gap: 1px;
+        padding: 9px 7px 0;
+        border-bottom: 1px solid var(--line);
+        background: var(--sidebar);
       }
       .rtab {
-        padding: 9px 8px;
+        position: relative;
+        padding: 7px 7px;
         border-radius: 7px 7px 0 0;
         color: var(--muted);
-        font-size: 10px;
+        font-size: 9.5px;
+        white-space: nowrap;
       }
       .rtab.on {
         color: var(--ink);
-        border: 1px solid #d2c9be;
-        border-bottom-color: #fff;
         background: #fff;
-        font-weight: 750;
+        font-weight: 700;
       }
       .rtab.proposed::after {
         content: "P";
-        position: relative;
-        top: -7px;
-        margin-left: 2px;
+        position: absolute;
+        right: 0;
+        top: 1px;
+        width: 9px;
+        height: 9px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
         color: #fff;
         background: var(--blue);
-        font-size: 6px;
-        border-radius: 50%;
-        padding: 1px 3px;
+        font-size: 5.5px;
+        font-weight: 900;
       }
-      .file-tree {
+      .tree {
         flex: 1;
-        padding: 18px;
+        padding: 15px;
         color: var(--muted);
-        font-size: 11px;
+        font-size: 10.5px;
         line-height: 2;
       }
       .cloud-panel {
         flex: 1;
-        padding: 12px;
+        padding: 13px 12px;
         overflow: hidden;
-        background: #faf8f4;
-      }
-      .cloud-head {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 8px;
-      }
-      .cloud-head h5 {
-        margin: 0 0 3px;
-        font-size: 13px;
-      }
-      .cloud-head small {
         color: var(--muted);
-        font-size: 8.5px;
-      }
-      .fresh {
-        margin-left: auto;
-        padding: 4px 7px;
-        border-radius: 999px;
-        color: var(--green);
-        background: var(--green-soft);
-        font-size: 8px;
-        font-weight: 800;
-      }
-      .fresh.stale {
-        color: var(--amber);
-        background: var(--amber-soft);
-      }
-      .inline-notice {
-        margin-bottom: 8px;
-        padding: 7px 8px;
-        border: 1px solid #b9d5e5;
-        border-radius: 7px;
-        color: #315f7b;
-        background: var(--blue-soft);
-        font-size: 8.5px;
-        line-height: 1.4;
-      }
-      .inline-notice.amber {
-        border-color: #e1c47c;
-        color: #755112;
-        background: var(--amber-soft);
-      }
-      .panel-space {
-        margin-bottom: 8px;
-        overflow: hidden;
-        border: 1px solid #d7cec3;
-        border-radius: 9px;
-        background: #fff;
-      }
-      .space-title {
-        display: flex;
-        align-items: center;
-        padding: 8px 9px;
-        border-bottom: 1px solid #e6dfd6;
         font-size: 9px;
-        font-weight: 850;
       }
-      .space-title small {
-        margin-left: auto;
-        color: var(--faint);
-        font-size: 7.5px;
-        font-weight: 600;
-      }
-      .resource-row {
-        display: grid;
-        grid-template-columns: 72px 1fr auto;
-        gap: 6px;
-        align-items: start;
-        padding: 6px 9px;
-        border-bottom: 1px solid #eee9e2;
-        font-size: 8.8px;
-        line-height: 1.35;
-      }
-      .resource-row:last-child {
-        border-bottom: 0;
-      }
-      .resource-row .key {
-        color: var(--faint);
-      }
-      .resource-row .value {
-        font-weight: 700;
-      }
-      .resource-row .sub {
-        display: block;
-        margin-top: 2px;
-        color: var(--muted);
-        font-size: 7.8px;
-        font-weight: 500;
-      }
-      .resource-row code {
-        color: var(--muted);
-        font: 7.8px var(--mono);
-      }
-      .agent-summary {
-        padding: 10px;
-      }
-      .agent-summary-head {
+      .cloud-panel .panel-head {
         display: flex;
-        align-items: flex-start;
-        gap: 8px;
+        align-items: baseline;
+        gap: 7px;
+        margin-bottom: 9px;
       }
-      .agent-avatar {
-        width: 30px;
-        height: 30px;
-        flex: 0 0 30px;
-        display: grid;
-        place-items: center;
-        border-radius: 9px;
-        color: var(--blue);
-        background: var(--blue-soft);
-        font-size: 14px;
-        font-weight: 850;
+      .cloud-panel .panel-head b {
+        color: var(--ink);
+        font-size: 12px;
       }
-      .agent-summary h6 {
-        margin: 0 0 2px;
-        font-size: 11px;
-      }
-      .agent-identity {
-        color: var(--muted);
-        font-size: 8px;
-      }
-      .live-badge {
+      .cloud-panel .fresh {
         margin-left: auto;
         padding: 3px 6px;
         border-radius: 999px;
         color: var(--green);
         background: var(--green-soft);
         font-size: 7px;
-        font-weight: 850;
-      }
-      .agent-behavior {
-        margin: 8px 0;
-        padding: 7px 8px;
-        border-left: 3px solid #8bb9d4;
-        color: #4f4a45;
-        background: #f5f9fb;
-        font-size: 8.2px;
-        line-height: 1.45;
-      }
-      .capability-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 5px;
-      }
-      .capability {
-        padding: 6px;
-        border: 1px solid #e6dfd6;
-        border-radius: 7px;
-        background: #fbfaf8;
-      }
-      .capability span {
-        display: block;
-        margin-bottom: 2px;
-        color: var(--faint);
-        font-size: 6.8px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      .capability b {
-        display: block;
-        font-size: 7.7px;
-        line-height: 1.25;
-      }
-      .source-list {
-        margin-top: 8px;
-        overflow: hidden;
-        border: 1px solid #e6dfd6;
-        border-radius: 7px;
-      }
-      .source-line {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 7px;
-        padding: 5px 7px;
-        border-bottom: 1px solid #eee9e2;
-        font: 7.4px var(--mono);
-      }
-      .source-line:last-child {
-        border-bottom: 0;
-      }
-      .source-state {
-        color: var(--green);
-        font-family: var(--sans);
         font-weight: 800;
       }
-      .source-state.changed {
-        color: var(--amber);
-      }
-      .config-footer {
-        display: flex;
-        align-items: center;
-        margin-top: 8px;
-        padding-top: 7px;
-        border-top: 1px solid #eee9e2;
-        color: var(--muted);
-        font-size: 7.5px;
-      }
-      .config-footer b {
-        margin-left: auto;
-        color: var(--accent);
-      }
-      .session-resource {
-        display: grid;
-        grid-template-columns: 24px 1fr auto;
-        gap: 7px;
-        align-items: center;
-        padding: 7px 9px;
-        border-bottom: 1px solid #eee9e2;
-      }
-      .session-resource:last-child {
-        border-bottom: 0;
-      }
-      .resource-glyph {
-        width: 22px;
-        height: 22px;
-        display: grid;
-        place-items: center;
-        border-radius: 6px;
+      .cloud-panel .refreshing {
         color: var(--blue);
         background: var(--blue-soft);
-        font-size: 9px;
       }
-      .session-resource b {
-        display: block;
-        font-size: 8.4px;
-      }
-      .session-resource small {
-        display: block;
-        margin-top: 1px;
-        color: var(--muted);
-        font-size: 7.2px;
-      }
-      .resource-state {
-        color: var(--green);
-        font-size: 7.3px;
-        font-weight: 800;
-      }
-      .usage-metrics {
-        display: flex;
-        gap: 18px;
-        padding: 9px;
-      }
-      .usage-metrics strong {
-        display: block;
-        font-size: 14px;
-      }
-      .usage-metrics span {
-        color: var(--faint);
-        font-size: 8px;
-      }
-      .coverage {
-        padding: 0 9px 8px;
-        color: var(--muted);
-        font-size: 7.8px;
+      .cloud-panel .panel-note {
+        margin-bottom: 9px;
+        padding: 7px;
+        border: 1px solid #c4d7e5;
+        border-radius: 7px;
+        color: #356681;
+        background: var(--blue-soft);
         line-height: 1.4;
       }
-      .panel-actions {
-        display: flex;
+      .cloud-panel .panel-card {
+        margin-bottom: 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .cloud-panel .panel-card h5 {
+        margin: 0;
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 8.5px;
+      }
+      .cloud-panel .panel-row {
+        display: grid;
+        grid-template-columns: 67px 1fr auto;
         gap: 5px;
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee9e2;
+        line-height: 1.35;
+      }
+      .cloud-panel .panel-row:last-child {
+        border-bottom: 0;
+      }
+      .cloud-panel .panel-row b {
+        color: var(--ink);
+      }
+      .cloud-panel .panel-row code {
+        font: 7.5px var(--mono);
       }
       .right-bottom {
         padding: 8px 10px;
-        border-top: 1px solid #d2c9be;
+        border-top: 1px solid var(--line);
         color: var(--muted);
-        background: #eeeae3;
-        font-size: 9px;
+        background: var(--sidebar);
+        font-size: 9.5px;
       }
-      .empty-panel {
-        height: 610px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 30px;
-        text-align: center;
-      }
-      .empty-panel .empty-icon {
-        width: 40px;
-        height: 40px;
-        display: grid;
-        place-items: center;
-        border-radius: 12px;
-        color: var(--blue);
-        background: var(--blue-soft);
-        font-size: 18px;
-      }
-      .empty-panel h5 {
-        margin: 11px 0 5px;
-        font-size: 12px;
-      }
-      .empty-panel p {
-        margin: 0 0 11px;
-        color: var(--muted);
-        font-size: 9px;
-        line-height: 1.45;
-      }
-      .settings-app {
-        width: 1200px;
-        height: 760px;
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        color: #34302d;
-        background: #f7f5f1;
-      }
-      .settings-nav {
-        display: flex;
-        flex-direction: column;
-        padding: 36px 20px 20px;
-        border-right: 1px solid #d3cbc1;
-        background: #efebe5;
-      }
-      .back {
-        margin-bottom: 21px;
-        color: var(--muted);
-        font-size: 12px;
-      }
-      .settings-title {
-        margin: 0 8px 4px;
-        font-size: 20px;
-        font-weight: 750;
-      }
-      .settings-subtitle {
-        margin: 0 8px 17px;
-        color: var(--muted);
-        font-size: 11px;
-      }
-      .settings-item {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 4px;
-        padding: 11px 12px;
-        border-radius: 8px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 650;
-      }
-      .settings-item.on {
-        color: var(--ink);
-        background: #fff;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
-      }
-      .settings-item .attention-dot {
-        width: 7px;
-        height: 7px;
-        margin-left: auto;
-        border-radius: 50%;
-        background: var(--amber);
-      }
-      .settings-content {
-        padding: 31px 55px 42px;
-        overflow: hidden;
-      }
-      .settings-page-head {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 15px;
-      }
-      .settings-page-head h2 {
-        margin: 0 0 5px;
-        font-size: 21px;
-      }
-      .settings-page-head p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 11px;
-      }
-      .system-status {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 13px;
-        padding: 11px 13px;
-        border: 1px solid #d6cec4;
-        border-radius: 9px;
-        background: #fff;
-      }
-      .system-status span {
-        display: block;
-        color: var(--faint);
-        font-size: 8px;
-        text-transform: uppercase;
-      }
-      .system-status b {
-        font-size: 10px;
-      }
-      .settings-card {
-        margin-bottom: 12px;
-        overflow: hidden;
-        border: 1px solid #d6cec4;
-        border-radius: 10px;
-        background: #fff;
-      }
-      .settings-card-head {
-        display: flex;
-        align-items: center;
-        padding: 11px 13px;
-        border-bottom: 1px solid #e5ded5;
-      }
-      .settings-card-head h3 {
-        margin: 0;
-        font-size: 12px;
-      }
-      .settings-card-head span {
-        margin-left: auto;
-        color: var(--muted);
-        font-size: 8.5px;
-      }
-      .count-strip {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        border-bottom: 1px solid #e5ded5;
-      }
-      .count {
-        padding: 10px 11px;
-        border-right: 1px solid #eee8e0;
-      }
-      .count:last-child {
-        border-right: 0;
-      }
-      .count strong {
-        display: block;
-        font-size: 16px;
-      }
-      .count span {
-        color: var(--faint);
-        font-size: 8px;
-      }
-      .global-resource {
-        display: grid;
-        grid-template-columns: 1.3fr 1fr 1fr auto;
-        gap: 12px;
-        align-items: center;
-        padding: 9px 13px;
-        border-bottom: 1px solid #eee8e0;
-        font-size: 9px;
-      }
-      .global-resource:last-child {
-        border-bottom: 0;
-      }
-      .global-resource strong {
-        display: block;
-        font-size: 10px;
-      }
-      .global-resource small {
-        color: var(--muted);
-        font-size: 7.8px;
-      }
-      .global-resource .orphan {
-        color: var(--amber);
-      }
-      .global-resource .agent-purpose {
-        display: block;
-        margin-top: 2px;
-        color: var(--muted);
-        font-size: 7.8px;
-      }
-      .global-resource .agent-capabilities {
-        color: #4f4a45;
-        font-size: 8.4px;
-        line-height: 1.4;
-      }
-      .global-resource .agent-state {
-        text-align: right;
-      }
-      .global-resource .agent-state b {
-        color: var(--green);
-        font-size: 8.5px;
-      }
-      .global-usage {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr) 1.6fr;
-        gap: 14px;
-        padding: 12px 13px;
-      }
-      .global-usage strong {
-        display: block;
-        font-size: 17px;
-      }
-      .global-usage span,
-      .global-usage p {
-        color: var(--muted);
-        font-size: 8px;
-      }
-      .global-usage p {
-        margin: 1px 0 0;
-        line-height: 1.5;
-      }
+
       .route-row {
         width: max-content;
         margin: 0 0 26px;
         padding: 12px 14px 16px;
         border: 1px solid rgba(189, 178, 165, 0.8);
         border-radius: 13px;
-        background: rgba(255, 253, 250, 0.58);
+        background: rgba(255, 253, 250, 0.55);
       }
       .route-title {
         display: flex;
@@ -1181,39 +1193,33 @@
       }
       .route-title code {
         color: var(--accent);
-        font: 10px var(--mono);
+        font: 11px var(--mono);
       }
       .route-title span {
         color: var(--muted);
-        font-size: 10px;
+        font-size: 11px;
       }
       .compact-grid {
         display: grid;
-        grid-template-columns: repeat(4, 330px);
-        gap: 13px;
+        grid-template-columns: repeat(4, 340px);
+        gap: 14px;
         width: max-content;
       }
       .compact-card {
-        min-height: 155px;
-        padding: 13px;
-        border: 1px solid var(--line-strong);
-        border-top: 5px solid var(--blue);
+        min-height: 160px;
+        padding: 14px;
+        border: 1px solid var(--strong);
         border-radius: 11px;
         background: var(--paper);
-      }
-      .compact-card.warning {
-        border-top-color: var(--amber);
-      }
-      .compact-card.error {
-        border-top-color: var(--red);
+        box-shadow: 0 10px 24px -20px rgba(45, 35, 27, 0.5);
       }
       .compact-card h4 {
-        margin: 3px 0 5px;
-        font-size: 12px;
+        margin: 0 0 4px;
+        font-size: 13px;
       }
       .compact-card .kind {
         color: var(--blue);
-        font-size: 8px;
+        font-size: 9px;
         font-weight: 850;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -1221,12 +1227,18 @@
       .compact-card p,
       .compact-card li {
         color: var(--muted);
-        font-size: 10.5px;
-        line-height: 1.45;
+        font-size: 11px;
+        line-height: 1.5;
       }
       .compact-card ul {
-        margin: 7px 0 0;
-        padding-left: 16px;
+        margin: 9px 0 0;
+        padding-left: 17px;
+      }
+      .compact-card.language {
+        border-top: 5px solid #c7a25c;
+      }
+      .compact-card.recovery {
+        border-top: 5px solid var(--red);
       }
       .footer-space {
         height: 120px;
@@ -1236,24 +1248,19 @@
   <body>
     <header class="topbar">
       <div>
-        <h1>
-          Cloud Resource Awareness — Conversation, Workspace + Settings
-        </h1>
+        <h1>Cloud Resource Awareness — Conversation, Workspace + Settings</h1>
         <p>
-          One operation card in Conversation · current Workspace truth on the
-          right · global NoraCloud status inside Settings.
+          Existing local work → one exact Cloud approval → factual resource receipt.
         </p>
       </div>
       <div class="spacer"></div>
       <div class="controls">
-        <button id="zoom-out" aria-label="Zoom out">−</button>
-        <button id="zoom-in" aria-label="Zoom in">+</button>
-        <button id="fit">Fit</button>
-        <button id="reset">Reset</button>
+        <button id="zoom-out">−</button><button id="zoom-in">+</button
+        ><button id="fit">Fit</button><button id="reset">Reset</button>
       </div>
     </header>
 
-    <nav class="jump" aria-label="Wireframe sections">
+    <nav class="jump">
       <h2>Jump</h2>
       <button data-jump="main-happy-path">Main happy path</button>
       <button data-jump="route-path">Route path</button>
@@ -1261,12 +1268,10 @@
       <button data-jump="state-language">State language</button>
       <button data-jump="errors-recovery">Errors and recovery</button>
       <div class="legend">
-        <div><i style="background: #77716b"></i>Existing product UI</div>
-        <div><i style="background: #3d7298"></i>Proposed Cloud UI</div>
-        <div>
-          <i style="background: #946417"></i>Attention / partial / stale
-        </div>
-        <div><i style="background: #a74742"></i>Unknown / unavailable</div>
+        <div><i style="background: #3f7298"></i>Proposed resource UI</div>
+        <div><i style="background: #4f805c"></i>Completed fact</div>
+        <div><i style="background: #936317"></i>Decision / partial</div>
+        <div><i style="background: #a74742"></i>Outcome unknown</div>
       </div>
     </nav>
 
@@ -1276,8 +1281,8 @@
           <div class="band-title">
             <h3>Main happy path</h3>
             <span
-              >Journey 1 · existing local UI → one operation card → Workspace
-              Cloud → Settings Cloud</span
+              >Journey 1 · local Agent change → local result → one Cloud proposal
+              → factual receipt</span
             >
           </div>
           <div class="flow" id="main-flow"></div>
@@ -1287,7 +1292,8 @@
           <div class="band-title">
             <h3>Route path</h3>
             <span
-              >Every confirmed route uses full NoraHarness product frames.</span
+              >Three PM-readable outcomes: approve, defer, or inspect a result
+              that needs attention.</span
             >
           </div>
           <div id="route-rows"></div>
@@ -1297,131 +1303,101 @@
           <div class="band-title">
             <h3>Detail states</h3>
             <span
-              >Real Version/Live actions, Workspace comparison, global
-              deduplication, and Usage availability.</span
+              >Real firmware tool progress, approval input, technical details,
+              the Workspace Cloud overview, and global Cloud system information
+              in Settings.</span
             >
           </div>
           <div class="compact-grid">
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>2.4 One Component, Different Operations</h4>
-              <p>
-                Existing-Agent update, first publish, release, Device
-                registration, and bounded tests reuse one component with real
-                operation-specific consequences.
-              </p>
+              <h4>1.1 Firmware Tool Progress</h4>
+              <ul>
+                <li>The active Build or Flash tool is expanded as Running.</li>
+                <li>Completed file and preview tools stay collapsed.</li>
+                <li>The current tool result is the visible progress source.</li>
+              </ul>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>2.5 First Publish Rule</h4>
-              <p>
-                First publish creates the Agent and first Version and sets it
-                Live. Version-only is not offered for this special case.
-              </p>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Branch state</span>
-              <h4>5.1 Workspace Not Linked</h4>
-              <p>
-                Show no invented Agent relationship. Keep first publish in
-                Conversation and global inventory inside Settings.
-              </p>
+              <h4>3.2 Approval Input Method</h4>
+              <ul>
+                <li>Approve can be clicked or sent as a normal reply.</li>
+                <li>Both inputs accept the same pending proposal once.</li>
+                <li>Not now defers only the Cloud update.</li>
+              </ul>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.3 Readable Agent Configuration</h4>
-              <p>
-                Lead with identity, behavior, Live state, LLM, listening, and
-                speaking. A user should not need a Version ID to understand the
-                Workspace-linked Agent.
-              </p>
+              <h4>4.3 Technical Details</h4>
+              <ul>
+                <li>Command summary, structured output, diagnostic, and logs.</li>
+                <li>Product resource stages remain primary.</li>
+                <li>Expanding details changes no Cloud state.</li>
+              </ul>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.4 Configuration Source Comparison</h4>
-              <p>
-                Show IDENTITY.md, SOUL.md, USER.md, and cloud-agent.json with
-                Live, Changed locally, Not published, or Missing status. Full
-                content opens in the main area.
-              </p>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>5.5 Workspace Binding And Linked Resources</h4>
-              <p>
-                Show the bound Agent, Live Version, Devices, stored Cloud
-                Conversation, and access readiness without claiming Workspace
-                ownership.
-              </p>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>6.3 Global Resource Deduplication</h4>
-              <p>
-                Settings counts each remote resource once. Local Workspace links
-                remain secondary context.
-              </p>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>6.4 NoraCloud Usage Availability</h4>
-              <p>
-                Show account-level LLM, STT, and TTS totals only when NoraCloud
-                provides complete metering. Otherwise show Unavailable; never
-                substitute coding Run Records.
-              </p>
+              <h4>4.2 Open Cloud Overview</h4>
+              <ul>
+                <li>Selects Cloud in the current right workbench.</li>
+                <li>Keeps the conversation active while refreshing.</li>
+                <li>Global inventory remains inside Settings.</li>
+              </ul>
             </article>
           </div>
+          <article class="route-row" style="margin-top: 14px">
+            <div class="route-title"><h4>Settings · Agent and Version</h4><code>4.5 → 4.5.1 → 4.5.1.1 → 4.5.1.1.1</code><span>Browse an account Agent, then inspect one immutable Version.</span></div>
+            <div class="flow" id="settings-agent-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Device</h4><code>4.5.1.1 → 4.5.1.1.2</code><span>Devices stay under their owning Agent.</span></div>
+            <div class="flow" id="settings-device-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Cloud Session</h4><code>4.5 → 4.5.2 → 4.5.2.1</code><span>Browse account Sessions or enter through Usage.</span></div>
+            <div class="flow" id="settings-session-flow"></div>
+          </article>
         </section>
 
         <section class="band" id="state-language">
           <div class="band-title">
             <h3>State language</h3>
             <span
-              >Stable labels separate Conversation, Workspace, Cloud
-              Conversation, Version, Live, and Usage.</span
+              >Stable terms for operation state, Versions, approval, and secrets.</span
             >
           </div>
           <div class="compact-grid">
-            <article class="compact-card">
+            <article class="compact-card language">
               <span class="kind">State language</span>
               <h4>0.1 Operation Status</h4>
               <p>
-                Waiting for decision · Scope covered · Running · Completed ·
-                Partial · Outcome unknown · Deferred · Blocked.
+                Waiting for you · Deferred · Completed · Partial · Outcome
+                unknown.
               </p>
             </article>
-            <article class="compact-card">
+            <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.2 Resource Freshness</h4>
+              <h4>0.2 Version Language</h4>
               <p>
-                Fresh · Refreshing · Stale · Unavailable, with a trusted
-                timestamp when one exists.
+                Use real <b>ver_…</b> IDs plus Live, Latest non-Live, or
+                Previous Live. Never invent v1/v2 numbering.
               </p>
             </article>
-            <article class="compact-card">
+            <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.3 Scope Terminology</h4>
+              <h4>0.3 Approval Language</h4>
               <p>
-                <b>Conversation</b> is interaction history.
-                <b>Workspace</b> is shared local project context.
-                <b>Cloud Conversation</b> is remote NoraCloud context.
+                Approve · Not now. Button approval and a typed Approve accept
+                the same one pending proposal.
               </p>
             </article>
-            <article class="compact-card">
+            <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.4 Version And Live Terminology</h4>
+              <h4>0.4 Secret Language</h4>
               <p>
-                Version is immutable; Live is the Agent pointer. Candidate is
-                not presented as a separate resource.
-              </p>
-            </article>
-            <article class="compact-card">
-              <span class="kind">State language</span>
-              <h4>0.5 Usage Terminology</h4>
-              <p>
-                NoraCloud Usage means complete Cloud metering. Coding Agent
-                tokens and Run Records stay outside Cloud surfaces.
+                Show credential type, scope, protected destination, and status.
+                Never show the secret value.
               </p>
             </article>
           </div>
@@ -1431,41 +1407,17 @@
           <div class="band-title">
             <h3>Errors and recovery</h3>
             <span
-              >The same operation component retains facts and stops unsafe
-              mutation.</span
+              >Known facts survive failure; unsafe duplicate mutation stops.</span
             >
           </div>
           <div class="compact-grid">
-            <article class="compact-card warning">
+            <article class="compact-card recovery">
               <span class="kind">Recovery summary</span>
-              <h4>3.1 Cloud Access Blocked</h4>
+              <h4>4.4 Partial And Unknown Outcomes</h4>
               <p>
-                Same card, Blocked state. Name type, scope, and safe Settings
-                path; never show or collect the secret through Agent text.
-              </p>
-            </article>
-            <article class="compact-card warning">
-              <span class="kind">Recovery summary</span>
-              <h4>3.2 Live Changed During Update</h4>
-              <p>
-                Show reviewed Live, current Live, and target. Previous approval
-                is invalid and mutation stops.
-              </p>
-            </article>
-            <article class="compact-card warning">
-              <span class="kind">Recovery summary</span>
-              <h4>4.1 Partial Result</h4>
-              <p>
-                Keep created IDs, separate completed and unfinished work, and
-                continue later without duplicate creation.
-              </p>
-            </article>
-            <article class="compact-card error">
-              <span class="kind">Recovery summary</span>
-              <h4>4.2 Outcome Unknown</h4>
-              <p>
-                Show the last confirmed fact, offer a safe read, and pause
-                duplicate mutation until remote reality is known.
+                Keep confirmed resources visible. Continue from the failed
+                stage; unknown outcomes pause duplicate mutation until reality
+                is determined.
               </p>
             </article>
           </div>
@@ -1477,344 +1429,233 @@
     <script>
       const states = {
         1: {
-          title: "Existing Local Agent Work",
+          title: "Local Agent Change In Progress",
           view: "local",
-          caption:
-            "Local work stays in current conversation, tool, Terminal, Device Log, and Preview surfaces. No new resource card appears.",
-          maturity: "today",
+          caption: "A normal Agent message plus real tool states shows the current work.",
         },
         2: {
-          title: "Agent Update Decision",
-          view: "decision",
-          caption:
-            "The card compares Workspace changes with Live and offers the real Version-only or Version-and-Live outcomes.",
+          title: "Local Agent Change Ready",
+          view: "local-ready",
+          caption: "The Assistant explains the local result and what was not changed.",
         },
         3: {
-          title: "Agent Update Running",
-          view: "running",
-          caption:
-            "The same card creates a Version, moves Live, and verifies remote truth through factual stages.",
+          title: "Cloud Update Proposal",
+          view: "proposal",
+          caption: "One exact persistent Cloud result waits for Approve or Not now.",
         },
         4: {
-          title: "Agent Update Receipt",
+          title: "Resource Receipt",
           view: "receipt",
-          caption:
-            "The same card becomes a factual receipt and hands off to the current Workspace Cloud view.",
+          caption: "The next PM-visible state is the factual result, not an execution screen.",
         },
-        5: {
-          title: "Current Workspace Cloud",
-          view: "session-cloud",
-          caption:
-            "The right Cloud tab compares Workspace Agent sources with Live and shows resources reachable through the Workspace binding.",
-        },
-        6: {
-          title: "Settings Cloud System Information",
-          view: "settings",
-          caption:
-            "Settings contains deduplicated Cloud resources and shows NoraCloud Usage only when complete metering exists.",
-        },
-        2.1: {
-          title: "Scope Covered By Instruction",
-          view: "covered",
-          caption:
-            "The consequence remains visible, but a precise instruction avoids redundant second confirmation.",
-        },
-        2.2: {
-          title: "Cloud Work Deferred",
+        3.1: {
+          title: "Cloud Update Deferred",
           view: "deferred",
-          caption:
-            "The same card settles to Deferred; local work remains available and no Cloud resource is claimed.",
-        },
-        2.3: {
-          title: "Create Version Without Changing Live",
-          view: "version-only",
-          caption:
-            "A new immutable Version is approved while Live v12 and Devices following Live remain unchanged.",
-        },
-        "2.3.1": {
-          title: "Version-Only Receipt",
-          view: "version-receipt",
-          caption:
-            "The receipt says Version v13 exists, Live remains v12, and Device impact is none.",
+          caption: "No Cloud mutation occurs; validated Workspace changes remain available.",
         },
         4.1: {
-          title: "Partial Result",
-          view: "partial",
-          caption:
-            "Created resources remain visible in the same operation card even when a later stage fails.",
+          title: "Result Needs Attention",
+          view: "result-attention",
+          caption: "Confirmed facts remain visible while the next safe recovery action is offered.",
         },
-        4.2: {
-          title: "Outcome Unknown",
-          view: "unknown",
-          caption:
-            "Duplicate mutation pauses while the same card reports the last confirmed fact and safe read action.",
+        4.5: {
+          title: "Global Cloud Overview In Settings",
+          view: "settings-cloud",
+          caption: "Settings provides browsable account-level Cloud resources and cumulative Recorded Usage.",
         },
-        5.2: {
-          title: "Workspace Or Live Changed",
-          view: "changed",
-          caption:
-            "The Workspace view names changed local sources or a changed remote Live Version before another mutation.",
+        "4.5.1": {
+          title: "Agents List",
+          view: "settings-agents",
+          caption: "Agents are the account-level root for their Versions and Devices.",
         },
-        6.1: {
-          title: "Remote Agent Without Local Workspace Link",
-          view: "settings-orphan",
-          caption:
-            "Settings still counts a remote Agent that no local Workspace links.",
+        "4.5.1.1": {
+          title: "Agent Detail",
+          view: "settings-agent-detail",
+          caption: "One Agent explains its Live configuration, Versions, and Devices together.",
         },
-        6.2: {
-          title: "Global Inventory Refresh Failure",
-          view: "settings-stale",
-          caption:
-            "Trusted global information stays visible as Stale; unknown state never becomes zero.",
+        "4.5.1.1.1": {
+          title: "Version Detail",
+          view: "settings-version-detail",
+          caption: "The immutable definition shows configuration and published files without inventing remote Markdown content.",
+        },
+        "4.5.1.1.2": {
+          title: "Device Detail",
+          view: "settings-device-detail",
+          caption: "The Device resolves ownership, track, connection, Version, and current Session.",
+        },
+        "4.5.2": {
+          title: "Cloud Sessions List",
+          view: "settings-sessions",
+          caption: "Account-wide Sessions expose status, relationships, activity, turns, and recorded Usage.",
+        },
+        "4.5.2.1": {
+          title: "Cloud Session Detail",
+          view: "settings-session-detail",
+          caption: "One Session retains its Agent, Device, Version, timestamps, and available Usage fields.",
         },
       };
 
       const routes = [
         {
-          name: "Update and make Live",
-          path: ["1", "2", "3", "4", "5", "6"],
-          result:
-            "Create a Version, move Live, refresh Workspace truth, then open global Settings.",
+          name: "Approve Cloud update",
+          path: ["1", "2", "3", "4"],
+          result: "Button or typed approval leads to the same factual receipt.",
         },
         {
-          name: "Precise instruction",
-          path: ["1", "2", "2.1", "3", "4", "5"],
-          result: "Show consequence without asking the same decision twice.",
+          name: "Defer Cloud update",
+          path: ["1", "2", "3", "3.1", "2"],
+          result: "Keep validated local work with no Cloud mutation.",
         },
         {
-          name: "Create Version only",
-          path: ["1", "2", "2.3", "2.3.1", "5"],
-          result: "Create Version v13 while Live v12 and Devices remain unchanged.",
-        },
-        {
-          name: "Defer Cloud work",
-          path: ["1", "2", "2.2", "1"],
-          result: "Continue local development without Cloud mutation.",
-        },
-        {
-          name: "Partial result",
-          path: ["1", "2", "3", "4.1", "5", "6"],
-          result: "Keep Version v13 visible while Live and Devices remain on v12.",
-        },
-        {
-          name: "Outcome unknown",
-          path: ["1", "2", "3", "4.2"],
-          result: "Stop duplicate mutation until remote truth is known.",
-        },
-        {
-          name: "Workspace comparison changed",
-          path: ["5", "5.2", "2"],
-          result: "Refresh local and remote facts before another mutation decision.",
-        },
-        {
-          name: "Unlinked global Agent",
-          path: ["6", "6.1", "6"],
-          result: "Keep remote inventory independent of local Workspace links.",
-        },
-        {
-          name: "Global refresh recovery",
-          path: ["6", "6.2", "6"],
-          result: "Preserve stale facts until global refresh succeeds.",
+          name: "Result needs attention",
+          path: ["1", "2", "3", "4.1"],
+          result: "Keep confirmed facts and avoid unsafe duplicate mutation.",
         },
       ];
 
-      function buttons(items) {
+      function cardShell(title, status, statusClass, body, extraClass = "") {
+        return `<div class="resource-card ${extraClass}"><div class="rhead">${title}<span class="status ${statusClass}">${status}</span></div><div class="rbody">${body}</div></div>`;
+      }
+      function row(key, value, tail = "") {
+        return `<div class="row"><span class="key">${key}</span><span class="value">${value}</span><code>${tail}</code></div>`;
+      }
+      function actions(items) {
         return `<div class="actions">${items.map((item, index) => `<span class="btn ${index === 0 ? "primary" : ""}">${item}</span>`).join("")}</div>`;
       }
-
-      function line(key, value) {
-        return `<div class="impact-line"><span>${key}</span><b>${value}</b></div>`;
+      function stage(icon, label, tail, cls = "") {
+        return `<div class="stage-line"><span class="${cls}">${icon}</span><b>${label}</b><code>${tail}</code></div>`;
+      }
+      function toolCall(title, status, expanded = false, body = "") {
+        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><span class="chevron">${expanded ? "▾" : "▸"}</span><span>${title}</span><small>${status}</small></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
       }
 
-      function operationCard(kind) {
-        const configs = {
-          decision: {
-            status: "Waiting for decision",
-            cls: "warn",
-            title: "Update Desk Weather Agent",
-            body: `<div class="impact-grid"><div class="impact"><h5>Current Cloud state</h5>${line("Agent", "Desk Weather")}${line("Live", "v12")}${line("Devices", "2 follow Live")}</div><div class="impact"><h5>Workspace changes</h5>${line("SOUL.md", "Behavior changed")}${line("LLM", "Qwen Turbo → Max")}</div><div class="impact"><h5>Create Version</h5>${line("Result", "Create v13")}${line("Live", "Remain v12")}${line("Devices", "Not affected")}</div><div class="impact"><h5>Create and make Live</h5>${line("Result", "Create v13")}${line("Live", "v12 → v13")}${line("Devices", "2 follow new Live")}</div></div><div class="operation-note"><b>Not included:</b> Device registration, credential creation, firmware flash, or Cloud test turn.</div>${buttons(["Create Version", "Create and make Live", "Not now"])}`,
-          },
-          covered: {
-            status: "Scope covered",
-            cls: "ok",
-            title: "Update Desk Weather Agent",
-            body: `<div class="operation-note green"><b>Your instruction already requests this exact outcome.</b> The consequence remains visible without asking the same decision twice.</div><div class="impact-grid" style="margin-top:7px"><div class="impact"><h5>Approved change</h5>${line("Create", "Version v13")}${line("Live", "v12 → v13")}</div><div class="impact"><h5>Impact</h5>${line("Devices", "2 follow new Live")}${line("Sources", "SOUL.md + LLM")}</div></div>${buttons(["Technical details", "Stop if safe"])}`,
-          },
-          running: {
-            status: "Running",
-            cls: "",
-            title: "Updating Desk Weather Agent",
-            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Workspace configuration collected</b><code>4 sources</code></div><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>v13</code></div><div class="stage-line"><span class="active">●</span><b>Moving Live</b><code>v12 → v13</code></div><div class="stage-line"><span>○</span><b>Read final state</b><code>pending</code></div></div>${buttons(["Technical details"])}`,
-          },
-          receipt: {
-            status: "Completed",
-            cls: "ok",
-            title: "Desk Weather Agent updated",
-            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Version", "v13")}${line("Configuration", "SOUL.md + LLM")}</div><div class="impact"><h5>Changed</h5>${line("Live", "v12 → v13")}${line("Devices", "2 now follow v13")}</div><div class="impact"><h5>Verified</h5>${line("Remote Live", "v13")}${line("Checked", "just now")}</div><div class="impact"><h5>Persists</h5>${line("Version", "v13 remains stored")}${line("Live", "v13 remains active")}</div></div><div class="operation-note"><b>Not done:</b> No Device was registered, no credential was created, and no Cloud test turn ran.</div>${buttons(["Open Workspace Cloud", "Configuration details"])}`,
-          },
-          deferred: {
-            status: "Deferred",
-            cls: "warn",
-            title: "Update Desk Weather Agent",
-            body: `<div class="impact-grid"><div class="impact"><h5>Cloud result</h5>${line("Version", "None created")}${line("Live", "Remains v12")}</div><div class="impact"><h5>Local result</h5>${line("Workspace", "Changes retained")}${line("Sources", "Still editable")}</div></div><div class="operation-note">Deferring the Cloud update does not cancel local development.</div>${buttons(["Continue local work", "Publish later"])}`,
-          },
-          "version-only": {
-            status: "Waiting for decision",
-            cls: "warn",
-            title: "Create Version without changing Live",
-            body: `<div class="impact-grid"><div class="impact"><h5>Will create</h5>${line("Version", "v13")}${line("Sources", "SOUL.md + LLM")}</div><div class="impact"><h5>Will not change</h5>${line("Live", "Remains v12")}${line("Devices", "2 remain on v12")}</div></div><div class="operation-note">The new Version will persist in NoraCloud. It will not become Live unless released later.</div>${buttons(["Create Version", "Back", "Not now"])}`,
-          },
-          "version-receipt": {
-            status: "Completed",
-            cls: "ok",
-            title: "Version v13 created",
-            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Version", "v13")}${line("Configuration", "SOUL.md + LLM")}</div><div class="impact"><h5>Unchanged</h5>${line("Live", "v12")}${line("Devices", "2 still follow v12")}</div></div><div class="operation-note green">The new Version persists in NoraCloud. It is not Live and has not affected connected Devices.</div>${buttons(["Open Workspace Cloud", "Compare with Live"])}`,
-          },
-          partial: {
-            status: "Partial",
-            cls: "warn",
-            title: "Agent update incomplete",
-            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>v13</code></div><div class="stage-line"><span class="failed">×</span><b>Live change failed</b><code>v12 remains Live</code></div><div class="stage-line"><span class="done">✓</span><b>Device impact</b><code>none</code></div></div><div class="operation-note amber"><b>Persists:</b> Version v13 exists. Live remains v12, so Devices following Live did not switch.</div>${buttons(["Open Workspace Cloud", "Technical details"])}`,
-          },
-          unknown: {
-            status: "Outcome unknown",
-            cls: "bad",
-            title: "Remote outcome",
-            body: `<div class="impact-grid"><div class="impact"><h5>Last confirmed</h5>${line("Request", "Sent to NoraCloud")}${line("Diagnostic", "req_…a91")}</div><div class="impact"><h5>Safety state</h5>${line("Automatic retry", "Paused")}${line("Next", "Read current state")}</div></div><div class="operation-note red">The operation may have reached NoraCloud. Duplicate mutation stays paused until a safe read establishes reality.</div>${buttons(["Check current state", "Technical details", "Stop"])}`,
-          },
-        };
-        const c = configs[kind];
-        return `<div class="operation-card"><div class="operation-head"><div><div class="operation-kicker">Cloud Resource Operation · op_…41a</div><div class="operation-title">${c.title}</div></div><span class="pill ${c.cls}">${c.status}</span></div><div class="operation-body">${c.body}</div></div>`;
+      function conversationContent(kind) {
+        if (kind === "local")
+          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant"><strong>I’m updating the local Agent definition.</strong><br>NoraCloud will not be changed in this step.</div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Validate Agent configuration", "Running", true, "Checking model, instructions, and configuration compatibility…")}</div>`;
+        if (kind === "local-ready")
+          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Validate Agent configuration", "Completed")}</div><div class="assistant"><strong>The local Agent configuration is ready.</strong><br>Responses are shorter and the reasoning model is Qwen Max.<br><br>Firmware was not modified. NoraCloud was not changed.</div>`;
+        if (kind === "proposal")
+          return `<div class="user-msg">Update the Desk Weather Agent with these Workspace changes.</div><div class="assistant">The next step creates a persistent Version and changes which Version is Live.</div>${cardShell("Update Desk Weather Agent", "Waiting for you", "warn", `<div class="scope">Proposed operation</div>${row("Agent", "Desk Weather", "agt_…7f2")}${row("Create", "New Version")}${row("Change Live", "ver_…a81 → new Version")}${row("Affected", "2 Devices follow Live")}<div class="excluded-note"><b>Not included:</b> Firmware build, flash, Device registration, or Cloud test.</div>${actions(["Approve", "Not now"])}<div class="assistant" style="margin:7px 0 0">You can also reply “Approve”.</div>`, "amber")}`;
+        if (kind === "receipt")
+          return `<div class="assistant">The confirmed Cloud update is complete.</div>${cardShell("Desk Weather Agent updated", "Completed", "ok", `<div class="impact-grid"><div class="impact-block created"><h5>Created</h5><div class="impact-item"><span>Version</span><b>ver_…b12</b></div></div><div class="impact-block"><h5>Changed</h5><div class="impact-item"><span>Live</span><b>ver_…a81 → ver_…b12</b></div><div class="impact-item"><span>Devices</span><b>2 continue following Live</b></div></div></div><div class="persist-note"><b>Persists after this chat:</b> ver_…b12 remains Live and following Devices resolve it.</div><div class="excluded-note"><b>Not done:</b> Firmware build or flash, Device registration, or Cloud test.</div>${actions(["Open Cloud overview", "Technical details"])}`)}`;
+        if (kind === "deferred")
+          return `<div class="user-msg">Not now. Keep the changes local.</div><div class="assistant">The Cloud update is deferred. The validated Workspace changes remain available.</div>${cardShell("Update Desk Weather Agent", "Deferred", "warn", `${row("Cloud change", "None")}${row("Workspace changes", "Ready")}${actions(["Continue locally", "Update later"])}`)}`;
+        if (kind === "result-attention")
+          return `<div class="assistant">The Cloud update needs attention. Confirmed resources remain visible.</div>${cardShell("Desk Weather update incomplete", "Partial", "warn", `<div class="stage-list">${stage("✓", "Version created", "ver_…b12", "done")}${stage("×", "Live change failed", "still ver_…a81", "failed")}${stage("○", "Affected Devices", "unchanged")}</div><div class="notice">Resume from the Live change. Do not create another Version.</div>${actions(["Check current state", "Technical details"])}`, "amber")}`;
+        return "";
       }
 
-      function rightTabs(active, proposed) {
-        const tabs = [
-          "All Files",
-          "Changes",
-          "Device",
-          ...(proposed ? ["Cloud"] : []),
-          "Preview",
-        ];
-        return `<div class="right-tabs">${tabs.map((tab) => `<span class="rtab ${tab === active ? "on" : ""} ${tab === "Cloud" ? "proposed" : ""}">${tab}</span>`).join("")}</div>`;
+      function rightPanel(kind) {
+        const cloudKinds = ["receipt", "result-attention"];
+        if (!cloudKinds.includes(kind))
+          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">2 changed files</b><br><br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
+        const complete = kind === "receipt";
+        const version = complete ? "ver_…b12" : "ver_…a81";
+        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh ${complete ? "" : "refreshing"}">${complete ? "Fresh · now" : "Refreshing…"}</span></div><div class="panel-note">Workspace relationship and last trusted Cloud state.</div><div class="panel-card"><h5>Bound Agent</h5><div class="panel-row"><span>Agent</span><b>Desk Weather</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live</span><b>${version}</b><code>${complete ? "current" : "trusted"}</code></div><div class="panel-row"><span>Definition</span><b>Concise · Qwen Max</b><code></code></div></div><div class="panel-card"><h5>Related Cloud Resources</h5><div class="panel-row"><span>Versions</span><b>${complete ? "5" : "4"}</b><code>›</code></div><div class="panel-row"><span>Devices</span><b>2 follow Live</b><code>›</code></div><div class="panel-row"><span>Credentials</span><b>Ready</b><code>›</code></div></div></div>`;
       }
 
-      function sessionCloudPanel(kind) {
-        const changed = kind === "changed";
-        const speaking = changed ? "Qwen TTS · Atlas" : "Qwen TTS · Cherry";
-        const behavior = changed
-          ? "Answers in one concise sentence. It asks before changing a connected device."
-          : "Answers in one or two concise sentences. It asks before changing a connected device.";
-        return `${rightTabs("Cloud", true)}<div class="cloud-panel">
-          <div class="cloud-head"><div><h5>Cloud</h5><small>Current Workspace · desk-weather</small></div><span class="fresh">Fresh · just now</span></div>
-          ${changed
-            ? `<div class="inline-notice amber"><b>Workspace differs from Live v13.</b> SOUL.md and cloud-agent.json contain local changes that are not published.</div>`
-            : `<div class="inline-notice"><b>Workspace Cloud context.</b> Local Agent sources match Live v13 and the Workspace binding is valid.</div>`}
-          <div class="panel-space">
-            <div class="space-title">Agent Configuration<small>${changed ? "2 local changes" : "Matches Live v13"}</small></div>
-            <div class="agent-summary">
-              <div class="agent-summary-head"><div class="agent-avatar">DW</div><div><h6>Desk Weather</h6><div class="agent-identity">A concise, voice-first weather assistant</div></div><span class="live-badge">${changed ? "WORKSPACE" : "LIVE v13"}</span></div>
-              <div class="agent-behavior">${behavior}</div>
-              <div class="capability-grid">
-                <div class="capability"><span>Reasoning · LLM</span><b>Qwen Turbo</b></div>
-                <div class="capability"><span>Listening · STT</span><b>Qwen ASR · Chinese</b></div>
-                <div class="capability"><span>Speaking · TTS</span><b>${speaking}</b></div>
-              </div>
-              <div class="source-list">
-                <div class="source-line"><span>IDENTITY.md</span><span class="source-state">Live</span></div>
-                <div class="source-line"><span>SOUL.md</span><span class="source-state ${changed ? "changed" : ""}">${changed ? "Changed locally" : "Live"}</span></div>
-                <div class="source-line"><span>USER.md</span><span class="source-state">Live</span></div>
-                <div class="source-line"><span>cloud-agent.json</span><span class="source-state ${changed ? "changed" : ""}">${changed ? "Changed locally" : "Live"}</span></div>
-              </div>
-              <div class="config-footer"><span>${changed ? "Compared with Live v13 · just now" : "Published 12m ago · Workspace matches Live"}</span><b>Configuration details ›</b></div>
-            </div>
-          </div>
-          <div class="panel-space">
-            <div class="space-title">Linked Cloud Resources<small>Workspace binding</small></div>
-            <div class="session-resource"><span class="resource-glyph">A</span><span><b>Desk Weather</b><small>Bound Agent · persistent in NoraCloud</small></span><span class="resource-state">Linked</span></div>
-            <div class="session-resource"><span class="resource-glyph">V</span><span><b>Live Version v13</b><small>${changed ? "Workspace has unpublished changes" : "Workspace configuration matches"}</small></span><span class="resource-state">Live</span></div>
-            <div class="session-resource"><span class="resource-glyph">▣</span><span><b>2 Devices</b><small>On this Agent · follow Live</small></span><span class="resource-state">Online</span></div>
-            <div class="session-resource"><span class="resource-glyph">◎</span><span><b>Desk Weather Cloud Conversation</b><small>Stored by this Workspace binding</small></span><span class="resource-state">Ready</span></div>
-            <div class="session-resource"><span class="resource-glyph">✓</span><span><b>NoraCloud access</b><small>Signed in · secrets hidden</small></span><span class="resource-state">Ready</span></div>
-          </div>
-          <div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn">Compare with Live</span><span class="btn primary">View all in Settings</span></div>
-        </div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
-      }
-
-      function centerContent(kind) {
-        const operationKinds = [
-          "decision",
-          "covered",
-          "running",
-          "receipt",
-          "deferred",
-          "version-only",
-          "version-receipt",
-          "partial",
-          "unknown",
-        ];
-        const isLocal = kind === "local";
-        const prompt = isLocal
-          ? "Make Desk Weather more concise and change its reasoning model."
-          : "Update the Desk Weather Agent with my Workspace changes.";
-        const assistant = isLocal
-          ? "I updated the local Agent definition. NoraCloud has not changed."
-          : kind === "receipt"
-            ? "The Version and Live update are confirmed."
-            : kind === "version-receipt"
-              ? "Version v13 exists, but Live and connected Devices remain on v12."
-            : kind === "deferred"
-              ? "The Cloud update is deferred. I can keep working locally."
-              : "The next step has persistent NoraCloud consequences.";
-        const content = isLocal
-          ? `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">⌁</span><span>Agent files updated</span><span class="pill ok">Completed</span></div><div class="tool-body">SOUL.md and cloud-agent.json changed in this Workspace. No NoraCloud resource was changed.</div></div>`
-          : operationKinds.includes(kind)
-            ? operationCard(kind)
-            : `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">✓</span><span>Cloud operation</span><span class="pill ok">Completed</span></div><div class="tool-body">Open the right Cloud tab to compare this Workspace with the linked Agent's Live Version.</div></div>`;
-        return `<section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="session-chip">Conversation · Active</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint)">＋</span></div><div class="stream"><div class="user-msg">${prompt}</div><div class="assistant">${assistant}</div>${content}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>`;
-      }
-
-      function appFrame(kind) {
-        const proposed = kind !== "local";
-        const cloudActive = kind === "session-cloud" || kind === "changed";
-        const right = cloudActive
-          ? sessionCloudPanel(kind)
-          : `${rightTabs("All Files", proposed)}<div class="file-tree">▾ agent<br>&nbsp;&nbsp; IDENTITY.md<br>&nbsp;&nbsp; SOUL.md<br>&nbsp;&nbsp; USER.md<br>&nbsp;&nbsp; cloud-agent.json<br>▾ firmware<br>&nbsp;&nbsp; platformio.ini<br>&nbsp;&nbsp; src<br>&nbsp;&nbsp;&nbsp;&nbsp; main.cpp</div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
-        return `<div class="screen"><div class="product-scale"><div class="app"><aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness</div><div class="mode"><span>Chat</span><span class="on">Code</span></div><div class="search">Search conversations…</div><div class="side-label">Workspaces</div><div class="workspace">▾ desk-weather <span style="margin-left:auto">2</span></div><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div><div class="grow"></div><div class="settings-link">⚙ Settings</div><div class="account">● Signed in &nbsp; <b>NoraCloud ready</b></div></aside>${centerContent(kind)}<aside class="right">${right}</aside></div></div></div>`;
+      function settingsShell(title, breadcrumb, body) {
+        return `<div class="screen"><div class="scale"><div class="settings-app">
+          <aside class="settings-nav">
+            <div class="settings-back">← Back to app</div>
+            <h5>Settings</h5><p>NoraHarness preferences</p>
+            <div class="settings-nav-item">⚙ General</div>
+            <div class="settings-nav-item on">☁ Cloud <span class="tag" style="margin-left:auto">Proposed</span></div>
+            <div class="settings-nav-item">⌁ Providers</div>
+            <div class="settings-nav-item">◇ Permissions</div>
+            <div class="settings-nav-item">ⓘ About</div>
+          </aside>
+          <main class="settings-main">
+            ${breadcrumb ? `<div class="settings-breadcrumb">${breadcrumb}</div>` : ""}
+            <div class="settings-title"><h6>${title}</h6><span>● NoraCloud connected · Updated just now</span></div>
+            ${body}
+          </main>
+        </div></div></div>`;
       }
 
       function settingsFrame(kind) {
-        const stale = kind === "settings-stale";
-        const orphan = kind === "settings-orphan";
-        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Unknown state is not replaced with zero.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Readable Agent status · each remote resource counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Versions</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Conversations</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather</strong><span class="agent-purpose">Concise, voice-first weather assistant · 4 Versions</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Cherry voice</span><span>2 Devices · 3 Cloud Conversations<br><small>Linked by 2 local Workspaces</small></span><span class="agent-state"><b>Live v13</b><small>12m ago ›</small></span></div><div class="global-resource"><div><strong>Kitchen Guide</strong><span class="agent-purpose">Step-by-step cooking companion · 3 Versions</span></div><span class="agent-capabilities"><b>Gemini Flash</b><br>Text only</span><span>1 Device · 2 Cloud Conversations<br><small class="${orphan ? "orphan" : ""}">${orphan ? "No local Workspace link" : "Linked by 1 local Workspace"}</small></span><span class="agent-state"><b>Live v7</b><small>18d ago ›</small></span></div><div class="global-resource"><div><strong>Voice Lamp</strong><span class="agent-purpose">Voice-controlled ambient lighting · 5 Versions</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Atlas voice</span><span>1 Device · 2 Cloud Conversations<br><small>Linked by 1 local Workspace</small></span><span class="agent-state"><b>Live v9</b><small>1h ago ›</small></span></div></section><section class="settings-card"><div class="settings-card-head"><h3>NoraCloud Usage <span class="pill warn" style="display:inline-block;margin-left:6px">Proposed</span></h3><span>Current identity · complete Cloud metering required</span></div><div class="global-usage"><div><strong>—</strong><span>LLM tokens</span></div><div><strong>—</strong><span>STT time</span></div><div><strong>—</strong><span>TTS characters</span></div><p><b>Usage unavailable.</b> NoraCloud does not yet provide complete account-level coverage.<br>Coding Agent tokens and Run Records are not substituted.</p></div></section></main></div></div></div>`;
+        if (kind === "settings-cloud")
+          return settingsShell("Cloud", "", `<div class="settings-scope"><b>System information.</b> All NoraCloud resources accessible to the signed-in account. This is not limited to the current Workspace.</div>
+            <div class="settings-stat-grid">
+              <div class="settings-stat"><div class="settings-stat-head"><b>Agents</b><strong>3</strong></div><p>Open an Agent to inspect its Live Version, Versions, and Devices</p><span class="settings-stat-link">Open Agents ›</span></div>
+              <div class="settings-stat"><div class="settings-stat-head"><b>Cloud Sessions</b><strong>18</strong></div><p>2 active · latest activity 8m ago</p><span class="settings-stat-link">Open Sessions ›</span></div>
+            </div>
+            <div class="settings-section-card"><h6>Recorded Usage · account total</h6>
+              <div class="settings-usage"><div><strong>184,620</strong><span>LLM tokens</span></div><div><strong>126</strong><span>Cloud turns</span></div><div><strong>18</strong><span>Cloud Sessions</span></div></div>
+              <div class="settings-footnote">NoraCloud-recorded activity · Not billing or remaining quota &nbsp; <b class="settings-link">View by Session ›</b></div>
+            </div>`);
+        if (kind === "settings-agents")
+          return settingsShell("Agents", "Cloud / Agents", `<div class="settings-toolbar"><span class="settings-filter">Search Agents…</span><span class="settings-filter">All Live states⌄</span><span style="margin-left:auto;color:var(--muted);font-size:9px">3 Agents</span></div>
+            <div class="settings-list"><div class="settings-list-head"><span>Agent</span><span>Live Version</span><span>Created</span><span>Updated</span><span></span></div>
+              <div class="settings-list-row"><span><b>Desk Weather</b><br><code>agt_…7f2</code></span><code>ver_…b12</code><span>May 18</span><span>12m ago</span><span class="settings-link">Open ›</span></div>
+              <div class="settings-list-row"><span><b>Kitchen Helper</b><br><code>agt_…2c8</code></span><code>ver_…d40</code><span>Jun 03</span><span>Yesterday</span><span class="settings-link">Open ›</span></div>
+              <div class="settings-list-row"><span><b>Voice Notes</b><br><code>agt_…91a</code></span><span class="settings-pill muted">No Live</span><span>Jun 08</span><span>4d ago</span><span class="settings-link">Open ›</span></div>
+            </div>`);
+        if (kind === "settings-agent-detail")
+          return settingsShell("Desk Weather", "Cloud / Agents / Desk Weather", `<div class="settings-meta-grid"><div class="settings-meta"><span>Agent</span><code>agt_…7f2</code></div><div class="settings-meta"><span>Live Version</span><code>ver_…b12</code></div><div class="settings-meta"><span>Created</span><b>May 18</b></div><div class="settings-meta"><span>Updated</span><b>12m ago</b></div></div>
+            <div class="config-strip"><div class="config-cell"><span>Reasoning · LLM</span><b>Qwen Max</b></div><div class="config-cell"><span>Listening · STT</span><b>Qwen ASR · Chinese</b></div><div class="config-cell"><span>Speaking · TTS</span><b>Qwen TTS · Cherry</b></div></div>
+            <div class="settings-subhead">Versions <span>5 immutable Versions</span></div><div class="settings-list"><div class="settings-list-head"><span>Version</span><span>State</span><span>Description</span><span>Created</span><span></span></div><div class="settings-list-row"><code>ver_…b12</code><span class="settings-pill">Live</span><span>Shorter replies</span><span>12m ago</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><code>ver_…a81</code><span class="settings-pill muted">Non-Live</span><span>Previous behavior</span><span>2d ago</span><span class="settings-link">Open ›</span></div></div>
+            <div class="settings-subhead">Devices <span>2 follow Live</span></div><div class="settings-list"><div class="settings-list-head"><span>Device</span><span>Connection</span><span>Track</span><span>Last seen</span><span></span></div><div class="settings-list-row"><span><b>Desk Display</b><br><code>dev_…228</code></span><span class="settings-pill">Connected</span><span>Follows Live</span><span>Now</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><b>Office Display</b><br><code>dev_…930</code></span><span class="settings-pill muted">Offline</span><span>Follows Live</span><span>3h ago</span><span class="settings-link">Open ›</span></div></div>`);
+        if (kind === "settings-version-detail")
+          return settingsShell("ver_…b12", "Cloud / Agents / Desk Weather / ver_…b12", `<div class="settings-meta-grid"><div class="settings-meta"><span>Agent</span><b>Desk Weather</b></div><div class="settings-meta"><span>State</span><b>Live · Ready</b></div><div class="settings-meta"><span>Created</span><b>12m ago</b></div><div class="settings-meta"><span>Description</span><b>Shorter replies</b></div></div>
+            <div class="settings-subhead">Agent configuration</div><div class="config-strip"><div class="config-cell"><span>Reasoning · LLM</span><b>Qwen Max</b></div><div class="config-cell"><span>Listening · STT</span><b>Qwen ASR · Chinese</b></div><div class="config-cell"><span>Speaking · TTS</span><b>Qwen TTS · Cherry</b></div></div>
+            <div class="settings-footnote" style="padding:0 0 8px">Schedules · None</div>
+            <div class="settings-subhead">Published instruction files <span>Remote content is not returned</span></div><div class="file-list"><div class="file-row"><b>SOUL.md</b><span>Matches Workspace</span><span class="settings-link">Open local file ›</span></div><div class="file-row"><b>IDENTITY.md</b><span>Matches Workspace</span><span class="settings-link">Open local file ›</span></div><div class="file-row"><b>USER.md</b><span>Different locally</span><span class="settings-link">Compare ›</span></div><div class="file-row"><b>skills/weather/SKILL.md</b><span>Not available locally</span><span>—</span></div></div>
+            <div class="settings-actions"><span class="btn">Technical details</span><span class="btn">Back to Agent</span></div>`);
+        if (kind === "settings-device-detail")
+          return settingsShell("Desk Display", "Cloud / Agents / Desk Weather / Desk Display", `<div class="settings-meta-grid"><div class="settings-meta"><span>Device</span><code>dev_…228</code></div><div class="settings-meta"><span>Connection</span><b>Connected</b></div><div class="settings-meta"><span>Last seen</span><b>Just now</b></div><div class="settings-meta"><span>Created</span><b>Jun 02</b></div></div>
+            <div class="settings-section-card"><h6>Runtime relationship</h6><div class="file-row"><b>Owning Agent</b><span>Desk Weather</span><span class="settings-link">Open Agent ›</span></div><div class="file-row"><b>Track</b><span>Follows Live</span><span></span></div><div class="file-row"><b>Resolved Version</b><code>ver_…b12</code><span class="settings-link">Open Version ›</span></div><div class="file-row"><b>Current Session</b><code>ses_…91c</code><span class="settings-link">Open Session ›</span></div></div>
+            <div class="settings-footnote" style="padding-top:10px">No credential value is shown on this resource page.</div>`);
+        if (kind === "settings-sessions")
+          return settingsShell("Cloud Sessions", "Cloud / Sessions", `<div class="settings-toolbar"><span class="settings-filter">Active + ended⌄</span><span class="settings-filter">All Devices⌄</span><span class="settings-filter">Recent activity⌄</span><span style="margin-left:auto;color:var(--muted);font-size:9px">18 Sessions</span></div>
+            <div class="settings-list"><div class="settings-list-head"><span>Session</span><span>Relationship</span><span>Last activity</span><span>Recorded Usage</span><span></span></div><div class="settings-list-row"><span><code>ses_…91c</code><br><span class="settings-pill">Active</span></span><span>Desk Weather · Desk Display</span><span>8m ago · 14 turns</span><span>24,680 tokens</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><code>ses_…72a</code><br><span class="settings-pill muted">Ended</span></span><span>Kitchen Helper · No Device</span><span>Yesterday · 8 turns</span><span>11,240 tokens</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><code>ses_…12f</code><br><span class="settings-pill muted">Ended</span></span><span>Desk Weather · Office Display</span><span>3d ago · 5 turns</span><span>6,420 tokens</span><span class="settings-link">Open ›</span></div></div>
+            <div class="settings-footnote" style="padding-top:10px">Entering through Recorded Usage focuses this same list by Usage; it does not create another resource type.</div>`);
+        if (kind === "settings-session-detail")
+          return settingsShell("ses_…91c", "Cloud / Sessions / ses_…91c", `<div class="settings-meta-grid"><div class="settings-meta"><span>Status</span><b>Active</b></div><div class="settings-meta"><span>Agent</span><b>Desk Weather</b></div><div class="settings-meta"><span>Device</span><b>Desk Display</b></div><div class="settings-meta"><span>Version at start</span><code>ver_…b12</code></div></div><div class="settings-section-card"><h6>Session activity</h6><div class="file-row"><b>Started</b><span>Today · 09:14</span><span></span></div><div class="file-row"><b>Last interaction</b><span>8 minutes ago</span><span></span></div><div class="file-row"><b>Turns</b><span>14</span><span></span></div><div class="file-row"><b>Context tokens</b><span>31,200</span><span></span></div></div><div class="settings-section-card"><h6>Recorded Usage</h6><div class="settings-usage"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>4.8s</strong><span>STT audio</span></div><div><strong>3,240</strong><span>TTS characters</span></div></div></div><div class="settings-actions"><span class="btn">View logs</span><span class="btn">Export Session</span><span class="btn">Open related resources</span></div>`);
+        return "";
+      }
+
+      function appFrame(kind) {
+        if (kind.startsWith("settings-")) return settingsFrame(kind);
+        return `<div class="screen"><div class="scale"><div class="app">
+        <aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness <span style="margin-left:auto;color:var(--faint)">◁</span></div><div class="new-conversation"><span style="color:var(--accent)">＋</span> New conversation</div><div class="search">Search conversations…</div><div class="slbl">⌄ Workspaces <span class="controls">⇅ ⇵ ＋</span></div><div class="workspace">⌄ ◫ &nbsp;desk-weather <span style="margin-left:auto">2</span></div><div class="session-tree"><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div></div><div class="slbl">⌄ Conversations <span class="controls">＋</span></div><div class="conversation">General question <small>1d</small></div><div class="grow"></div><div class="settings-entry">⚙ Settings</div><div class="account"><span>●</span><b>Nora User</b><span style="margin-left:auto">Sign out</span></div></aside>
+        <section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="cloud-chip">Cloud · Proposed</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint);font-size:12px">＋</span></div><div class="stream">${conversationContent(kind)}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>
+        <aside class="right">${rightPanel(kind)}<div class="right-bottom">Terminal &nbsp; Device Log</div></aside>
+      </div></div></div>`;
       }
 
       function card(id) {
         const state = states[id];
-        const settings = state.view.startsWith("settings");
-        const severity = ["2.2", "4.1", "5.2", "6.2"].includes(String(id))
+        const severity = ["3", "3.1", "4.1"].includes(id)
           ? "warning"
-          : String(id) === "4.2"
-            ? "error"
-            : "";
-        return `<article class="wire-card ${state.maturity === "today" ? "today" : ""} ${severity}"><div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">${state.maturity === "today" ? "Existing" : "Proposed"}</span></div><div class="caption">${state.caption}</div>${settings ? settingsFrame(state.view) : appFrame(state.view)}</article>`;
+          : "";
+        const maturity = ["1", "2"].includes(id) ? "Existing pattern" : "Proposed";
+        return `<article class="wire-card ${severity}"><div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">${maturity}</span></div><div class="caption">${state.caption}</div>${appFrame(state.view)}</article>`;
       }
-
-      function flow(path) {
-        return path
+      function flow(ids) {
+        return ids
           .map(
             (id, index) =>
-              `${index ? `<div class="arrow">→</div>` : ""}${card(id)}`,
+              `${index ? `<div class="arrow" aria-hidden="true"></div>` : ""}${card(id)}`,
           )
           .join("");
       }
 
-      document.getElementById("main-flow").innerHTML = flow([
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
+      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4"]);
+      document.getElementById("settings-agent-flow").innerHTML = flow([
+        "4.5",
+        "4.5.1",
+        "4.5.1.1",
+        "4.5.1.1.1",
+      ]);
+      document.getElementById("settings-device-flow").innerHTML = flow([
+        "4.5.1.1",
+        "4.5.1.1.2",
+      ]);
+      document.getElementById("settings-session-flow").innerHTML = flow([
+        "4.5",
+        "4.5.2",
+        "4.5.2.1",
       ]);
       document.getElementById("route-rows").innerHTML = routes
         .map(
@@ -1827,35 +1668,39 @@
         x = 0,
         y = 0,
         animationFrame = null;
-      const viewport = document.getElementById("viewport");
-      const stage = document.getElementById("stage");
+      const viewport = document.getElementById("viewport"),
+        stageEl = document.getElementById("stage");
       function applyNow() {
         animationFrame = null;
-        stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+        stageEl.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
       }
       function apply() {
         if (!animationFrame) animationFrame = requestAnimationFrame(applyNow);
       }
       function clamp(value) {
-        return Math.max(0.1, Math.min(1.25, value));
+        return Math.max(0.12, Math.min(1.25, value));
       }
       function zoomAt(clientX, clientY, factor) {
-        const rect = viewport.getBoundingClientRect();
-        const localX = clientX - rect.left;
-        const localY = clientY - rect.top;
-        const pointX = (localX - x) / scale;
-        const pointY = (localY - y) / scale;
+        const rect = viewport.getBoundingClientRect(),
+          localX = clientX - rect.left,
+          localY = clientY - rect.top,
+          pointX = (localX - x) / scale,
+          pointY = (localY - y) / scale;
         scale = clamp(scale * factor);
         x = localX - pointX * scale;
         y = localY - pointY * scale;
         apply();
       }
       function fit() {
-        const width = viewport.clientWidth - 80;
-        const height = viewport.clientHeight - 80;
+        const width = viewport.clientWidth - 80,
+          height = viewport.clientHeight - 80;
         scale = Math.max(
           0.1,
-          Math.min(width / stage.scrollWidth, height / stage.scrollHeight, 0.5),
+          Math.min(
+            width / stageEl.scrollWidth,
+            height / stageEl.scrollHeight,
+            0.5,
+          ),
         );
         x = 18;
         y = 18;
