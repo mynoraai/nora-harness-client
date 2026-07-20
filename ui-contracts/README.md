@@ -4,7 +4,7 @@ These source-anchored contracts document user-visible Electron UI behavior, gate
 
 ## Proposed Product Flows
 
-- [Cloud resource awareness](cloud-resources/cloud-resource-awareness.record.md) — one stateful operation card, a current coding-session Cloud view, and Settings global system information.
+- [Cloud resource awareness](cloud-resources/cloud-resource-awareness.record.md) — one stateful operation card, a current Workspace Cloud view, and Settings global system information.
 
 ## Maintenance Rules
 

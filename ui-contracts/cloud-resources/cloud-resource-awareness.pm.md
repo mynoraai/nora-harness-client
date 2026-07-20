@@ -4,131 +4,148 @@
 
 ### Current Work
 
-NoraHarness needs to expose persistent NoraCloud resources at two levels without treating them as
-Workspace-owned data. The conversation and right workbench explain the resources used or managed by
-the active coding session. Settings provides the deduplicated system-level inventory and accumulated
-recorded Usage.
+NoraHarness needs to make NoraCloud mutations and persistent resources understandable without
+pretending that a Conversation owns the remote objects. The interaction has three scopes:
+
+1. the Conversation where a Cloud operation is reviewed and recorded;
+2. the current Workspace, which holds the local Agent definition and NoraCloud binding;
+3. Settings, which shows the signed-in identity's global NoraCloud inventory.
 
 ### Current User-Visible Behavior
 
 Local authoring, tool calls, Terminal, Device Log, Device, and Preview already report ordinary
-development work. Settings already uses a left category list for application configuration and
-system information. Cloud mutations can happen through Agent-controlled tools, but there is no
-product-level operation record, coding-session Cloud view, or Settings inventory.
+development work. A coding Agent can run NoraCloud CLI commands, but Electron does not currently
+render a NoraCloud-specific decision card, Workspace Cloud view, or global Cloud inventory.
 
 ### Implementation Maturity
 
 `partial`
 
-- Existing product shape: coding sessions, ordinary tool cards, the right workbench, Settings
-  categories, and Run Record Usage data.
-- Proposed UI: one stateful Cloud operation card, one coding-session Cloud tab, and one Settings
-  Cloud Resources & Usage category.
-- Dependencies: structured operation results, coding-session-to-resource references, remote
-  inventory reads, resource deduplication, credential-status reads, and Usage aggregation.
+- Existing product shape: Conversations, Workspace grouping, ordinary tool cards, right-workbench
+  tabs, Settings navigation, Agent source files, and direct NoraCloud CLI execution.
+- Existing NoraCloud behavior: a bound Workspace can create an immutable Version, optionally move
+  the Agent's Live pointer, release an existing Version, and keep its Agent and Cloud Conversation
+  binding in the project directory.
+- Proposed UI: one stateful Cloud operation card, one Workspace-scoped right Cloud tab, and one
+  Settings Cloud category.
+- Dependencies: structured operation events, safe remote reads, Workspace binding inspection,
+  configuration comparison, global inventory reads, credential-status reads, and complete
+  NoraCloud metering before any account-wide Usage total is shown.
 
-### Discussion Focus
+### Decision To Unblock
 
-Confirm the minimum two-level information architecture for cloud-resource awareness.
+Confirm that Conversation, Workspace, and Settings are separate information scopes, and that the
+product uses the real Agent → Version → Live model rather than inventing session ownership or a
+separate Candidate resource.
 
 ### Discussion Boundaries
 
-- PM should decide: where global and current-session state appear, what each scope means, and how
-  the user moves between them.
-- PM should not debate: local build resource confirmation, a full NoraCloud console, billing,
-  pricing, secret display, or direct mutation controls in Settings.
+- Decide: visible Cloud consequences, Version/Live choices, Workspace comparison, Settings
+  inventory, and recovery language.
+- Do not debate: local CPU/build-cache confirmation, a full NoraCloud console, pricing, secret
+  display, or direct create/delete controls in Settings.
 
-### Confirmed Product Rules
+## Confirmed Product Rules
 
 <table>
   <tr>
     <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Local development adds no resource-awareness card. Existing conversation, tool, Terminal, Device Log, Device, and Preview surfaces continue to report local work.</td>
   </tr>
   <tr>
-    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> One cloud mutation uses one stateful Cloud Resource Operation card. Decision, running, completed, partial, blocked, and unknown are states of the same component.</td>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> One Cloud mutation uses one stateful operation card. Decision, running, completed, partial, blocked, deferred, and outcome-unknown are states of the same card.</td>
   </tr>
   <tr>
-    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> The right-workbench Cloud tab shows only resources used or managed by the active coding session and that coding session's recorded Usage.</td>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> A Conversation owns its operation history and receipt. It does not own the Workspace binding or NoraCloud resources.</td>
   </tr>
   <tr>
-    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Settings contains the global, deduplicated Cloud Resources & Usage system-information category. It is not an app-level navigation destination outside Settings.</td>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> The right-workbench Cloud tab is scoped to the current Workspace. Switching between Conversations in the same Workspace does not change this panel.</td>
   </tr>
   <tr>
-    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Cloud views lead with a readable Agent configuration: identity, behavior, current Live state, and LLM/listening/speaking capabilities. Remote IDs, digests, file names, and Version counts are secondary technical details.</td>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> The right Cloud tab compares local Agent configuration with the remote Live Version. It shows readable identity and behavior plus source status for IDENTITY.md, SOUL.md, USER.md, and cloud-agent.json.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Settings contains the global, deduplicated Cloud inventory. It remains inside Settings as system information.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>Confirmed:</strong> Coding token totals and Run Records do not appear as Cloud Usage. Account-wide Usage appears only when NoraCloud can provide complete LLM, STT, and TTS metering.</td>
   </tr>
 </table>
 
 ## Proposed Design
 
-### Conversation And Right Workbench
+### Conversation Operation Card
 
-The active coding session receives one stateful operation card when work reaches a persistent Cloud
-boundary. Its receipt opens the right-workbench `Cloud` tab. That tab contains three information
-cards:
+When an existing Agent configuration is ready to publish, the card shows:
 
-1. `Current Agent Configuration`: Agent name, readable identity and behavior summaries, current
-   Live state, LLM, listening, speaking, and the latest change summary;
-2. `Used By This Coding Session`: named Devices, Cloud Runtime Sessions, and credential readiness
-   that have an actual relationship with this coding session;
-3. `Coding Session Usage`: Usage aggregated from this coding session's Run Records.
+- the linked Agent and current Live Version;
+- changed configuration sources and readable consequences;
+- `Create Version`, which leaves Live unchanged;
+- `Create and make Live`, which creates a Version and moves Live;
+- Device impact for Devices following Live;
+- factual running stages and a receipt from real remote results.
 
-The default view explains what the Agent is and how it behaves. Raw remote IDs, instruction file
-names, digests, and complete Version history are available only through configuration or technical
-details.
+`Candidate` is not presented as a resource or command. A non-Live Version may be described in a
+sentence, but visible actions use Version and Live terminology. First publish is a special case: it
+creates the Agent and first Version and sets that Version Live.
 
-### Settings System Information
+### Current Workspace Cloud
 
-Settings adds `Cloud` to its existing left category list. The page shows current NoraCloud identity
-and environment, deduplicated remote resource counts and states, credential status, and explicitly
-scoped accumulated Usage. Agent rows use the same readable hierarchy as the session view: purpose,
-current LLM/listening/speaking capabilities, Live status, connected resources, and last activity.
-Version history and remote IDs remain available after opening an Agent's details. `View all in
-Settings` from the right panel opens this category.
+The right `Cloud` tab contains two primary cards:
 
-The global inventory is sourced from NoraCloud, not by unioning local coding-session references.
-Otherwise resources created on another device or no longer referenced by a local session would be
-invisible.
+1. `Agent Configuration`: readable Identity and Behavior, LLM/listening/speaking settings, current
+   Live Version, and per-source comparison with Live;
+2. `Linked Cloud Resources`: the bound Agent, Live Version, Devices on that Agent, the Workspace's
+   stored Cloud Conversation when present, and Cloud access readiness.
+
+The panel does not show Coding Session Usage. An operation receipt may open this Workspace view,
+but the receipt remains in the Conversation that performed the operation.
+
+### Settings Cloud
+
+Settings shows current NoraCloud identity and environment, deduplicated counts and readable Agent
+rows for Agents, Versions, Devices, and Cloud Conversations, plus credential attention. Local
+Workspace links are secondary context and never determine the global inventory.
+
+A small `NoraCloud Usage` section is proposed for complete account-level metering. Until that data
+exists, the section shows `Unavailable` with an explanation; it must not substitute coding Agent
+tokens or partial device coverage.
 
 ## Scope Rules
 
-| Surface                     | Scope                                                                       | Answers                                                                                                                    |
-| --------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Conversation operation card | One cloud operation in one coding session                                   | What is about to happen, what is running, and what actually happened?                                                      |
-| Right `Cloud` tab           | Active coding session                                                       | What Agent configuration is active here, which resources does this coding session use or manage, and what Usage has it recorded? |
-| Settings `Cloud`            | Current NoraCloud identity/environment plus this app's recorded Usage scope | Which readable Agent configurations and related remote resources exist overall, which need attention, and how much Usage is covered? |
+| Surface | Scope | Answers |
+| --- | --- | --- |
+| Conversation operation card | One remote mutation performed from one Conversation | What will change, which Version/Live action was selected, what is running, and what actually happened? |
+| Right `Cloud` tab | Current Workspace | Which Agent is this project linked to, what is Live, how does local configuration differ, and which related resources are reachable through the binding? |
+| Settings `Cloud` | Current NoraCloud identity and environment | Which Cloud resources exist overall, which need attention, and is complete NoraCloud Usage available? |
 
-Cloud resources remain independent of coding-session and Workspace lifecycles. A resource can appear
-in several coding-session views but is counted once in Settings. Deleting or archiving a coding
-session never deletes the remote resource.
+The relationship is `Workspace 1 → many Conversations`. The Workspace binding and local files are
+shared by those Conversations. Closing a Conversation never deletes the Workspace or remote
+resources.
 
 ## Non-Goals
 
 - No new card for PlatformIO, build cache, CPU, disk, or ordinary Preview.
-- No claim that Cloud resources belong to a Workspace or coding session.
+- No `Used By This Coding Session` resource list.
+- No Coding Session Usage in the right Cloud tab.
+- No separate Candidate resource type.
+- No full Markdown body, secret, digest, or raw resource ID in default summary cards.
 - No direct create, delete, release, rollback, reset, or secret reveal in Settings.
-- No account-wide Usage claim when the available Run Records cover only this NoraHarness
-  installation.
-- No mixing Coding Usage with NoraCloud Runtime Usage or context-window percentage.
-- No full Markdown content, secret, digest, or raw resource ID in the default summary cards.
-- No client-generated interpretation that can describe the same Live Version differently across
-  coding sessions or installations.
+- No account-wide Usage claim from local Run Records or incomplete NoraCloud meters.
 
 ## Risks And Dependencies
 
-- Remote inventory and local session references have different sources and must not be conflated.
-- The same resource can change outside the active coding session; current state must refresh from
-  NoraCloud and invalidate stale operation assumptions.
-- `Session` is ambiguous. Product copy must say `Coding session` for NoraHarness work and
-  `Cloud Runtime Session` for the NoraCloud resource.
-- Global Usage must state whether it covers this installation, the signed-in user, or a server-side
-  account aggregation.
-- NoraCloud must provide stable user-facing identity, behavior, and change summaries for a Version.
-  The summaries belong to the published configuration so the right panel and Settings show the
-  same meaning.
-- LLM, listening, and speaking labels need a friendly display name in addition to their technical
-  provider/model values.
+- Electron currently does not receive a NoraCloud-specific structured lifecycle from direct CLI
+  calls; the card cannot be truthful until that contract exists.
+- Multiple Conversations can mutate the same Workspace files and binding. Cloud mutation state and
+  refresh must therefore be coordinated at Workspace scope rather than active-Conversation scope.
+- Remote Live can move outside the current Workspace. A stale decision must stop before changing
+  Live and require a fresh comparison.
+- Configuration summaries must be deterministic and traceable. Identity and behavior can use safe
+  excerpts, while complete Markdown opens in the main editor.
+- `Conversation`, runtime resume state, and NoraCloud `Cloud Conversation` are distinct concepts and
+  require distinct product labels.
+- NoraCloud Usage remains unavailable until the service covers relevant Agent, Device, LLM, STT,
+  and TTS activity consistently.
 
-## Open Questions
-
-No PM question blocks the wireframe. Exact service contracts and final labels for Usage coverage
-remain engineering follow-up work.
+No PM question currently blocks the revised wireframe. Structured event contracts, complete Usage
+metering, and final service APIs remain engineering dependencies.

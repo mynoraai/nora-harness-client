@@ -835,6 +835,31 @@
         font-size: 7.7px;
         line-height: 1.25;
       }
+      .source-list {
+        margin-top: 8px;
+        overflow: hidden;
+        border: 1px solid #e6dfd6;
+        border-radius: 7px;
+      }
+      .source-line {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 7px;
+        padding: 5px 7px;
+        border-bottom: 1px solid #eee9e2;
+        font: 7.4px var(--mono);
+      }
+      .source-line:last-child {
+        border-bottom: 0;
+      }
+      .source-state {
+        color: var(--green);
+        font-family: var(--sans);
+        font-weight: 800;
+      }
+      .source-state.changed {
+        color: var(--amber);
+      }
       .config-footer {
         display: flex;
         align-items: center;
@@ -1212,12 +1237,11 @@
     <header class="topbar">
       <div>
         <h1>
-          Cloud Resource Awareness — Session Context + Settings System
-          Information
+          Cloud Resource Awareness — Conversation, Workspace + Settings
         </h1>
         <p>
-          One operation card in conversation · readable Agent configuration and
-          current-session resources on the right · global status inside Settings.
+          One operation card in Conversation · current Workspace truth on the
+          right · global NoraCloud status inside Settings.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1252,7 +1276,7 @@
           <div class="band-title">
             <h3>Main happy path</h3>
             <span
-              >Journey 1 · existing local UI → one operation card → session
+              >Journey 1 · existing local UI → one operation card → Workspace
               Cloud → Settings Cloud</span
             >
           </div>
@@ -1273,27 +1297,34 @@
           <div class="band-title">
             <h3>Detail states</h3>
             <span
-              >Component reuse, session relationships, global deduplication, and
-              Usage coverage.</span
+              >Real Version/Live actions, Workspace comparison, global
+              deduplication, and Usage availability.</span
             >
           </div>
           <div class="compact-grid">
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>2.3 One Component, Different Operations</h4>
+              <h4>2.4 One Component, Different Operations</h4>
               <p>
-                First publish, Device registration, Live change, and bounded
-                tests reuse one Cloud Resource Operation component. Only
-                consequence-specific fields change.
+                Existing-Agent update, first publish, release, Device
+                registration, and bounded tests reuse one component with real
+                operation-specific consequences.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>2.5 First Publish Rule</h4>
+              <p>
+                First publish creates the Agent and first Version and sets it
+                Live. Version-only is not offered for this special case.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">Branch state</span>
-              <h4>5.1 No Resources In This Coding Session</h4>
+              <h4>5.1 Workspace Not Linked</h4>
               <p>
-                Show no session rows, but keep
-                <b>View all in Settings</b> because global resources may still
-                exist.
+                Show no invented Agent relationship. Keep first publish in
+                Conversation and global inventory inside Settings.
               </p>
             </article>
             <article class="compact-card">
@@ -1302,41 +1333,42 @@
               <p>
                 Lead with identity, behavior, Live state, LLM, listening, and
                 speaking. A user should not need a Version ID to understand the
-                active Agent.
+                Workspace-linked Agent.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.4 Configuration Details</h4>
+              <h4>5.4 Configuration Source Comparison</h4>
               <p>
-                Group Identity, Behavior, Instructions, and Tools by meaning.
-                Markdown file names, provider IDs, digests, and remote IDs are
-                secondary technical details.
+                Show IDENTITY.md, SOUL.md, USER.md, and cloud-agent.json with
+                Live, Changed locally, Not published, or Missing status. Full
+                content opens in the main area.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.5 Coding Session Resource Relationship</h4>
+              <h4>5.5 Workspace Binding And Linked Resources</h4>
               <p>
-                Named Devices, Cloud Runtime Sessions, and credential readiness
-                show status and relationship without implying session ownership.
+                Show the bound Agent, Live Version, Devices, stored Cloud
+                Conversation, and access readiness without claiming Workspace
+                ownership.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
               <h4>6.3 Global Resource Deduplication</h4>
               <p>
-                Settings counts each remote ID once and summarizes how many
-                coding sessions reference it.
+                Settings counts each remote resource once. Local Workspace links
+                remain secondary context.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>6.4 Usage Coverage</h4>
+              <h4>6.4 NoraCloud Usage Availability</h4>
               <p>
-                Right panel: current Coding Session Usage. Settings: all covered
-                coding sessions on this installation. Neither is billing or an
-                account-wide claim.
+                Show account-level LLM, STT, and TTS totals only when NoraCloud
+                provides complete metering. Otherwise show Unavailable; never
+                substitute coding Run Records.
               </p>
             </article>
           </div>
@@ -1346,8 +1378,8 @@
           <div class="band-title">
             <h3>State language</h3>
             <span
-              >Stable labels prevent coding-session, Cloud Runtime Session, and
-              Usage ambiguity.</span
+              >Stable labels separate Conversation, Workspace, Cloud
+              Conversation, Version, Live, and Usage.</span
             >
           </div>
           <div class="compact-grid">
@@ -1369,18 +1401,27 @@
             </article>
             <article class="compact-card">
               <span class="kind">State language</span>
-              <h4>0.3 Session Terminology</h4>
+              <h4>0.3 Scope Terminology</h4>
               <p>
-                <b>Coding session</b> is NoraHarness work.
-                <b>Cloud Runtime Session</b> is the remote resource.
+                <b>Conversation</b> is interaction history.
+                <b>Workspace</b> is shared local project context.
+                <b>Cloud Conversation</b> is remote NoraCloud context.
               </p>
             </article>
             <article class="compact-card">
               <span class="kind">State language</span>
-              <h4>0.4 Usage Terminology</h4>
+              <h4>0.4 Version And Live Terminology</h4>
               <p>
-                Coding Session Usage and Recorded Usage on this installation;
-                never unqualified Total Usage, billing, or Cloud Runtime Usage.
+                Version is immutable; Live is the Agent pointer. Candidate is
+                not presented as a separate resource.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">State language</span>
+              <h4>0.5 Usage Terminology</h4>
+              <p>
+                NoraCloud Usage means complete Cloud metering. Coding Agent
+                tokens and Run Records stay outside Cloud surfaces.
               </p>
             </article>
           </div>
@@ -1397,7 +1438,7 @@
           <div class="compact-grid">
             <article class="compact-card warning">
               <span class="kind">Recovery summary</span>
-              <h4>3.1 Credential Blocked</h4>
+              <h4>3.1 Cloud Access Blocked</h4>
               <p>
                 Same card, Blocked state. Name type, scope, and safe Settings
                 path; never show or collect the secret through Agent text.
@@ -1405,7 +1446,7 @@
             </article>
             <article class="compact-card warning">
               <span class="kind">Recovery summary</span>
-              <h4>3.2 Live Changed Elsewhere</h4>
+              <h4>3.2 Live Changed During Update</h4>
               <p>
                 Show reviewed Live, current Live, and target. Previous approval
                 is invalid and mutation stops.
@@ -1436,41 +1477,41 @@
     <script>
       const states = {
         1: {
-          title: "Existing Local Development",
+          title: "Existing Local Agent Work",
           view: "local",
           caption:
             "Local work stays in current conversation, tool, Terminal, Device Log, and Preview surfaces. No new resource card appears.",
           maturity: "today",
         },
         2: {
-          title: "Cloud Operation Decision",
+          title: "Agent Update Decision",
           view: "decision",
           caption:
-            "One stateful operation card appears only when work crosses into persistent Cloud consequences.",
+            "The card compares Workspace changes with Live and offers the real Version-only or Version-and-Live outcomes.",
         },
         3: {
-          title: "Cloud Operation Running",
+          title: "Agent Update Running",
           view: "running",
           caption:
-            "The same operation ID and card advance through factual stages; no second progress card is created.",
+            "The same card creates a Version, moves Live, and verifies remote truth through factual stages.",
         },
         4: {
-          title: "Cloud Operation Receipt",
+          title: "Agent Update Receipt",
           view: "receipt",
           caption:
-            "The same card becomes a factual receipt and hands off to the active coding-session Cloud view.",
+            "The same card becomes a factual receipt and hands off to the current Workspace Cloud view.",
         },
         5: {
-          title: "Current Coding Session Cloud",
+          title: "Current Workspace Cloud",
           view: "session-cloud",
           caption:
-            "The right Cloud tab makes the active Agent behavior and capabilities readable, then shows related resources and Coding Session Usage.",
+            "The right Cloud tab compares Workspace Agent sources with Live and shows resources reachable through the Workspace binding.",
         },
         6: {
           title: "Settings Cloud System Information",
           view: "settings",
           caption:
-            "Settings contains readable global Agent status, deduplicated Cloud Resources, and explicitly scoped accumulated Usage.",
+            "Settings contains deduplicated Cloud resources and shows NoraCloud Usage only when complete metering exists.",
         },
         2.1: {
           title: "Scope Covered By Instruction",
@@ -1483,6 +1524,18 @@
           view: "deferred",
           caption:
             "The same card settles to Deferred; local work remains available and no Cloud resource is claimed.",
+        },
+        2.3: {
+          title: "Create Version Without Changing Live",
+          view: "version-only",
+          caption:
+            "A new immutable Version is approved while Live v12 and Devices following Live remain unchanged.",
+        },
+        "2.3.1": {
+          title: "Version-Only Receipt",
+          view: "version-receipt",
+          caption:
+            "The receipt says Version v13 exists, Live remains v12, and Device impact is none.",
         },
         4.1: {
           title: "Partial Result",
@@ -1497,16 +1550,16 @@
             "Duplicate mutation pauses while the same card reports the last confirmed fact and safe read action.",
         },
         5.2: {
-          title: "Resource Changed Elsewhere",
+          title: "Workspace Or Live Changed",
           view: "changed",
           caption:
-            "The current-session view names the behavior or capability that changed elsewhere and refreshes remote truth.",
+            "The Workspace view names changed local sources or a changed remote Live Version before another mutation.",
         },
         6.1: {
-          title: "Resource Without Local Session Reference",
+          title: "Remote Agent Without Local Workspace Link",
           view: "settings-orphan",
           caption:
-            "Settings still counts remote resources that no local coding session references.",
+            "Settings still counts a remote Agent that no local Workspace links.",
         },
         6.2: {
           title: "Global Inventory Refresh Failure",
@@ -1518,15 +1571,20 @@
 
       const routes = [
         {
-          name: "Happy path",
+          name: "Update and make Live",
           path: ["1", "2", "3", "4", "5", "6"],
           result:
-            "One operation card, current-session context, then Settings global awareness.",
+            "Create a Version, move Live, refresh Workspace truth, then open global Settings.",
         },
         {
           name: "Precise instruction",
           path: ["1", "2", "2.1", "3", "4", "5"],
           result: "Show consequence without asking the same decision twice.",
+        },
+        {
+          name: "Create Version only",
+          path: ["1", "2", "2.3", "2.3.1", "5"],
+          result: "Create Version v13 while Live v12 and Devices remain unchanged.",
         },
         {
           name: "Defer Cloud work",
@@ -1536,7 +1594,7 @@
         {
           name: "Partial result",
           path: ["1", "2", "3", "4.1", "5", "6"],
-          result: "Retain confirmed resources at session and global levels.",
+          result: "Keep Version v13 visible while Live and Devices remain on v12.",
         },
         {
           name: "Outcome unknown",
@@ -1544,14 +1602,14 @@
           result: "Stop duplicate mutation until remote truth is known.",
         },
         {
-          name: "Resource changed elsewhere",
+          name: "Workspace comparison changed",
           path: ["5", "5.2", "2"],
-          result: "Refresh shared state before another mutation decision.",
+          result: "Refresh local and remote facts before another mutation decision.",
         },
         {
-          name: "Unreferenced global resource",
+          name: "Unlinked global Agent",
           path: ["6", "6.1", "6"],
-          result: "Keep remote inventory independent of local sessions.",
+          result: "Keep remote inventory independent of local Workspace links.",
         },
         {
           name: "Global refresh recovery",
@@ -1573,38 +1631,50 @@
           decision: {
             status: "Waiting for decision",
             cls: "warn",
-            title: "Publish Desk Weather",
-            body: `<div class="impact-grid"><div class="impact"><h5>Will create</h5>${line("Agent", "Desk Weather")}${line("Version", "First Version")}${line("Runtime", "1 Cloud Runtime Session")}</div><div class="impact"><h5>Will change</h5>${line("Live", "None → First Version")}${line("Shared", "0 Devices affected")}</div><div class="impact"><h5>Will record</h5>${line("Cloud test", "1 bounded turn")}${line("Usage", "Actual result only")}</div><div class="impact"><h5>Cloud identity</h5>${line("Environment", "Current NoraCloud")}${line("Actor", "Signed-in user")}</div></div><div class="operation-note"><b>Not included:</b> Device registration, Device credential, firmware flash, or Wi-Fi input.</div>${buttons(["Publish", "Adjust verification", "Not now"])}`,
+            title: "Update Desk Weather Agent",
+            body: `<div class="impact-grid"><div class="impact"><h5>Current Cloud state</h5>${line("Agent", "Desk Weather")}${line("Live", "v12")}${line("Devices", "2 follow Live")}</div><div class="impact"><h5>Workspace changes</h5>${line("SOUL.md", "Behavior changed")}${line("LLM", "Qwen Turbo → Max")}</div><div class="impact"><h5>Create Version</h5>${line("Result", "Create v13")}${line("Live", "Remain v12")}${line("Devices", "Not affected")}</div><div class="impact"><h5>Create and make Live</h5>${line("Result", "Create v13")}${line("Live", "v12 → v13")}${line("Devices", "2 follow new Live")}</div></div><div class="operation-note"><b>Not included:</b> Device registration, credential creation, firmware flash, or Cloud test turn.</div>${buttons(["Create Version", "Create and make Live", "Not now"])}`,
           },
           covered: {
             status: "Scope covered",
             cls: "ok",
-            title: "Publish Desk Weather",
-            body: `<div class="operation-note green"><b>Your instruction already covers this exact scope.</b> Execution can continue without asking the same decision twice.</div><div class="impact-grid" style="margin-top:7px"><div class="impact"><h5>Approved consequence</h5>${line("Create", "Agent + first Version")}${line("Live", "Set first Version Live")}</div><div class="impact"><h5>Bounded use</h5>${line("Cloud test", "1 turn")}${line("Device impact", "None")}</div></div>${buttons(["Technical details", "Stop if safe"])}`,
+            title: "Update Desk Weather Agent",
+            body: `<div class="operation-note green"><b>Your instruction already requests this exact outcome.</b> The consequence remains visible without asking the same decision twice.</div><div class="impact-grid" style="margin-top:7px"><div class="impact"><h5>Approved change</h5>${line("Create", "Version v13")}${line("Live", "v12 → v13")}</div><div class="impact"><h5>Impact</h5>${line("Devices", "2 follow new Live")}${line("Sources", "SOUL.md + LLM")}</div></div>${buttons(["Technical details", "Stop if safe"])}`,
           },
           running: {
             status: "Running",
             cls: "",
-            title: "Publishing Desk Weather",
-            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Agent created</b><code>agt_…7f2</code></div><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>ver_…a81</code></div><div class="stage-line"><span class="done">✓</span><b>Version set Live</b><code>ver_…a81</code></div><div class="stage-line"><span class="active">●</span><b>Cloud verification</b><code>1 turn</code></div><div class="stage-line"><span>○</span><b>Read final state</b><code>pending</code></div></div>${buttons(["Technical details"])}`,
+            title: "Updating Desk Weather Agent",
+            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Workspace configuration collected</b><code>4 sources</code></div><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>v13</code></div><div class="stage-line"><span class="active">●</span><b>Moving Live</b><code>v12 → v13</code></div><div class="stage-line"><span>○</span><b>Read final state</b><code>pending</code></div></div>${buttons(["Technical details"])}`,
           },
           receipt: {
             status: "Completed",
             cls: "ok",
-            title: "Cloud footprint created",
-            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Agent", "Desk Weather · agt_…7f2")}${line("Version", "ver_…a81")}${line("Cloud Runtime Session", "ses_…91c")}</div><div class="impact"><h5>Changed</h5>${line("Live", "None → ver_…a81")}${line("Devices", "0 affected")}</div><div class="impact"><h5>Recorded this operation</h5>${line("Usage", "1,380 LLM tokens")}${line("Cloud turn", "1")}</div><div class="impact"><h5>Persists after this chat</h5>${line("Runtime", "Agent + Live stay active")}${line("History", "Session + Usage retained")}</div></div><div class="operation-note"><b>Not done:</b> Device registration, credential write, or firmware flash.</div>${buttons(["Open session Cloud", "Continue with device"])}`,
+            title: "Desk Weather Agent updated",
+            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Version", "v13")}${line("Configuration", "SOUL.md + LLM")}</div><div class="impact"><h5>Changed</h5>${line("Live", "v12 → v13")}${line("Devices", "2 now follow v13")}</div><div class="impact"><h5>Verified</h5>${line("Remote Live", "v13")}${line("Checked", "just now")}</div><div class="impact"><h5>Persists</h5>${line("Version", "v13 remains stored")}${line("Live", "v13 remains active")}</div></div><div class="operation-note"><b>Not done:</b> No Device was registered, no credential was created, and no Cloud test turn ran.</div>${buttons(["Open Workspace Cloud", "Configuration details"])}`,
           },
           deferred: {
             status: "Deferred",
             cls: "warn",
-            title: "Publish Desk Weather",
-            body: `<div class="impact-grid"><div class="impact"><h5>Cloud result</h5>${line("Resources", "None created")}${line("Usage", "None recorded")}</div><div class="impact"><h5>Local result</h5>${line("Workspace", "Still available")}${line("Build", "Still available")}</div></div><div class="operation-note">Deferring Cloud work does not cancel the local development task.</div>${buttons(["Continue local work", "Publish later"])}`,
+            title: "Update Desk Weather Agent",
+            body: `<div class="impact-grid"><div class="impact"><h5>Cloud result</h5>${line("Version", "None created")}${line("Live", "Remains v12")}</div><div class="impact"><h5>Local result</h5>${line("Workspace", "Changes retained")}${line("Sources", "Still editable")}</div></div><div class="operation-note">Deferring the Cloud update does not cancel local development.</div>${buttons(["Continue local work", "Publish later"])}`,
+          },
+          "version-only": {
+            status: "Waiting for decision",
+            cls: "warn",
+            title: "Create Version without changing Live",
+            body: `<div class="impact-grid"><div class="impact"><h5>Will create</h5>${line("Version", "v13")}${line("Sources", "SOUL.md + LLM")}</div><div class="impact"><h5>Will not change</h5>${line("Live", "Remains v12")}${line("Devices", "2 remain on v12")}</div></div><div class="operation-note">The new Version will persist in NoraCloud. It will not become Live unless released later.</div>${buttons(["Create Version", "Back", "Not now"])}`,
+          },
+          "version-receipt": {
+            status: "Completed",
+            cls: "ok",
+            title: "Version v13 created",
+            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Version", "v13")}${line("Configuration", "SOUL.md + LLM")}</div><div class="impact"><h5>Unchanged</h5>${line("Live", "v12")}${line("Devices", "2 still follow v12")}</div></div><div class="operation-note green">The new Version persists in NoraCloud. It is not Live and has not affected connected Devices.</div>${buttons(["Open Workspace Cloud", "Compare with Live"])}`,
           },
           partial: {
             status: "Partial",
             cls: "warn",
-            title: "Publish incomplete",
-            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Agent created</b><code>agt_…7f2</code></div><div class="stage-line"><span class="failed">×</span><b>Firmware build failed</b><code>local build</code></div><div class="stage-line"><span>○</span><b>Version creation</b><code>not started</code></div><div class="stage-line"><span>○</span><b>Live change</b><code>not started</code></div></div><div class="operation-note amber"><b>Persists:</b> Agent exists. Reuse it after fixing the build; do not create another Agent.</div>${buttons(["Open build error", "Open session Cloud"])}`,
+            title: "Agent update incomplete",
+            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>v13</code></div><div class="stage-line"><span class="failed">×</span><b>Live change failed</b><code>v12 remains Live</code></div><div class="stage-line"><span class="done">✓</span><b>Device impact</b><code>none</code></div></div><div class="operation-note amber"><b>Persists:</b> Version v13 exists. Live remains v12, so Devices following Live did not switch.</div>${buttons(["Open Workspace Cloud", "Technical details"])}`,
           },
           unknown: {
             status: "Outcome unknown",
@@ -1635,31 +1705,38 @@
           ? "Answers in one concise sentence. It asks before changing a connected device."
           : "Answers in one or two concise sentences. It asks before changing a connected device.";
         return `${rightTabs("Cloud", true)}<div class="cloud-panel">
-          <div class="cloud-head"><div><h5>Cloud</h5><small>Current coding session · Desk Weather</small></div><span class="fresh">Fresh · just now</span></div>
+          <div class="cloud-head"><div><h5>Cloud</h5><small>Current Workspace · desk-weather</small></div><span class="fresh">Fresh · just now</span></div>
           ${changed
-            ? `<div class="inline-notice amber"><b>Live configuration changed elsewhere.</b> Speaking changed from Cherry to Atlas after this coding session last used it.</div>`
-            : `<div class="inline-notice"><b>Current session context.</b> This panel shows the Agent configuration and Cloud resources used or managed here.</div>`}
+            ? `<div class="inline-notice amber"><b>Workspace differs from Live v13.</b> SOUL.md and cloud-agent.json contain local changes that are not published.</div>`
+            : `<div class="inline-notice"><b>Workspace Cloud context.</b> Local Agent sources match Live v13 and the Workspace binding is valid.</div>`}
           <div class="panel-space">
-            <div class="space-title">Current Agent Configuration<small>${changed ? "Updated elsewhere" : "Live"}</small></div>
+            <div class="space-title">Agent Configuration<small>${changed ? "2 local changes" : "Matches Live v13"}</small></div>
             <div class="agent-summary">
-              <div class="agent-summary-head"><div class="agent-avatar">DW</div><div><h6>Desk Weather</h6><div class="agent-identity">A concise, voice-first weather assistant</div></div><span class="live-badge">LIVE</span></div>
+              <div class="agent-summary-head"><div class="agent-avatar">DW</div><div><h6>Desk Weather</h6><div class="agent-identity">A concise, voice-first weather assistant</div></div><span class="live-badge">${changed ? "WORKSPACE" : "LIVE v13"}</span></div>
               <div class="agent-behavior">${behavior}</div>
               <div class="capability-grid">
                 <div class="capability"><span>Reasoning · LLM</span><b>Qwen Turbo</b></div>
                 <div class="capability"><span>Listening · STT</span><b>Qwen ASR · Chinese</b></div>
                 <div class="capability"><span>Speaking · TTS</span><b>${speaking}</b></div>
               </div>
-              <div class="config-footer"><span>${changed ? "Changed outside this coding session · 2m ago" : "Published 12m ago · Shorter replies and voice enabled"}</span><b>Configuration details ›</b></div>
+              <div class="source-list">
+                <div class="source-line"><span>IDENTITY.md</span><span class="source-state">Live</span></div>
+                <div class="source-line"><span>SOUL.md</span><span class="source-state ${changed ? "changed" : ""}">${changed ? "Changed locally" : "Live"}</span></div>
+                <div class="source-line"><span>USER.md</span><span class="source-state">Live</span></div>
+                <div class="source-line"><span>cloud-agent.json</span><span class="source-state ${changed ? "changed" : ""}">${changed ? "Changed locally" : "Live"}</span></div>
+              </div>
+              <div class="config-footer"><span>${changed ? "Compared with Live v13 · just now" : "Published 12m ago · Workspace matches Live"}</span><b>Configuration details ›</b></div>
             </div>
           </div>
           <div class="panel-space">
-            <div class="space-title">Used By This Coding Session<small>Related resources</small></div>
-            <div class="session-resource"><span class="resource-glyph">▣</span><span><b>Desk Display</b><small>Device · Follows Live</small></span><span class="resource-state">Online</span></div>
-            <div class="session-resource"><span class="resource-glyph">◎</span><span><b>Desk Weather Runtime</b><small>Cloud Runtime Session · 1 turn here</small></span><span class="resource-state">Active</span></div>
-            <div class="session-resource"><span class="resource-glyph">✓</span><span><b>NoraCloud credentials</b><small>Signed in · Device credential not issued</small></span><span class="resource-state">Ready</span></div>
+            <div class="space-title">Linked Cloud Resources<small>Workspace binding</small></div>
+            <div class="session-resource"><span class="resource-glyph">A</span><span><b>Desk Weather</b><small>Bound Agent · persistent in NoraCloud</small></span><span class="resource-state">Linked</span></div>
+            <div class="session-resource"><span class="resource-glyph">V</span><span><b>Live Version v13</b><small>${changed ? "Workspace has unpublished changes" : "Workspace configuration matches"}</small></span><span class="resource-state">Live</span></div>
+            <div class="session-resource"><span class="resource-glyph">▣</span><span><b>2 Devices</b><small>On this Agent · follow Live</small></span><span class="resource-state">Online</span></div>
+            <div class="session-resource"><span class="resource-glyph">◎</span><span><b>Desk Weather Cloud Conversation</b><small>Stored by this Workspace binding</small></span><span class="resource-state">Ready</span></div>
+            <div class="session-resource"><span class="resource-glyph">✓</span><span><b>NoraCloud access</b><small>Signed in · secrets hidden</small></span><span class="resource-state">Ready</span></div>
           </div>
-          <div class="panel-space"><div class="space-title">Coding Session Usage<small>Run Records</small></div><div class="usage-metrics"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>18</strong><span>runs</span></div><div><strong>14</strong><span>turns</span></div></div><div class="coverage">Current coding session · Recorded on this installation · Updated just now</div></div>
-          <div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn primary">View all in Settings</span></div>
+          <div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn">Compare with Live</span><span class="btn primary">View all in Settings</span></div>
         </div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
       }
 
@@ -1670,26 +1747,30 @@
           "running",
           "receipt",
           "deferred",
+          "version-only",
+          "version-receipt",
           "partial",
           "unknown",
         ];
         const isLocal = kind === "local";
         const prompt = isLocal
-          ? "Build a desk weather device. Keep it local until the product works."
-          : "Publish the weather agent and verify it once.";
+          ? "Make Desk Weather more concise and change its reasoning model."
+          : "Update the Desk Weather Agent with my Workspace changes.";
         const assistant = isLocal
-          ? "I am implementing and validating the local product first."
+          ? "I updated the local Agent definition. NoraCloud has not changed."
           : kind === "receipt"
-            ? "The Cloud result is confirmed. The remote resources remain after this coding session."
+            ? "The Version and Live update are confirmed."
+            : kind === "version-receipt"
+              ? "Version v13 exists, but Live and connected Devices remain on v12."
             : kind === "deferred"
-              ? "Cloud publication is deferred. I can keep working locally."
+              ? "The Cloud update is deferred. I can keep working locally."
               : "The next step has persistent NoraCloud consequences.";
         const content = isLocal
-          ? `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">⌁</span><span>Build firmware</span><span class="pill ok">Completed</span></div><div class="tool-body">Build completed successfully. Expand the existing tool result or open Terminal for output.</div></div><div class="assistant">The local build passed. No NoraCloud resource has been created.</div>`
+          ? `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">⌁</span><span>Agent files updated</span><span class="pill ok">Completed</span></div><div class="tool-body">SOUL.md and cloud-agent.json changed in this Workspace. No NoraCloud resource was changed.</div></div>`
           : operationKinds.includes(kind)
             ? operationCard(kind)
-            : `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">✓</span><span>Cloud operation</span><span class="pill ok">Completed</span></div><div class="tool-body">Agent Desk Weather is Live. Open the right Cloud tab for this coding session.</div></div>`;
-        return `<section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="session-chip">Coding session · Active</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint)">＋</span></div><div class="stream"><div class="user-msg">${prompt}</div><div class="assistant">${assistant}</div>${content}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>`;
+            : `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">✓</span><span>Cloud operation</span><span class="pill ok">Completed</span></div><div class="tool-body">Open the right Cloud tab to compare this Workspace with the linked Agent's Live Version.</div></div>`;
+        return `<section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="session-chip">Conversation · Active</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint)">＋</span></div><div class="stream"><div class="user-msg">${prompt}</div><div class="assistant">${assistant}</div>${content}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>`;
       }
 
       function appFrame(kind) {
@@ -1697,14 +1778,14 @@
         const cloudActive = kind === "session-cloud" || kind === "changed";
         const right = cloudActive
           ? sessionCloudPanel(kind)
-          : `${rightTabs("All Files", proposed)}<div class="file-tree">▾ agent<br>&nbsp;&nbsp; SOUL.md<br>&nbsp;&nbsp; manifest.json<br>▾ firmware<br>&nbsp;&nbsp; platformio.ini<br>&nbsp;&nbsp; src<br>&nbsp;&nbsp;&nbsp;&nbsp; main.cpp</div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
-        return `<div class="screen"><div class="product-scale"><div class="app"><aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness</div><div class="mode"><span>Chat</span><span class="on">Code</span></div><div class="search">Search conversations…</div><div class="side-label">Workspaces</div><div class="workspace">▾ desk-weather <span style="margin-left:auto">1</span></div><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div><div class="grow"></div><div class="settings-link">⚙ Settings</div><div class="account">● Signed in &nbsp; <b>NoraCloud ready</b></div></aside>${centerContent(kind)}<aside class="right">${right}</aside></div></div></div>`;
+          : `${rightTabs("All Files", proposed)}<div class="file-tree">▾ agent<br>&nbsp;&nbsp; IDENTITY.md<br>&nbsp;&nbsp; SOUL.md<br>&nbsp;&nbsp; USER.md<br>&nbsp;&nbsp; cloud-agent.json<br>▾ firmware<br>&nbsp;&nbsp; platformio.ini<br>&nbsp;&nbsp; src<br>&nbsp;&nbsp;&nbsp;&nbsp; main.cpp</div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
+        return `<div class="screen"><div class="product-scale"><div class="app"><aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness</div><div class="mode"><span>Chat</span><span class="on">Code</span></div><div class="search">Search conversations…</div><div class="side-label">Workspaces</div><div class="workspace">▾ desk-weather <span style="margin-left:auto">2</span></div><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div><div class="grow"></div><div class="settings-link">⚙ Settings</div><div class="account">● Signed in &nbsp; <b>NoraCloud ready</b></div></aside>${centerContent(kind)}<aside class="right">${right}</aside></div></div></div>`;
       }
 
       function settingsFrame(kind) {
         const stale = kind === "settings-stale";
         const orphan = kind === "settings-orphan";
-        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Recorded local Usage coverage is unchanged.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Readable Agent status · each remote resource counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Saved configs</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Runtime Sessions</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather</strong><span class="agent-purpose">Concise, voice-first weather assistant · 4 saved configs</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Cherry voice</span><span>2 Devices · 3 Runtime Sessions<br><small>Used by 3 coding sessions</small></span><span class="agent-state"><b>Live</b><small>12m ago ›</small></span></div><div class="global-resource"><div><strong>Kitchen Guide</strong><span class="agent-purpose">Step-by-step cooking companion · 3 saved configs</span></div><span class="agent-capabilities"><b>Gemini Flash</b><br>Text only</span><span>1 Device · 2 Runtime Sessions<br><small class="${orphan ? "orphan" : ""}">${orphan ? "No local coding session reference" : "Used by 1 coding session"}</small></span><span class="agent-state"><b>Live</b><small>18d ago ›</small></span></div><div class="global-resource"><div><strong>Voice Lamp</strong><span class="agent-purpose">Voice-controlled ambient lighting · 5 saved configs</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Atlas voice</span><span>1 Device · 2 Runtime Sessions<br><small>Used by 2 coding sessions</small></span><span class="agent-state"><b>Live</b><small>1h ago ›</small></span></div></section><section class="settings-card"><div class="settings-card-head"><h3>Recorded Usage</h3><span>All coding sessions on this installation · Last 30 days</span></div><div class="global-usage"><div><strong>128,420</strong><span>LLM tokens</span></div><div><strong>86</strong><span>runs</span></div><div><strong>64</strong><span>turns</span></div><p>Source: covered Run Records on this NoraHarness installation.<br>Not billing, cross-device total, or Cloud Runtime Usage.</p></div></section></main></div></div></div>`;
+        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Unknown state is not replaced with zero.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Readable Agent status · each remote resource counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Versions</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Conversations</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather</strong><span class="agent-purpose">Concise, voice-first weather assistant · 4 Versions</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Cherry voice</span><span>2 Devices · 3 Cloud Conversations<br><small>Linked by 2 local Workspaces</small></span><span class="agent-state"><b>Live v13</b><small>12m ago ›</small></span></div><div class="global-resource"><div><strong>Kitchen Guide</strong><span class="agent-purpose">Step-by-step cooking companion · 3 Versions</span></div><span class="agent-capabilities"><b>Gemini Flash</b><br>Text only</span><span>1 Device · 2 Cloud Conversations<br><small class="${orphan ? "orphan" : ""}">${orphan ? "No local Workspace link" : "Linked by 1 local Workspace"}</small></span><span class="agent-state"><b>Live v7</b><small>18d ago ›</small></span></div><div class="global-resource"><div><strong>Voice Lamp</strong><span class="agent-purpose">Voice-controlled ambient lighting · 5 Versions</span></div><span class="agent-capabilities"><b>Qwen Turbo</b><br>Qwen ASR · Atlas voice</span><span>1 Device · 2 Cloud Conversations<br><small>Linked by 1 local Workspace</small></span><span class="agent-state"><b>Live v9</b><small>1h ago ›</small></span></div></section><section class="settings-card"><div class="settings-card-head"><h3>NoraCloud Usage <span class="pill warn" style="display:inline-block;margin-left:6px">Proposed</span></h3><span>Current identity · complete Cloud metering required</span></div><div class="global-usage"><div><strong>—</strong><span>LLM tokens</span></div><div><strong>—</strong><span>STT time</span></div><div><strong>—</strong><span>TTS characters</span></div><p><b>Usage unavailable.</b> NoraCloud does not yet provide complete account-level coverage.<br>Coding Agent tokens and Run Records are not substituted.</p></div></section></main></div></div></div>`;
       }
 
       function card(id) {

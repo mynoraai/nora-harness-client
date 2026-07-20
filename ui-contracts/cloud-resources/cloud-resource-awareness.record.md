@@ -1,171 +1,177 @@
-# Journey 1: Cloud Resource Awareness At Operation, Session, And System Levels
+# Journey 1: Cloud Resource Awareness Across Conversation, Workspace, And Settings
 
 This record is the source of truth for `cloud-resource-awareness.wireframe.html`. It defines three
-connected scopes without assigning Cloud resource ownership to a Workspace or coding session:
+connected scopes:
 
-1. one stateful operation card in the conversation;
-2. one right-workbench Cloud view for the active coding session;
-3. one Settings Cloud category for global system information.
+1. one stateful Cloud operation card in the Conversation that performs the mutation;
+2. one right-workbench Cloud view for the current Workspace;
+3. one Settings Cloud category for the signed-in identity's global system information.
 
-The Code Workspace shell, ordinary tool cards, right workbench, Settings category layout, coding
-sessions, and Run Record Usage data exist today. The Cloud operation card, right Cloud tab, remote
-inventory, resource references, and Usage summaries are proposed.
+The Conversation records the decision and receipt. The Workspace contains the local Agent
+definition and NoraCloud binding. NoraCloud resources persist independently of both. The Cloud UI
+in this journey is proposed; the surrounding Conversation, Workspace, right-workbench, and Settings
+shapes already exist.
 
 ## Numbering And Route Tables
 
 ### Main Path States
 
-| ID  | Type      | Parent step | What it represents                              | User action                                                           | Visible UI state                                                                                                                   | Client state change                                                        | Exit / next state    |
-| --- | --------- | ----------- | ----------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------- |
-| `1` | Main step | Journey 1   | Local development stays in existing UI.         | Authors, builds, previews, and verifies locally.                      | Normal conversation and existing tool results appear; no new resource card is added.                                               | Local work may change; no Cloud resource is implied.                       | `2`                  |
-| `2` | Main step | Journey 1   | Work reaches a persistent Cloud boundary.       | Reviews consequence and proceeds, adjusts supported scope, or defers. | One `Cloud Resource Operation` card shows what will be created, changed, recorded, and excluded.                                   | One operation identity waits with a pending or approved scope.             | `3`, `2.1`, or `2.2` |
-| `3` | Main step | Journey 1   | The approved Cloud operation runs.              | Watches stages or expands technical details.                          | The same operation card and ID show factual progress and returned resource IDs.                                                    | Confirmed results accumulate on the operation record.                      | `4`, `4.1`, or `4.2` |
-| `4` | Main step | Journey 1   | The operation reaches a stable result.          | Reviews result or opens the current-session Cloud view.               | The same card becomes a factual receipt with Created, Changed, Recorded, Persists, and Not done.                                   | The operation closes and resource references attach to the coding session. | `5` or end           |
-| `5` | Main step | Journey 1   | Current coding-session Cloud state is visible.  | Reviews the active Agent configuration, related resources, and current-session Usage. | Right `Cloud` shows readable Agent behavior and capabilities, resources used or managed by the active coding session, and Coding Session Usage. | Session references restore and remote configuration/resource state refreshes. | `6` or end           |
-| `6` | Main step | Journey 1   | The user opens global Cloud system information. | Clicks `View all in Settings`.                                        | Settings opens its `Cloud` category with deduplicated resource counts, status, credential attention, and scoped accumulated Usage. | Remote inventory and Usage summaries refresh independently.                | End                  |
+| ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `1` | Main step | Journey 1 | Local Agent work stays in existing UI. | Edits and verifies the Agent locally. | Existing conversation, file, tool, Terminal, Device, and Preview surfaces report local work; no Cloud card appears. | Workspace files may change; no Cloud resource changes. | `2` |
+| `2` | Main step | Journey 1 | An existing linked Agent is ready for a remote update. | Reviews changed sources and selects `Create Version`, `Create and make Live`, or `Not now`. | One Cloud operation card compares Workspace changes with Live and states Device impact. | One exact operation scope waits for a decision. | `3`, `2.1`, `2.2`, or `2.3` |
+| `3` | Main step | Journey 1 | The selected Version-and-Live update runs. | Watches factual stages or opens technical details. | The same card creates a Version, moves Live, and verifies the returned remote state. | Confirmed stage results accumulate on one operation record. | `4`, `3.1`, `3.2`, `4.1`, or `4.2` |
+| `4` | Main step | Journey 1 | The Agent update reaches a stable result. | Reviews the receipt or opens Workspace Cloud. | The same card states the created Version, Live transition, affected Devices, changed configuration, and work not performed. | The operation closes; the receipt remains in this Conversation. | `5` or end |
+| `5` | Main step | Journey 1 | Current Workspace Cloud state is visible. | Reviews local-vs-Live configuration and linked resources. | Right `Cloud` identifies the current Workspace, readable Agent configuration, source drift, bound Agent, Live Version, Devices, Cloud Conversation, and access readiness. | Workspace binding and remote facts refresh; no Conversation ownership is created. | `6` or end |
+| `6` | Main step | Journey 1 | Global Cloud system information is visible. | Opens `View all in Settings`. | Settings shows current NoraCloud identity, deduplicated resources, credential attention, and honest NoraCloud Usage availability. | Remote inventory and Usage availability refresh independently. | End |
 
 ### Branch States
 
-| ID    | Type   | Parent step                           | What it represents                                                  | User action                                                                     | Visible UI state                                                                                            | Client state change                                                 | Exit / next state |
-| ----- | ------ | ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------- |
-| `2.1` | Branch | `2 Cloud Operation Decision`          | The user's instruction already covers the displayed scope.          | Reads the consequence while execution continues without redundant confirmation. | The same card says `Scope covered by instruction`; no second card appears.                                  | The exact displayed scope becomes approved.                         | `3`               |
-| `2.2` | Branch | `2 Cloud Operation Decision`          | The user defers Cloud work.                                         | Chooses `Not now` or continues locally.                                         | The same card says `Deferred`; no resource is claimed.                                                      | The operation closes without mutation.                              | `1` or end        |
-| `5.1` | Branch | `5 Current Coding Session Cloud`      | The active coding session has not used or managed a Cloud resource. | Reads the empty state or continues the conversation.                            | `No Cloud resources in this coding session` appears with `View all in Settings`.                            | The empty session reference set becomes known.                      | End or `6`        |
-| `5.2` | Branch | `5 Current Coding Session Cloud`      | A related configuration or resource changed elsewhere.              | Reviews fresh remote state or returns to the conversation.                      | A notice names the readable change, its source context, and the current remote state.                       | The session reference remains while cached remote state advances.   | `2` or end        |
-| `6.1` | Branch | `6 Settings Cloud System Information` | A remote resource has no local coding-session reference.            | Reviews the resource and last activity.                                         | The global inventory keeps the resource and labels `No local coding session reference`.                     | No local session ownership is invented.                             | End               |
-| `6.2` | Branch | `6 Settings Cloud System Information` | Global inventory refresh fails.                                     | Reviews saved values, retries, or closes Settings.                              | Last trusted counts remain with `Stale`; without a trusted snapshot the page shows `Unavailable`, not zero. | Historical values remain timestamped until a successful refresh.    | `6` or end        |
+| ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `2.1` | Branch | `2 Agent Update Decision` | The user's instruction already explicitly requests the displayed Version-and-Live consequence. | Reads the consequence while execution continues without a redundant question. | The same card says `Scope covered by instruction`; all consequences remain visible. | The displayed scope becomes approved. | `3` |
+| `2.2` | Branch | `2 Agent Update Decision` | The user defers Cloud work. | Chooses `Not now`. | The same card says `Deferred`; local files remain available and no remote change is claimed. | The operation closes without mutation. | `1` or end |
+| `2.3` | Branch | `2 Agent Update Decision` | The user creates a new immutable Version without changing Live. | Chooses `Create Version`. | The card explicitly says Live remains v12 and Devices following Live are unaffected. | Version-only scope becomes approved. | `2.3.1` |
+| `2.3.1` | Branch | `2.3 Create Version Without Changing Live` | The non-Live Version is created. | Reviews the receipt or opens Workspace Cloud. | The same card says `Version v13 created`, `Live remains v12`, and `Device impact: none`. | The new Version persists; Live does not move. | `5` or end |
+| `5.1` | Branch | `5 Current Workspace Cloud` | The Workspace has no valid NoraCloud binding. | Reads the empty state or starts a publish request in Conversation. | `This Workspace is not linked to NoraCloud` appears; global Settings remains available. | Absence of a valid Workspace binding becomes known. | `2`, `6`, or end |
+| `5.2` | Branch | `5 Current Workspace Cloud` | Local configuration or remote Live changed since the last trusted comparison. | Reviews the new comparison or returns to Conversation. | The panel names `Changed locally` sources or a changed remote Live Version and prevents stale mutation assumptions. | Workspace comparison advances to current local and remote facts. | `2` or end |
+| `6.1` | Branch | `6 Settings Cloud System Information` | A remote Agent has no link from a local Workspace. | Reviews the Agent and last activity. | The global inventory keeps it and labels `No local Workspace link`. | No local ownership is invented. | `6` or end |
+| `6.2` | Branch | `6 Settings Cloud System Information` | Global inventory refresh fails. | Reviews saved values, retries, or closes Settings. | Last trusted values remain `Stale`; without a snapshot the page says `Unavailable`, never zero. | Historical values remain timestamped. | `6` or end |
 
 ### Detail States
 
-| ID    | Type         | Parent step                           | What it represents                                    | User action                           | Visible UI state                                                                                                                       | Client state change                           | Exit / next state |
-| ----- | ------------ | ------------------------------------- | ----------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------- |
-| `2.3` | Detail state | `2 Cloud Operation Decision`          | One card component covers different Cloud operations. | Expands scope or compares examples.   | First publish, Device registration, Live change, and bounded tests reuse the same component with consequence-specific fields.          | No mutation occurs.                           | `2`               |
-| `5.3` | Detail state | `5 Current Coding Session Cloud`      | Readable Agent configuration summary.                  | Scans the primary card.               | Agent identity, behavior, current Live state, LLM, listening, speaking, and latest change are readable without interpreting IDs.       | No configuration changes.                     | `5`               |
-| `5.4` | Detail state | `5 Current Coding Session Cloud`      | Configuration details.                                | Opens configuration details.          | Identity, behavior, instructions, and tools are grouped by meaning; source file names and remote IDs appear only as secondary details. | No configuration changes.                     | `5`               |
-| `5.5` | Detail state | `5 Current Coding Session Cloud`      | Session resource relationship.                        | Scans related resources.              | Named Devices, Cloud Runtime Sessions, and credential readiness show current status and their relationship with this coding session.  | No ownership changes.                         | `5`               |
-| `6.3` | Detail state | `6 Settings Cloud System Information` | Global deduplication.                                 | Reviews counts or expands a resource. | Each remote ID is counted once even when several coding sessions reference it.                                                         | No mutation occurs.                           | `6`               |
-| `6.4` | Detail state | `6 Settings Cloud System Information` | Usage coverage.                                       | Reads totals and coverage.            | Settings labels the aggregation scope, period, source, and update time; the right panel labels current coding-session Usage.           | No account-wide or billing total is inferred. | `6`               |
+| ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `2.4` | Detail state | `2 Agent Update Decision` | One card supports several NoraCloud mutations. | Compares operation examples. | Existing-Agent update, first publish, release, Device registration, and bounded Cloud tests reuse the same component with operation-specific consequences. | No mutation occurs. | `2` |
+| `2.5` | Detail state | `2 Agent Update Decision` | First publish has a different invariant. | Reviews first-publish details. | The card says first publish creates the Agent and first Version and sets that Version Live; Version-only is not offered. | No mutation occurs. | `2` |
+| `5.3` | Detail state | `5 Current Workspace Cloud` | Readable Agent configuration. | Scans the primary card. | Identity, Behavior, Live Version, LLM, listening, and speaking are readable without interpreting IDs. | No configuration changes. | `5` |
+| `5.4` | Detail state | `5 Current Workspace Cloud` | Configuration source comparison. | Opens a source or compares with Live. | `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json` show `Live`, `Changed locally`, `Not published`, or `Missing`; full content opens in the main area. | No configuration changes. | `5` |
+| `5.5` | Detail state | `5 Current Workspace Cloud` | Workspace binding and linked resources. | Scans related resources. | The bound Agent, Live Version, Devices on that Agent, stored Cloud Conversation, and Cloud access readiness are visible without claiming Workspace ownership. | No ownership changes. | `5` |
+| `6.3` | Detail state | `6 Settings Cloud System Information` | Global resource deduplication. | Reviews counts or expands a resource. | Each NoraCloud resource is counted once; local Workspace links are secondary context. | No mutation occurs. | `6` |
+| `6.4` | Detail state | `6 Settings Cloud System Information` | NoraCloud Usage availability. | Reads totals or the unavailable state. | Complete NoraCloud LLM, STT, and TTS totals show only when account-wide metering exists; otherwise the card says `Unavailable`. | No total is inferred from coding Run Records. | `6` |
 
 ### State Language
 
-| ID    | Type           | Parent step | What it represents   | User action | Visible UI state                                                                                                                                         | Client state change | Exit / next state |
-| ----- | -------------- | ----------- | -------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------- |
-| `0.1` | State language | Journey 1   | Operation status.    | None.       | `Waiting for decision`, `Scope covered`, `Running`, `Completed`, `Partial`, `Outcome unknown`, `Deferred`, or `Blocked`.                                 | None.               | None              |
-| `0.2` | State language | Journey 1   | Resource freshness.  | None.       | `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a timestamp when one exists.                                                                      | None.               | None              |
-| `0.3` | State language | Journey 1   | Session terminology. | None.       | `Coding session` means NoraHarness work; `Cloud Runtime Session` means the remote NoraCloud resource.                                                    | None.               | None              |
-| `0.4` | State language | Journey 1   | Usage terminology.   | None.       | `Coding Session Usage` or `Recorded Usage · All coding sessions on this installation`; never unqualified `Total Usage`, billing, or Cloud Runtime Usage. | None.               | None              |
+| ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `0.1` | State language | Journey 1 | Operation status. | None. | `Waiting for decision`, `Scope covered`, `Running`, `Completed`, `Partial`, `Outcome unknown`, `Deferred`, or `Blocked`. | None. | None |
+| `0.2` | State language | Journey 1 | Resource freshness. | None. | `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a timestamp when one exists. | None. | None |
+| `0.3` | State language | Journey 1 | Scope terminology. | None. | `Conversation` is the NoraHarness interaction history; `Workspace` is the shared local project context; `Cloud Conversation` is the NoraCloud remote conversation. | None. | None |
+| `0.4` | State language | Journey 1 | Version terminology. | None. | `Version` is immutable; `Live` is the Agent pointer used by Devices following Live. `Candidate` is not a separate resource label. | None. | None |
+| `0.5` | State language | Journey 1 | Usage terminology. | None. | `NoraCloud Usage` means complete Cloud metering. Coding Agent tokens and Run Records are not Cloud Usage. | None. | None |
 
 ### Errors And Recovery
 
-| ID    | Type             | Parent step                 | What it represents                                     | User action                                              | Visible UI state                                                                                              | Client state change                                         | Exit / next state |
-| ----- | ---------------- | --------------------------- | ------------------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------- |
-| `3.1` | Recovery summary | `3 Cloud Operation Running` | A required credential is missing or unsafe to collect. | Configures it in an approved Settings surface or defers. | The same operation card becomes `Blocked`, naming type, scope, and safe next action without showing a secret. | Only the consuming action pauses.                           | `2` or end        |
-| `3.2` | Recovery summary | `3 Cloud Operation Running` | Current Live changed elsewhere after review.           | Reviews the new state or cancels.                        | The same card shows reviewed Live, current Live, target, and invalidated decision.                            | Mutation stops until a new scope is approved.               | `2` or end        |
-| `4.1` | Recovery summary | `4 Cloud Operation Receipt` | Some resource stages succeeded and later work failed.  | Reviews retained resources and continues later.          | The same card says `Partial`; created IDs remain visible and duplicate creation is not offered.               | Confirmed references remain attached to the coding session. | `5` or end        |
-| `4.2` | Recovery summary | `4 Cloud Operation Receipt` | Remote outcome cannot be proven.                       | Requests a safe read or stops.                           | The same card says `Outcome unknown`; duplicate mutation pauses.                                              | The operation remains unresolved.                           | End               |
+| ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `3.1` | Recovery summary | `3 Agent Update Running` | Required NoraCloud access is unavailable. | Opens the approved Settings surface or defers. | The same operation card becomes `Blocked`, names the access problem, and never displays a secret. | Only the consuming operation pauses. | `2` or end |
+| `3.2` | Recovery summary | `3 Agent Update Running` | Live moved after the user reviewed the operation. | Reviews current Live or cancels. | The card shows reviewed Live, current Live, and target; the previous decision is invalidated. | Live mutation stops until reviewed again. | `2` or end |
+| `4.1` | Recovery summary | `4 Agent Update Receipt` | Version creation succeeded but changing Live failed. | Reviews retained Version and current Live. | The same card says `Partial`, keeps the created Version, and states that Live and Devices did not change. | The Version persists; confirmed facts remain available. | `5` or end |
+| `4.2` | Recovery summary | `4 Agent Update Receipt` | Remote outcome cannot be proven. | Requests a safe read or stops. | The same card says `Outcome unknown`; duplicate mutation remains paused. | The operation remains unresolved. | End |
 
 ### Route Table
 
-| Route                        | Composition                    | Result / next state                                                                     |
-| ---------------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
-| Happy path                   | `1 -> 2 -> 3 -> 4 -> 5 -> 6`   | One operation card leads to current-session context and then Settings global awareness. |
-| Precise instruction          | `1 -> 2 -> 2.1 -> 3 -> 4 -> 5` | Consequences remain visible without asking the same decision twice.                     |
-| Defer Cloud work             | `1 -> 2 -> 2.2 -> 1`           | Local development continues and no Cloud resource is claimed.                           |
-| Partial result               | `1 -> 2 -> 3 -> 4.1 -> 5 -> 6` | Confirmed resources remain visible at both information levels.                          |
-| Outcome unknown              | `1 -> 2 -> 3 -> 4.2`           | Duplicate mutation stops until remote reality is known.                                 |
-| Resource changed elsewhere   | `5 -> 5.2 -> 2`                | Shared remote state is refreshed before another mutation decision.                      |
-| Unreferenced global resource | `6 -> 6.1 -> 6`                | Settings preserves resources that no local coding session references.                   |
-| Global refresh recovery      | `6 -> 6.2 -> 6`                | Trusted global state remains historical until refresh succeeds.                         |
+| Route | Composition | Result / next state |
+| --- | --- | --- |
+| Update and make Live | `1 -> 2 -> 3 -> 4 -> 5 -> 6` | A Version is created, Live moves, Workspace truth refreshes, and Settings shows global state. |
+| Precise instruction | `1 -> 2 -> 2.1 -> 3 -> 4 -> 5` | Consequences stay visible without repeating a decision already made by the user. |
+| Create Version only | `1 -> 2 -> 2.3 -> 2.3.1 -> 5` | A new Version persists while Live and Devices remain unchanged. |
+| Defer Cloud work | `1 -> 2 -> 2.2 -> 1` | Local development continues without remote mutation. |
+| Partial result | `1 -> 2 -> 3 -> 4.1 -> 5 -> 6` | The created Version remains visible while Live stays unchanged. |
+| Outcome unknown | `1 -> 2 -> 3 -> 4.2` | Duplicate mutation stops until remote truth is known. |
+| Workspace comparison changed | `5 -> 5.2 -> 2` | Local and remote facts refresh before another mutation. |
+| Unlinked global Agent | `6 -> 6.1 -> 6` | Settings retains remote resources independently of local Workspace links. |
+| Global refresh recovery | `6 -> 6.2 -> 6` | Trusted global facts remain historical until refresh succeeds. |
 
 ## Main Path
 
-### 1 Existing Local Development
+### 1 Existing Local Agent Work
 
-User entry: the user asks the Agent to build or change a Cloud-connected product.
+User entry: the user asks the coding Agent to modify an Agent linked to a Workspace.
 
-User action: authors, reviews ordinary tool results, opens Preview, and watches Terminal or Device
-Log.
+User action: edits or asks the coding Agent to edit identity, behavior, models, voice, firmware, or
+other local product files, then reviews local results.
 
-Visible UI state:
+Visible UI state: ordinary conversation, files, tools, Terminal, Device, and Preview report local
+work. No Cloud resource-awareness card appears merely because local files changed.
 
-- Existing conversation and tool cards report local work.
-- Build output remains in existing tool/Terminal surfaces.
-- Preview and physical-device information remain in their existing tabs.
-- No `Local development`, CPU, disk, cache, or PlatformIO resource-awareness card is added.
+Client state change: Workspace files and local artifacts may change. NoraCloud remains unchanged.
 
-Client state change: local files, artifacts, preview, or selected-device state may change. No Cloud
-resource is created merely because the task may later use NoraCloud.
+Exit / next state: `2 Agent Update Decision` when a remote mutation is about to occur.
 
-Exit / next state: `2 Cloud Operation Decision` only when the next action has a persistent Cloud,
-credential, shared runtime, or bounded external-consumption consequence.
+### 2 Agent Update Decision
 
-### 2 Cloud Operation Decision
+User entry: the next action would publish the current Workspace Agent definition.
 
-User entry: the next action creates or changes a persistent NoraCloud resource.
+User action: chooses `Create Version`, `Create and make Live`, or `Not now`. If the original user
+instruction already explicitly includes the displayed outcome, the card records that scope without
+asking the same question again.
 
-User action: reviews the exact consequence and proceeds, adjusts a supported field, or defers.
+Visible UI state: one operation card shows the linked Agent, current Live Version, changed source
+files, readable behavior/model changes, and Device impact. It explains that `Create Version` leaves
+Live unchanged and `Create and make Live` moves Live after creating the Version.
 
-Visible UI state: one `Cloud Resource Operation` card shows a stable operation ID, Cloud identity,
-`Will create`, `Will change`, `Will record`, affected shared resources, credential destination when
-relevant, bounded test scope, and `Not included`.
+Client state change: one exact operation scope becomes pending or approved. No mutation occurs
+while a required decision is pending.
 
-Client state change: one operation scope is pending or approved. No mutation occurs while waiting.
+Exit / next state: `3 Agent Update Running`, `2.1 Scope Covered By Instruction`, `2.2 Cloud Work
+Deferred`, or `2.3 Create Version Without Changing Live`.
 
-Exit / next state: `3 Cloud Operation Running`, `2.1 Scope Covered By Instruction`, or
-`2.2 Cloud Work Deferred`.
+### 3 Agent Update Running
 
-### 3 Cloud Operation Running
-
-User entry: the exact displayed scope is approved.
+User entry: Version creation and Live movement are approved.
 
 User action: watches progress or expands technical details.
 
-Visible UI state: the same operation card and ID remain. Decision controls become factual stages;
-real resource IDs appear only when returned; successful stages remain visible after later failure;
-raw commands and logs stay collapsed.
+Visible UI state: the same operation card advances through collecting the Workspace configuration,
+creating the Version, moving Live, and verifying current remote state. IDs appear only after they
+are returned. Completed stages remain visible after a later failure.
 
 Client state change: factual stage results accumulate on the same operation record.
 
-Exit / next state: `4 Cloud Operation Receipt`, a recovery state, `4.1 Partial Result`, or
-`4.2 Outcome Unknown`.
+Exit / next state: `4 Agent Update Receipt`, `3.1 Cloud Access Blocked`, `3.2 Live Changed During
+Update`, `4.1 Partial Result`, or `4.2 Outcome Unknown`.
 
-### 4 Cloud Operation Receipt
+### 4 Agent Update Receipt
 
-User entry: the operation reaches a stable result.
+User entry: the update reaches a stable result.
 
-User action: reviews the result, continues the task, or opens the right-workbench Cloud view.
+User action: reviews the result, continues the task, or opens Workspace Cloud.
 
-Visible UI state: the same card becomes a receipt separating `Created`, `Changed`, `Recorded this
-operation`, `Persists after this chat`, and `Not done`. It shows true IDs and provides
-`Open session Cloud`.
+Visible UI state: the same card states the created Version, previous and current Live Versions,
+Devices following Live, changed Agent sources, verification time, and work not performed. It offers
+`Open Workspace Cloud` and configuration details.
 
-Client state change: the operation closes and factual Cloud resource references attach to the
-coding session. Remote resources remain independent of session lifecycle.
+Client state change: the receipt remains in this Conversation. The Workspace binding and remote
+resources persist independently.
 
-Exit / next state: `5 Current Coding Session Cloud` or end.
+Exit / next state: `5 Current Workspace Cloud` or end.
 
-### 5 Current Coding Session Cloud
+### 5 Current Workspace Cloud
 
 User entry: the user selects `Cloud` beside `All Files`, `Changes`, `Device`, and `Preview`, or opens
-it from a receipt.
+it from an operation receipt.
 
-User action: reviews the active coding session's resource working set and Usage.
+User action: reviews the current Workspace's local Agent definition, comparison with Live, and
+linked NoraCloud resources.
 
 Visible UI state:
 
-- Header: `Cloud · Current coding session`, session title, freshness, and refresh.
-- `Current Agent Configuration`: Agent name, identity summary, behavior summary, current Live state,
-  LLM, listening, speaking, and the latest change summary.
-- `Configuration details` groups Identity, Behavior, Instructions, and Tools. Source Markdown file
-  names, remote IDs, digests, and Version history are secondary rather than default card content.
-- `Used By This Coding Session`: named Devices, Cloud Runtime Sessions, and Credential status that
-  have an actual relationship with this coding session.
-- Shared resources say `Also used by …` or `Changed outside this coding session` when applicable.
-- `Coding Session Usage`: tokens, runs, turns, and update time from this coding session's Run Records.
+- Header: `Cloud · Current Workspace`, Workspace name, freshness, and refresh.
+- `Agent Configuration`: readable Identity and Behavior, Live Version, LLM, listening, speaking,
+  and per-source status for `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json`.
+- `Linked Cloud Resources`: bound Agent, Live Version, Devices on the Agent, stored Cloud
+  Conversation when present, and NoraCloud access readiness.
+- `Compare with Live` opens a local-versus-Live comparison; selecting a source opens it in the main
+  area.
 - `View all in Settings` opens the global system-information level.
-- No resource is described as Workspace-owned or coding-session-owned.
+- No `Used By This Coding Session` or Coding Session Usage card appears.
 
-Client state change: session references restore, then each resource refreshes from remote truth.
+Switching between Conversations in the same Workspace leaves this panel unchanged. Switching to a
+tab in another Workspace changes the panel to that Workspace. A Conversation with no Workspace
+context does not show Workspace panels.
+
+Client state change: local sources, Workspace binding, and remote facts refresh independently.
 
 Exit / next state: `6 Settings Cloud System Information` or end.
 
@@ -174,24 +180,21 @@ Exit / next state: `6 Settings Cloud System Information` or end.
 User entry: the user opens Settings and selects `Cloud`, or clicks `View all in Settings` from the
 right panel.
 
-User action: reviews global Cloud inventory, attention, and explicitly scoped accumulated Usage.
+User action: reviews global Cloud inventory, credential attention, and NoraCloud Usage
+availability.
 
 Visible UI state:
 
-- Settings keeps its existing left category navigation; `Cloud` is selected inside Settings.
-- System header: current NoraCloud identity/environment, signed-in state, freshness, and refresh.
-- `Cloud Resources`: deduplicated counts for Agents, Versions, Devices, and Cloud Runtime Sessions;
-  credential attention; readable Agent rows with purpose, LLM/listening/speaking capabilities,
-  Live status, related resources, coding-session relationship, and last activity.
-- Version IDs, resource IDs, file names, and digests appear only after opening Agent or technical
-  details.
-- `Recorded Usage`: aggregate values from all covered coding-session Run Records with installation,
-  period, source, and update time.
-- Direct Cloud resource mutation is absent. Settings may link to the relevant coding session or the
-  existing credential configuration surface.
+- Settings keeps its left category navigation; `Cloud` is selected inside Settings.
+- Header: current NoraCloud identity/environment, signed-in state, freshness, and refresh.
+- `Cloud Resources`: deduplicated Agents, Versions, Devices, and Cloud Conversations; readable Agent
+  rows; current Live state; related resource counts; optional local Workspace link count.
+- `NoraCloud Usage`: complete account-level LLM, STT, and TTS totals when available. Otherwise it
+  says `Unavailable` and explains that coding Run Records are not substituted.
+- Direct Cloud mutation is absent. Settings may link back to a relevant Workspace or approved
+  credential surface.
 
-Client state change: remote inventory and local recorded Usage refresh independently and retain
-separate coverage.
+Client state change: global inventory and Usage availability refresh from NoraCloud.
 
 Exit / next state: end.
 
@@ -199,65 +202,89 @@ Exit / next state: end.
 
 ### 2.1 Scope Covered By Instruction
 
-Trigger: the user's precise instruction already covers the same Cloud, target, consequence, and
-bounded test scope displayed by the operation card.
+Trigger: the user explicitly requested the same Agent, Version creation, Live movement, Device
+impact, and verification scope displayed by the card.
 
-Visible UI state: the same operation card says `Scope covered by instruction`; consequences remain
-visible and redundant confirmation controls are absent.
+Visible UI state: the same card says `Scope covered by instruction`; consequences remain visible
+and redundant decision controls are absent.
 
 Allowed user actions: stop if still safe, inspect details, or let execution continue.
 
-Recovery / next state: `3 Cloud Operation Running`.
+Recovery / next state: `3 Agent Update Running`.
 
 Blocks progress: no.
 
 ### 2.2 Cloud Work Deferred
 
-Trigger: the user chooses `Not now` or asks to continue locally.
+Trigger: the user chooses `Not now`.
 
-Visible UI state: the same operation card says `Deferred`, `Cloud resources: none created`, and
-`Local work remains available`.
+Visible UI state: the same card says `Deferred`, `No remote changes`, and `Local Workspace changes
+remain available`.
 
-Allowed user actions: continue local work or request the operation later.
+Allowed user actions: continue local work or request publication later.
 
-Recovery / next state: `1 Existing Local Development` or end.
+Recovery / next state: `1 Existing Local Agent Work` or end.
 
 Blocks progress: only the deferred Cloud outcome.
 
-### 5.1 No Resources In This Coding Session
+### 2.3 Create Version Without Changing Live
 
-Trigger: the active coding session has no Cloud resource reference.
+Trigger: the user chooses `Create Version`.
 
-Visible UI state: `No Cloud resources in this coding session`; `View all in Settings` remains
-available because global resources may still exist.
+Visible UI state: the card says a new immutable Version will be created, Live remains v12, and
+Devices following Live are unaffected.
 
-Allowed user actions: continue the conversation, close the panel, or open Settings Cloud.
+Allowed user actions: proceed, inspect details, or cancel before mutation.
 
-Recovery / next state: end or `6 Settings Cloud System Information`.
+Recovery / next state: `2.3.1 Version-Only Receipt`.
+
+Blocks progress: no after approval.
+
+### 2.3.1 Version-Only Receipt
+
+Trigger: the Version-only operation completes.
+
+Visible UI state: the same card says `Version v13 created`, `Live remains v12`, changed sources, and
+`Device impact: none`.
+
+Allowed user actions: open Workspace Cloud, compare with Live, or continue locally.
+
+Recovery / next state: `5 Current Workspace Cloud` or end.
 
 Blocks progress: no.
 
-### 5.2 Resource Changed Elsewhere
+### 5.1 Workspace Not Linked
 
-Trigger: a referenced Agent configuration or remote resource differs from the last fact recorded by
-this coding session.
+Trigger: the current Workspace has no valid NoraCloud binding.
 
-Visible UI state: the affected card names the user-meaningful difference, such as changed behavior,
-LLM, listening, speaking, Device binding, or runtime status. Prior and current values are shown with
-`Changed outside this coding session`; IDs remain in technical details.
+Visible UI state: `This Workspace is not linked to NoraCloud`; no Agent, Version, Device, or Cloud
+Conversation relationship is invented. `View all in Settings` remains available.
 
-Allowed user actions: return to the conversation, refresh, or continue read-only work.
+Allowed user actions: request first publish in Conversation, refresh, or open Settings.
 
-Recovery / next state: `2 Cloud Operation Decision` before another mutation, or end.
+Recovery / next state: `2 Agent Update Decision`, `6 Settings Cloud System Information`, or end.
 
-Blocks progress: only mutation based on the old premise.
+Blocks progress: only Workspace-scoped Cloud inspection and mutation.
 
-### 6.1 Resource Without Local Session Reference
+### 5.2 Workspace Or Live Changed
 
-Trigger: NoraCloud inventory contains a resource that no local coding session references.
+Trigger: a local source differs from Live, or remote Live differs from the last trusted comparison.
 
-Visible UI state: the resource remains counted and says `No local coding session reference`, with
-remote last activity when available.
+Visible UI state: source rows name `Changed locally`, `Not published`, or `Missing`; a remote change
+names previous and current Live Versions. IDs remain in technical details.
+
+Allowed user actions: compare with Live, open a source, refresh, or return to Conversation.
+
+Recovery / next state: `2 Agent Update Decision` before mutation, or end.
+
+Blocks progress: only mutation based on stale facts.
+
+### 6.1 Remote Agent Without Local Workspace Link
+
+Trigger: NoraCloud inventory contains an Agent not linked by any local Workspace.
+
+Visible UI state: the Agent remains counted and says `No local Workspace link`, with remote last
+activity when available.
 
 Allowed user actions: inspect its remote status or close Settings.
 
@@ -269,8 +296,8 @@ Blocks progress: no.
 
 Trigger: global Cloud refresh fails.
 
-Visible UI state: a trusted inventory stays visible as `Stale` with its timestamp. Without a trusted
-inventory, the page says `Unavailable`; it never replaces unknown state with zero counts.
+Visible UI state: a trusted inventory stays visible as `Stale` with its timestamp. Without a
+trusted inventory, the page says `Unavailable`; it never replaces unknown state with zero counts.
 
 Allowed user actions: retry, check sign-in, or close Settings.
 
@@ -280,75 +307,85 @@ Blocks progress: only actions requiring fresh remote truth.
 
 ## Detail States
 
-### 2.3 One Component, Different Operations
+### 2.4 One Component, Different Operations
 
-Trigger: the user expands scope details or the reviewer compares operation families.
+Trigger: the reviewer compares operation families.
 
-Visible UI state: first publish, Device registration, Live change, and bounded tests reuse
-`Cloud Resource Operation`; only consequence-specific fields change.
+Visible UI state: existing-Agent update, first publish, release, Device registration, and bounded
+Cloud tests reuse one stateful operation component. Each operation displays only its real resource
+and consumption consequences.
 
 Allowed user actions: return to the operation.
 
-Exit / next state: `2 Cloud Operation Decision`.
+Exit / next state: `2 Agent Update Decision`.
+
+### 2.5 First Publish Rule
+
+Trigger: the Workspace has no binding and the user requests first publish.
+
+Visible UI state: the operation card says it will create the Agent and first Version and set that
+Version Live. It does not offer Version-only because first publish cannot produce that outcome.
+
+Allowed user actions: publish or defer.
+
+Exit / next state: `2 Agent Update Decision`.
 
 ### 5.3 Readable Agent Configuration
 
-Trigger: the current-session Cloud view has an active Agent configuration.
+Trigger: the Workspace is linked to an Agent.
 
-Visible UI state: the primary card identifies what the Agent is, how it is expected to behave, its
-current Live state, and its LLM, listening, and speaking capabilities. It uses readable product
-labels rather than requiring the user to interpret a Version ID.
+Visible UI state: the primary card identifies what the Agent is, how it behaves, which Version is
+Live, and its LLM, listening, and speaking capabilities.
 
-Allowed user actions: open configuration details, refresh, or return to chat.
+Allowed user actions: open configuration details, compare with Live, refresh, or return to chat.
 
-Exit / next state: `5 Current Coding Session Cloud`.
+Exit / next state: `5 Current Workspace Cloud`.
 
-### 5.4 Configuration Details
+### 5.4 Configuration Source Comparison
 
-Trigger: the user opens configuration details from the active Agent card.
+Trigger: the Agent configuration card is visible.
 
-Visible UI state: the detail view groups Identity, Behavior, Instructions, and Tools. Technical
-source names such as `IDENTITY.md`, `SOUL.md`, `AGENTS.md`, and `TOOLS.md`, Version/resource IDs,
-digests, and provider identifiers remain secondary information.
+Visible UI state: `IDENTITY.md`, `SOUL.md`, `USER.md`, and `cloud-agent.json` show deterministic
+comparison states. Identity and safe behavior excerpts remain readable; full Markdown opens in the
+main editor. `USER.md` body is not exposed by default.
 
-Allowed user actions: inspect the configuration, compare a prior Version, or close details.
+Allowed user actions: open a source, compare with Live, or close details.
 
-Exit / next state: `5 Current Coding Session Cloud`.
+Exit / next state: `5 Current Workspace Cloud`.
 
-### 5.5 Coding Session Resource Relationship
+### 5.5 Workspace Binding And Linked Resources
 
-Trigger: the current-session Cloud view has related resources.
+Trigger: the Workspace has a valid NoraCloud binding.
 
-Visible UI state: each row leads with a resource name, current remote status, the coding session's
-relationship, and sharing/activity elsewhere where permitted. Raw IDs are available only in
-technical details.
+Visible UI state: the bound Agent, its current Live Version, Devices on that Agent, the stored Cloud
+Conversation when present, and Cloud access readiness appear as linked facts. The panel never says
+the Workspace owns these remote resources.
 
-Allowed user actions: refresh, return to chat, or open Settings Cloud.
+Allowed user actions: refresh, return to Conversation, or open Settings Cloud.
 
-Exit / next state: `5 Current Coding Session Cloud`.
+Exit / next state: `5 Current Workspace Cloud`.
 
 ### 6.3 Global Resource Deduplication
 
-Trigger: several coding sessions reference the same remote resource.
+Trigger: several local Workspaces link the same remote Agent or no local Workspace links it.
 
-Visible UI state: Settings counts the remote ID once and summarizes `Used by 3 coding sessions`
-rather than duplicating resource ownership.
+Visible UI state: Settings counts the remote resource once and shows local Workspace links only as
+secondary context.
 
-Allowed user actions: inspect the resource or associated coding sessions.
+Allowed user actions: inspect the resource or a linked Workspace.
 
 Exit / next state: `6 Settings Cloud System Information`.
 
-### 6.4 Usage Coverage
+### 6.4 NoraCloud Usage Availability
 
-Trigger: the right panel or Settings displays recorded Usage.
+Trigger: Settings renders the NoraCloud Usage section.
 
-Visible UI state: the right panel says `Coding Session Usage`; Settings says
-`Recorded Usage · All coding sessions on this installation`, with period, source, coverage, and
-updated time. Neither claims account billing or cross-device completeness.
+Visible UI state: complete account-level LLM, STT, and TTS totals appear only when NoraCloud reports
+complete coverage. Otherwise the section says `Unavailable` and explains the missing dependency.
 
 Allowed user actions: read or refresh.
 
-Exit / next state: `5 Current Coding Session Cloud` or `6 Settings Cloud System Information`.
+Exit / next state: `6 Settings Cloud System Information`.
 
 ## State Language
 
@@ -361,81 +398,85 @@ Usage: the single operation card shows one status at a time.
 
 ### 0.2 Resource Freshness
 
-Visible language: `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a timestamp when one exists.
+Visible language: `Fresh`, `Refreshing`, `Stale`, or `Unavailable`, with a trusted timestamp when one
+exists.
 
-Usage: the right session view and Settings global inventory use their own clearly scoped freshness.
+Usage: Workspace Cloud and Settings each state the scope of the refreshed data.
 
-### 0.3 Session Terminology
+### 0.3 Scope Terminology
 
-Visible language: `Coding session` for NoraHarness work and `Cloud Runtime Session` for the remote
-NoraCloud resource.
+Visible language: `Conversation`, `Current Workspace`, and `Cloud Conversation`.
 
-Usage: every surface where both concepts could appear.
+Usage: distinguish interaction history, shared local project context, and NoraCloud remote
+conversation.
 
-### 0.4 Usage Terminology
+### 0.4 Version And Live Terminology
 
-Visible language: `Coding Session Usage` and
-`Recorded Usage · All coding sessions on this installation`.
+Visible language: `Version v13 created`, `Live remains v12`, or `Live v12 → v13`.
 
-Usage: distinguish Run Record aggregation from context-window usage, NoraCloud Runtime Usage,
-billing, balance, or an unqualified account total.
+Usage: describe the real immutable Version and mutable Live pointer. Do not present `Candidate` as a
+separate resource.
+
+### 0.5 Usage Terminology
+
+Visible language: `NoraCloud Usage` or `Usage unavailable`.
+
+Usage: only complete NoraCloud metering. Coding Agent tokens and Run Records remain outside Cloud
+surfaces.
 
 ## Errors And Recovery
 
-### 3.1 Credential Blocked
+### 3.1 Cloud Access Blocked
 
-Trigger: the operation requires a missing, expired, or unsafe credential path.
+Trigger: the operation requires missing, expired, or unsafe NoraCloud access.
 
-Visible UI state: the same operation card says `Blocked`, names credential type and consuming action,
-and links to an approved Settings surface without displaying a secret.
+Visible UI state: the same operation card says `Blocked`, names the access requirement and safe
+Settings destination, and never displays or requests a secret in plain conversation text.
 
 Allowed user actions: configure safely, defer, or cancel.
 
-Recovery / next state: `2 Cloud Operation Decision` or end.
+Recovery / next state: `2 Agent Update Decision` or end.
 
-### 3.2 Live Changed Elsewhere
+### 3.2 Live Changed During Update
 
-Trigger: current Live differs from the value shown when the operation scope was approved.
+Trigger: current Live differs from the Version the user reviewed before the Live mutation.
 
-Visible UI state: the same card shows reviewed Live, current Live, and target, then says the previous
-decision no longer applies.
+Visible UI state: the same card shows reviewed Live, current Live, and target Version, then says the
+previous decision no longer applies.
 
 Allowed user actions: review the new state, plan again, or cancel.
 
-Recovery / next state: `2 Cloud Operation Decision` or end.
+Recovery / next state: `2 Agent Update Decision` or end.
 
 ### 4.1 Partial Result
 
-Trigger: at least one real resource stage succeeds and a later stage fails.
+Trigger: Version creation succeeds but changing Live fails.
 
-Visible UI state: the same operation card says `Partial`, keeps real IDs, separates completed and
-unfinished work, and does not offer duplicate creation.
+Visible UI state: the same operation card says `Partial`, keeps the created Version, states that Live
+remains v12, and confirms that Devices following Live did not switch.
 
-Allowed user actions: inspect, open session Cloud, continue locally, or resume later.
+Allowed user actions: inspect the Version, open Workspace Cloud, or continue later.
 
-Recovery / next state: `5 Current Coding Session Cloud` or end.
+Recovery / next state: `5 Current Workspace Cloud` or end.
 
 ### 4.2 Outcome Unknown
 
 Trigger: a request may have reached NoraCloud but its result cannot be proven.
 
-Visible UI state: the same operation card says `Outcome unknown`, shows the last confirmed fact,
-offers a safe read, and pauses duplicate mutation.
+Visible UI state: the same operation card shows the last confirmed fact, offers a safe read, and
+pauses duplicate mutation.
 
-Allowed user actions: check current state, inspect diagnostics, or stop.
+Allowed user actions: check current state, inspect technical details, or stop.
 
-Recovery / next state: end until remote reality becomes known.
+Recovery / next state: end after the safe read establishes reality, or remain unresolved.
 
 ## Wireframe
 
-- Main happy path: existing local UI, one stateful operation card, current-session right Cloud, and
-  Settings Cloud system information.
-- Route path: one full product-frame row for every route in the route table.
-- Detail states: compact cards for component reuse, session relationship, deduplication, and Usage
-  coverage.
-- State language: compact cards for operation, freshness, session terminology, and Usage scope.
-- Errors and recovery: compact cards for credential, Live conflict, partial, and unknown states.
-
-- [PM review](https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.pm.md)
-- [Wireframe preview](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.wireframe.html)
-- [Wireframe source](https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.wireframe.html)
+- Main happy path: local Agent edit → Agent update decision → Version creation and Live movement →
+  factual receipt → current Workspace Cloud → Settings Cloud.
+- Route path: full rows for precise instruction, Version-only, defer, partial, unknown, Workspace
+  comparison change, unlinked global Agent, and refresh recovery.
+- Detail states: operation families, first-publish rule, readable Agent configuration,
+  configuration sources, Workspace binding, global deduplication, and Usage availability.
+- State language: operation, freshness, scope, Version/Live, and Usage labels.
+- Errors and recovery: Cloud access, concurrent Live change, partial result, and unknown outcome.
