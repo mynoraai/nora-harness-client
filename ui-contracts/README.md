@@ -8,3 +8,11 @@ These source-anchored contracts document user-visible Electron UI behavior, gate
 - Prefer stable behavior anchors over decorative markup lines. If a source line moves from a visible control to incidental state setup, retarget the evidence to the closest current owner of the documented behavior.
 - For diagrams, keep the readable follow-up table near the diagram: sequence diagrams need a read-order table, and state diagrams need state responsibilities plus transition labels.
 - Do not edit generated translated docs from this area unless the task explicitly asks for the generated output.
+
+## Proposed Interaction Wireframes
+
+- Cloud resource awareness:
+  - [Electron Workspace overview record](cloud-resources/cloud-resource-awareness.record.md)
+  - [Electron Workspace overview wireframe](cloud-resources/cloud-resource-awareness.wireframe.html)
+  - [Conversation decisions record](cloud-resources/cloud-resource-conversation.record.md)
+  - [Conversation decisions wireframe](cloud-resources/cloud-resource-conversation.wireframe.html)

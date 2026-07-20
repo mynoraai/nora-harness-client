@@ -1,0 +1,1495 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud Resources Awareness — NoraHarness V2 Wireframe</title>
+    <style>
+      :root {
+        --bg: #ece7de;
+        --paper: #fffdfa;
+        --panel: #f8f5ef;
+        --panel-strong: #ffffff;
+        --ink: #2d2924;
+        --muted: #6f685f;
+        --faint: #938a80;
+        --line: #d8d0c5;
+        --line-strong: #bdb2a5;
+        --accent: #bd6c2d;
+        --accent-soft: #f5e6d8;
+        --blue: #3f7298;
+        --blue-soft: #e7f0f6;
+        --green: #4f805c;
+        --green-soft: #e8f3eb;
+        --amber: #9a6819;
+        --amber-soft: #fff3cd;
+        --red: #a74742;
+        --red-soft: #f8d7da;
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        --sans:
+          Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: var(--sans);
+        color: var(--ink);
+        background: var(--bg);
+      }
+      button {
+        font: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 30;
+        min-height: 62px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 10px 18px;
+        color: #fff7ef;
+        background: rgba(45, 35, 27, 0.97);
+        border-bottom: 1px solid rgba(230, 174, 123, 0.35);
+      }
+      .topbar h1 {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.2;
+      }
+      .topbar p {
+        margin: 3px 0 0;
+        max-width: 940px;
+        color: #dacabc;
+        font-size: 11.5px;
+        line-height: 1.35;
+      }
+      .topbar .spacer {
+        flex: 1;
+      }
+      .controls {
+        display: flex;
+        gap: 6px;
+      }
+      .controls button {
+        height: 30px;
+        min-width: 34px;
+        padding: 0 10px;
+        border: 1px solid rgba(235, 183, 133, 0.35);
+        border-radius: 8px;
+        color: #fff7ef;
+        background: rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+      }
+      .controls button:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .jump {
+        position: fixed;
+        top: 75px;
+        left: 12px;
+        z-index: 25;
+        width: 210px;
+        padding: 9px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.96);
+        box-shadow: 0 12px 30px -22px rgba(45, 35, 27, 0.55);
+        backdrop-filter: blur(8px);
+      }
+      .jump h2 {
+        margin: 4px 8px 8px;
+        color: var(--faint);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .jump button {
+        display: block;
+        width: 100%;
+        margin: 0 0 3px;
+        padding: 7px 9px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--ink);
+        background: transparent;
+        text-align: left;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .jump button:hover {
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .legend {
+        margin-top: 8px;
+        padding: 9px 8px 3px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.65;
+      }
+      .legend i {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        border-radius: 999px;
+      }
+
+      .viewport {
+        position: fixed;
+        inset: 62px 0 0 0;
+        overflow: hidden;
+        cursor: grab;
+        user-select: none;
+        touch-action: none;
+        overscroll-behavior: contain;
+        background-color: #eeeae3;
+        background-image: radial-gradient(
+          rgba(65, 52, 40, 0.1) 1px,
+          transparent 1px
+        );
+        background-size: 24px 24px;
+      }
+      .viewport.dragging {
+        cursor: grabbing;
+      }
+      .stage {
+        position: absolute;
+        left: 250px;
+        top: 28px;
+        width: 5400px;
+        min-height: 7900px;
+        padding: 18px 24px 180px;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+      .band {
+        margin: 0 0 38px;
+      }
+      .band-title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin: 0 0 12px;
+      }
+      .band-title h3 {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .band-title span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .flow {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+        width: max-content;
+      }
+      .arrow {
+        align-self: center;
+        position: relative;
+        width: 24px;
+        height: 1px;
+        background: #8f8478;
+      }
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: -4px;
+        width: 8px;
+        height: 8px;
+        border-top: 1px solid #8f8478;
+        border-right: 1px solid #8f8478;
+        transform: rotate(45deg);
+      }
+
+      .wire-card {
+        width: 650px;
+        min-height: 525px;
+        overflow: hidden;
+        border: 1px solid #38322c;
+        border-radius: 12px;
+        background: var(--paper);
+        box-shadow: 0 14px 32px -22px rgba(45, 35, 27, 0.55);
+      }
+      .wire-card.proposed {
+        border-top: 6px solid var(--blue);
+      }
+      .wire-card.warning {
+        border-top: 6px solid var(--amber);
+      }
+      .wire-card.error {
+        border-top: 6px solid var(--red);
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 14px 9px;
+        border-bottom: 1px solid var(--line);
+      }
+      .card-head .id {
+        padding: 4px 7px;
+        border-radius: 6px;
+        color: #fff;
+        background: var(--accent);
+        font: 700 11px/1 var(--mono);
+      }
+      .card-head h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .card-head .tag {
+        margin-left: auto;
+        padding: 3px 8px;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .caption {
+        min-height: 50px;
+        padding: 9px 14px 10px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.45;
+      }
+
+      .screen {
+        width: 620px;
+        height: 395px;
+        margin: 0 14px 14px;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: 10px;
+        background: var(--panel);
+      }
+      .scale {
+        width: 1180px;
+        height: 750px;
+        transform: scale(0.525);
+        transform-origin: top left;
+      }
+      .app {
+        display: flex;
+        width: 1180px;
+        height: 750px;
+        color: var(--ink);
+        background: var(--panel);
+      }
+
+      .sidebar {
+        width: 220px;
+        padding: 16px 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f0ece5;
+        border-right: 1px solid var(--line);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 750;
+      }
+      .traffic {
+        display: flex;
+        gap: 5px;
+        margin-right: 7px;
+      }
+      .traffic i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #b8aea2;
+      }
+      .mode {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .mode span {
+        padding: 6px;
+        border-radius: 6px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 12px;
+      }
+      .mode .on {
+        color: var(--ink);
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(40, 30, 20, 0.08);
+        font-weight: 700;
+      }
+      .search {
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--faint);
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 11.5px;
+      }
+      .slbl {
+        margin-top: 5px;
+        color: var(--faint);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+      .workspace,
+      .conversation {
+        display: flex;
+        align-items: center;
+        padding: 7px 9px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+      .workspace {
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-weight: 700;
+      }
+      .conversation.on {
+        background: rgba(255, 255, 255, 0.8);
+        font-weight: 650;
+      }
+      .conversation small {
+        margin-left: auto;
+        color: var(--faint);
+      }
+      .grow {
+        flex: 1;
+      }
+      .account {
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 11.5px;
+      }
+
+      .center {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: #fbfaf7;
+      }
+      .workspace-bar {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--paper);
+        font-size: 11px;
+      }
+      .workspace-bar strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .workspace-bar .cloud-status {
+        margin-left: auto;
+        padding: 4px 8px;
+        border: 1px solid #b8cddd;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-weight: 700;
+      }
+      .workspace-bar .cloud-status.hot {
+        box-shadow: 0 0 0 3px rgba(63, 114, 152, 0.15);
+      }
+      .tabs {
+        height: 39px;
+        display: flex;
+        align-items: end;
+        gap: 4px;
+        padding: 7px 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .ctab {
+        padding: 7px 12px;
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: 7px 7px 0 0;
+        background: #fff;
+        font-size: 11px;
+      }
+      .stream {
+        flex: 1;
+        padding: 18px 24px;
+        overflow: hidden;
+      }
+      .user-msg {
+        margin-left: auto;
+        max-width: 68%;
+        padding: 9px 12px;
+        border-radius: 11px;
+        background: var(--accent-soft);
+        font-size: 12px;
+      }
+      .assistant {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 11.5px;
+        line-height: 1.5;
+      }
+      .receipt {
+        margin-top: 13px;
+        max-width: 490px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fff;
+      }
+      .receipt-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11.5px;
+        font-weight: 750;
+      }
+      .receipt-head .ok {
+        margin-left: auto;
+        color: var(--green);
+      }
+      .receipt-head .partial {
+        margin-left: auto;
+        color: var(--amber);
+      }
+      .receipt-body {
+        padding: 9px 12px;
+      }
+      .receipt-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 8px;
+        padding: 3px 0;
+        font-size: 10.5px;
+      }
+      .receipt-row span {
+        color: var(--faint);
+      }
+      .receipt-actions {
+        display: flex;
+        gap: 7px;
+        padding-top: 9px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 27px;
+        padding: 0 10px;
+        border: 1px solid var(--line-strong);
+        border-radius: 7px;
+        color: var(--ink);
+        background: #fff;
+        font-size: 10.5px;
+        font-weight: 700;
+      }
+      .btn.primary {
+        color: #fff;
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+      .composer {
+        margin: 0 14px 14px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        color: var(--faint);
+        background: #fff;
+        font-size: 11px;
+      }
+
+      .right {
+        width: 360px;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid var(--line);
+        background: #f8f6f1;
+      }
+      .right-tabs {
+        display: flex;
+        gap: 1px;
+        padding: 9px 7px 0;
+        border-bottom: 1px solid var(--line);
+        background: #f1ede6;
+      }
+      .rtab {
+        position: relative;
+        padding: 7px 8px;
+        border-radius: 7px 7px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .rtab.on {
+        color: var(--ink);
+        background: #fff;
+        font-weight: 700;
+      }
+      .rtab.proposed::after {
+        content: "P";
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        width: 10px;
+        height: 10px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--blue);
+        font-size: 6px;
+        font-weight: 900;
+      }
+      .file-body {
+        flex: 1;
+        padding: 16px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 2;
+      }
+      .cloud-body {
+        flex: 1;
+        min-height: 0;
+        padding: 12px;
+        overflow: hidden;
+      }
+      .cloud-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 9px;
+      }
+      .cloud-head h5 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .cloud-head small {
+        display: block;
+        margin-top: 2px;
+        color: var(--faint);
+        font-size: 9px;
+      }
+      .fresh {
+        margin-left: auto;
+        padding: 3px 7px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 8.5px;
+        font-weight: 800;
+      }
+      .fresh.refreshing {
+        color: var(--blue);
+        background: var(--blue-soft);
+      }
+      .fresh.stale {
+        color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .fresh.unavailable {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .proposed-label {
+        margin: -2px 0 8px;
+        color: var(--blue);
+        font-size: 8px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .notice {
+        margin: 0 0 8px;
+        padding: 7px 8px;
+        border: 1px solid #e3c984;
+        border-radius: 7px;
+        color: #765314;
+        background: var(--amber-soft);
+        font-size: 9px;
+        line-height: 1.4;
+      }
+      .notice.red {
+        border-color: #e3aaa6;
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .resource-card,
+      .usage-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .section-title {
+        padding: 7px 9px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .resource-row {
+        display: grid;
+        grid-template-columns: 75px 1fr auto;
+        gap: 6px;
+        padding: 6px 9px;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 9.5px;
+        align-items: center;
+      }
+      .resource-row:last-child {
+        border-bottom: 0;
+      }
+      .resource-row .k {
+        color: var(--faint);
+      }
+      .resource-row .v {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 650;
+      }
+      .resource-row code {
+        color: var(--muted);
+        font: 8.5px var(--mono);
+      }
+      .credential-lines {
+        line-height: 1.45;
+        white-space: normal !important;
+      }
+      .credential-lines b {
+        color: var(--amber);
+        font-weight: 800;
+      }
+      .usage-card {
+        margin-top: 9px;
+      }
+      .usage-main {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 9px;
+      }
+      .metric strong {
+        display: block;
+        font-size: 15px;
+      }
+      .metric span {
+        color: var(--faint);
+        font-size: 8.5px;
+      }
+      .coverage {
+        padding: 0 9px 8px;
+        color: var(--muted);
+        font-size: 8.5px;
+        line-height: 1.35;
+      }
+      .coverage.warn {
+        color: var(--amber);
+      }
+      .panel-action {
+        margin-top: 8px;
+        display: flex;
+        gap: 6px;
+      }
+      .empty {
+        height: 520px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+      }
+      .empty .icon {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 18px;
+      }
+      .empty h5 {
+        margin: 11px 0 5px;
+        font-size: 13px;
+      }
+      .empty p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 9.5px;
+        line-height: 1.45;
+      }
+      .skeleton {
+        display: grid;
+        gap: 7px;
+      }
+      .skeleton i {
+        display: block;
+        height: 22px;
+        border-radius: 6px;
+        background: linear-gradient(90deg, #eee9e2, #f8f5ef, #eee9e2);
+      }
+      .bottom {
+        padding: 8px 11px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        background: #f1ede6;
+        font-size: 9.5px;
+      }
+
+      .route-row {
+        width: max-content;
+        margin: 0 0 26px;
+        padding: 12px 14px 16px;
+        border: 1px solid rgba(189, 178, 165, 0.8);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.55);
+      }
+      .route-title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+      .route-title h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .route-title code {
+        color: var(--accent);
+        font: 11px var(--mono);
+      }
+      .route-title span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .compact-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 360px);
+        gap: 14px;
+        width: max-content;
+      }
+      .compact-card {
+        min-height: 160px;
+        padding: 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 11px;
+        background: var(--paper);
+        box-shadow: 0 10px 24px -20px rgba(45, 35, 27, 0.5);
+      }
+      .compact-card h4 {
+        margin: 0 0 4px;
+        font-size: 13px;
+      }
+      .compact-card .kind {
+        color: var(--blue);
+        font-size: 9px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .compact-card p,
+      .compact-card li {
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .compact-card ul {
+        margin: 9px 0 0;
+        padding-left: 17px;
+      }
+      .compact-card.language {
+        border-top: 5px solid #c7a25c;
+      }
+      .compact-card.recovery {
+        border-top: 5px solid var(--red);
+      }
+      .compact-card.readiness {
+        border-top: 5px solid var(--blue);
+        background: #f7fbfe;
+      }
+      .readiness-grid {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 5px 9px;
+        margin-top: 9px;
+        font-size: 10.5px;
+        line-height: 1.45;
+      }
+      .readiness-grid b {
+        color: var(--muted);
+      }
+      .footer-space {
+        height: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Cloud Resources Awareness — NoraHarness V2</h1>
+        <p>
+          Proposed interaction · the conversation owns decisions and execution;
+          the Electron Cloud panel restores long-lived Workspace resources and
+          Recorded Usage.
+        </p>
+      </div>
+      <div class="spacer"></div>
+      <div class="controls">
+        <button id="zoom-out" aria-label="Zoom out">−</button>
+        <button id="zoom-in" aria-label="Zoom in">+</button>
+        <button id="fit">Fit</button>
+        <button id="reset">Reset</button>
+      </div>
+    </header>
+
+    <nav class="jump" aria-label="Wireframe sections">
+      <h2>Jump</h2>
+      <button data-jump="main-happy-path">Main happy path</button>
+      <button data-jump="route-path">Route path</button>
+      <button data-jump="detail-states">Detail states</button>
+      <button data-jump="state-language">State language</button>
+      <button data-jump="errors-recovery">Errors and recovery</button>
+      <div class="legend">
+        <div><i style="background: #3f7298"></i>Proposed V2 UI</div>
+        <div><i style="background: #4f805c"></i>Fresh trusted state</div>
+        <div><i style="background: #9a6819"></i>Attention / stale</div>
+        <div><i style="background: #a74742"></i>Unavailable</div>
+      </div>
+    </nav>
+
+    <main class="viewport" id="viewport">
+      <div class="stage" id="stage">
+        <section class="band" id="main-happy-path">
+          <div class="band-title">
+            <h3>Main happy path</h3>
+            <span>Journey 1 · 1 → 2 → 3 → 4 → 5</span>
+          </div>
+          <div class="flow" id="main-flow"></div>
+        </section>
+
+        <section class="band" id="route-path">
+          <div class="band-title">
+            <h3>Route path</h3>
+            <span
+              >Every route from the confirmed record, rendered as full
+              NoraHarness product frames.</span
+            >
+          </div>
+          <div id="route-rows"></div>
+        </section>
+
+        <section class="band" id="detail-states">
+          <div class="band-title">
+            <h3>Detail states</h3>
+            <span
+              >Entry placement, resource hierarchy, Usage summary, and
+              engineering readiness.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>2.2 Cloud Entry Placement</h4>
+              <ul>
+                <li>
+                  <b>Cloud</b> is a proposed right-workbench tab beside the
+                  implemented tabs.
+                </li>
+                <li>
+                  <b>Device</b> remains the local physical-device surface.
+                </li>
+                <li>
+                  <b>View in Cloud</b> and the Workspace-bar status open the
+                  same panel.
+                </li>
+              </ul>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>3.5 Resource Summary Hierarchy</h4>
+              <ul>
+                <li>
+                  Agent and Live appear first because they define current
+                  runtime behavior.
+                </li>
+                <li>The latest non-Live Version follows.</li>
+                <li>
+                  Devices, Sessions, and Credentials stay compact and read-only.
+                </li>
+              </ul>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>3.6 Recorded Usage Summary</h4>
+              <ul>
+                <li>
+                  Show LLM tokens and turns for an explicit Workspace scope.
+                </li>
+                <li>Show STT time and TTS characters only when reported.</li>
+                <li>
+                  Do not merge this with context-window usage or call it
+                  billing.
+                </li>
+              </ul>
+            </article>
+            <article class="compact-card readiness">
+              <span class="kind">Engineering readiness</span>
+              <h4>Current vs Proposed</h4>
+              <div class="readiness-grid">
+                <b>Exists today</b
+                ><span
+                  >Code shell, right workbench, Device tab, conversation
+                  tool/result cards.</span
+                >
+                <b>Proposed</b
+                ><span
+                  >Cloud tab, resource receipt link, Workspace snapshot,
+                  freshness, Recorded Usage overview.</span
+                >
+                <b>Dependencies</b
+                ><span
+                  >Workspace resource projection, Usage aggregation, trusted
+                  snapshot, per-type credential projection.</span
+                >
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="band" id="state-language">
+          <div class="band-title">
+            <h3>State language</h3>
+            <span
+              >Copy that prevents cached state, credentials, and Usage from
+              being misunderstood.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.1 Freshness</h4>
+              <p>
+                <b>Fresh</b> means a recent trusted read.
+                <b>Refreshing</b> preserves the previous value. <b>Stale</b> is
+                historical. <b>Unavailable</b> means no trusted value can be
+                shown.
+              </p>
+            </article>
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.2 Credentials</h4>
+              <p>
+                Each type independently uses <b>Configured</b>, <b>Missing</b>,
+                <b>Expired</b>, or <b>Needs attention</b>. Secret values never
+                appear.
+              </p>
+            </article>
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.3 Usage Scope</h4>
+              <p>
+                Use <b>Recorded Usage</b>, <b>Workspace · desk-weather</b>, and
+                a coverage note. Never show an unqualified Total Usage, Bill, or
+                Balance.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="band" id="errors-recovery">
+          <div class="band-title">
+            <h3>Errors and recovery</h3>
+            <span
+              >Cloud uncertainty does not erase known resources or stop
+              unrelated local work.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card recovery">
+              <span class="kind">Recovery state</span>
+              <h4>4.1 Stale Snapshot</h4>
+              <p>
+                Keep last trusted values, their original time, and a
+                refresh-failed note. Retry later; do not present stale Live or
+                Device connection as current fact.
+              </p>
+            </article>
+            <article class="compact-card recovery">
+              <span class="kind">Recovery state</span>
+              <h4>5.1 Unavailable Without Snapshot</h4>
+              <p>
+                Show no invented resource or Usage values. Offer Retry and
+                Continue in chat after sign-in or connectivity recovers.
+              </p>
+            </article>
+            <article class="compact-card recovery">
+              <span class="kind">Recovery summary</span>
+              <h4>5.2 Remote-State Recovery</h4>
+              <p>
+                Only work that depends on confirmed remote facts is blocked.
+                Local author, preview, build, and the open conversation remain
+                usable.
+              </p>
+            </article>
+          </div>
+        </section>
+        <div class="footer-space"></div>
+      </div>
+    </main>
+
+    <script>
+      const states = {
+        1: {
+          title: "Resource Receipt In Conversation",
+          view: "receipt",
+          caption:
+            "The conversation reports real cloud results and offers View in Cloud.",
+        },
+        2: {
+          title: "Cloud Panel Entry",
+          view: "refreshing",
+          caption:
+            "The proposed Cloud tab opens beside the conversation and refreshes without clearing trusted values.",
+        },
+        3: {
+          title: "Fresh Workspace Overview",
+          view: "fresh",
+          caption:
+            "Cloud Resources and Recorded Usage share one compact, read-only Workspace overview.",
+        },
+        4: {
+          title: "Return Later",
+          view: "returning",
+          caption:
+            "A saved trusted snapshot appears immediately while NoraHarness refreshes it.",
+        },
+        5: {
+          title: "Refreshed Overview",
+          view: "updated",
+          caption:
+            "Fresh facts replace the restored snapshot and the conversation remains in place.",
+        },
+        2.1: {
+          title: "Workspace-Bar Entry",
+          view: "toolbar",
+          caption:
+            "The compact Workspace Cloud status opens the same right-side overview.",
+        },
+        3.1: {
+          title: "Unbound Workspace",
+          view: "unbound",
+          caption:
+            "Known unbound state is explicit; the panel does not show a fake zero total or create form.",
+        },
+        3.2: {
+          title: "Credential Attention",
+          view: "credential",
+          caption:
+            "Only the affected credential type is marked; other credential states remain accurate.",
+        },
+        3.3: {
+          title: "Partial Operation",
+          view: "partial",
+          caption:
+            "Already-created resources remain visible and the unfinished work links back to chat.",
+        },
+        3.4: {
+          title: "Usage Coverage Incomplete",
+          view: "coverage",
+          caption:
+            "Reliable values remain visible with a clear coverage limitation.",
+        },
+        4.1: {
+          title: "Stale Snapshot",
+          view: "stale",
+          caption:
+            "Refresh failure keeps historical values with their original time and a Stale label.",
+        },
+        5.1: {
+          title: "Unavailable Without Snapshot",
+          view: "unavailable",
+          caption:
+            "No trusted snapshot means no invented resource or Usage values.",
+        },
+        5.2: {
+          title: "Remote-State Recovery",
+          view: "local",
+          caption:
+            "Remote-dependent work pauses, while local coding, preview, and build remain available.",
+        },
+      };
+
+      const routes = [
+        {
+          name: "Happy path",
+          path: ["1", "2", "3", "4", "5"],
+          result: "Open, understand, return, and refresh.",
+        },
+        {
+          name: "Workspace-bar entry",
+          path: ["2.1", "2", "3"],
+          result: "Open Cloud without leaving the active conversation.",
+        },
+        {
+          name: "Unbound Workspace",
+          path: ["2", "3.1", "1"],
+          result: "Continue creation work in conversation.",
+        },
+        {
+          name: "Credential attention",
+          path: ["2", "3", "3.2", "1"],
+          result: "Recover only the affected credential through chat.",
+        },
+        {
+          name: "Partial operation",
+          path: ["1", "2", "3.3", "1"],
+          result:
+            "Keep created resources visible and reopen operation history.",
+        },
+        {
+          name: "Refresh failure and recovery",
+          path: ["3", "4", "4.1", "4", "5"],
+          result: "Preserve stale facts until refresh succeeds.",
+        },
+        {
+          name: "Usage coverage incomplete",
+          path: ["2", "3", "3.4", "3"],
+          result: "Show reliable Usage without inventing a total.",
+        },
+        {
+          name: "No trusted snapshot",
+          path: ["2", "5.1", "5.2", "4", "5"],
+          result: "Continue local work until remote state recovers.",
+        },
+      ];
+
+      function tabs(active) {
+        return `<div class="right-tabs">
+        <span class="rtab ${active === "files" ? "on" : ""}">All Files</span>
+        <span class="rtab">Changes</span>
+        <span class="rtab">Device</span>
+        <span class="rtab proposed ${active === "cloud" ? "on" : ""}">Cloud</span>
+        <span class="rtab">Preview</span>
+      </div>`;
+      }
+
+      function resourcePanel(kind) {
+        if (kind === "unbound") {
+          return `${tabs("cloud")}<div class="empty"><div class="icon">☁</div><h5>No Cloud Agent for this Workspace</h5><p>Cloud creation and publishing continue in the conversation.</p><span class="btn">Continue in chat</span></div><div class="bottom">Terminal &nbsp; Device Log</div>`;
+        }
+        if (kind === "unavailable") {
+          return `${tabs("cloud")}<div class="empty"><div class="icon">!</div><h5>Cloud status unavailable</h5><p>No trusted snapshot is available. Sign in or restore connectivity, then retry.</p><div><span class="btn primary">Retry</span> <span class="btn">Continue in chat</span></div></div><div class="bottom">Terminal &nbsp; Device Log</div>`;
+        }
+        if (kind === "local") {
+          return `${tabs("cloud")}<div class="empty"><div class="icon">↺</div><h5>Remote state still unavailable</h5><p>Cloud-dependent actions remain paused. Local author, preview, and build can continue.</p><div><span class="btn primary">Retry later</span> <span class="btn">Continue in chat</span></div></div><div class="bottom">Terminal &nbsp; Device Log</div>`;
+        }
+
+        const freshness =
+          kind === "stale"
+            ? `<span class="fresh stale">Stale · 2h ago</span>`
+            : kind === "refreshing" ||
+                kind === "returning" ||
+                kind === "toolbar"
+              ? `<span class="fresh refreshing">Refreshing · 12m ago</span>`
+              : `<span class="fresh">Fresh · just now</span>`;
+        const notice =
+          kind === "stale"
+            ? `<div class="notice">Refresh failed. Showing the last trusted state from 2 hours ago.</div>`
+            : kind === "partial"
+              ? `<div class="notice">Device is registered, but firmware connection is not complete.</div>`
+              : "";
+        const credential =
+          kind === "credential"
+            ? `NoraCloud · Configured<br>Device · Configured<br><b>Wi-Fi · Needs attention</b>`
+            : `NoraCloud · Configured<br>Device · Configured`;
+        const coverage =
+          kind === "coverage"
+            ? `<div class="coverage warn">Coverage incomplete · only NoraCloud-recorded Sessions are included.</div>`
+            : `<div class="coverage">Cloud Sessions recorded by NoraCloud · Updated just now</div>`;
+        const tokenValue = kind === "updated" ? "13,024" : "12,480";
+        const turnValue = kind === "updated" ? "15" : "14";
+
+        return `${tabs("cloud")}
+        <div class="cloud-body">
+          <div class="cloud-head"><div><h5>Cloud</h5><small>desk-weather · Current NoraCloud</small></div>${freshness}</div>
+          <div class="proposed-label">Proposed V2 overview</div>
+          ${notice}
+          <div class="resource-card">
+            <div class="section-title">Cloud Resources</div>
+            <div class="resource-row"><span class="k">Agent</span><span class="v">Desk Weather</span><code>agt_…7f2</code></div>
+            <div class="resource-row"><span class="k">Live</span><span class="v">Current runtime</span><code>ver_…a81</code></div>
+            <div class="resource-row"><span class="k">Candidate</span><span class="v">Created 2h ago</span><code>ver_…c24</code></div>
+            <div class="resource-row"><span class="k">Devices</span><span class="v">1 connected · follows Live</span><code>›</code></div>
+            <div class="resource-row"><span class="k">Sessions</span><span class="v">1 recent · 12m ago</span><code>›</code></div>
+            <div class="resource-row"><span class="k">Credentials</span><span class="v credential-lines">${credential}</span><code>›</code></div>
+          </div>
+          <div class="usage-card">
+            <div class="section-title">Recorded Usage · Workspace · desk-weather</div>
+            <div class="usage-main"><div class="metric"><strong>${tokenValue}</strong><span>LLM tokens</span></div><div class="metric"><strong>${turnValue}</strong><span>turns</span></div></div>
+            ${coverage}
+          </div>
+          <div class="panel-action"><span class="btn">↻ Refresh</span><span class="btn">Open related chat</span></div>
+        </div><div class="bottom">Terminal &nbsp; Device Log</div>`;
+      }
+
+      function centerContent(kind) {
+        const partial = kind === "partial";
+        const showReceipt = kind === "receipt" || partial;
+        const cloudLabel =
+          kind === "toolbar"
+            ? "Cloud · Needs attention"
+            : kind === "stale"
+              ? "Cloud · Stale"
+              : "Cloud · Connected";
+        return `<section class="center">
+        <div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="cloud-status ${kind === "toolbar" ? "hot" : ""}">${cloudLabel}</span></div>
+        <div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint);font-size:12px">＋</span></div>
+        <div class="stream">
+          <div class="user-msg">Publish the weather agent and verify it once.</div>
+          <div class="assistant">I built the local version, published the NoraCloud resources, and checked the real result.</div>
+          ${
+            showReceipt
+              ? `<div class="receipt">
+            <div class="receipt-head">${partial ? "Device connection incomplete" : "Publish completed"}<span class="${partial ? "partial" : "ok"}">${partial ? "Partial" : "Completed"}</span></div>
+            <div class="receipt-body">
+              <div class="receipt-row"><span>Agent</span><b>Desk Weather · agt_…7f2</b></div>
+              <div class="receipt-row"><span>Live Version</span><b>ver_…a81</b></div>
+              <div class="receipt-row"><span>Session</span><b>ses_…91c</b></div>
+              <div class="receipt-row"><span>Recorded</span><b>1,380 LLM tokens · 1 turn</b></div>
+              ${partial ? `<div class="notice" style="margin-top:8px">Device exists, but firmware connection verification is incomplete.</div>` : ""}
+              <div class="receipt-actions"><span class="btn primary">View in Cloud</span><span class="btn">Technical details</span></div>
+            </div>
+          </div>`
+              : `<div class="receipt"><div class="receipt-head">Workspace ready<span class="ok">Local work available</span></div><div class="receipt-body"><div class="receipt-row"><span>Current task</span><b>Refine the weather display</b></div><div class="receipt-row"><span>Cloud actions</span><b>Continue through conversation</b></div></div></div>`
+          }
+        </div>
+        <div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div>
+      </section>`;
+      }
+
+      function appFrame(kind) {
+        const activeCloud = !["receipt"].includes(kind);
+        const right = activeCloud
+          ? resourcePanel(kind)
+          : `${tabs("files")}<div class="file-body">▾ agent<br>&nbsp;&nbsp; SOUL.md<br>&nbsp;&nbsp; manifest.json<br>▾ firmware<br>&nbsp;&nbsp; platformio.ini<br>&nbsp;&nbsp; src</div><div class="bottom">Terminal &nbsp; Device Log</div>`;
+        return `<div class="screen"><div class="scale"><div class="app">
+        <aside class="sidebar">
+          <div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness</div>
+          <div class="mode"><span>Chat</span><span class="on">Code</span></div>
+          <div class="search">Search conversations…</div>
+          <div class="slbl">Workspaces</div>
+          <div class="workspace">▾ desk-weather <span style="margin-left:auto">1</span></div>
+          <div class="conversation on">Desk Weather <small>now</small></div>
+          <div class="conversation">Shorter responses <small>2h</small></div>
+          <div class="grow"></div>
+          <div class="account">● Signed in &nbsp; <b>Cloud ready</b></div>
+        </aside>
+        ${centerContent(kind)}
+        <aside class="right">${right}</aside>
+      </div></div></div>`;
+      }
+
+      function card(id) {
+        const state = states[id];
+        const severity =
+          id === "4.1"
+            ? "warning"
+            : id === "5.1" || id === "5.2"
+              ? "error"
+              : "proposed";
+        return `<article class="wire-card ${severity}">
+        <div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">Proposed</span></div>
+        <div class="caption">${state.caption}</div>
+        ${appFrame(state.view)}
+      </article>`;
+      }
+
+      function flow(ids) {
+        return ids
+          .map(
+            (id, index) =>
+              `${index ? `<div class="arrow" aria-hidden="true"></div>` : ""}${card(id)}`,
+          )
+          .join("");
+      }
+
+      document.getElementById("main-flow").innerHTML = flow([
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+      ]);
+      document.getElementById("route-rows").innerHTML = routes
+        .map(
+          (route, index) => `
+      <article class="route-row" id="route-${index + 1}">
+        <div class="route-title"><h4>${index + 1}. ${route.name}</h4><code>${route.path.join(" → ")}</code><span>${route.result}</span></div>
+        <div class="flow">${flow(route.path)}</div>
+      </article>`,
+        )
+        .join("");
+
+      let scale = 0.72;
+      let x = 0;
+      let y = 0;
+      let animationFrame = null;
+      const viewport = document.getElementById("viewport");
+      const stage = document.getElementById("stage");
+
+      function applyNow() {
+        animationFrame = null;
+        stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+      function apply() {
+        if (animationFrame) return;
+        animationFrame = requestAnimationFrame(applyNow);
+      }
+      function clamp(value) {
+        return Math.max(0.14, Math.min(1.25, value));
+      }
+      function zoomAt(clientX, clientY, factor) {
+        const rect = viewport.getBoundingClientRect();
+        const localX = clientX - rect.left;
+        const localY = clientY - rect.top;
+        const pointX = (localX - x) / scale;
+        const pointY = (localY - y) / scale;
+        scale = clamp(scale * factor);
+        x = localX - pointX * scale;
+        y = localY - pointY * scale;
+        apply();
+      }
+      function fit() {
+        const width = viewport.clientWidth - 80;
+        const height = viewport.clientHeight - 80;
+        scale = Math.max(
+          0.12,
+          Math.min(
+            width / stage.scrollWidth,
+            height / stage.scrollHeight,
+            0.55,
+          ),
+        );
+        x = 18;
+        y = 18;
+        apply();
+      }
+      function reset() {
+        scale = 0.72;
+        x = 0;
+        y = 0;
+        apply();
+      }
+      function jump(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        x = -target.offsetLeft * scale + 28;
+        y = -target.offsetTop * scale + 24;
+        apply();
+      }
+
+      document
+        .getElementById("zoom-in")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 1.12),
+        );
+      document
+        .getElementById("zoom-out")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 0.88),
+        );
+      document.getElementById("fit").addEventListener("click", fit);
+      document.getElementById("reset").addEventListener("click", reset);
+      document
+        .querySelectorAll("[data-jump]")
+        .forEach((button) =>
+          button.addEventListener("click", () => jump(button.dataset.jump)),
+        );
+
+      let drag = null;
+      viewport.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button")) return;
+        event.preventDefault();
+        drag = { startX: event.clientX, startY: event.clientY, x, y };
+        viewport.classList.add("dragging");
+        viewport.setPointerCapture(event.pointerId);
+      });
+      viewport.addEventListener("pointermove", (event) => {
+        if (!drag) return;
+        x = drag.x + event.clientX - drag.startX;
+        y = drag.y + event.clientY - drag.startY;
+        apply();
+      });
+      function endDrag(event) {
+        drag = null;
+        viewport.classList.remove("dragging");
+        if (event && viewport.hasPointerCapture(event.pointerId))
+          viewport.releasePointerCapture(event.pointerId);
+      }
+      viewport.addEventListener("pointerup", endDrag);
+      viewport.addEventListener("pointercancel", endDrag);
+      viewport.addEventListener(
+        "wheel",
+        (event) => {
+          event.preventDefault();
+          if (event.ctrlKey || event.metaKey) {
+            zoomAt(
+              event.clientX,
+              event.clientY,
+              Math.exp(-event.deltaY * 0.002),
+            );
+          } else {
+            x -= event.deltaX;
+            y -= event.deltaY;
+            apply();
+          }
+        },
+        { passive: false },
+      );
+      window.addEventListener("resize", apply);
+      apply();
+    </script>
+  </body>
+</html>
