@@ -520,6 +520,81 @@
         letter-spacing: 0.06em;
         text-transform: uppercase;
       }
+      .consequence-lead {
+        margin: 0 0 7px;
+        color: var(--ink);
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .transition {
+        display: grid;
+        grid-template-columns: 1fr auto 1.45fr;
+        gap: 7px;
+        align-items: center;
+        margin-bottom: 7px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        color: var(--muted);
+        background: #f6f2ec;
+        font-size: 8.8px;
+      }
+      .transition b {
+        color: var(--blue);
+      }
+      .impact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+      }
+      .impact-block {
+        padding: 7px 8px;
+        border: 1px solid #e7e0d7;
+        border-radius: 7px;
+        background: #fffdfa;
+      }
+      .impact-block.created {
+        grid-row: span 2;
+      }
+      .impact-block h5 {
+        margin: 0 0 4px;
+        color: var(--faint);
+        font-size: 7.8px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .impact-item {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 5px;
+        padding: 2px 0;
+        font-size: 8.8px;
+        line-height: 1.35;
+      }
+      .impact-item span {
+        color: var(--faint);
+      }
+      .impact-item b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .persist-note,
+      .excluded-note {
+        margin-top: 7px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        font-size: 8.6px;
+        line-height: 1.4;
+      }
+      .persist-note {
+        color: #2f5f43;
+        background: var(--green-soft);
+      }
+      .excluded-note {
+        color: var(--muted);
+        background: #f6f2ec;
+      }
       .row {
         display: grid;
         grid-template-columns: 90px 1fr auto;
@@ -842,7 +917,7 @@
             </article>
             <article class="compact-card">
               <span class="kind">Detail state</span>
-              <h4>5.1 View In Cloud</h4>
+              <h4>5.1 Open Cloud Overview</h4>
               <ul>
                 <li>Opens the Electron right-workbench Cloud overview.</li>
                 <li>The current conversation remains active.</li>
@@ -984,7 +1059,7 @@
           title: "Resource Receipt",
           view: "receipt",
           caption:
-            "The result uses real IDs, Session Usage, and unfinished stages rather than the original plan.",
+            "The receipt separates what was created, changed, recorded, left persistent, and deliberately not done.",
         },
         6: {
           title: "Device Registration Decision",
@@ -1149,23 +1224,23 @@
         if (kind === "local")
           return `<div class="user-msg">Build a desk weather device and connect it to NoraCloud when it is ready.</div><div class="assistant">I am building the local product first. No cloud resource has been created.</div>${cardShell("Local development", "Running", "", `<div class="stage-list">${stage("✓", "Workspace files updated", "local", "done")}${stage("✓", "Preview rendered", "local", "done")}${stage("●", "Firmware build", "local", "active")}${stage("○", "NoraCloud publish", "not started")}</div>`)}`;
         if (kind === "boundary")
-          return `<div class="user-msg">Publish it when the local build passes.</div><div class="assistant">The local build passed. The next step crosses into long-lived NoraCloud resources.</div>${cardShell("Publish to NoraCloud", "Waiting for decision", "warn", `<div class="scope">Proposed V2 resource impact</div>${row("Cloud", "Current NoraCloud")}${row("Create", "Desk Weather", "Agent")}${row("Version", "First Version", "new")}${row("Live", "First Version becomes Live", "required")}${row("Verify", "1 Cloud turn", "bounded")}<div class="notice">Not included: Device registration, credential write, or firmware flash.</div>${actions(["Publish", "Adjust verification", "Not now"])}`, "amber")}`;
+          return `<div class="user-msg">Publish it when the local build passes.</div><div class="assistant">The local build passed. The next step crosses into long-lived NoraCloud resources.</div>${cardShell("Publish to NoraCloud", "Waiting for decision", "warn", `<div class="scope">Resource consequence before execution</div><div class="impact-grid"><div class="impact-block created"><h5>Will create</h5><div class="impact-item"><span>Agent</span><b>Desk Weather</b></div><div class="impact-item"><span>Version</span><b>First Version</b></div><div class="impact-item"><span>Session</span><b>1 verification turn</b></div></div><div class="impact-block"><h5>Will change</h5><div class="impact-item"><span>Live</span><b>None → First Version</b></div><div class="impact-item"><span>Devices</span><b>0 affected</b></div></div><div class="impact-block"><h5>Will record</h5><div class="impact-item"><span>Usage</span><b>Actual verification Usage</b></div></div></div><div class="excluded-note"><b>Will not do:</b> Device registration, credential write, or firmware flash.</div>${actions(["Publish", "Adjust verification", "Not now"])}`, "amber")}`;
         if (kind === "confirmed")
           return `<div class="user-msg">Publish and run one Cloud test.</div><div class="assistant">Understood. This exact instruction covers the displayed first-publish scope.</div>${cardShell("First publish scope", "Approved", "ok", `${row("Agent", "Desk Weather")}${row("Version", "Create first Version")}${row("Live", "Set first Version Live")}${row("Cloud test", "1 turn")}${actions(["Start", "Cancel"])}`)}`;
         if (kind === "running")
           return `<div class="user-msg">Proceed.</div><div class="assistant">Publishing the approved resource scope now.</div>${cardShell("Publishing Desk Weather", "Running", "", `<div class="stage-list">${stage("✓", "Agent created", "agt_…7f2", "done")}${stage("✓", "Version created", "ver_…a81", "done")}${stage("✓", "Version set Live", "ver_…a81", "done")}${stage("●", "Cloud verification", "1 turn", "active")}${stage("○", "Refresh final state", "")}</div>${actions(["Technical details"])}`)}`;
         if (kind === "receipt")
-          return `<div class="user-msg">Proceed.</div><div class="assistant">The resource result is confirmed.</div>${cardShell("Publish completed", "Completed", "ok", `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Live Version", "Current runtime", "ver_…a81")}${row("Session", "Cloud verification", "ses_…91c")}${row("Recorded", "1,380 LLM tokens · 1 turn")}${actions(["View in Cloud", "Technical details"])}`)}`;
+          return `<div class="user-msg">Proceed.</div><div class="assistant">The resource result is confirmed. This Workspace now has a persistent NoraCloud footprint.</div>${cardShell("Cloud footprint created", "Completed", "ok", `<p class="consequence-lead">The operation changed the product from local-only work to a Live cloud runtime.</p><div class="transition"><span>Before · Local only</span><span>→</span><b>After · Agent is Live in NoraCloud</b></div><div class="impact-grid"><div class="impact-block created"><h5>Created</h5><div class="impact-item"><span>Agent</span><b>Desk Weather · agt_…7f2</b></div><div class="impact-item"><span>Version</span><b>ver_…a81</b></div><div class="impact-item"><span>Session</span><b>ses_…91c</b></div></div><div class="impact-block"><h5>Changed</h5><div class="impact-item"><span>Live</span><b>None → ver_…a81</b></div><div class="impact-item"><span>Devices</span><b>0 affected</b></div></div><div class="impact-block"><h5>Recorded this operation</h5><div class="impact-item"><span>Usage</span><b>1,380 LLM tokens · 1 turn</b></div></div></div><div class="persist-note"><b>Persists after this chat:</b> Agent and Live Version stay active; Session and Usage remain recorded.</div><div class="excluded-note"><b>Not done:</b> Device registration, credential write, or firmware flash.</div>${actions(["Open Cloud overview", "Continue with device"])}`)}`;
         if (kind === "device-plan")
           return `<div class="user-msg">Now connect this ESP32.</div><div class="assistant">Device registration is a separate cloud and credential decision.</div>${cardShell("Register and connect device", "Waiting for decision", "warn", `${row("Device", "Desk ESP32")}${row("Agent", "Desk Weather · follows Live")}${row("Credential", "New Device credential")}${row("Save to", "Protected Workspace config")}${row("Then", "Build · flash selected port · verify")}${actions(["Register and connect", "Change device", "Not now"])}`, "amber")}`;
         if (kind === "device-result")
-          return `<div class="user-msg">Register and connect it.</div><div class="assistant">Cloud, connection, firmware, and physical evidence are reported separately.</div>${cardShell("Device connection result", "Completed", "ok", `${row("Cloud Device", "Registered", "dev_…228")}${row("Credential", "Configured")}${row("Firmware", "Flashed", "/dev/cu.…")}${row("Cloud connection", "Connected")}${row("Physical check", "Weather screen rendered")}${actions(["View in Cloud"])}`)}`;
+          return `<div class="user-msg">Register and connect it.</div><div class="assistant">Cloud, connection, firmware, and physical evidence are reported separately.</div>${cardShell("Device connection result", "Completed", "ok", `${row("Cloud Device", "Registered", "dev_…228")}${row("Credential", "Configured")}${row("Firmware", "Flashed", "/dev/cu.…")}${row("Cloud connection", "Connected")}${row("Physical check", "Weather screen rendered")}${actions(["Open Cloud overview"])}`)}`;
         if (kind === "candidate")
           return `<div class="user-msg">Make replies shorter. Test it before it goes live.</div><div class="assistant">I created a non-Live Version and completed local checks. NoraCloud runtime has not executed it.</div>${cardShell("Candidate ready", "Local checks passed", "ok", `${row("Current Live", "Unchanged", "ver_…a81")}${row("Candidate", "Latest non-Live", "ver_…c24")}${row("Cloud tests", "Not run · requires release")}${actions(["Plan Cloud validation", "Keep candidate"])}`)}`;
         if (kind === "release-plan")
           return `<div class="user-msg">Run five Cloud tests.</div><div class="assistant">Current runtime cannot execute a non-Live Version. Testing requires a temporary Live change.</div>${cardShell("Temporary Live validation", "Waiting for decision", "warn", `${row("Current Live", "ver_…a81")}${row("Candidate", "ver_…c24")}${row("Affected", "1 Device follows Live")}${row("Tests", "5 fixed cases · stop on failure")}${row("If failed", "Rollback to ver_…a81")}${actions(["Release and validate", "Keep candidate", "Cancel"])}`, "amber")}`;
         if (kind === "validation")
-          return `<div class="user-msg">Release and validate.</div><div class="assistant">The bounded validation completed from the confirmed Live premise.</div>${cardShell("Validation completed", "Completed", "ok", `${row("Previous Live", "ver_…a81")}${row("Current Live", "ver_…c24")}${row("Tests", "5/5 passed")}${row("Recorded", "6,420 LLM tokens · 5 turns")}${row("Devices", "1 now resolves ver_…c24")}${actions(["View in Cloud"])}`)}`;
+          return `<div class="user-msg">Release and validate.</div><div class="assistant">The bounded validation completed from the confirmed Live premise.</div>${cardShell("Validation completed", "Completed", "ok", `${row("Previous Live", "ver_…a81")}${row("Current Live", "ver_…c24")}${row("Tests", "5/5 passed")}${row("Recorded", "6,420 LLM tokens · 5 turns")}${row("Devices", "1 now resolves ver_…c24")}${actions(["Open Cloud overview"])}`)}`;
         if (kind === "deferred")
           return `<div class="user-msg">Not now. Keep working locally.</div><div class="assistant">Cloud publication is deferred. The local Workspace, preview, and build remain available.</div>${cardShell("NoraCloud publish", "Deferred", "warn", `${row("Cloud resources", "None created")}${row("Local build", "Available")}${actions(["Continue local work", "Publish later"])}`)}`;
         if (kind === "attach")
@@ -1179,7 +1254,7 @@
         if (kind === "device-deferred")
           return `<div class="user-msg">Do not connect the device yet.</div><div class="assistant">Device registration is deferred; the published Agent and local Workspace remain available.</div>${cardShell("Device registration", "Deferred", "warn", `${row("Device", "Not created")}${row("Credential", "Not issued")}${row("Cloud Agent", "Still available")}${actions(["Continue locally", "Register later"])}`)}`;
         if (kind === "device-partial")
-          return `<div class="user-msg">Register and connect it.</div><div class="assistant">Registration and credential save succeeded, but the later connection stage failed.</div>${cardShell("Device connection incomplete", "Partial", "warn", `<div class="stage-list">${stage("✓", "Cloud Device registered", "dev_…228", "done")}${stage("✓", "Credential saved", "protected config", "done")}${stage("✓", "Firmware flashed", "/dev/cu.…", "done")}${stage("×", "Cloud connection failed", "network", "failed")}${stage("○", "Physical verification", "not started")}</div>${actions(["Repair network", "View in Cloud"])}`, "amber")}`;
+          return `<div class="user-msg">Register and connect it.</div><div class="assistant">Registration and credential save succeeded, but the later connection stage failed.</div>${cardShell("Device connection incomplete", "Partial", "warn", `<div class="stage-list">${stage("✓", "Cloud Device registered", "dev_…228", "done")}${stage("✓", "Credential saved", "protected config", "done")}${stage("✓", "Firmware flashed", "/dev/cu.…", "done")}${stage("×", "Cloud connection failed", "network", "failed")}${stage("○", "Physical verification", "not started")}</div>${actions(["Repair network", "Open Cloud overview"])}`, "amber")}`;
         if (kind === "conflict")
           return `<div class="user-msg">Release and validate.</div><div class="assistant">Live changed after you reviewed the plan, so the previous decision is no longer valid.</div>${cardShell("Live changed", "Blocked", "bad", `${row("You confirmed", "ver_…a81")}${row("Current Live", "ver_…b77")}${row("Target", "ver_…c24")}${actions(["Review current Live", "Plan again", "Cancel"])}`, "red")}`;
         if (kind === "rollback")

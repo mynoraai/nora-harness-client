@@ -18,7 +18,7 @@ partial/unknown receipts, and Cloud-aware scope controls in this journey are not
 | `2`  | Main step | Journey 2   | The task reaches the first cloud-resource boundary.        | Reviews what the first publish will do.                                                                | A proposed resource-impact card says a new Agent and first Version will be created and the Version must become Live; optional verification scope is separate. | The operation waits for a supported scope decision unless the user's precise instruction already covers it. | `3`, `2.1`, `2.2`, or `2.3` |
 | `3`  | Main step | Journey 2   | The user confirms the supported first-publish scope.       | Clicks `Publish`, adjusts only the verification range, or gives an equivalent precise instruction.     | The card settles to the chosen Cloud, Workspace, Agent name, forced first Live change, and bounded test count.                                                | The approved result scope is recorded.                                                                      | `4`                         |
 | `4`  | Main step | Journey 2   | The Agent executes the resource operation.                 | Watches or expands technical details.                                                                  | One card advances through real resource stages: Agent created, Version created, Live changed, optional Cloud test, final refresh.                             | Each returned resource ID and completed stage is retained.                                                  | `5`, `4.1`, or `4.2`        |
-| `5`  | Main step | Journey 2   | The user receives a factual resource receipt.              | Reviews the result or clicks `View in Cloud`.                                                          | Real Agent, Live Version, Session, LLM tokens, turns, and any unfinished stage are shown; no result is inferred from the plan.                                | The operation closes as complete or partial and links to the Electron Cloud overview.                       | `6` or `8`                  |
+| `5`  | Main step | Journey 2   | The user receives a factual consequence receipt.           | Reviews what exists, changed, persists, and was recorded, or opens Cloud.                              | Created resources, changed state, operation Usage, persistent consequences, excluded work, and unfinished stages are separated.                               | The operation closes as complete or partial and links to the Electron Cloud overview.                       | `6` or `8`                  |
 | `6`  | Main step | Journey 2   | Device registration reaches a second independent boundary. | Reviews Device, Agent, follow-Live behavior, credential destination, and subsequent build/flash scope. | A separate proposed card offers `Register and connect`, `Change device`, and `Not now`.                                                                       | Registration waits for a distinct decision even if publish or flash was already approved.                   | `7` or `6.1`                |
 | `7`  | Main step | Journey 2   | Registration and connection report separate evidence.      | Reviews the result.                                                                                    | Cloud Device registration, Device credential state, firmware flash, Cloud connection, and physical behavior appear as separate rows.                          | Completed evidence is retained independently.                                                               | End or `8`                  |
 | `8`  | Main step | Journey 2   | A later Agent-only iteration begins.                       | Asks to make responses shorter, test, then go live.                                                    | The Agent creates a new non-Live Version and completes local/static checks while current Live remains unchanged.                                              | A candidate Version exists; NoraCloud runtime has not executed it.                                          | `9`                         |
@@ -41,12 +41,12 @@ partial/unknown receipts, and Cloud-aware scope controls in this journey are not
 
 ### Detail States
 
-| ID    | Type         | Parent step              | What it represents                            | User action              | Visible UI state                                                                                                                                           | Client state change                                     | Exit / next state   |
-| ----- | ------------ | ------------------------ | --------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------- |
-| `2.4` | Detail state | `2 First Cloud Boundary` | What one resource decision may cover.         | Expands scope details.   | Cloud environment, Workspace, Agent/Device, current and target Version, credential destination, test count, stop condition, and rollback rule are visible. | No mutation occurs.                                     | `2` or `3`          |
-| `4.3` | Detail state | `4 Resource Execution`   | Technical details under a resource operation. | Expands details.         | Command details, structured result, request diagnostic, and logs appear below the product-level stages.                                                    | No resource state changes merely from expanding.        | `4`                 |
-| `5.1` | Detail state | `5 Resource Receipt`     | Link from the receipt to long-term overview.  | Clicks `View in Cloud`.  | The Electron right workbench opens the proposed Cloud overview without leaving the conversation.                                                           | The same Workspace resource snapshot begins refreshing. | Journey 1, step `2` |
-| `7.2` | Detail state | `7 Device Result`        | Evidence categories.                          | Reviews or expands rows. | Cloud runtime, Device connection, firmware flash, and physical verification remain separate.                                                               | Evidence cannot substitute for another category.        | `7`                 |
+| ID    | Type         | Parent step              | What it represents                            | User action                   | Visible UI state                                                                                                                                           | Client state change                                     | Exit / next state   |
+| ----- | ------------ | ------------------------ | --------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------- |
+| `2.4` | Detail state | `2 First Cloud Boundary` | What one resource decision may cover.         | Expands scope details.        | Cloud environment, Workspace, Agent/Device, current and target Version, credential destination, test count, stop condition, and rollback rule are visible. | No mutation occurs.                                     | `2` or `3`          |
+| `4.3` | Detail state | `4 Resource Execution`   | Technical details under a resource operation. | Expands details.              | Command details, structured result, request diagnostic, and logs appear below the product-level stages.                                                    | No resource state changes merely from expanding.        | `4`                 |
+| `5.1` | Detail state | `5 Resource Receipt`     | Link from the receipt to long-term overview.  | Clicks `Open Cloud overview`. | The Electron right workbench opens the proposed Cloud overview without leaving the conversation.                                                           | The same Workspace resource snapshot begins refreshing. | Journey 1, step `2` |
+| `7.2` | Detail state | `7 Device Result`        | Evidence categories.                          | Reviews or expands rows.      | Cloud runtime, Device connection, firmware flash, and physical verification remain separate.                                                               | Evidence cannot substitute for another category.        | `7`                 |
 
 ### State Language
 
@@ -147,10 +147,23 @@ Exit / next state: `5 Resource Receipt`, `4.1 Partial Execution`, or `4.2 Outcom
 
 User entry: execution reaches a stable result.
 
-User action: reviews the result, continues the product task, or clicks `View in Cloud`.
+User action: reviews the consequences, continues the product task, or clicks
+`Open Cloud overview`.
 
-Visible UI state: complete or partial result with real Agent, Version, Live, Session, Usage, and
-unfinished stages. Input/output token values are not invented.
+Visible UI state:
+
+- The receipt says whether the Workspace moved from local-only work to a persistent Cloud
+  footprint.
+- `Created` lists real Agent, Version, and Session IDs.
+- `Changed` shows the before-and-after Live state and the number of affected Devices.
+- `Recorded this operation` contains only operation-scoped Usage; it is not labelled as the
+  Workspace cumulative total.
+- `Persists after this chat` explains which runtime state remains active and which history remains
+  recorded.
+- `Not done` makes Device registration, credential write, and firmware flash explicit when they
+  were outside the approved scope.
+- A partial result keeps completed stages and unfinished stages visible. Input/output token values
+  are not invented.
 
 Client state change: the operation closes with a factual state and becomes a source for the
 Electron Cloud overview.
@@ -368,9 +381,9 @@ Allowed user actions: collapse or copy non-secret diagnostics.
 
 Exit / next state: `4 Resource Execution`.
 
-### 5.1 View In Cloud
+### 5.1 Open Cloud Overview
 
-Trigger: the user clicks `View in Cloud` in a receipt.
+Trigger: the user clicks `Open Cloud overview` in a receipt.
 
 Visible UI state: the Electron right workbench opens the proposed Cloud overview while the current
 conversation stays active.

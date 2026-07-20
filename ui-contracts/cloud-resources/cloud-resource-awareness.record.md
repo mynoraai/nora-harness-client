@@ -16,7 +16,7 @@ current Workspace.
 
 | ID  | Type      | Parent step | What it represents                                    | User action                                               | Visible UI state                                                                                                                   | Client state change                                                       | Exit / next state                      |
 | --- | --------- | ----------- | ----------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
-| `1` | Main step | Journey 1   | A cloud operation finishes in the conversation.       | Reviews the result and clicks `View in Cloud`.            | The conversation shows a resource receipt with the real Agent, Live Version, Session, and recorded Usage.                          | The current Workspace now has a related cloud-resource result.            | `2`                                    |
+| `1` | Main step | Journey 1   | A cloud operation creates a persistent footprint.     | Reviews the consequences and opens the Cloud overview.    | The receipt separates created resources, changed state, operation Usage, persistence, and explicitly excluded work.                | The current Workspace now has a related cloud-resource result.            | `2`                                    |
 | `2` | Main step | Journey 1   | The proposed Cloud workbench entry opens.             | Waits for the panel to load.                              | The existing right workbench selects `Cloud`; the last trusted values remain visible while refresh begins.                         | The panel enters `Refreshing` without clearing the last trusted snapshot. | `3` or a recovery state                |
 | `3` | Main step | Journey 1   | Fresh Cloud Resources and Recorded Usage are visible. | Reviews the current Workspace state.                      | One compact panel shows Agent, Live, latest non-Live Version, Devices, Sessions, Credentials, and Workspace-scoped Recorded Usage. | The latest trusted snapshot and update time become current.               | `4` or a detail/branch state           |
 | `4` | Main step | Journey 1   | The user returns to the same Workspace later.         | Reopens the Workspace or `Cloud` panel.                   | The last trusted overview appears immediately with `Refreshing`.                                                                   | The saved snapshot is restored while a new read starts.                   | `5`, `4.1`, or `5.1`                   |
@@ -34,11 +34,11 @@ current Workspace.
 
 ### Detail States
 
-| ID    | Type         | Parent step                  | What it represents              | User action                                              | Visible UI state                                                                                                           | Client state change                                        | Exit / next state |
-| ----- | ------------ | ---------------------------- | ------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------- |
-| `2.2` | Detail state | `2 Cloud Panel Entry`        | Where the Cloud entry appears.  | Uses either `View in Cloud` or the Workspace-bar status. | `Cloud` sits beside `All Files`, `Changes`, `Device`, and `Preview`; `Device` continues to mean the local physical device. | Both entries resolve to the same Workspace Cloud overview. | `2`               |
-| `3.5` | Detail state | `3 Fresh Workspace Overview` | The resource summary hierarchy. | Scans rows.                                              | Agent and Live appear first; latest non-Live Version follows; Devices, Sessions, and Credentials use summary rows.         | No mutation occurs.                                        | `3`               |
-| `3.6` | Detail state | `3 Fresh Workspace Overview` | The Recorded Usage summary.     | Reads the values.                                        | LLM tokens and turns appear for the explicit Workspace scope; STT time and TTS characters appear only when reported.       | No billing state is inferred.                              | `3`               |
+| ID    | Type         | Parent step                  | What it represents              | User action                                                    | Visible UI state                                                                                                           | Client state change                                        | Exit / next state |
+| ----- | ------------ | ---------------------------- | ------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------- |
+| `2.2` | Detail state | `2 Cloud Panel Entry`        | Where the Cloud entry appears.  | Uses either `Open Cloud overview` or the Workspace-bar status. | `Cloud` sits beside `All Files`, `Changes`, `Device`, and `Preview`; `Device` continues to mean the local physical device. | Both entries resolve to the same Workspace Cloud overview. | `2`               |
+| `3.5` | Detail state | `3 Fresh Workspace Overview` | The resource summary hierarchy. | Scans rows.                                                    | Agent and Live appear first; latest non-Live Version follows; Devices, Sessions, and Credentials use summary rows.         | No mutation occurs.                                        | `3`               |
+| `3.6` | Detail state | `3 Fresh Workspace Overview` | The Recorded Usage summary.     | Reads the values.                                              | LLM tokens and turns appear for the explicit Workspace scope; STT time and TTS characters appear only when reported.       | No billing state is inferred.                              | `3`               |
 
 ### State Language
 
@@ -71,20 +71,28 @@ current Workspace.
 
 ## Main Path
 
-### 1 Resource Receipt In Conversation
+### 1 Cloud Footprint Created
 
 User entry: a NoraCloud publish, release, Device registration, or Cloud test has reached a real
 result in the active Code conversation.
 
-User action: the user reviews the result and clicks `View in Cloud`.
+User action: the user reviews what now exists, what changed, and what will remain after the chat,
+then clicks `Open Cloud overview`.
 
 Visible UI state:
 
-- The result card shows real masked IDs and resource state, not the original plan.
-- A successful first publish can show Agent, Live Version, Session, and the Usage recorded by the
-  verification turn.
+- The result first states the consequence: the Workspace moved from local-only work to a
+  persistent NoraCloud footprint.
+- `Created` identifies the Agent, Version, and verification Session with real masked IDs.
+- `Changed` shows the Live transition as `None -> Version` and says that zero Devices were affected.
+- `Recorded this operation` shows only the Usage attributed to this operation; it is not presented
+  as the Workspace cumulative value.
+- `Persists after this chat` distinguishes the active Agent and Live Version from the recorded
+  Session and Usage history.
+- `Not done` states that Device registration, credential write, and firmware flash did not happen.
 - A partial result keeps every resource already known to exist.
-- `View in Cloud` is a secondary action; the next product decision still happens in conversation.
+- `Open Cloud overview` leads to the long-term Workspace snapshot; the next product decision still
+  happens in conversation.
 
 Client state change: the current Workspace is associated with the latest cloud-resource result and
 the right panel is asked to open on `Cloud`.
@@ -93,7 +101,7 @@ Exit / next state: `2 Cloud Panel Entry`.
 
 ### 2 Cloud Panel Entry
 
-User entry: the user clicks `View in Cloud` or the proposed Workspace-bar Cloud status.
+User entry: the user clicks `Open Cloud overview` or the proposed Workspace-bar Cloud status.
 
 User action: the user waits while the panel reads the current state.
 
@@ -156,7 +164,7 @@ returns to `Fresh` with a new time.
 
 Client state change: the trusted snapshot advances.
 
-Exit / next state: end, or back to `1 Resource Receipt In Conversation` through related chat.
+Exit / next state: end, or back to `1 Cloud Footprint Created` through related chat.
 
 ## Branch Journeys
 
@@ -183,7 +191,7 @@ rows, zero Usage, or create form are shown.
 
 Allowed user actions: continue local work, close the panel, refresh, or continue in chat.
 
-Recovery / next state: end or `1 Resource Receipt In Conversation` after a later cloud operation.
+Recovery / next state: end or `1 Cloud Footprint Created` after a later cloud operation.
 
 Blocks progress: no; only cloud-resource operations are absent.
 
@@ -197,7 +205,7 @@ their own correct state.
 Allowed user actions: open the related chat or the existing dedicated credential surface when one
 is available.
 
-Recovery / next state: end or `1 Resource Receipt In Conversation`.
+Recovery / next state: end or `1 Cloud Footprint Created`.
 
 Blocks progress: only the action that consumes the affected credential.
 
@@ -211,7 +219,7 @@ stage and offers `Open related chat`.
 
 Allowed user actions: open the related chat, refresh, or continue unrelated local work.
 
-Recovery / next state: `1 Resource Receipt In Conversation`.
+Recovery / next state: `1 Cloud Footprint Created`.
 
 Blocks progress: only the unfinished cloud/device path.
 
@@ -237,7 +245,7 @@ Visible UI state:
 
 - `Cloud` is a proposed top tab in the current right workbench.
 - `Device` remains the local physical-device surface.
-- `View in Cloud` in a resource receipt and the compact Workspace-bar Cloud status both select the
+- `Open Cloud overview` in a resource receipt and the compact Workspace-bar Cloud status both select the
   same tab.
 
 Allowed user actions: use either entry or close the right panel.
