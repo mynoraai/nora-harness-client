@@ -13,7 +13,7 @@ Workspace Cloud overview, and global Cloud system page inside Settings are propo
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | Main step | Journey 1 | Local Agent change is in progress. | Asks for a behavior or model change. | The Agent explains the local scope; completed file tools are collapsed and the current validation tool is expanded as `Running`. | Workspace files change; NoraCloud and firmware remain unchanged. | `2` |
+| `1` | Main step | Journey 1 | Local Agent change is in progress. | Asks for a behavior or model change. | The Agent explains the local scope. Completed file tools are collapsed; the active Terminal tool shows its real `Running` state and command detail. | Workspace files change; NoraCloud and firmware remain unchanged. | `2` |
 | `2` | Main step | Journey 1 | Local work reaches a stable result. | Reviews the Assistant response and Workspace Changes. | A normal Assistant message summarizes the changes and states that firmware and NoraCloud were not changed. | The local turn closes with validated Workspace changes. | `3` after an explicit Cloud-update request, or end |
 | `3` | Main step | Journey 1 | One exact Cloud update waits for approval. | Reviews the proposal, clicks `Approve`, replies `Approve`, or chooses `Not now`. | The card names the Agent, current Live, new Version, Live transition, affected Devices, and excluded work. Only `Approve` and `Not now` are actions. | One proposal becomes the pending approval target; no mutation starts before approval. | `4` or `3.1` |
 | `4` | Main step | Journey 1 | The Cloud update reaches a stable result. | Reviews the receipt or opens Cloud overview. | The receipt separates the created Version, Live transition, affected Devices, and work that did not occur. There is no separate product-level execution screen. | The operation closes and the Workspace Cloud snapshot begins refreshing. | End, `4.1`, or `4.2` |
@@ -75,8 +75,8 @@ User action: watches ordinary Agent progress and may inspect completed tools.
 Visible UI state:
 
 - The Agent says it is changing the local Agent definition and not changing NoraCloud in this step.
-- Completed file tools are collapsed.
-- The current validation tool is expanded with `Running`.
+- Completed file tools use the existing collapsed tool-card format.
+- The active validation command appears as a `Terminal` tool with `Running` status and expandable command detail.
 - No synthesized task-stage or file-summary card appears.
 
 Client state change: local Agent files change; Cloud and firmware state do not.

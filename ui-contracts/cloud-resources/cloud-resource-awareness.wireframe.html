@@ -748,68 +748,118 @@
       }
       .stream {
         flex: 1;
-        padding: 15px 20px;
+        padding: 22px 24px;
         overflow: hidden;
       }
       .user-msg {
         margin-left: auto;
         max-width: 72%;
-        padding: 8px 11px;
-        border-radius: 11px;
+        padding: 6px 10px;
+        border-radius: 6px;
         background: var(--accent-soft);
-        font-size: 11.5px;
+        color: var(--ink);
+        font-size: 11px;
+        line-height: 1.55;
       }
       .assistant {
-        margin: 11px 0;
-        color: var(--muted);
-        font-size: 11px;
-        line-height: 1.45;
-      }
-      .assistant strong {
+        margin: 18px 0 13px;
         color: var(--ink);
+        font-size: 11.5px;
+        line-height: 1.7;
+      }
+      .assistant .secondary {
+        color: var(--muted);
       }
       .tool-stack {
         display: grid;
-        gap: 6px;
-        max-width: 525px;
+        width: 100%;
+        gap: 10px;
       }
       .tool-call {
         overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 9px;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
       }
       .tool-call.active {
-        border-color: #b8cddd;
-        background: #fbfdff;
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.78);
       }
       .tool-head {
-        display: grid;
-        grid-template-columns: 14px 1fr auto;
-        gap: 7px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
         align-items: center;
-        min-height: 31px;
-        padding: 6px 9px;
+        min-height: 42px;
+        padding: 9px 12px;
         color: var(--ink);
-        font-size: 10px;
-        font-weight: 700;
+        font-size: 11px;
+        font-weight: 600;
       }
-      .tool-head .chevron {
-        color: var(--faint);
+      .tool-main {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 8px;
       }
-      .tool-head small {
-        color: var(--green);
+      .tool-icon {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--accent);
+        font-size: 12px;
+      }
+      .tool-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .tool-status {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 7px;
+        border: 1px solid #cfe5d5;
+        border-radius: 999px;
+        background: #eef8f0;
+        color: #427851;
         font-size: 8.5px;
-        font-weight: 800;
+        font-weight: 700;
+        line-height: 1.4;
       }
-      .tool-call.active .tool-head small {
+      .tool-status.running {
+        border-color: #c8ddea;
+        background: #edf6fb;
         color: var(--blue);
       }
+      .tool-head .chevron {
+        flex: 0 0 auto;
+        color: var(--faint);
+        font-size: 11px;
+      }
       .tool-body {
-        padding: 7px 10px 9px 30px;
-        border-top: 1px solid #e7eef3;
+        padding: 9px 12px;
+        border-top: 1px solid var(--line);
+        color: var(--ink);
+        font: 9px/1.6 var(--mono);
+      }
+      .terminal-line {
+        padding: 7px 9px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+      }
+      .terminal-line .prompt {
+        margin-right: 6px;
         color: var(--muted);
-        font: 8.8px/1.55 var(--mono);
       }
       .composer {
         margin: 0 14px 14px;
@@ -1526,14 +1576,17 @@
         return `<div class="stage-line"><span class="${cls}">${icon}</span><b>${label}</b><code>${tail}</code></div>`;
       }
       function toolCall(title, status, expanded = false, body = "") {
-        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><span class="chevron">${expanded ? "▾" : "▸"}</span><span>${title}</span><small>${status}</small></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
+        const running = status === "Running";
+        const icon = title === "Terminal" ? "⌘" : "✎";
+        const statusIcon = running ? "◷" : "✓";
+        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
       }
 
       function conversationContent(kind) {
         if (kind === "local")
-          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant"><strong>I’m updating the local Agent definition.</strong><br>NoraCloud will not be changed in this step.</div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Validate Agent configuration", "Running", true, "Checking model, instructions, and configuration compatibility…")}</div>`;
+          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant">I’ll update the Agent definition in this Workspace, then validate it.<br><span class="secondary">NoraCloud will not change in this step.</span></div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Terminal", "Running", true, '<div class="terminal-line"><span class="prompt">$</span>validate the Agent configuration</div>')}</div>`;
         if (kind === "local-ready")
-          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Validate Agent configuration", "Completed")}</div><div class="assistant"><strong>The local Agent configuration is ready.</strong><br>Responses are shorter and the reasoning model is Qwen Max.<br><br>Firmware was not modified. NoraCloud was not changed.</div>`;
+          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="tool-stack" style="margin-top:18px">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Terminal", "Completed")}</div><div class="assistant">The local Agent configuration is ready. Responses are shorter and the reasoning model is Qwen Max.<br><span class="secondary">Firmware was not modified. NoraCloud was not changed.</span></div>`;
         if (kind === "proposal")
           return `<div class="user-msg">Update the Desk Weather Agent with these Workspace changes.</div><div class="assistant">The next step creates a persistent Version and changes which Version is Live.</div>${cardShell("Update Desk Weather Agent", "Waiting for you", "warn", `<div class="scope">Proposed operation</div>${row("Agent", "Desk Weather", "agt_…7f2")}${row("Create", "New Version")}${row("Change Live", "ver_…a81 → new Version")}${row("Affected", "2 Devices follow Live")}<div class="excluded-note"><b>Not included:</b> Firmware build, flash, Device registration, or Cloud test.</div>${actions(["Approve", "Not now"])}<div class="assistant" style="margin:7px 0 0">You can also reply “Approve”.</div>`, "amber")}`;
         if (kind === "receipt")
