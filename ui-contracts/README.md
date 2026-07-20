@@ -2,6 +2,10 @@
 
 These source-anchored contracts document user-visible Electron UI behavior, gateway/provider boundaries, and the planned L1/L2/L3 test map.
 
+## Proposed Product Flows
+
+- [Cloud resource awareness](cloud-resources/cloud-resource-awareness.record.md) — one stateful operation card, a current coding-session Cloud view, and Settings global system information.
+
 ## Maintenance Rules
 
 - Keep every behavior row tied to current source evidence. When changing any anchor such as `Component.tsx:123`, run a repository search for that exact `file:line` pair and update sibling contracts in the same change.

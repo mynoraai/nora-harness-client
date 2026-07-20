@@ -1,0 +1,1671 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Resource Awareness — NoraHarness</title>
+    <style>
+      :root {
+        --ink: #2d2a27;
+        --muted: #6f6962;
+        --faint: #928a81;
+        --paper: #fffdf9;
+        --canvas: #eeeae4;
+        --line: #d8d0c6;
+        --line-strong: #bfb3a6;
+        --accent: #bd6428;
+        --accent-soft: #f8e8db;
+        --blue: #3d7298;
+        --blue-soft: #e7f2f8;
+        --green: #4c7f59;
+        --green-soft: #eaf4eb;
+        --amber: #946417;
+        --amber-soft: #fff4d4;
+        --red: #a74742;
+        --red-soft: #fce9e6;
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        color: var(--ink);
+        background: var(--canvas);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      button {
+        font: inherit;
+      }
+      .topbar {
+        position: fixed;
+        z-index: 20;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 76px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 12px 18px;
+        border-bottom: 1px solid var(--line-strong);
+        background: rgba(255, 253, 249, 0.96);
+        backdrop-filter: blur(12px);
+      }
+      .topbar h1 {
+        margin: 0;
+        font-size: 19px;
+      }
+      .topbar p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .spacer {
+        flex: 1;
+      }
+      .controls {
+        display: flex;
+        gap: 6px;
+      }
+      .controls button,
+      .jump button {
+        border: 1px solid var(--line-strong);
+        border-radius: 7px;
+        color: var(--ink);
+        background: #fff;
+        cursor: pointer;
+      }
+      .controls button {
+        min-width: 34px;
+        height: 32px;
+        padding: 0 10px;
+        font-weight: 750;
+      }
+      .controls button:hover,
+      .jump button:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .jump {
+        position: fixed;
+        z-index: 15;
+        top: 76px;
+        bottom: 0;
+        left: 0;
+        width: 220px;
+        padding: 17px 13px;
+        border-right: 1px solid var(--line-strong);
+        background: rgba(247, 243, 237, 0.96);
+      }
+      .jump h2 {
+        margin: 0 7px 10px;
+        color: var(--faint);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .jump button {
+        width: 100%;
+        margin-bottom: 6px;
+        padding: 8px 9px;
+        text-align: left;
+        font-size: 11px;
+      }
+      .legend {
+        margin-top: 18px;
+        padding: 10px 8px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 9px;
+        line-height: 1.8;
+      }
+      .legend i {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 7px;
+        border-radius: 50%;
+      }
+      .viewport {
+        position: fixed;
+        top: 76px;
+        right: 0;
+        bottom: 0;
+        left: 220px;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        overscroll-behavior: contain;
+        background-color: #eeeae4;
+        background-image: radial-gradient(#d2cbc2 1px, transparent 1px);
+        background-size: 28px 28px;
+      }
+      .viewport.dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+      .stage {
+        width: max-content;
+        min-width: 100%;
+        padding: 28px 30px 160px;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+      .band {
+        width: max-content;
+        margin-bottom: 34px;
+      }
+      .band-title {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin: 0 0 12px 2px;
+      }
+      .band-title h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .band-title span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .flow {
+        display: flex;
+        align-items: flex-start;
+        width: max-content;
+      }
+      .arrow {
+        width: 56px;
+        align-self: center;
+        color: var(--accent);
+        text-align: center;
+        font-size: 26px;
+        font-weight: 900;
+      }
+      .wire-card {
+        width: 760px;
+        overflow: hidden;
+        border: 2px solid #4a4540;
+        border-top: 7px solid var(--blue);
+        border-radius: 15px;
+        background: var(--paper);
+        box-shadow: 0 18px 34px -28px rgba(46, 36, 28, 0.75);
+      }
+      .wire-card.today {
+        border-top-color: #77716b;
+      }
+      .wire-card.warning {
+        border-top-color: var(--amber);
+      }
+      .wire-card.error {
+        border-top-color: var(--red);
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 48px;
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .card-head .id {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        color: #fff;
+        background: var(--accent);
+        font-size: 12px;
+        font-weight: 850;
+      }
+      .card-head h4 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .card-head .tag {
+        margin-left: auto;
+        padding: 5px 9px;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+      .wire-card.today .tag {
+        color: var(--muted);
+        background: #eeeae5;
+      }
+      .caption {
+        min-height: 46px;
+        padding: 11px 15px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .screen {
+        width: 724px;
+        height: 468px;
+        margin: 0 16px 16px;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: #f7f4ee;
+      }
+      .product-scale {
+        width: 1200px;
+        height: 760px;
+        transform: scale(0.6033);
+        transform-origin: 0 0;
+      }
+      .app {
+        width: 1200px;
+        height: 760px;
+        display: grid;
+        grid-template-columns: 225px 615px 360px;
+        color: #34302d;
+        background: #fbfaf7;
+        font-size: 12px;
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #cfc6ba;
+        background: #f0ece5;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 20px 16px 12px;
+        font-size: 15px;
+        font-weight: 800;
+      }
+      .traffic {
+        display: flex;
+        gap: 4px;
+      }
+      .traffic i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #b9afa3;
+      }
+      .mode {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 13px 12px;
+        padding: 3px;
+        border: 1px solid #d1c8bd;
+        border-radius: 9px;
+        background: #faf8f4;
+      }
+      .mode span {
+        padding: 7px;
+        border-radius: 7px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .mode .on {
+        color: var(--ink);
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        font-weight: 750;
+      }
+      .search {
+        margin: 0 13px 15px;
+        padding: 10px;
+        border: 1px solid #d7cec3;
+        border-radius: 8px;
+        color: var(--faint);
+        background: #fff;
+      }
+      .side-label {
+        padding: 0 14px 7px;
+        color: var(--faint);
+        font-size: 9px;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .workspace {
+        display: flex;
+        margin: 0 12px 7px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-weight: 750;
+      }
+      .conversation {
+        display: flex;
+        margin: 0 12px 4px;
+        padding: 9px 10px;
+        border-radius: 8px;
+      }
+      .conversation.on {
+        background: #fff;
+        font-weight: 750;
+      }
+      .conversation small {
+        margin-left: auto;
+        color: var(--faint);
+      }
+      .grow {
+        flex: 1;
+      }
+      .settings-link {
+        margin: 0 12px 10px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        color: var(--muted);
+      }
+      .account {
+        margin: 0 13px 14px;
+        padding-top: 11px;
+        border-top: 1px solid #d6cdc2;
+        color: var(--muted);
+      }
+      .center {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: #fbfaf7;
+      }
+      .workspace-bar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 15px;
+        border-bottom: 1px solid #d9d1c7;
+      }
+      .workspace-bar .session-chip {
+        margin-left: auto;
+        padding: 5px 9px;
+        border: 1px solid #b7d3e4;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 10px;
+        font-weight: 750;
+      }
+      .tabs {
+        height: 42px;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 0 11px;
+        border-bottom: 1px solid #d9d1c7;
+      }
+      .ctab {
+        padding: 9px 14px;
+        border: 1px solid #d9d1c7;
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: #fff;
+      }
+      .stream {
+        flex: 1;
+        padding: 20px 25px;
+        overflow: hidden;
+      }
+      .user-msg {
+        margin-left: auto;
+        max-width: 75%;
+        padding: 10px 13px;
+        border-radius: 12px;
+        background: var(--accent-soft);
+        font-size: 12px;
+      }
+      .assistant {
+        margin: 14px 0 11px;
+        color: var(--muted);
+        font-size: 11.5px;
+        line-height: 1.5;
+      }
+      .existing-tool,
+      .operation-card {
+        max-width: 530px;
+        overflow: hidden;
+        border: 1px solid #d6cdc1;
+        border-radius: 11px;
+        background: #fff;
+      }
+      .existing-tool-head,
+      .operation-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #e2dbd2;
+        font-weight: 750;
+      }
+      .tool-icon {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #d6cdc1;
+        border-radius: 6px;
+        color: var(--blue);
+        background: #faf8f4;
+      }
+      .pill {
+        margin-left: auto;
+        padding: 4px 8px;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 9px;
+        font-weight: 850;
+      }
+      .pill.ok {
+        color: var(--green);
+        background: var(--green-soft);
+      }
+      .pill.warn {
+        color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .pill.bad {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .tool-body {
+        padding: 11px 13px;
+        color: var(--muted);
+        font-size: 10.5px;
+      }
+      .operation-card {
+        border-color: #cbbdad;
+      }
+      .operation-kicker {
+        color: var(--blue);
+        font: 9px var(--mono);
+      }
+      .operation-title {
+        font-size: 12px;
+      }
+      .operation-body {
+        padding: 10px 12px 12px;
+      }
+      .impact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+      }
+      .impact {
+        padding: 7px 8px;
+        border: 1px solid #e7e0d7;
+        border-radius: 7px;
+        background: #fffdfa;
+      }
+      .impact h5 {
+        margin: 0 0 5px;
+        color: var(--faint);
+        font-size: 8px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .impact-line {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 6px;
+        padding: 2px 0;
+        font-size: 9.5px;
+        line-height: 1.35;
+      }
+      .impact-line span {
+        color: var(--faint);
+      }
+      .impact-line b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .operation-note {
+        margin-top: 7px;
+        padding: 7px 8px;
+        border-radius: 7px;
+        color: var(--muted);
+        background: #f4f1ec;
+        font-size: 9px;
+        line-height: 1.4;
+      }
+      .operation-note.green {
+        color: #315f43;
+        background: var(--green-soft);
+      }
+      .operation-note.amber {
+        color: #775110;
+        background: var(--amber-soft);
+      }
+      .operation-note.red {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 9px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border: 1px solid #cbbfb2;
+        border-radius: 7px;
+        color: var(--ink);
+        background: #fff;
+        font-size: 9.5px;
+        font-weight: 750;
+      }
+      .btn.primary {
+        color: #fff;
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+      .stage-list {
+        display: grid;
+        gap: 6px;
+      }
+      .stage-line {
+        display: grid;
+        grid-template-columns: 18px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 7px;
+        background: #f8f5f0;
+        font-size: 9.5px;
+      }
+      .stage-line code {
+        color: var(--muted);
+        font: 8.5px var(--mono);
+      }
+      .done {
+        color: var(--green);
+      }
+      .active {
+        color: var(--blue);
+      }
+      .failed {
+        color: var(--red);
+      }
+      .composer {
+        margin: 0 14px 14px;
+        padding: 11px 13px;
+        border: 1px solid #d6cdc1;
+        border-radius: 10px;
+        color: var(--faint);
+        background: #fff;
+        font-size: 10.5px;
+      }
+      .right {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid #d2c9be;
+        background: #f6f3ed;
+      }
+      .right-tabs {
+        height: 51px;
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        padding: 0 7px;
+        border-bottom: 1px solid #d2c9be;
+      }
+      .rtab {
+        padding: 9px 8px;
+        border-radius: 7px 7px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .rtab.on {
+        color: var(--ink);
+        border: 1px solid #d2c9be;
+        border-bottom-color: #fff;
+        background: #fff;
+        font-weight: 750;
+      }
+      .rtab.proposed::after {
+        content: "P";
+        position: relative;
+        top: -7px;
+        margin-left: 2px;
+        color: #fff;
+        background: var(--blue);
+        font-size: 6px;
+        border-radius: 50%;
+        padding: 1px 3px;
+      }
+      .file-tree {
+        flex: 1;
+        padding: 18px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 2;
+      }
+      .cloud-panel {
+        flex: 1;
+        padding: 12px;
+        overflow: hidden;
+        background: #faf8f4;
+      }
+      .cloud-head {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .cloud-head h5 {
+        margin: 0 0 3px;
+        font-size: 13px;
+      }
+      .cloud-head small {
+        color: var(--muted);
+        font-size: 8.5px;
+      }
+      .fresh {
+        margin-left: auto;
+        padding: 4px 7px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .fresh.stale {
+        color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .inline-notice {
+        margin-bottom: 8px;
+        padding: 7px 8px;
+        border: 1px solid #b9d5e5;
+        border-radius: 7px;
+        color: #315f7b;
+        background: var(--blue-soft);
+        font-size: 8.5px;
+        line-height: 1.4;
+      }
+      .inline-notice.amber {
+        border-color: #e1c47c;
+        color: #755112;
+        background: var(--amber-soft);
+      }
+      .panel-space {
+        margin-bottom: 8px;
+        overflow: hidden;
+        border: 1px solid #d7cec3;
+        border-radius: 9px;
+        background: #fff;
+      }
+      .space-title {
+        display: flex;
+        align-items: center;
+        padding: 8px 9px;
+        border-bottom: 1px solid #e6dfd6;
+        font-size: 9px;
+        font-weight: 850;
+      }
+      .space-title small {
+        margin-left: auto;
+        color: var(--faint);
+        font-size: 7.5px;
+        font-weight: 600;
+      }
+      .resource-row {
+        display: grid;
+        grid-template-columns: 72px 1fr auto;
+        gap: 6px;
+        align-items: start;
+        padding: 6px 9px;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 8.8px;
+        line-height: 1.35;
+      }
+      .resource-row:last-child {
+        border-bottom: 0;
+      }
+      .resource-row .key {
+        color: var(--faint);
+      }
+      .resource-row .value {
+        font-weight: 700;
+      }
+      .resource-row .sub {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 7.8px;
+        font-weight: 500;
+      }
+      .resource-row code {
+        color: var(--muted);
+        font: 7.8px var(--mono);
+      }
+      .usage-metrics {
+        display: flex;
+        gap: 18px;
+        padding: 9px;
+      }
+      .usage-metrics strong {
+        display: block;
+        font-size: 14px;
+      }
+      .usage-metrics span {
+        color: var(--faint);
+        font-size: 8px;
+      }
+      .coverage {
+        padding: 0 9px 8px;
+        color: var(--muted);
+        font-size: 7.8px;
+        line-height: 1.4;
+      }
+      .panel-actions {
+        display: flex;
+        gap: 5px;
+      }
+      .right-bottom {
+        padding: 8px 10px;
+        border-top: 1px solid #d2c9be;
+        color: var(--muted);
+        background: #eeeae3;
+        font-size: 9px;
+      }
+      .empty-panel {
+        height: 610px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        text-align: center;
+      }
+      .empty-panel .empty-icon {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 18px;
+      }
+      .empty-panel h5 {
+        margin: 11px 0 5px;
+        font-size: 12px;
+      }
+      .empty-panel p {
+        margin: 0 0 11px;
+        color: var(--muted);
+        font-size: 9px;
+        line-height: 1.45;
+      }
+      .settings-app {
+        width: 1200px;
+        height: 760px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        color: #34302d;
+        background: #f7f5f1;
+      }
+      .settings-nav {
+        display: flex;
+        flex-direction: column;
+        padding: 36px 20px 20px;
+        border-right: 1px solid #d3cbc1;
+        background: #efebe5;
+      }
+      .back {
+        margin-bottom: 21px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .settings-title {
+        margin: 0 8px 4px;
+        font-size: 20px;
+        font-weight: 750;
+      }
+      .settings-subtitle {
+        margin: 0 8px 17px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .settings-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 4px;
+        padding: 11px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .settings-item.on {
+        color: var(--ink);
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+      }
+      .settings-item .attention-dot {
+        width: 7px;
+        height: 7px;
+        margin-left: auto;
+        border-radius: 50%;
+        background: var(--amber);
+      }
+      .settings-content {
+        padding: 31px 55px 42px;
+        overflow: hidden;
+      }
+      .settings-page-head {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+      .settings-page-head h2 {
+        margin: 0 0 5px;
+        font-size: 21px;
+      }
+      .settings-page-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .system-status {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 13px;
+        padding: 11px 13px;
+        border: 1px solid #d6cec4;
+        border-radius: 9px;
+        background: #fff;
+      }
+      .system-status span {
+        display: block;
+        color: var(--faint);
+        font-size: 8px;
+        text-transform: uppercase;
+      }
+      .system-status b {
+        font-size: 10px;
+      }
+      .settings-card {
+        margin-bottom: 12px;
+        overflow: hidden;
+        border: 1px solid #d6cec4;
+        border-radius: 10px;
+        background: #fff;
+      }
+      .settings-card-head {
+        display: flex;
+        align-items: center;
+        padding: 11px 13px;
+        border-bottom: 1px solid #e5ded5;
+      }
+      .settings-card-head h3 {
+        margin: 0;
+        font-size: 12px;
+      }
+      .settings-card-head span {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 8.5px;
+      }
+      .count-strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        border-bottom: 1px solid #e5ded5;
+      }
+      .count {
+        padding: 10px 11px;
+        border-right: 1px solid #eee8e0;
+      }
+      .count:last-child {
+        border-right: 0;
+      }
+      .count strong {
+        display: block;
+        font-size: 16px;
+      }
+      .count span {
+        color: var(--faint);
+        font-size: 8px;
+      }
+      .global-resource {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 9px 13px;
+        border-bottom: 1px solid #eee8e0;
+        font-size: 9px;
+      }
+      .global-resource:last-child {
+        border-bottom: 0;
+      }
+      .global-resource strong {
+        display: block;
+        font-size: 10px;
+      }
+      .global-resource small {
+        color: var(--muted);
+        font-size: 7.8px;
+      }
+      .global-resource .orphan {
+        color: var(--amber);
+      }
+      .global-usage {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) 1.6fr;
+        gap: 14px;
+        padding: 12px 13px;
+      }
+      .global-usage strong {
+        display: block;
+        font-size: 17px;
+      }
+      .global-usage span,
+      .global-usage p {
+        color: var(--muted);
+        font-size: 8px;
+      }
+      .global-usage p {
+        margin: 1px 0 0;
+        line-height: 1.5;
+      }
+      .route-row {
+        width: max-content;
+        margin: 0 0 26px;
+        padding: 12px 14px 16px;
+        border: 1px solid rgba(189, 178, 165, 0.8);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.58);
+      }
+      .route-title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+      .route-title h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .route-title code {
+        color: var(--accent);
+        font: 10px var(--mono);
+      }
+      .route-title span {
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .compact-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 330px);
+        gap: 13px;
+        width: max-content;
+      }
+      .compact-card {
+        min-height: 155px;
+        padding: 13px;
+        border: 1px solid var(--line-strong);
+        border-top: 5px solid var(--blue);
+        border-radius: 11px;
+        background: var(--paper);
+      }
+      .compact-card.warning {
+        border-top-color: var(--amber);
+      }
+      .compact-card.error {
+        border-top-color: var(--red);
+      }
+      .compact-card h4 {
+        margin: 3px 0 5px;
+        font-size: 12px;
+      }
+      .compact-card .kind {
+        color: var(--blue);
+        font-size: 8px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .compact-card p,
+      .compact-card li {
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.45;
+      }
+      .compact-card ul {
+        margin: 7px 0 0;
+        padding-left: 16px;
+      }
+      .footer-space {
+        height: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>
+          Cloud Resource Awareness — Session Context + Settings System
+          Information
+        </h1>
+        <p>
+          One operation card in conversation · current coding-session resources
+          on the right · global deduplicated status inside Settings.
+        </p>
+      </div>
+      <div class="spacer"></div>
+      <div class="controls">
+        <button id="zoom-out" aria-label="Zoom out">−</button>
+        <button id="zoom-in" aria-label="Zoom in">+</button>
+        <button id="fit">Fit</button>
+        <button id="reset">Reset</button>
+      </div>
+    </header>
+
+    <nav class="jump" aria-label="Wireframe sections">
+      <h2>Jump</h2>
+      <button data-jump="main-happy-path">Main happy path</button>
+      <button data-jump="route-path">Route path</button>
+      <button data-jump="detail-states">Detail states</button>
+      <button data-jump="state-language">State language</button>
+      <button data-jump="errors-recovery">Errors and recovery</button>
+      <div class="legend">
+        <div><i style="background: #77716b"></i>Existing product UI</div>
+        <div><i style="background: #3d7298"></i>Proposed Cloud UI</div>
+        <div>
+          <i style="background: #946417"></i>Attention / partial / stale
+        </div>
+        <div><i style="background: #a74742"></i>Unknown / unavailable</div>
+      </div>
+    </nav>
+
+    <main class="viewport" id="viewport">
+      <div class="stage" id="stage">
+        <section class="band" id="main-happy-path">
+          <div class="band-title">
+            <h3>Main happy path</h3>
+            <span
+              >Journey 1 · existing local UI → one operation card → session
+              Cloud → Settings Cloud</span
+            >
+          </div>
+          <div class="flow" id="main-flow"></div>
+        </section>
+
+        <section class="band" id="route-path">
+          <div class="band-title">
+            <h3>Route path</h3>
+            <span
+              >Every confirmed route uses full NoraHarness product frames.</span
+            >
+          </div>
+          <div id="route-rows"></div>
+        </section>
+
+        <section class="band" id="detail-states">
+          <div class="band-title">
+            <h3>Detail states</h3>
+            <span
+              >Component reuse, session relationships, global deduplication, and
+              Usage coverage.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>2.3 One Component, Different Operations</h4>
+              <p>
+                First publish, Device registration, Live change, and bounded
+                tests reuse one Cloud Resource Operation component. Only
+                consequence-specific fields change.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Branch state</span>
+              <h4>5.1 No Resources In This Coding Session</h4>
+              <p>
+                Show no session rows, but keep
+                <b>View all in Settings</b> because global resources may still
+                exist.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>5.3 Coding Session Resource Relationship</h4>
+              <p>
+                Rows show remote truth, the current session's relationship, and
+                sharing or activity elsewhere. They do not claim ownership.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>6.3 Global Resource Deduplication</h4>
+              <p>
+                Settings counts each remote ID once and summarizes how many
+                coding sessions reference it.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">Detail state</span>
+              <h4>6.4 Usage Coverage</h4>
+              <p>
+                Right panel: current Coding Session Usage. Settings: all covered
+                coding sessions on this installation. Neither is billing or an
+                account-wide claim.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="band" id="state-language">
+          <div class="band-title">
+            <h3>State language</h3>
+            <span
+              >Stable labels prevent coding-session, Cloud Runtime Session, and
+              Usage ambiguity.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card">
+              <span class="kind">State language</span>
+              <h4>0.1 Operation Status</h4>
+              <p>
+                Waiting for decision · Scope covered · Running · Completed ·
+                Partial · Outcome unknown · Deferred · Blocked.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">State language</span>
+              <h4>0.2 Resource Freshness</h4>
+              <p>
+                Fresh · Refreshing · Stale · Unavailable, with a trusted
+                timestamp when one exists.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">State language</span>
+              <h4>0.3 Session Terminology</h4>
+              <p>
+                <b>Coding session</b> is NoraHarness work.
+                <b>Cloud Runtime Session</b> is the remote resource.
+              </p>
+            </article>
+            <article class="compact-card">
+              <span class="kind">State language</span>
+              <h4>0.4 Usage Terminology</h4>
+              <p>
+                Coding Session Usage and Recorded Usage on this installation;
+                never unqualified Total Usage, billing, or Cloud Runtime Usage.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="band" id="errors-recovery">
+          <div class="band-title">
+            <h3>Errors and recovery</h3>
+            <span
+              >The same operation component retains facts and stops unsafe
+              mutation.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card warning">
+              <span class="kind">Recovery summary</span>
+              <h4>3.1 Credential Blocked</h4>
+              <p>
+                Same card, Blocked state. Name type, scope, and safe Settings
+                path; never show or collect the secret through Agent text.
+              </p>
+            </article>
+            <article class="compact-card warning">
+              <span class="kind">Recovery summary</span>
+              <h4>3.2 Live Changed Elsewhere</h4>
+              <p>
+                Show reviewed Live, current Live, and target. Previous approval
+                is invalid and mutation stops.
+              </p>
+            </article>
+            <article class="compact-card warning">
+              <span class="kind">Recovery summary</span>
+              <h4>4.1 Partial Result</h4>
+              <p>
+                Keep created IDs, separate completed and unfinished work, and
+                continue later without duplicate creation.
+              </p>
+            </article>
+            <article class="compact-card error">
+              <span class="kind">Recovery summary</span>
+              <h4>4.2 Outcome Unknown</h4>
+              <p>
+                Show the last confirmed fact, offer a safe read, and pause
+                duplicate mutation until remote reality is known.
+              </p>
+            </article>
+          </div>
+        </section>
+        <div class="footer-space"></div>
+      </div>
+    </main>
+
+    <script>
+      const states = {
+        1: {
+          title: "Existing Local Development",
+          view: "local",
+          caption:
+            "Local work stays in current conversation, tool, Terminal, Device Log, and Preview surfaces. No new resource card appears.",
+          maturity: "today",
+        },
+        2: {
+          title: "Cloud Operation Decision",
+          view: "decision",
+          caption:
+            "One stateful operation card appears only when work crosses into persistent Cloud consequences.",
+        },
+        3: {
+          title: "Cloud Operation Running",
+          view: "running",
+          caption:
+            "The same operation ID and card advance through factual stages; no second progress card is created.",
+        },
+        4: {
+          title: "Cloud Operation Receipt",
+          view: "receipt",
+          caption:
+            "The same card becomes a factual receipt and hands off to the active coding-session Cloud view.",
+        },
+        5: {
+          title: "Current Coding Session Cloud",
+          view: "session-cloud",
+          caption:
+            "The right Cloud tab shows this coding session's resource working set and Coding Session Usage.",
+        },
+        6: {
+          title: "Settings Cloud System Information",
+          view: "settings",
+          caption:
+            "Settings contains global deduplicated Cloud Resources and explicitly scoped accumulated Usage.",
+        },
+        2.1: {
+          title: "Scope Covered By Instruction",
+          view: "covered",
+          caption:
+            "The consequence remains visible, but a precise instruction avoids redundant second confirmation.",
+        },
+        2.2: {
+          title: "Cloud Work Deferred",
+          view: "deferred",
+          caption:
+            "The same card settles to Deferred; local work remains available and no Cloud resource is claimed.",
+        },
+        4.1: {
+          title: "Partial Result",
+          view: "partial",
+          caption:
+            "Created resources remain visible in the same operation card even when a later stage fails.",
+        },
+        4.2: {
+          title: "Outcome Unknown",
+          view: "unknown",
+          caption:
+            "Duplicate mutation pauses while the same card reports the last confirmed fact and safe read action.",
+        },
+        5.2: {
+          title: "Resource Changed Elsewhere",
+          view: "changed",
+          caption:
+            "The current-session view keeps the relationship but refreshes the shared resource's remote truth.",
+        },
+        6.1: {
+          title: "Resource Without Local Session Reference",
+          view: "settings-orphan",
+          caption:
+            "Settings still counts remote resources that no local coding session references.",
+        },
+        6.2: {
+          title: "Global Inventory Refresh Failure",
+          view: "settings-stale",
+          caption:
+            "Trusted global information stays visible as Stale; unknown state never becomes zero.",
+        },
+      };
+
+      const routes = [
+        {
+          name: "Happy path",
+          path: ["1", "2", "3", "4", "5", "6"],
+          result:
+            "One operation card, current-session context, then Settings global awareness.",
+        },
+        {
+          name: "Precise instruction",
+          path: ["1", "2", "2.1", "3", "4", "5"],
+          result: "Show consequence without asking the same decision twice.",
+        },
+        {
+          name: "Defer Cloud work",
+          path: ["1", "2", "2.2", "1"],
+          result: "Continue local development without Cloud mutation.",
+        },
+        {
+          name: "Partial result",
+          path: ["1", "2", "3", "4.1", "5", "6"],
+          result: "Retain confirmed resources at session and global levels.",
+        },
+        {
+          name: "Outcome unknown",
+          path: ["1", "2", "3", "4.2"],
+          result: "Stop duplicate mutation until remote truth is known.",
+        },
+        {
+          name: "Resource changed elsewhere",
+          path: ["5", "5.2", "2"],
+          result: "Refresh shared state before another mutation decision.",
+        },
+        {
+          name: "Unreferenced global resource",
+          path: ["6", "6.1", "6"],
+          result: "Keep remote inventory independent of local sessions.",
+        },
+        {
+          name: "Global refresh recovery",
+          path: ["6", "6.2", "6"],
+          result: "Preserve stale facts until global refresh succeeds.",
+        },
+      ];
+
+      function buttons(items) {
+        return `<div class="actions">${items.map((item, index) => `<span class="btn ${index === 0 ? "primary" : ""}">${item}</span>`).join("")}</div>`;
+      }
+
+      function line(key, value) {
+        return `<div class="impact-line"><span>${key}</span><b>${value}</b></div>`;
+      }
+
+      function operationCard(kind) {
+        const configs = {
+          decision: {
+            status: "Waiting for decision",
+            cls: "warn",
+            title: "Publish Desk Weather",
+            body: `<div class="impact-grid"><div class="impact"><h5>Will create</h5>${line("Agent", "Desk Weather")}${line("Version", "First Version")}${line("Runtime", "1 Cloud Runtime Session")}</div><div class="impact"><h5>Will change</h5>${line("Live", "None → First Version")}${line("Shared", "0 Devices affected")}</div><div class="impact"><h5>Will record</h5>${line("Cloud test", "1 bounded turn")}${line("Usage", "Actual result only")}</div><div class="impact"><h5>Cloud identity</h5>${line("Environment", "Current NoraCloud")}${line("Actor", "Signed-in user")}</div></div><div class="operation-note"><b>Not included:</b> Device registration, Device credential, firmware flash, or Wi-Fi input.</div>${buttons(["Publish", "Adjust verification", "Not now"])}`,
+          },
+          covered: {
+            status: "Scope covered",
+            cls: "ok",
+            title: "Publish Desk Weather",
+            body: `<div class="operation-note green"><b>Your instruction already covers this exact scope.</b> Execution can continue without asking the same decision twice.</div><div class="impact-grid" style="margin-top:7px"><div class="impact"><h5>Approved consequence</h5>${line("Create", "Agent + first Version")}${line("Live", "Set first Version Live")}</div><div class="impact"><h5>Bounded use</h5>${line("Cloud test", "1 turn")}${line("Device impact", "None")}</div></div>${buttons(["Technical details", "Stop if safe"])}`,
+          },
+          running: {
+            status: "Running",
+            cls: "",
+            title: "Publishing Desk Weather",
+            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Agent created</b><code>agt_…7f2</code></div><div class="stage-line"><span class="done">✓</span><b>Version created</b><code>ver_…a81</code></div><div class="stage-line"><span class="done">✓</span><b>Version set Live</b><code>ver_…a81</code></div><div class="stage-line"><span class="active">●</span><b>Cloud verification</b><code>1 turn</code></div><div class="stage-line"><span>○</span><b>Read final state</b><code>pending</code></div></div>${buttons(["Technical details"])}`,
+          },
+          receipt: {
+            status: "Completed",
+            cls: "ok",
+            title: "Cloud footprint created",
+            body: `<div class="impact-grid"><div class="impact"><h5>Created</h5>${line("Agent", "Desk Weather · agt_…7f2")}${line("Version", "ver_…a81")}${line("Cloud Runtime Session", "ses_…91c")}</div><div class="impact"><h5>Changed</h5>${line("Live", "None → ver_…a81")}${line("Devices", "0 affected")}</div><div class="impact"><h5>Recorded this operation</h5>${line("Usage", "1,380 LLM tokens")}${line("Cloud turn", "1")}</div><div class="impact"><h5>Persists after this chat</h5>${line("Runtime", "Agent + Live stay active")}${line("History", "Session + Usage retained")}</div></div><div class="operation-note"><b>Not done:</b> Device registration, credential write, or firmware flash.</div>${buttons(["Open session Cloud", "Continue with device"])}`,
+          },
+          deferred: {
+            status: "Deferred",
+            cls: "warn",
+            title: "Publish Desk Weather",
+            body: `<div class="impact-grid"><div class="impact"><h5>Cloud result</h5>${line("Resources", "None created")}${line("Usage", "None recorded")}</div><div class="impact"><h5>Local result</h5>${line("Workspace", "Still available")}${line("Build", "Still available")}</div></div><div class="operation-note">Deferring Cloud work does not cancel the local development task.</div>${buttons(["Continue local work", "Publish later"])}`,
+          },
+          partial: {
+            status: "Partial",
+            cls: "warn",
+            title: "Publish incomplete",
+            body: `<div class="stage-list"><div class="stage-line"><span class="done">✓</span><b>Agent created</b><code>agt_…7f2</code></div><div class="stage-line"><span class="failed">×</span><b>Firmware build failed</b><code>local build</code></div><div class="stage-line"><span>○</span><b>Version creation</b><code>not started</code></div><div class="stage-line"><span>○</span><b>Live change</b><code>not started</code></div></div><div class="operation-note amber"><b>Persists:</b> Agent exists. Reuse it after fixing the build; do not create another Agent.</div>${buttons(["Open build error", "Open session Cloud"])}`,
+          },
+          unknown: {
+            status: "Outcome unknown",
+            cls: "bad",
+            title: "Remote outcome",
+            body: `<div class="impact-grid"><div class="impact"><h5>Last confirmed</h5>${line("Request", "Sent to NoraCloud")}${line("Diagnostic", "req_…a91")}</div><div class="impact"><h5>Safety state</h5>${line("Automatic retry", "Paused")}${line("Next", "Read current state")}</div></div><div class="operation-note red">The operation may have reached NoraCloud. Duplicate mutation stays paused until a safe read establishes reality.</div>${buttons(["Check current state", "Technical details", "Stop"])}`,
+          },
+        };
+        const c = configs[kind];
+        return `<div class="operation-card"><div class="operation-head"><div><div class="operation-kicker">Cloud Resource Operation · op_…41a</div><div class="operation-title">${c.title}</div></div><span class="pill ${c.cls}">${c.status}</span></div><div class="operation-body">${c.body}</div></div>`;
+      }
+
+      function rightTabs(active, proposed) {
+        const tabs = [
+          "All Files",
+          "Changes",
+          "Device",
+          ...(proposed ? ["Cloud"] : []),
+          "Preview",
+        ];
+        return `<div class="right-tabs">${tabs.map((tab) => `<span class="rtab ${tab === active ? "on" : ""} ${tab === "Cloud" ? "proposed" : ""}">${tab}</span>`).join("")}</div>`;
+      }
+
+      function sessionCloudPanel(kind) {
+        const changed = kind === "changed";
+        return `${rightTabs("Cloud", true)}<div class="cloud-panel"><div class="cloud-head"><div><h5>Cloud</h5><small>Current coding session · Desk Weather</small></div><span class="fresh">Fresh · just now</span></div>${changed ? `<div class="inline-notice amber"><b>Shared resource changed elsewhere.</b> Live is now ver_…b77; the last fact in this coding session was ver_…a81.</div>` : `<div class="inline-notice"><b>Session relationship, remote truth.</b> These resources are used or managed here; they are not owned by this coding session.</div>`}<div class="panel-space"><div class="space-title">Related Cloud Resources<small>Current coding session</small></div><div class="resource-row"><span class="key">Agent</span><span class="value">Desk Weather<span class="sub">Also used by 2 coding sessions</span></span><code>agt_…7f2</code></div><div class="resource-row"><span class="key">Live</span><span class="value">${changed ? "ver_…b77" : "ver_…a81"}<span class="sub">${changed ? "Changed outside this coding session" : "Agent-wide remote state"}</span></span><code>current</code></div><div class="resource-row"><span class="key">Versions</span><span class="value">1 used here · 4 total on Agent</span><code>›</code></div><div class="resource-row"><span class="key">Devices</span><span class="value">2 follow Live<span class="sub">Shared Agent impact</span></span><code>›</code></div><div class="resource-row"><span class="key">Cloud Runtime Sessions</span><span class="value">1 used here</span><code>ses_…91c</code></div><div class="resource-row"><span class="key">Credentials</span><span class="value">NoraCloud · Signed in<span class="sub">Device · Not issued</span></span><code>›</code></div></div><div class="panel-space"><div class="space-title">Coding Session Usage<small>Run Records</small></div><div class="usage-metrics"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>18</strong><span>runs</span></div><div><strong>14</strong><span>turns</span></div></div><div class="coverage">Current coding session · Recorded on this installation · Updated just now</div></div><div class="panel-actions"><span class="btn">↻ Refresh</span><span class="btn primary">View all in Settings</span></div></div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
+      }
+
+      function centerContent(kind) {
+        const operationKinds = [
+          "decision",
+          "covered",
+          "running",
+          "receipt",
+          "deferred",
+          "partial",
+          "unknown",
+        ];
+        const isLocal = kind === "local";
+        const prompt = isLocal
+          ? "Build a desk weather device. Keep it local until the product works."
+          : "Publish the weather agent and verify it once.";
+        const assistant = isLocal
+          ? "I am implementing and validating the local product first."
+          : kind === "receipt"
+            ? "The Cloud result is confirmed. The remote resources remain after this coding session."
+            : kind === "deferred"
+              ? "Cloud publication is deferred. I can keep working locally."
+              : "The next step has persistent NoraCloud consequences.";
+        const content = isLocal
+          ? `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">⌁</span><span>Build firmware</span><span class="pill ok">Completed</span></div><div class="tool-body">Build completed successfully. Expand the existing tool result or open Terminal for output.</div></div><div class="assistant">The local build passed. No NoraCloud resource has been created.</div>`
+          : operationKinds.includes(kind)
+            ? operationCard(kind)
+            : `<div class="existing-tool"><div class="existing-tool-head"><span class="tool-icon">✓</span><span>Cloud operation</span><span class="pill ok">Completed</span></div><div class="tool-body">Agent Desk Weather is Live. Open the right Cloud tab for this coding session.</div></div>`;
+        return `<section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="session-chip">Coding session · Active</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint)">＋</span></div><div class="stream"><div class="user-msg">${prompt}</div><div class="assistant">${assistant}</div>${content}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>`;
+      }
+
+      function appFrame(kind) {
+        const proposed = kind !== "local";
+        const cloudActive = kind === "session-cloud" || kind === "changed";
+        const right = cloudActive
+          ? sessionCloudPanel(kind)
+          : `${rightTabs("All Files", proposed)}<div class="file-tree">▾ agent<br>&nbsp;&nbsp; SOUL.md<br>&nbsp;&nbsp; manifest.json<br>▾ firmware<br>&nbsp;&nbsp; platformio.ini<br>&nbsp;&nbsp; src<br>&nbsp;&nbsp;&nbsp;&nbsp; main.cpp</div><div class="right-bottom">Terminal &nbsp; Device Log</div>`;
+        return `<div class="screen"><div class="product-scale"><div class="app"><aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness</div><div class="mode"><span>Chat</span><span class="on">Code</span></div><div class="search">Search conversations…</div><div class="side-label">Workspaces</div><div class="workspace">▾ desk-weather <span style="margin-left:auto">1</span></div><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div><div class="grow"></div><div class="settings-link">⚙ Settings</div><div class="account">● Signed in &nbsp; <b>NoraCloud ready</b></div></aside>${centerContent(kind)}<aside class="right">${right}</aside></div></div></div>`;
+      }
+
+      function settingsFrame(kind) {
+        const stale = kind === "settings-stale";
+        const orphan = kind === "settings-orphan";
+        return `<div class="screen"><div class="product-scale"><div class="settings-app"><aside class="settings-nav"><div class="back">← Back to app</div><div class="settings-title">Settings</div><div class="settings-subtitle">NoraHarness preferences and system information</div><div class="settings-item">⚙ General</div><div class="settings-item">⌘ Providers</div><div class="settings-item on">☁ Cloud <span class="attention-dot"></span></div><div class="settings-item">◇ Permissions</div><div class="settings-item">ⓘ About</div></aside><main class="settings-content"><div class="settings-page-head"><div><h2>Cloud Resources & Usage</h2><p>Global system information for the current NoraCloud identity.</p></div><span class="fresh ${stale ? "stale" : ""}">${stale ? "Stale · 2h ago" : "Fresh · just now"}</span></div>${stale ? `<div class="inline-notice amber"><b>Refresh failed.</b> Showing the last trusted remote inventory from 2 hours ago. Recorded local Usage coverage is unchanged.</div>` : ""}<div class="system-status"><div><span>Identity</span><b>Signed in · user@nora</b></div><div><span>Environment</span><b>Current NoraCloud</b></div><div><span>Inventory source</span><b>Remote · deduplicated</b></div><span class="btn">↻ Refresh</span></div><section class="settings-card"><div class="settings-card-head"><h3>Cloud Resources</h3><span>Each remote ID counted once</span></div><div class="count-strip"><div class="count"><strong>3</strong><span>Agents</span></div><div class="count"><strong>12</strong><span>Versions</span></div><div class="count"><strong>4</strong><span>Devices</span></div><div class="count"><strong>7</strong><span>Cloud Runtime Sessions</span></div><div class="count"><strong style="color:var(--amber)">1</strong><span>Credential attention</span></div></div><div class="global-resource"><div><strong>Desk Weather · agt_…7f2</strong><small>Live ver_…a81 · 4 Versions</small></div><span>2 Devices · 3 Runtime Sessions</span><span>Used by 3 coding sessions</span><span>12m ago</span></div><div class="global-resource"><div><strong>Kitchen Guide · agt_…410</strong><small>Live ver_…b52 · 3 Versions</small></div><span>1 Device · 2 Runtime Sessions</span><span class="${orphan ? "orphan" : ""}">${orphan ? "No local coding session reference" : "Used by 1 coding session"}</span><span>18d ago</span></div><div class="global-resource"><div><strong>Voice Lamp · agt_…933</strong><small>Live ver_…d20 · 5 Versions</small></div><span>1 Device · 2 Runtime Sessions</span><span>Used by 2 coding sessions</span><span>1h ago</span></div></section><section class="settings-card"><div class="settings-card-head"><h3>Recorded Usage</h3><span>All coding sessions on this installation · Last 30 days</span></div><div class="global-usage"><div><strong>128,420</strong><span>LLM tokens</span></div><div><strong>86</strong><span>runs</span></div><div><strong>64</strong><span>turns</span></div><p>Source: covered Run Records on this NoraHarness installation.<br>Not billing, cross-device total, or Cloud Runtime Usage.</p></div></section></main></div></div></div>`;
+      }
+
+      function card(id) {
+        const state = states[id];
+        const settings = state.view.startsWith("settings");
+        const severity = ["2.2", "4.1", "5.2", "6.2"].includes(String(id))
+          ? "warning"
+          : String(id) === "4.2"
+            ? "error"
+            : "";
+        return `<article class="wire-card ${state.maturity === "today" ? "today" : ""} ${severity}"><div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">${state.maturity === "today" ? "Existing" : "Proposed"}</span></div><div class="caption">${state.caption}</div>${settings ? settingsFrame(state.view) : appFrame(state.view)}</article>`;
+      }
+
+      function flow(path) {
+        return path
+          .map(
+            (id, index) =>
+              `${index ? `<div class="arrow">→</div>` : ""}${card(id)}`,
+          )
+          .join("");
+      }
+
+      document.getElementById("main-flow").innerHTML = flow([
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+      ]);
+      document.getElementById("route-rows").innerHTML = routes
+        .map(
+          (route, index) =>
+            `<article class="route-row" id="route-${index + 1}"><div class="route-title"><h4>${index + 1}. ${route.name}</h4><code>${route.path.join(" → ")}</code><span>${route.result}</span></div><div class="flow">${flow(route.path)}</div></article>`,
+        )
+        .join("");
+
+      let scale = 0.72,
+        x = 0,
+        y = 0,
+        animationFrame = null;
+      const viewport = document.getElementById("viewport");
+      const stage = document.getElementById("stage");
+      function applyNow() {
+        animationFrame = null;
+        stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+      function apply() {
+        if (!animationFrame) animationFrame = requestAnimationFrame(applyNow);
+      }
+      function clamp(value) {
+        return Math.max(0.1, Math.min(1.25, value));
+      }
+      function zoomAt(clientX, clientY, factor) {
+        const rect = viewport.getBoundingClientRect();
+        const localX = clientX - rect.left;
+        const localY = clientY - rect.top;
+        const pointX = (localX - x) / scale;
+        const pointY = (localY - y) / scale;
+        scale = clamp(scale * factor);
+        x = localX - pointX * scale;
+        y = localY - pointY * scale;
+        apply();
+      }
+      function fit() {
+        const width = viewport.clientWidth - 80;
+        const height = viewport.clientHeight - 80;
+        scale = Math.max(
+          0.1,
+          Math.min(width / stage.scrollWidth, height / stage.scrollHeight, 0.5),
+        );
+        x = 18;
+        y = 18;
+        apply();
+      }
+      function reset() {
+        scale = 0.72;
+        x = 0;
+        y = 0;
+        apply();
+      }
+      function jump(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        x = -target.offsetLeft * scale + 28;
+        y = -target.offsetTop * scale + 24;
+        apply();
+      }
+      document
+        .getElementById("zoom-in")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 1.12),
+        );
+      document
+        .getElementById("zoom-out")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 0.88),
+        );
+      document.getElementById("fit").addEventListener("click", fit);
+      document.getElementById("reset").addEventListener("click", reset);
+      document
+        .querySelectorAll("[data-jump]")
+        .forEach((button) =>
+          button.addEventListener("click", () => jump(button.dataset.jump)),
+        );
+      let drag = null;
+      viewport.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button")) return;
+        event.preventDefault();
+        drag = { startX: event.clientX, startY: event.clientY, x, y };
+        viewport.classList.add("dragging");
+        viewport.setPointerCapture(event.pointerId);
+      });
+      viewport.addEventListener("pointermove", (event) => {
+        if (!drag) return;
+        x = drag.x + event.clientX - drag.startX;
+        y = drag.y + event.clientY - drag.startY;
+        apply();
+      });
+      function endDrag(event) {
+        drag = null;
+        viewport.classList.remove("dragging");
+        if (event && viewport.hasPointerCapture(event.pointerId))
+          viewport.releasePointerCapture(event.pointerId);
+      }
+      viewport.addEventListener("pointerup", endDrag);
+      viewport.addEventListener("pointercancel", endDrag);
+      viewport.addEventListener(
+        "wheel",
+        (event) => {
+          event.preventDefault();
+          if (event.ctrlKey || event.metaKey) {
+            zoomAt(
+              event.clientX,
+              event.clientY,
+              Math.exp(-event.deltaY * 0.002),
+            );
+          } else {
+            x -= event.deltaX;
+            y -= event.deltaY;
+            apply();
+          }
+        },
+        { passive: false },
+      );
+      window.addEventListener("resize", apply);
+      apply();
+    </script>
+  </body>
+</html>
