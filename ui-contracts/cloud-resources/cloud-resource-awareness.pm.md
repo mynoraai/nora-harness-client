@@ -170,7 +170,7 @@ must never ask a person to approve by comparing digest strings.
 
 The review example is specifically a first publish from an unbound Workspace. Its approval preview
 must show the destination Cloud/account, unbound Workspace, new Agent name, initial immutable
-Version, initial Live behavior, Workspace binding, effective LLM/Voice/Cron values, readable
+Version, initial Live behavior, Workspace binding, effective LLM/STT/TTS/Cron values, readable
 instruction summaries with `View file`/`View diff`, and excluded work. It must not show an old Live Version or affected
 Devices, because those resources do not exist in this first-publish story. Candidate creation and
 promotion of an existing Agent remain separate routes.
@@ -186,10 +186,10 @@ panel snapshot and performs a silent read outside Conversation; the Agent does n
 `noracloud_status` Tool Call. Opening or manually refreshing Cloud, completing a Settings action, or
 reconnecting may use the same direct UI refresh path and also stays out of Conversation.
 
-Workspace Cloud also keeps the published definition understandable after approval. The panel names
-`cloud-agent.json`, `SOUL.md`, `IDENTITY.md`, and `USER.md`, and compares their local digests with the
-Live Version manifest captured by the publish receipt. It does not claim that NoraCloud returns or
-renders the remote Markdown contents.
+Workspace Cloud also keeps the published definition understandable after approval. The panel shows
+the effective LLM, STT, TTS, and Cron values, names `cloud-agent.json`, `SOUL.md`, `IDENTITY.md`, and
+`USER.md`, and compares their local digests with the Live Version manifest captured by the publish
+receipt. It does not claim that NoraCloud returns or renders the remote Markdown contents.
 
 The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
 `Approve` shortcut, and separate resource receipt are not part of the proposed end state.
