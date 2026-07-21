@@ -20,7 +20,7 @@ their final renderers are proposed.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `1` | Main step | Journey 1 | The user requests a weather product and the Agent implements its firmware. | Describes the desired weather experience. | One Conversation turn shows the user's goal, the Agent's concise intent, and real Read/Edit/Write/Build Tool Calls. | Firmware application files change and the selected target builds; NoraCloud is unchanged. | `2` |
 | `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `3.1`, or `3.3` |
-| `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition snapshot and exact persistent effects, then chooses `Approve`, `Always allow`, or `Deny`. | `Publish Weather Buddy Agent` is `Approval required`. It expands Cloud/account/Workspace context, Agent creation, initial Version and Live behavior, effective LLM/Voice/Cron values, instruction manifest, definition digest, exclusions, and actions. | No Cloud mutation starts. The approval binds to the displayed definition digest. | `3.1`, `3.2`, or `3.4` |
+| `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `3.1`, `3.2`, or `3.4` |
 | `4` | Main step | Journey 1 | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
 | `5` | Main step | Journey 1 | The Agent reports the product outcome and Workspace Cloud reflects canonical state. | Reviews the summary or opens Settings for account management. | The Assistant names the firmware and Agent result; the Workspace Cloud snapshot shows the Live Version and freshness. | The vibe-coding turn closes with local build evidence and a canonical Cloud receipt. | `5.1`, `5.2`, `5.3`, or end |
 
@@ -31,7 +31,7 @@ their final renderers are proposed.
 | `3.1` | Sequential child | `3 Approval Required` | The first-publish Tool Call is executing after approval, or immediately under Auto-run. | Watches the operation or stops the turn if the runtime allows. | The same card becomes `Running` and shows the locked snapshot, Agent creation, initial Version creation, initial Live pointer, and Workspace binding stages. | One first-publish operation is in flight. | `4`, `4.1`, `4.2`, or `4.3` |
 | `3.2` | Branch | `3 Approval Required` | The user denies the pending Tool Call. | Clicks `Deny`. | The same card settles to `Denied`; no receipt claims a Cloud mutation. | Local firmware and Agent files remain available. | `2` or end |
 | `3.3` | Branch | `2 Agent Definition Authored` | The active policy blocks Cloud execution before an approval prompt. | Reads the blocked state and changes policy later if needed. | The Tool Call shows `Blocked`; no API progress is shown. | No Cloud mutation starts. | `2` or end |
-| `3.4` | Recovery state | `3 Approval Required` | A source file changes after the approval snapshot was prepared. | Reviews the regenerated effective definition and decides again. | `Source changed` names the changed file, invalidates the previous digest, and replaces the old approval actions with a new preview. | The old approval token cannot execute a different definition. | `3` or end |
+| `3.4` | Recovery state | `3 Approval Required` | A source file changes after the approval snapshot was prepared. | Reviews the regenerated effective definition and decides again. | `Source changed` names the changed file, cancels the prior approval, and returns to a new semantic preview. Digest comparison remains in technical details. | The old approval token cannot execute a different definition. | `3` or end |
 | `4.1` | Recovery state | `4 NoraCloud Tool Receipt` | The resource changed before the Tool Call could apply its premise. | Refreshes current state and decides whether to retry. | `Conflict` names the changed premise and offers read-only refresh before retry. | The client discards stale assumptions and keeps the confirmed current resource. | `2`, `3`, or end |
 | `4.2` | Recovery state | `4 NoraCloud Tool Receipt` | Some effects completed and another stage failed. | Reviews completed IDs and the failed stage. | `Partial` separates confirmed first-publish effects from the unresolved stage and does not offer a duplicate full publish. | Confirmed effects remain recorded; recovery starts from the failed stage. | `5` or `2` |
 | `4.3` | Recovery state | `4 NoraCloud Tool Receipt` | The final outcome cannot be confirmed. | Opens the Cloud snapshot or retries read-only discovery. | `Outcome unknown` pauses mutation retry until NoraCloud state is discovered. | The client keeps the request ID and prevents an unsafe duplicate operation. | `5`, `2`, or end |
@@ -69,7 +69,7 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `3.4` | Recovery summary | `3 Approval Required` | The approval snapshot no longer matches its source files. | Reviews the regenerated definition or stops. | `Source changed` invalidates the old approval and shows old/new digests. | No mutation starts under the stale approval. | `3` or end |
+| `3.4` | Recovery summary | `3 Approval Required` | The approval snapshot no longer matches its source files. | Reviews the regenerated definition or stops. | `Source changed` names the changed source and cancels the old approval without requiring the user to compare hashes. | No mutation starts under the stale approval. | `3` or end |
 | `4.1` | Recovery summary | `4 NoraCloud Tool Receipt` | Conflict after the operation premise became stale. | Refreshes and retries only after reviewing current state. | `Conflict` keeps the last known resource visible and disables blind duplicate execution. | Stale assumptions are discarded. | `2`, `3`, or end |
 | `4.2` | Recovery summary | `4 NoraCloud Tool Receipt` | Partial operation. | Reviews completed IDs and failed stages. | Confirmed effects remain visible; retry starts at the unresolved stage. | The client keeps the receipt and avoids redoing completed work. | `5` or `2` |
 | `4.3` | Recovery summary | `4 NoraCloud Tool Receipt` | Unknown operation outcome. | Performs read-only discovery or stops. | `Outcome unknown` remains visible until the resource state is confirmed. | Duplicate mutation stays blocked. | `5`, `2`, or end |
@@ -132,7 +132,8 @@ Exit / next state: `3 Approval Required`, `3.1 Publish Running` under Auto-run, 
 
 User entry: the example permission profile asks before protected Cloud execution.
 
-User action: reviews the resource effect and selects `Approve`, `Always allow`, or `Deny`.
+User action: reviews the resource effect and selects `Approve once`, `Always allow in this
+workspace`, or `Deny`.
 
 Visible UI state: one semantic Tool Call is titled `Publish Weather Buddy Agent` and shows
 `noracloud_publish` as secondary technical detail. Its expanded approval preview shows:
@@ -140,16 +141,19 @@ Visible UI state: one semantic Tool Call is titled `Publish Weather Buddy Agent`
 - destination Cloud, signed-in account, and unbound Workspace;
 - `Create Agent`, `Create initial immutable Version`, `Set initial Version Live`, and
   `Bind Workspace` as the exact persistent effects;
-- the normalized `name`, `description`, LLM, Voice, and Cron values loaded from the Agent config;
-- `SOUL.md`, `IDENTITY.md`, and `USER.md` with status, byte size, and content digest;
-- the instruction bundle digest and effective definition digest;
+- the normalized `name`, `description`, LLM, Voice, and Cron values loaded from the Agent config,
+  plus `View config`;
+- `SOUL.md`, `IDENTITY.md`, and `USER.md` with change status, a readable content summary, and
+  `View file` or `View diff`;
 - excluded Device registration, Cloud turn verification, and firmware flash.
 
-Raw JSON and instruction diffs are optional disclosures. The primary card renders effective values,
-not only source paths and not full file contents.
+The primary card tells the user they are approving the displayed content and consequences. Raw
+config, complete instruction content, and diffs are optional disclosures. Tool name, file sizes,
+file/bundle digests, and the effective definition digest stay inside collapsed `Technical details`;
+the user does not need to understand or compare hashes to approve.
 
 Client state change: no Cloud mutation starts while the Tool Call is awaiting permission. The
-approval is cryptographically bound to the displayed definition digest; any source change
+approval is cryptographically bound to the prepared definition digest; any source change
 invalidates it.
 
 Exit / next state: `3.1 Publish Running`, `3.2 Tool Denied`, or `3.4 Approval Snapshot Changed`.
@@ -227,9 +231,9 @@ Blocks progress: only Cloud execution.
 Trigger: `cloud-agent.json` or an included instruction file changes after the approval preview is
 computed and before mutation starts.
 
-Visible UI state: the Tool Call shows `Source changed`, identifies the changed source, displays the
-old and new definition digests, and regenerates the effective definition preview. The prior approval
-actions no longer authorize execution.
+Visible UI state: the Tool Call shows `Source changed`, identifies the changed source, cancels the
+prior approval, and regenerates the semantic definition preview. Old/new digests remain available
+only under technical details; the user is not asked to compare them.
 
 Allowed user actions: review the new preview and approve again, or stop.
 

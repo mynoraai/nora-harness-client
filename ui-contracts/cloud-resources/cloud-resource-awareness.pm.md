@@ -150,7 +150,7 @@ permission profile determines the route:
 | Policy behavior | Visible Tool Call route |
 | --- | --- |
 | Auto-run | `Running` → `Completed` or `Failed` |
-| Ask before running | `Approval required` → `Approve`, `Always allow`, or `Deny` → execution or denial |
+| Ask before running | `Approval required` → `Approve once`, `Always allow in this workspace`, or `Deny` → execution or denial |
 | Never run | `Blocked`; no NoraCloud mutation starts |
 
 There is no mandatory visible `plan` Tool Call followed by an `apply` Tool Call. An Agent may read
@@ -163,10 +163,15 @@ bundle, and definition digests, and reads the destination Cloud/Workspace bindin
 renders that normalized preview inside the same Tool Call before mutation. Approval binds to the
 definition digest; a source change invalidates the approval and requires a regenerated preview.
 
+The approval decision is semantic, not cryptographic. The user reviews the destination, readable
+Cloud effects, effective Agent values, and instruction content or diffs. Hashes are system evidence:
+they remain in collapsed technical details and bind execution to the reviewed snapshot, but the UI
+must never ask a person to approve by comparing digest strings.
+
 The review example is specifically a first publish from an unbound Workspace. Its approval preview
 must show the destination Cloud/account, unbound Workspace, new Agent name, initial immutable
-Version, initial Live behavior, Workspace binding, effective LLM/Voice/Cron values, instruction
-manifest with sizes/digests, and excluded work. It must not show an old Live Version or affected
+Version, initial Live behavior, Workspace binding, effective LLM/Voice/Cron values, readable
+instruction summaries with `View file`/`View diff`, and excluded work. It must not show an old Live Version or affected
 Devices, because those resources do not exist in this first-publish story. Candidate creation and
 promotion of an existing Agent remain separate routes.
 

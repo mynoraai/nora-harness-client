@@ -1096,6 +1096,236 @@
         background: var(--red);
       }
 
+      .publish-tool .tool-call {
+        border-color: #d7b66d;
+        box-shadow: 0 8px 22px rgba(81, 61, 31, 0.08);
+      }
+      .publish-tool .tool-head {
+        background: #fffaf0;
+      }
+      .publish-tool .tool-body {
+        padding: 12px;
+        background: #fff;
+        font-family: var(--sans);
+      }
+      .publish-tool.running .tool-call {
+        border-color: #b8cfdd;
+      }
+      .publish-tool.running .tool-head,
+      .publish-tool.running .publish-summary {
+        background: var(--blue-soft);
+      }
+      .publish-tool.completed .tool-call {
+        border-color: #bdd9c5;
+      }
+      .publish-tool.completed .tool-head,
+      .publish-tool.completed .publish-summary {
+        background: var(--green-soft);
+      }
+      .publish-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: var(--amber-soft);
+      }
+      .publish-summary-copy {
+        display: grid;
+        gap: 2px;
+      }
+      .publish-summary-copy span {
+        color: #8a651b;
+        font-size: 7.5px;
+        font-weight: 850;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+      .publish-summary-copy b {
+        font-size: 10.5px;
+      }
+      .publish-count {
+        flex: 0 0 auto;
+        padding: 3px 7px;
+        border: 1px solid #dec780;
+        border-radius: 999px;
+        color: #765314;
+        background: #fffdf6;
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .publish-destination {
+        display: grid;
+        grid-template-columns: 70px 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 2px;
+        color: var(--muted);
+        font-size: 8.8px;
+      }
+      .publish-destination b {
+        color: var(--ink);
+      }
+      .publish-destination code {
+        color: var(--blue);
+        font: 8px var(--mono);
+      }
+      .publish-review-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .publish-review-block {
+        padding: 8px 9px;
+        border: 1px solid #e4ddd3;
+        border-radius: 8px;
+        background: #fffdfa;
+      }
+      .publish-review-block.cloud-effects {
+        border-color: #dfc98f;
+        background: #fffcf3;
+      }
+      .publish-block-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 5px;
+        font-size: 9px;
+      }
+      .publish-block-head b {
+        font-size: 9.5px;
+      }
+      .review-link {
+        color: var(--accent);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .cloud-effect {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: 6px;
+        align-items: start;
+        padding: 3px 0;
+      }
+      .cloud-effect > span {
+        display: inline-flex;
+        width: 14px;
+        height: 14px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--accent);
+        font-size: 9px;
+        font-weight: 850;
+      }
+      .cloud-effect b,
+      .cloud-effect small {
+        display: block;
+      }
+      .cloud-effect b {
+        font-size: 8.8px;
+      }
+      .cloud-effect small {
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 7.7px;
+      }
+      .definition-pairs {
+        display: grid;
+        grid-template-columns: 62px 1fr;
+        gap: 4px 7px;
+        align-items: baseline;
+        font-size: 8.4px;
+      }
+      .definition-pairs span {
+        color: var(--faint);
+      }
+      .definition-pairs b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .instruction-review {
+        margin-top: 8px;
+        padding: 8px 9px;
+        border: 1px solid #e4ddd3;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .instruction-file {
+        display: grid;
+        grid-template-columns: 48px 76px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        min-height: 23px;
+        border-top: 1px solid #eee9e2;
+        font-size: 8.2px;
+      }
+      .instruction-file:first-of-type {
+        border-top: 0;
+      }
+      .file-change {
+        color: #8b6518;
+        font-size: 7.5px;
+        font-weight: 800;
+      }
+      .file-change.unchanged {
+        color: var(--faint);
+      }
+      .instruction-file em {
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 7.8px;
+        font-style: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .approval-footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+        padding: 7px 8px;
+        border-radius: 7px;
+        background: #f4f8f5;
+      }
+      .approval-footer b,
+      .approval-footer span {
+        display: block;
+      }
+      .approval-footer b {
+        color: #315d40;
+        font-size: 8.8px;
+      }
+      .approval-footer span {
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 7.6px;
+      }
+      .technical-disclosure {
+        color: var(--blue);
+        font-size: 7.8px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .publish-exclusions {
+        margin-top: 7px;
+        color: var(--faint);
+        font-size: 7.8px;
+      }
+      .publish-tool .actions {
+        padding-top: 1px;
+      }
+      .publish-tool .actions .btn:nth-child(2) {
+        color: var(--blue);
+        border-color: #b7cfde;
+        background: var(--blue-soft);
+      }
+
       .right {
         width: 310px;
         display: flex;
@@ -1616,6 +1846,24 @@
         const statusIcon = running ? "◷" : blocked ? "×" : "✓";
         return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : blocked ? "blocked" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
       }
+      function cloudEffect(title, detail) {
+        return `<div class="cloud-effect"><span>+</span><div><b>${title}</b><small>${detail}</small></div></div>`;
+      }
+      function instructionFile(state, name, summary, action, unchanged = false) {
+        return `<div class="instruction-file"><span class="file-change ${unchanged ? "unchanged" : ""}">${state}</span><b>${name}</b><em>${summary}</em><span class="review-link">${action} ›</span></div>`;
+      }
+      function publishApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish</span><b>Creates a persistent Agent and makes it Live</b></div><span class="publish-count">4 Cloud changes</span></div><div class="publish-destination"><span>Destination</span><b>NoraCloud Production · Nora User</b><code>desk-weather · unbound</code></div><div class="publish-review-grid"><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Cloud changes</b><span>Runs after approval</span></div>${cloudEffect("Create Agent", "Weather Buddy")}${cloudEffect("Create initial Version", "Immutable definition")}${cloudEffect("Set initial Version Live", "No previous Live Version")}${cloudEffect("Bind Workspace", "desk-weather → new Agent")}</section><section class="publish-review-block"><div class="publish-block-head"><b>Effective Agent definition</b><span class="review-link">View config ›</span></div><div class="definition-pairs"><span>Name</span><b>Weather Buddy</b><span>Description</span><b>Humorous weather assistant</b><span>LLM</span><b>DashScope · qwen-max</b><span>Voice</span><b>zhixiaobai · Chinese</b><span>Cron</span><b>None</b></div></section></div><section class="instruction-review"><div class="publish-block-head"><b>Instructions included in this Version</b><span>Review content</span></div>${instructionFile("Modified", "SOUL.md", "Humorous, friendly weather guide", "View diff")}${instructionFile("Modified", "IDENTITY.md", "Name and Weather Buddy identity", "View diff")}${instructionFile("Unchanged", "USER.md", "Workspace user preferences", "View file", true)}</section><div class="publish-exclusions"><b>Not included:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>You are approving the content and Cloud changes shown above.</b><span>The system will reject this approval if any reviewed source changes.</span></div><span class="technical-disclosure">Technical details · noracloud_publish · snapshot protected ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Publish Weather Buddy Agent", "Approval required", true, body)}</div>`;
+      }
+      function publishRunningCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Approved snapshot</span><b>Publishing Weather Buddy to NoraCloud</b></div><span class="publish-count">In progress</span></div><div class="publish-destination"><span>Destination</span><b>NoraCloud Production · Nora User</b><code>desk-weather</code></div><div class="stage-list">${stage("✓", "Reviewed definition locked", "Snapshot protected", "done")}${stage("◷", "Creating Agent", "Weather Buddy", "active")}${stage("○", "Creating initial Version", "Pending")}${stage("○", "Setting initial Version Live", "Pending")}${stage("○", "Binding Workspace", "Pending")}</div>`;
+        return `<div class="publish-tool running">${toolCall("Publish Weather Buddy Agent", "Running", true, body)}</div>`;
+      }
+      function publishReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish completed</span><b>Weather Buddy is Live and bound to this Workspace</b></div><span class="publish-count">4 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="publish-block-head"><b>Created resources</b></div><div class="definition-pairs"><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Version</span><b>Ready · ver_…b12</b><span>Live</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="publish-block-head"><b>Workspace result</b></div><div class="definition-pairs"><span>Workspace</span><b>desk-weather</b><span>Binding</span><b>Weather Buddy</b><span>Devices</span><b>None registered</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>This Tool result is the persistent NoraCloud receipt.</b><span>The Cloud panel refreshes from this confirmed result next.</span></div><span class="technical-disclosure">IDs, digest, request · req_…42e ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Agent", "Completed", true, body)}</div>`;
+      }
 
       function conversationContent(kind) {
         if (kind === "firmware-coding")
@@ -1623,17 +1871,17 @@
         if (kind === "agent-authoring")
           return `<div class="assistant">The firmware application is ready. Before I configure its NoraCloud Agent, what should the Agent be called, and how should it speak?</div><div class="user-msg">Call it Weather Buddy. Make it humorous and friendly.</div><div class="tool-stack">${toolCall("Read existing Agent definition", "Completed")}${toolCall("Edit agent/SOUL.md", "Completed")}${toolCall("Edit agent/IDENTITY.md", "Completed")}${toolCall("Edit agent/cloud-agent.json", "Completed")}</div><div class="assistant">The firmware and Agent definition are ready. Publishing will create an immutable Version and make it Live.</div>`;
         if (kind === "publish-running")
-          return `${toolCall("Publish Weather Buddy Agent", "Running", true, `${row("Tool", "noracloud_publish")}${row("Definition", "Snapshot locked", "sha256:7ac…")}<div class="stage-list">${stage("✓", "Definition snapshot locked", "sha256:7ac…", "done")}${stage("◷", "Creating Agent", "Weather Buddy", "active")}${stage("○", "Creating initial Version", "Pending")}${stage("○", "Setting initial Version Live", "Pending")}${stage("○", "Binding Workspace", "desk-weather")}</div>`)}`;
+          return publishRunningCall();
         if (kind === "approval")
-          return `<div class="assistant">I resolved the Agent files into one immutable definition. Review exactly what will persist.</div>${toolCall("Publish Weather Buddy Agent", "Approval required", true, `<div class="scope">Destination</div>${row("Cloud", "NoraCloud Production")}${row("Account", "Nora User")}${row("Workspace", "desk-weather · Not bound")}<div class="scope" style="margin-top:7px">Persistent changes</div>${row("Agent", "Create “Weather Buddy”")}${row("Version", "Create initial immutable Version")}${row("Live", "Set initial Version Live")}${row("Workspace", "Bind to new Agent")}<div class="scope" style="margin-top:7px">Effective definition · agent/cloud-agent.json · View source ›</div>${row("Description", "Initial weather assistant")}${row("LLM", "DashScope · qwen-max")}${row("Voice", "OpenAI ASR · zh / DashScope · zhixiaobai")}${row("Cron", "None")}<div class="scope" style="margin-top:7px">Instructions</div>${row("SOUL.md", "Modified · 2.1 KB", "sha256:81a…")}${row("IDENTITY.md", "Modified · 0.6 KB", "sha256:19b…")}${row("USER.md", "Unchanged · 0.4 KB", "sha256:90c…")}${row("Definition", "Approval locks this snapshot", "sha256:7ac…")}<div class="excluded-note"><b>Not included:</b> Device registration, Cloud turn verification, or firmware flashing.</div>${actions(["Approve", "Always allow", "Deny"])}`)}`;
+          return `<div class="assistant">Review the Agent definition and Cloud changes before publishing.</div>${publishApprovalCall()}`;
         if (kind === "denied")
           return `<div class="assistant">The publish was denied. Firmware and Agent definition remain local.</div>${toolCall("Publish Weather Buddy Agent", "Denied", true, `${row("Tool", "noracloud_publish")}${row("Cloud mutation", "None")}`)}`;
         if (kind === "blocked")
           return `<div class="assistant">Current policy blocks this Cloud operation before execution.</div>${toolCall("Publish Weather Buddy Agent", "Blocked", true, `${row("Tool", "noracloud_publish")}${row("Policy", "Never run / deny all")}`)}`;
         if (kind === "source-changed")
-          return `<div class="assistant">The approved source changed before execution. The old approval cannot be reused.</div>${toolCall("Publish Weather Buddy Agent", "Source changed", true, `${row("Changed", "agent/SOUL.md")}${row("Approved", "Previous snapshot", "sha256:7ac…")}${row("Current", "Regenerated snapshot", "sha256:92d…")}<div class="notice"><b>Review required:</b> no Cloud mutation started under the stale approval.</div>${actions(["Review updated definition", "Stop"])}`)}`;
+          return `<div class="assistant">The approved source changed before execution. The old approval cannot be reused.</div>${toolCall("Publish Weather Buddy Agent", "Source changed", true, `${row("Changed source", "SOUL.md · content modified")}${row("Previous approval", "Canceled")}${row("Cloud mutation", "None")}<div class="notice"><b>Review required:</b> inspect the regenerated definition before approving again.</div><div class="technical-disclosure" style="margin-top:7px">Technical details · snapshot comparison ▸</div>${actions(["Review updated definition", "Stop"])}`)}`;
         if (kind === "receipt")
-          return `${toolCall("Publish Weather Buddy Agent", "Completed", true, `${row("Tool", "noracloud_publish")}${row("Agent", "Created · Weather Buddy", "agt_…7f2")}${row("Version", "Created · Ready", "ver_…b12")}${row("Definition", "Published snapshot", "sha256:7ac…")}${row("Live", "Initial Live Version", "ver_…b12")}${row("Workspace", "desk-weather → agt_…7f2")}${row("Request", "req_…42e")}<div class="excluded-note"><b>Not changed:</b> no Device registration, Cloud turn verification, or firmware flash.</div>`)}<div class="persist-note"><b>Receipt:</b> this Tool result is the persistent NoraCloud resource receipt.</div>`;
+          return publishReceiptCall();
         if (kind === "conflict")
           return `<div class="assistant">The Cloud operation hit a current-state conflict. No blind retry is offered.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Conflict", "Workspace binding changed since preparation"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "partial")
