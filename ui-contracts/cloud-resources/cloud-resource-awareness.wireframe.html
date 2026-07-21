@@ -1,0 +1,2469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      NoraCloud Resource Control — NoraHarness V2 Wireframe
+    </title>
+    <style>
+      :root {
+        --bg: #ece7de;
+        --paper: #fffdfa;
+        --panel: #f8f5ef;
+        --sidebar: #f1ede6;
+        --ink: #2d2924;
+        --muted: #6f685f;
+        --faint: #938a80;
+        --line: #d8d0c5;
+        --strong: #bdb2a5;
+        --accent: #bd6c2d;
+        --accent-soft: #f5e6d8;
+        --blue: #3f7298;
+        --blue-soft: #e7f0f6;
+        --green: #4f805c;
+        --green-soft: #e8f3eb;
+        --amber: #936317;
+        --amber-soft: #fff3cd;
+        --red: #a74742;
+        --red-soft: #f8d7da;
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        --sans:
+          Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: var(--sans);
+        color: var(--ink);
+        background: var(--bg);
+      }
+      button {
+        font: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 30;
+        min-height: 62px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 10px 18px;
+        color: #fff7ef;
+        background: rgba(45, 35, 27, 0.97);
+        border-bottom: 1px solid rgba(230, 174, 123, 0.35);
+      }
+      .topbar h1 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .topbar p {
+        margin: 3px 0 0;
+        max-width: 1050px;
+        color: #dacabc;
+        font-size: 11.5px;
+        line-height: 1.35;
+      }
+      .spacer {
+        flex: 1;
+      }
+      .controls {
+        display: flex;
+        gap: 6px;
+      }
+      .controls button {
+        height: 30px;
+        min-width: 34px;
+        padding: 0 10px;
+        border: 1px solid rgba(235, 183, 133, 0.35);
+        border-radius: 8px;
+        color: #fff7ef;
+        background: rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+      }
+      .controls button:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .jump {
+        position: fixed;
+        top: 75px;
+        left: 12px;
+        z-index: 25;
+        width: 218px;
+        padding: 9px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.96);
+        box-shadow: 0 12px 30px -22px rgba(45, 35, 27, 0.55);
+        backdrop-filter: blur(8px);
+      }
+      .jump h2 {
+        margin: 4px 8px 8px;
+        color: var(--faint);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .jump button {
+        display: block;
+        width: 100%;
+        margin: 0 0 3px;
+        padding: 7px 9px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--ink);
+        background: transparent;
+        text-align: left;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .jump button:hover {
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .legend {
+        margin-top: 8px;
+        padding: 9px 8px 3px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.65;
+      }
+      .legend i {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        border-radius: 999px;
+      }
+
+      .viewport {
+        position: fixed;
+        inset: 62px 0 0;
+        overflow: hidden;
+        cursor: grab;
+        user-select: none;
+        touch-action: none;
+        overscroll-behavior: contain;
+        background-color: #eeeae3;
+        background-image: radial-gradient(
+          rgba(65, 52, 40, 0.1) 1px,
+          transparent 1px
+        );
+        background-size: 24px 24px;
+      }
+      .viewport.dragging {
+        cursor: grabbing;
+      }
+      .stage {
+        position: absolute;
+        left: 250px;
+        top: 28px;
+        width: 3900px;
+        min-height: 3600px;
+        padding: 18px 24px 180px;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+      .band {
+        margin: 0 0 38px;
+      }
+      .band-title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin: 0 0 12px;
+      }
+      .band-title h3 {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .band-title span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .flow {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+        width: max-content;
+      }
+      .arrow {
+        align-self: center;
+        position: relative;
+        width: 24px;
+        height: 1px;
+        background: #8f8478;
+      }
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: -4px;
+        width: 8px;
+        height: 8px;
+        border-top: 1px solid #8f8478;
+        border-right: 1px solid #8f8478;
+        transform: rotate(45deg);
+      }
+
+      .wire-card {
+        width: 650px;
+        min-height: 525px;
+        overflow: hidden;
+        border: 1px solid #38322c;
+        border-top: 6px solid var(--blue);
+        border-radius: 12px;
+        background: var(--paper);
+        box-shadow: 0 14px 32px -22px rgba(45, 35, 27, 0.55);
+      }
+      .wire-card.warning {
+        border-top-color: var(--amber);
+      }
+      .wire-card.error {
+        border-top-color: var(--red);
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 14px 9px;
+        border-bottom: 1px solid var(--line);
+      }
+      .card-head .id {
+        padding: 4px 7px;
+        border-radius: 6px;
+        color: #fff;
+        background: var(--accent);
+        font: 700 11px/1 var(--mono);
+      }
+      .card-head h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .tag {
+        margin-left: auto;
+        padding: 3px 8px;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .caption {
+        min-height: 50px;
+        padding: 9px 14px 10px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.45;
+      }
+
+      .screen {
+        width: 620px;
+        height: 395px;
+        margin: 0 14px 14px;
+        overflow: hidden;
+        border: 1px solid var(--strong);
+        border-radius: 10px;
+        background: var(--panel);
+      }
+      .scale {
+        width: 1180px;
+        height: 750px;
+        transform: scale(0.525);
+        transform-origin: top left;
+      }
+      .app {
+        display: flex;
+        width: 1180px;
+        height: 750px;
+        background: var(--panel);
+      }
+      .settings-app {
+        display: flex;
+        width: 1180px;
+        height: 750px;
+        background: #f7f5f1;
+      }
+      .settings-nav {
+        width: 285px;
+        padding: 38px 18px 20px;
+        border-right: 1px solid var(--line);
+        background: var(--sidebar);
+      }
+      .settings-back {
+        margin-bottom: 18px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .settings-nav h5 {
+        margin: 0 8px 3px;
+        font-size: 19px;
+      }
+      .settings-nav p {
+        margin: 0 8px 17px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .settings-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 11px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .settings-nav-item.on {
+        color: var(--ink);
+        background: #fff;
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+      .settings-main {
+        flex: 1;
+        padding: 38px 58px;
+        overflow: hidden;
+      }
+      .settings-title {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 18px;
+      }
+      .settings-title h6 {
+        margin: 0;
+        font-size: 21px;
+      }
+      .settings-title span {
+        margin-left: auto;
+        color: var(--green);
+        font-size: 10px;
+        font-weight: 750;
+      }
+      .settings-scope {
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border: 1px solid #c4d7e5;
+        border-radius: 8px;
+        color: #356681;
+        background: var(--blue-soft);
+        font-size: 10.5px;
+      }
+      .settings-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+        margin-bottom: 12px;
+      }
+      .settings-stat {
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-stat-head {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+      }
+      .settings-stat-head b {
+        font-size: 11px;
+      }
+      .settings-stat-head strong {
+        margin-left: auto;
+        font-size: 17px;
+      }
+      .settings-stat p {
+        margin: 5px 0 7px;
+        color: var(--muted);
+        font-size: 9.5px;
+      }
+      .settings-stat-link {
+        color: var(--accent);
+        font-size: 9.5px;
+        font-weight: 750;
+      }
+      .settings-section-card {
+        margin-top: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-section-card h6 {
+        margin: 0;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .settings-usage {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 13px 12px;
+      }
+      .settings-usage strong {
+        display: block;
+        font-size: 18px;
+      }
+      .settings-usage span {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .settings-footnote {
+        padding: 0 12px 11px;
+        color: var(--faint);
+        font-size: 8.5px;
+      }
+      .settings-breadcrumb {
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-size: 9.5px;
+        font-weight: 700;
+      }
+      .settings-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .settings-filter {
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--muted);
+        background: #fff;
+        font-size: 9px;
+      }
+      .settings-list {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+      }
+      .settings-list-head,
+      .settings-list-row {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr 1fr 1fr auto;
+        gap: 9px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 9px;
+      }
+      .settings-list-head {
+        color: var(--faint);
+        background: #f8f6f2;
+        font-weight: 750;
+      }
+      .settings-list-row:last-child {
+        border-bottom: 0;
+      }
+      .settings-list-row b,
+      .settings-list-row strong {
+        color: var(--ink);
+      }
+      .settings-list-row code {
+        color: var(--muted);
+        font: 8px var(--mono);
+      }
+      .settings-link {
+        color: var(--accent);
+        font-weight: 750;
+        white-space: nowrap;
+      }
+      .settings-pill {
+        display: inline-block;
+        width: fit-content;
+        padding: 2px 5px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .settings-pill.muted {
+        color: var(--muted);
+        background: #eeeae4;
+      }
+      .settings-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .settings-meta {
+        padding: 9px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .settings-meta span {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--faint);
+        font-size: 8px;
+      }
+      .settings-meta b,
+      .settings-meta code {
+        color: var(--ink);
+        font: 700 9px var(--sans);
+      }
+      .settings-subhead {
+        display: flex;
+        align-items: baseline;
+        margin: 11px 0 6px;
+        font-size: 10.5px;
+        font-weight: 800;
+      }
+      .settings-subhead span {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 8.5px;
+        font-weight: 500;
+      }
+      .config-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .config-cell {
+        padding: 8px 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .config-cell span {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--faint);
+        font-size: 7.5px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .config-cell b {
+        font-size: 9px;
+      }
+      .file-list {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .file-row {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr auto;
+        gap: 10px;
+        padding: 7px 9px;
+        border-bottom: 1px solid #eee9e2;
+        color: var(--muted);
+        font-size: 8.7px;
+      }
+      .file-row:last-child {
+        border-bottom: 0;
+      }
+      .file-row b {
+        color: var(--ink);
+      }
+      .settings-actions {
+        display: flex;
+        gap: 7px;
+        margin-top: 9px;
+      }
+      .sidebar {
+        width: 220px;
+        padding: 16px 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: var(--sidebar);
+        border-right: 1px solid var(--line);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 750;
+      }
+      .traffic {
+        display: flex;
+        gap: 5px;
+        margin-right: 7px;
+      }
+      .traffic i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #b8aea2;
+      }
+      .new-conversation {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.55);
+        font-size: 12px;
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .search {
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--faint);
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 11.5px;
+      }
+      .slbl {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 4px;
+        padding: 3px 2px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+      }
+      .slbl .controls {
+        margin-left: auto;
+        color: var(--faint);
+        letter-spacing: 0.1em;
+      }
+      .workspace,
+      .conversation {
+        display: flex;
+        align-items: center;
+        padding: 7px 9px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+      .workspace {
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.42);
+        font-weight: 700;
+      }
+      .session-tree {
+        margin-left: 13px;
+        padding-left: 9px;
+        border-left: 1px solid var(--strong);
+      }
+      .conversation.on {
+        background: rgba(255, 255, 255, 0.8);
+        font-weight: 650;
+      }
+      .conversation small {
+        margin-left: auto;
+        color: var(--faint);
+      }
+      .grow {
+        flex: 1;
+      }
+      .account {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10.5px;
+      }
+      .settings-entry {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 8px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 11.5px;
+      }
+
+      .center {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: #fbfaf7;
+      }
+      .workspace-bar {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--paper);
+        font-size: 11px;
+      }
+      .workspace-bar strong {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .cloud-chip {
+        padding: 4px 8px;
+        border: 1px solid #b8cddd;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-weight: 700;
+      }
+      .tabs {
+        height: 39px;
+        display: flex;
+        align-items: end;
+        gap: 4px;
+        padding: 7px 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .ctab {
+        padding: 7px 12px;
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: 7px 7px 0 0;
+        background: #fff;
+        font-size: 11px;
+      }
+      .stream {
+        flex: 1;
+        padding: 22px 24px;
+        overflow: hidden;
+      }
+      .user-msg {
+        margin-left: auto;
+        max-width: 72%;
+        padding: 6px 10px;
+        border-radius: 6px;
+        background: var(--accent-soft);
+        color: var(--ink);
+        font-size: 11px;
+        line-height: 1.55;
+      }
+      .assistant {
+        margin: 18px 0 13px;
+        color: var(--ink);
+        font-size: 11.5px;
+        line-height: 1.7;
+      }
+      .assistant .secondary {
+        color: var(--muted);
+      }
+      .tool-stack {
+        display: grid;
+        width: 100%;
+        gap: 10px;
+      }
+      .tool-call {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      }
+      .tool-call.active {
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.78);
+      }
+      .tool-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        min-height: 42px;
+        padding: 9px 12px;
+        color: var(--ink);
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .tool-main {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 8px;
+      }
+      .tool-icon {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--accent);
+        font-size: 12px;
+      }
+      .tool-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .tool-status {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 7px;
+        border: 1px solid #cfe5d5;
+        border-radius: 999px;
+        background: #eef8f0;
+        color: #427851;
+        font-size: 8.5px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .tool-status.running {
+        border-color: #c8ddea;
+        background: #edf6fb;
+        color: var(--blue);
+      }
+      .tool-head .chevron {
+        flex: 0 0 auto;
+        color: var(--faint);
+        font-size: 11px;
+      }
+      .tool-body {
+        padding: 9px 12px;
+        border-top: 1px solid var(--line);
+        color: var(--ink);
+        font: 9px/1.6 var(--mono);
+      }
+      .terminal-line {
+        padding: 7px 9px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+      }
+      .terminal-line .prompt {
+        margin-right: 6px;
+        color: var(--muted);
+      }
+      .composer {
+        margin: 0 14px 14px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        color: var(--faint);
+        background: #fff;
+        font-size: 11px;
+      }
+
+      .resource-card {
+        max-width: 525px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fff;
+      }
+      .resource-card.amber {
+        border-color: #ddc27e;
+      }
+      .resource-card.red {
+        border-color: #dfa5a1;
+      }
+      .rhead {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 11px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11.5px;
+        font-weight: 750;
+      }
+      .status {
+        margin-left: auto;
+        padding: 3px 7px;
+        border-radius: 999px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 8.5px;
+        font-weight: 850;
+      }
+      .status.ok {
+        color: var(--green);
+        background: var(--green-soft);
+      }
+      .status.warn {
+        color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .status.bad {
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .rbody {
+        padding: 8px 11px 10px;
+      }
+      .scope {
+        margin: 0 0 7px;
+        color: var(--faint);
+        font-size: 8.5px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .consequence-lead {
+        margin: 0 0 7px;
+        color: var(--ink);
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .transition {
+        display: grid;
+        grid-template-columns: 1fr auto 1.45fr;
+        gap: 7px;
+        align-items: center;
+        margin-bottom: 7px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        color: var(--muted);
+        background: #f6f2ec;
+        font-size: 8.8px;
+      }
+      .transition b {
+        color: var(--blue);
+      }
+      .impact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+      }
+      .impact-block {
+        padding: 7px 8px;
+        border: 1px solid #e7e0d7;
+        border-radius: 7px;
+        background: #fffdfa;
+      }
+      .impact-block.created {
+        grid-row: span 2;
+      }
+      .impact-block h5 {
+        margin: 0 0 4px;
+        color: var(--faint);
+        font-size: 7.8px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .impact-item {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 5px;
+        padding: 2px 0;
+        font-size: 8.8px;
+        line-height: 1.35;
+      }
+      .impact-item span {
+        color: var(--faint);
+      }
+      .impact-item b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .persist-note,
+      .excluded-note {
+        margin-top: 7px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        font-size: 8.6px;
+        line-height: 1.4;
+      }
+      .persist-note {
+        color: #2f5f43;
+        background: var(--green-soft);
+      }
+      .excluded-note {
+        color: var(--muted);
+        background: #f6f2ec;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 90px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 0;
+        border-bottom: 1px solid #eee9e2;
+        font-size: 9.5px;
+      }
+      .row:last-child {
+        border-bottom: 0;
+      }
+      .row .key {
+        color: var(--faint);
+      }
+      .row .value {
+        font-weight: 650;
+        line-height: 1.35;
+      }
+      .row code {
+        color: var(--muted);
+        font: 8.5px var(--mono);
+      }
+      .stage-list {
+        display: grid;
+        gap: 5px;
+        margin-top: 3px;
+      }
+      .stage-line {
+        display: grid;
+        grid-template-columns: 16px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 4px 6px;
+        border-radius: 6px;
+        background: #faf8f4;
+        font-size: 9.5px;
+      }
+      .stage-line .done {
+        color: var(--green);
+      }
+      .stage-line .active {
+        color: var(--blue);
+      }
+      .stage-line .failed {
+        color: var(--red);
+      }
+      .stage-line code {
+        color: var(--muted);
+        font: 8px var(--mono);
+      }
+      .notice {
+        margin-top: 7px;
+        padding: 7px 8px;
+        border: 1px solid #e3c984;
+        border-radius: 7px;
+        color: #765314;
+        background: var(--amber-soft);
+        font-size: 8.8px;
+        line-height: 1.4;
+      }
+      .notice.red {
+        border-color: #e3aaa6;
+        color: var(--red);
+        background: var(--red-soft);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .btn {
+        display: inline-flex;
+        min-height: 27px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+        border: 1px solid var(--strong);
+        border-radius: 7px;
+        color: var(--ink);
+        background: #fff;
+        font-size: 9.5px;
+        font-weight: 750;
+      }
+      .btn.primary {
+        color: #fff;
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+      .btn.danger {
+        color: #fff;
+        border-color: var(--red);
+        background: var(--red);
+      }
+
+      .publish-tool .tool-call {
+        border-color: #d7b66d;
+        box-shadow: 0 8px 22px rgba(81, 61, 31, 0.08);
+      }
+      .publish-tool .tool-head {
+        background: #fffaf0;
+      }
+      .publish-tool .tool-body {
+        padding: 12px;
+        background: #fff;
+        font-family: var(--sans);
+      }
+      .publish-tool.completed .tool-call {
+        border-color: #bdd9c5;
+      }
+      .publish-tool.completed .tool-head,
+      .publish-tool.completed .publish-summary {
+        background: var(--green-soft);
+      }
+      .publish-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: var(--amber-soft);
+      }
+      .publish-summary-copy {
+        display: grid;
+        gap: 2px;
+      }
+      .publish-summary-copy span {
+        color: #8a651b;
+        font-size: 7.5px;
+        font-weight: 850;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+      .publish-summary-copy b {
+        font-size: 10.5px;
+      }
+      .publish-count {
+        flex: 0 0 auto;
+        padding: 3px 7px;
+        border: 1px solid #dec780;
+        border-radius: 999px;
+        color: #765314;
+        background: #fffdf6;
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .publish-destination {
+        display: grid;
+        grid-template-columns: 70px 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 2px;
+        color: var(--muted);
+        font-size: 8.8px;
+      }
+      .publish-destination b {
+        color: var(--ink);
+      }
+      .publish-destination code {
+        color: var(--blue);
+        font: 8px var(--mono);
+      }
+      .publish-review-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .publish-review-block {
+        padding: 8px 9px;
+        border: 1px solid #e4ddd3;
+        border-radius: 8px;
+        background: #fffdfa;
+      }
+      .publish-review-block.cloud-effects {
+        border-color: #dfc98f;
+        background: #fffcf3;
+      }
+      .publish-block-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 5px;
+        font-size: 9px;
+      }
+      .publish-block-head b {
+        font-size: 9.5px;
+      }
+      .review-link {
+        color: var(--accent);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .cloud-effect {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: 6px;
+        align-items: start;
+        padding: 3px 0;
+      }
+      .cloud-effect > span {
+        display: inline-flex;
+        width: 14px;
+        height: 14px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--accent);
+        font-size: 9px;
+        font-weight: 850;
+      }
+      .cloud-effect b,
+      .cloud-effect small {
+        display: block;
+      }
+      .cloud-effect b {
+        font-size: 8.8px;
+      }
+      .cloud-effect small {
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 7.7px;
+      }
+      .definition-pairs {
+        display: grid;
+        grid-template-columns: 62px 1fr;
+        gap: 4px 7px;
+        align-items: baseline;
+        font-size: 8.4px;
+      }
+      .definition-pairs span {
+        color: var(--faint);
+      }
+      .definition-pairs b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .instruction-review {
+        margin-top: 8px;
+        padding: 8px 9px;
+        border: 1px solid #e4ddd3;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .instruction-file {
+        display: grid;
+        grid-template-columns: 48px 76px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        min-height: 23px;
+        border-top: 1px solid #eee9e2;
+        font-size: 8.2px;
+      }
+      .instruction-file:first-of-type {
+        border-top: 0;
+      }
+      .file-change {
+        color: #8b6518;
+        font-size: 7.5px;
+        font-weight: 800;
+      }
+      .file-change.unchanged {
+        color: var(--faint);
+      }
+      .instruction-file em {
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 7.8px;
+        font-style: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .approval-footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+        padding: 7px 8px;
+        border-radius: 7px;
+        background: #f4f8f5;
+      }
+      .approval-footer b,
+      .approval-footer span {
+        display: block;
+      }
+      .approval-footer b {
+        color: #315d40;
+        font-size: 8.8px;
+      }
+      .approval-footer span {
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 7.6px;
+      }
+      .technical-disclosure {
+        color: var(--blue);
+        font-size: 7.8px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .publish-exclusions {
+        margin-top: 7px;
+        color: var(--faint);
+        font-size: 7.8px;
+      }
+      .publish-tool .actions {
+        padding-top: 1px;
+      }
+      .publish-tool .actions .btn:nth-child(2) {
+        color: var(--blue);
+        border-color: #b7cfde;
+        background: var(--blue-soft);
+      }
+      .publish-tool.approval .tool-head {
+        min-height: 38px;
+        padding: 7px 10px;
+      }
+      .publish-tool.approval .tool-body {
+        padding: 9px 10px;
+      }
+      .publish-tool.approval .publish-summary {
+        padding: 6px 8px;
+      }
+      .publish-tool.approval .publish-destination {
+        padding: 6px 2px;
+      }
+      .publish-tool.approval .publish-review-block,
+      .publish-tool.approval .instruction-review {
+        padding: 6px 7px;
+      }
+      .publish-tool.approval .instruction-review {
+        margin-top: 6px;
+      }
+      .publish-tool.approval .cloud-effect {
+        padding: 2px 0;
+      }
+      .publish-tool.approval .instruction-file {
+        min-height: 20px;
+      }
+      .publish-tool.approval .approval-footer {
+        margin-top: 6px;
+        padding: 5px 7px;
+      }
+      .publish-tool.approval .publish-exclusions {
+        margin-top: 5px;
+      }
+      .publish-tool.approval .actions {
+        margin-top: 6px;
+      }
+      .publish-tool.approval .btn {
+        min-height: 24px;
+      }
+
+      .right {
+        width: 310px;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid var(--line);
+        background: #f8f6f1;
+      }
+      .right-tabs {
+        display: flex;
+        gap: 1px;
+        padding: 9px 7px 0;
+        border-bottom: 1px solid var(--line);
+        background: var(--sidebar);
+      }
+      .rtab {
+        position: relative;
+        padding: 7px 7px;
+        border-radius: 7px 7px 0 0;
+        color: var(--muted);
+        font-size: 9.5px;
+        white-space: nowrap;
+      }
+      .rtab.on {
+        color: var(--ink);
+        background: #fff;
+        font-weight: 700;
+      }
+      .rtab.proposed::after {
+        content: "P";
+        position: absolute;
+        right: 0;
+        top: 1px;
+        width: 9px;
+        height: 9px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--blue);
+        font-size: 5.5px;
+        font-weight: 900;
+      }
+      .tree {
+        flex: 1;
+        padding: 15px;
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 2;
+      }
+      .cloud-panel {
+        flex: 1;
+        padding: 13px 12px;
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .cloud-panel .panel-head {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        margin-bottom: 9px;
+      }
+      .cloud-panel .panel-head b {
+        color: var(--ink);
+        font-size: 12px;
+      }
+      .cloud-panel .fresh {
+        margin-left: auto;
+        padding: 3px 6px;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 7px;
+        font-weight: 800;
+      }
+      .cloud-panel .refreshing {
+        color: var(--blue);
+        background: var(--blue-soft);
+      }
+      .cloud-panel .panel-note {
+        margin-bottom: 9px;
+        padding: 7px;
+        border: 1px solid #c4d7e5;
+        border-radius: 7px;
+        color: #356681;
+        background: var(--blue-soft);
+        line-height: 1.4;
+      }
+      .cloud-panel .panel-card {
+        margin-bottom: 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .cloud-panel .panel-card h5 {
+        margin: 0;
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 8.5px;
+      }
+      .cloud-panel .panel-row {
+        display: grid;
+        grid-template-columns: 67px 1fr auto;
+        gap: 5px;
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee9e2;
+        line-height: 1.35;
+      }
+      .cloud-panel .panel-row:last-child {
+        border-bottom: 0;
+      }
+      .cloud-panel .panel-row b {
+        color: var(--ink);
+      }
+      .cloud-panel .panel-row code {
+        font: 7.5px var(--mono);
+      }
+      .cloud-panel .panel-file {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee9e2;
+      }
+      .cloud-panel .panel-file code {
+        color: var(--ink);
+        font: 7.8px var(--mono);
+      }
+      .cloud-panel .panel-file span {
+        color: var(--green);
+        font-size: 7.3px;
+        font-weight: 800;
+      }
+      .cloud-panel .panel-subhead {
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee9e2;
+        color: var(--faint);
+        background: var(--panel);
+        font-size: 7.2px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .cloud-panel .panel-link {
+        display: block;
+        padding: 7px 8px;
+        border-top: 1px solid var(--line);
+        color: var(--accent);
+        font-size: 8px;
+        font-weight: 800;
+      }
+      .right-bottom {
+        padding: 8px 10px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        background: var(--sidebar);
+        font-size: 9.5px;
+      }
+
+      .route-row {
+        width: max-content;
+        margin: 0 0 26px;
+        padding: 12px 14px 16px;
+        border: 1px solid rgba(189, 178, 165, 0.8);
+        border-radius: 13px;
+        background: rgba(255, 253, 250, 0.55);
+      }
+      .route-title {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+      .route-title h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .route-title code {
+        color: var(--accent);
+        font: 11px var(--mono);
+      }
+      .route-title span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .compact-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 340px);
+        gap: 14px;
+        width: max-content;
+      }
+      .compact-card {
+        min-height: 160px;
+        padding: 14px;
+        border: 1px solid var(--strong);
+        border-radius: 11px;
+        background: var(--paper);
+        box-shadow: 0 10px 24px -20px rgba(45, 35, 27, 0.5);
+      }
+      .compact-card h4 {
+        margin: 0 0 4px;
+        font-size: 13px;
+      }
+      .compact-card .kind {
+        color: var(--blue);
+        font-size: 9px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .compact-card p,
+      .compact-card li {
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .compact-card ul {
+        margin: 9px 0 0;
+        padding-left: 17px;
+      }
+      .compact-card.language {
+        border-top: 5px solid #c7a25c;
+      }
+      .compact-card.recovery {
+        border-top: 5px solid var(--red);
+      }
+      .resource-matrix-card {
+        min-height: 210px;
+        border-top: 5px solid var(--blue);
+      }
+      .resource-matrix-card .resource-name {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        margin: 5px 0 9px;
+      }
+      .resource-matrix-card .resource-name h4 {
+        margin: 0;
+      }
+      .resource-matrix-card .resource-name span {
+        color: var(--amber);
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .resource-op {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 7px;
+        padding: 5px 0;
+        border-top: 1px solid #eee9e2;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+      .resource-op b {
+        color: var(--blue);
+        font: 800 8px var(--mono);
+        letter-spacing: 0.05em;
+      }
+      .resource-op span {
+        color: var(--muted);
+      }
+      .resource-op.na span {
+        color: var(--faint);
+      }
+      .boundary-note {
+        width: 1402px;
+        margin: 0 0 14px;
+        padding: 11px 13px;
+        border: 1px solid #c4d7e5;
+        border-radius: 10px;
+        color: #356681;
+        background: var(--blue-soft);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .boundary-note b {
+        color: var(--ink);
+      }
+      .footer-space {
+        height: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>NoraCloud Resource Control — Build, Connect, Operate + Settings</h1>
+        <p>
+          Firmware build → Agent publish → physical Device registration and flash → Agent, Version, Device, and Session operations.
+        </p>
+      </div>
+      <div class="spacer"></div>
+      <div class="controls">
+        <button id="zoom-out">−</button><button id="zoom-in">+</button
+        ><button id="fit">Fit</button><button id="reset">Reset</button>
+      </div>
+    </header>
+
+    <nav class="jump">
+      <h2>Jump</h2>
+      <button data-jump="main-happy-path">Build, publish &amp; connect</button>
+      <button data-jump="agent-lifecycle">Agent-operated resources</button>
+      <button data-jump="route-path">Permission &amp; safety</button>
+      <button data-jump="detail-states">Settings management</button>
+      <button data-jump="state-language">State language</button>
+      <button data-jump="errors-recovery">Errors and recovery</button>
+      <div class="legend">
+        <div><i style="background: #3f7298"></i>Proposed resource UI</div>
+        <div><i style="background: #4f805c"></i>Completed fact</div>
+        <div><i style="background: #936317"></i>Decision / partial</div>
+        <div><i style="background: #a74742"></i>Outcome unknown</div>
+      </div>
+    </nav>
+
+    <main class="viewport" id="viewport">
+      <div class="stage" id="stage">
+        <section class="band" id="main-happy-path">
+          <div class="band-title">
+            <h3>Build, first publish &amp; connect a Device</h3>
+            <span
+              >Journey A · firmware coding → Agent definition → first publish → Device registration → build, flash, and first Session</span
+            >
+          </div>
+          <div class="flow" id="main-flow"></div>
+          <article class="route-row" style="margin-top: 18px">
+            <div class="route-title"><h4>Journey A continued · onboard the physical Device</h4><code>6 → 7 → 8 → 9</code><span>Registration creates the Device and binds it to the Agent; firmware provisioning and flashing make that relationship real on hardware.</span></div>
+            <div class="flow" id="device-onboarding-flow"></div>
+          </article>
+        </section>
+
+        <section class="band" id="agent-lifecycle">
+          <div class="band-title">
+            <h3>Agent-operated Cloud resources</h3>
+            <span
+              >Proposed MCP end state · the Agent can operate the same NoraCloud resources that Settings manages directly.</span
+            >
+          </div>
+          <div class="boundary-note"><b>Implementation boundary:</b> NoraCloud APIs exist and today's CLI covers many operations, but the semantic MCP Tool Calls below are proposed. Settings is a parallel human entry point, not a fallback for missing Agent capabilities.</div>
+          <div class="compact-grid" style="margin-bottom:18px">
+            <article class="compact-card resource-matrix-card"><span class="kind">API exists · MCP proposed</span><div class="resource-name"><h4>Agent</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>First publish or attach</span></div><div class="resource-op"><b>READ</b><span>List, get, status</span></div><div class="resource-op"><b>UPDATE</b><span>Rename, metadata, move Live</span></div><div class="resource-op"><b>DELETE</b><span>Delete; blocked while Devices remain bound</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">Immutable resource</span><div class="resource-name"><h4>Version</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Build validated immutable Version</span></div><div class="resource-op"><b>READ</b><span>List and inspect history</span></div><div class="resource-op"><b>UPDATE</b><span>Move Agent Live pointer; Version content never mutates</span></div><div class="resource-op na"><b>DELETE</b><span>No ordinary Version delete surface</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">API exists · MCP proposed</span><div class="resource-name"><h4>Device</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Register and deliver credential safely</span></div><div class="resource-op"><b>READ</b><span>List, get, telemetry, current Session</span></div><div class="resource-op"><b>UPDATE</b><span>Rename, track, rebind, rotate credential</span></div><div class="resource-op"><b>DELETE</b><span>Revoke / deactivate identity</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">History retained</span><div class="resource-name"><h4>Session</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Create test Session and submit Turns</span></div><div class="resource-op"><b>READ</b><span>List, get, export, logs, transcript</span></div><div class="resource-op na"><b>UPDATE</b><span>No generic mutable Session definition</span></div><div class="resource-op"><b>END</b><span>End activity; retain recorded facts</span></div></article>
+          </div>
+          <article class="route-row"><div class="route-title"><h4>Read · inspect the complete resource graph</h4><code>R</code><span>Read-only discovery does not ask for mutation approval.</span></div><div class="flow" id="agent-read-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Update · publish a new immutable Version and move Live</h4><code>U1 → U2</code><span>The Agent shows the semantic update and affected Devices before mutation.</span></div><div class="flow" id="agent-update-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · rebind ownership and end the current Session</h4><code>D1 → D2</code><span>Memory ownership and reconnect effects remain explicit.</span></div><div class="flow" id="agent-device-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · replace its Cloud access credential</h4><code>C1 → C2</code><span>The technical <code>rotate</code> action keeps Device identity intact; its required mode distinguishes graceful exchange from emergency revocation.</span></div><div class="flow" id="agent-device-rotate-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · revoke identity and access</h4><code>V1 → V2</code><span>The Device is deactivated, its credential is revoked, and active work stops.</span></div><div class="flow" id="agent-device-revoke-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Session · create a hardware-free test and run one Turn</h4><code>T1 → T2</code><span>The test Session targets an Agent Version without registering a Device; the first Turn returns reply and Usage evidence.</span></div><div class="flow" id="agent-test-session-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Session · end activity without deleting history</h4><code>S1 → S2</code><span>Turns stop; transcript, export, and usage remain inspectable.</span></div><div class="flow" id="agent-session-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Delete · remove an Agent only after dependency discovery</h4><code>X1 → X2</code><span>Bound Devices block deletion; successful delete removes Versions and ends active test Sessions.</span></div><div class="flow" id="agent-delete-flow"></div></article>
+        </section>
+
+        <section class="band" id="route-path">
+          <div class="band-title">
+            <h3>Permission &amp; safety branches</h3>
+            <span
+              >These are execution policies and recovery rules, not additional product journeys.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card"><span class="kind">Permission</span><h4>Auto-run</h4><p>Allowed mutation executes once and settles directly to the same Tool receipt. No artificial approval frame is added.</p></article>
+            <article class="compact-card"><span class="kind">Permission</span><h4>Ask before running</h4><p>The Tool Call pauses on its exact resource effects. Approve once, workspace allow, or Deny resolves that same call.</p></article>
+            <article class="compact-card"><span class="kind">Permission</span><h4>Never run</h4><p>Policy blocks before mutation. The user can continue local work or change policy; no fake API progress appears.</p></article>
+            <article class="compact-card recovery"><span class="kind">Safety</span><h4>Changed / conflict / unknown</h4><p>Changed sources invalidate approval; stale premises conflict; unknown outcomes require read-only discovery before retry.</p></article>
+          </div>
+        </section>
+
+        <section class="band" id="detail-states">
+          <div class="band-title">
+            <h3>Settings resource management</h3>
+            <span
+              >The human-operated path calls NoraCloud APIs directly and never creates Conversation Tool Calls.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.1.1 Rename Agent</h4><ul><li>Settings saves the name inline.</li><li>Updated or actionable error is shown in place.</li><li>No Conversation or Tool Call appears.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.1.4 Agent In Use</h4><ul><li>Delete is blocked by dependent Devices.</li><li>Blocking resources are listed.</li><li>No force-delete action is offered.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.2.1 / 5.2.3 / 5.2.4 Device Actions</h4><ul><li>Track, credential, and revoke actions use direct Settings confirmation.</li><li>Secrets never appear.</li><li>Device and Session state refresh afterward.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.3 Session End</h4><ul><li>End is confirmed inside Settings.</li><li>Ended facts remain inspectable.</li><li>The action is idempotent.</li></ul></article>
+          </div>
+          <article class="route-row" style="margin-top: 14px">
+            <div class="route-title"><h4>Settings · Agent and Version management</h4><code>5.1 → 5.1.2</code><span>Inspect immutable Versions and make one Live through a direct API confirmation.</span></div>
+            <div class="flow" id="settings-agent-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Delete an unused Agent</h4><code>5.1.3 → 5.1.3.1</code><span>The confirmation names deleted Versions and automatically ended test Sessions; bound Devices block the action.</span></div>
+            <div class="flow" id="settings-agent-delete-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Device management</h4><code>5.2 → 5.2.2 → 5.2.2.1</code><span>Rebind a Device with explicit Session impact and reconnect guidance.</span></div>
+            <div class="flow" id="settings-device-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Cloud Session</h4><code>5.3 → 5.3.1 → 5.3.2</code><span>End a Session directly and retain its final facts.</span></div>
+            <div class="flow" id="settings-session-flow"></div>
+          </article>
+          <div class="compact-grid" style="margin-top:14px"><article class="compact-card"><span class="kind">Proposed Tool surface</span><h4>Eight NoraCloud Tool families</h4><p><code>noracloud_status</code> · <code>noracloud_publish</code> · <code>noracloud_agent</code> · <code>noracloud_version</code> · <code>noracloud_device</code> · <code>noracloud_session</code> · <code>noracloud_turn</code> · <code>noracloud_observe</code></p></article><article class="compact-card"><span class="kind">Engineering readiness</span><h4>Today → Proposed end state</h4><p>Today: NoraCloud API exists, Agent uses a partial CLI surface, semantic MCP Tools are absent, and Settings is browse-only. Proposed: MCP-first Agent operations plus direct Settings management over one shared contract.</p></article></div>
+        </section>
+
+        <section class="band" id="state-language">
+          <div class="band-title">
+            <h3>State language</h3>
+            <span
+              >Stable terms for Tool execution, Settings operations, recovery, and secrets.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.1 Tool execution</h4>
+              <p>Approval required · Blocked · Completed · Denied · Failed.</p>
+            </article>
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.2 Settings operations</h4>
+              <p>Confirm · Updating · Updated · Conflict · In use · Revoked · Ended.</p>
+            </article>
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.3 Recovery language</h4>
+              <p>Partial and Outcome unknown preserve confirmed facts and stop duplicate mutation.</p>
+            </article>
+            <article class="compact-card language">
+              <span class="kind">State language</span>
+              <h4>0.4 Secret Language</h4>
+              <p>
+                Show credential type, protected destination, reconnect guidance, and status.
+                Never show the secret value.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="band" id="errors-recovery">
+          <div class="band-title">
+            <h3>Errors and recovery</h3>
+            <span
+              >Known facts survive failure; unsafe duplicate mutation stops.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card recovery">
+              <span class="kind">Recovery summary</span>
+              <h4>4.1 / 4.2 / 4.3 Tool recovery</h4>
+              <p>
+                Keep confirmed resources visible. Continue from the failed stage; unknown outcomes pause duplicate mutation until reality is determined.
+              </p>
+            </article>
+            <article class="compact-card recovery"><span class="kind">Device provisioning</span><h4>Cloud created · local delivery failed</h4><p>Keep the Device ID as a partial receipt. Never register blindly again; revoke/re-provision or delete the unused Device after discovery.</p></article>
+            <article class="compact-card recovery"><span class="kind">Physical verification</span><h4>Flash or connection failed</h4><p>The registered Device remains `Never connected`. Retry build/flash or inspect hardware without creating another Device identity.</p></article>
+            <article class="compact-card recovery"><span class="kind">Test Session</span><h4>Turn already in progress</h4><p>A `409 turn_in_progress` does not queue or duplicate the Turn. Preserve the active Session and retry only after current state is read.</p></article>
+          </div>
+        </section>
+        <div class="footer-space"></div>
+      </div>
+    </main>
+
+    <script>
+      const states = {
+        1: {
+          title: "Firmware Application Authored",
+          view: "firmware-coding",
+          caption: "The user's product goal becomes real firmware edits and build evidence.",
+        },
+        2: {
+          title: "Agent Definition Authored",
+          view: "agent-authoring",
+          caption: "The Agent asks for missing identity and personality, then authors the local definition.",
+        },
+        3: {
+          title: "Publish Agent · Approval Required",
+          view: "approval",
+          caption: "The semantic Tool Call itself pauses and explains its persistent resource effect.",
+        },
+        4: {
+          title: "NoraCloud Tool Receipt",
+          view: "receipt",
+          caption: "The completed tool result is the receipt and canonical resource outcome.",
+        },
+        3.1: {
+          title: "Publish Tool · Denied",
+          view: "denied",
+          caption: "Deny records no Cloud mutation and keeps firmware and Agent files local.",
+        },
+        "3.2": {
+          title: "Publish Tool · Blocked",
+          view: "blocked",
+          caption: "Never-run or deny-all policy blocks the Cloud operation before mutation.",
+        },
+        "3.3": {
+          title: "Publish Definition · Source Changed",
+          view: "source-changed",
+          caption: "A changed source invalidates the old approval and requires a regenerated definition preview.",
+        },
+        4.1: {
+          title: "Publish Conflict",
+          view: "conflict",
+          caption: "The tool reports a current-state conflict without retrying blindly.",
+        },
+        "4.2": {
+          title: "Partial Tool Result",
+          view: "partial",
+          caption: "Completed and failed sub-operations remain explicit and recoverable.",
+        },
+        "4.3": {
+          title: "Tool Outcome Unknown",
+          view: "unknown",
+          caption: "The client checks current Cloud state before offering a safe next action.",
+        },
+        "5": {
+          title: "Workspace Cloud Refreshed",
+          view: "cloud-refresh",
+          caption: "The completed receipt silently refreshes the right rail; Conversation adds no status Tool Call.",
+        },
+        6: {
+          title: "Physical Device Prepared",
+          view: "device-preflight",
+          caption: "Read-only firmware tools resolve the exact project, environment, and physical upload port before NoraCloud issues a one-time credential.",
+        },
+        7: {
+          title: "Register Device · Approval Required",
+          view: "device-register-approval",
+          caption: "Registration creates the Device already bound to the target Agent and names the protected local credential destination.",
+        },
+        8: {
+          title: "Device Registration Receipt",
+          view: "device-register-receipt",
+          caption: "The receipt confirms Device identity, Agent binding, track, and secure provisioning without displaying the credential.",
+        },
+        9: {
+          title: "Firmware Flashed · Device Connected",
+          view: "device-connected",
+          caption: "A separately authorized flash installs the provisioned firmware; connection creates the Device's first Cloud Session.",
+        },
+        R: {
+          title: "Read Cloud Resource Graph",
+          view: "agent-read",
+          caption: "One read-only Tool Call returns the related Agent, Version, Device, and Session facts without mutation approval.",
+        },
+        U1: {
+          title: "Update Agent · Approval Required",
+          view: "agent-update-approval",
+          caption: "Publishing an existing Agent creates a new immutable Version and proposes moving Live.",
+        },
+        U2: {
+          title: "Update Agent · Tool Receipt",
+          view: "agent-update-receipt",
+          caption: "The receipt confirms the new Version, Live pointer, and Devices that follow Live.",
+        },
+        D1: {
+          title: "Rebind Device · Approval Required",
+          view: "agent-device-approval",
+          caption: "The Device Tool Call explains ownership, Session, and reconnect effects before mutation.",
+        },
+        D2: {
+          title: "Rebind Device · Tool Receipt",
+          view: "agent-device-receipt",
+          caption: "The receipt confirms new ownership, ended Session, and reconnect requirement.",
+        },
+        C1: {
+          title: "Replace Device Access Credential · Approval Required",
+          view: "agent-device-rotate-approval",
+          caption: "The required rotation mode makes zero-touch graceful exchange and immediate compromise response visibly different.",
+        },
+        C2: {
+          title: "Replace Device Access Credential · Tool Receipt",
+          view: "agent-device-rotate-receipt",
+          caption: "The receipt preserves Device identity and history while exposing whether the new credential awaits Device acknowledgement.",
+        },
+        V1: {
+          title: "Revoke Device · Approval Required",
+          view: "agent-device-revoke-approval",
+          caption: "The Tool Call names the identity, credential, connection, and active-work consequences.",
+        },
+        V2: {
+          title: "Revoke Device · Tool Receipt",
+          view: "agent-device-revoke-receipt",
+          caption: "The receipt confirms deactivation and revoked future access without exposing a secret.",
+        },
+        S1: {
+          title: "End Session · Approval Required",
+          view: "agent-session-approval",
+          caption: "Ending activity is a protected Session operation; retained history is named before execution.",
+        },
+        S2: {
+          title: "End Session · Tool Receipt",
+          view: "agent-session-receipt",
+          caption: "The Session becomes terminal while transcript, export, and Usage remain available.",
+        },
+        T1: {
+          title: "Create Test Session · Approval Required",
+          view: "agent-test-session-approval",
+          caption: "A hardware-free Session names its Agent, pinned Version, persistent record, and quota effect before creation.",
+        },
+        T2: {
+          title: "Test Session · First Turn Result",
+          view: "agent-test-session-receipt",
+          caption: "The created Session and subsequent test Turn return reply, transcript, and Usage evidence without a Device.",
+        },
+        X1: {
+          title: "Delete Agent · Approval Required",
+          view: "agent-delete-approval",
+          caption: "Dependency discovery precedes the irreversible Agent deletion request.",
+        },
+        X2: {
+          title: "Delete Agent · Tool Receipt",
+          view: "agent-delete-receipt",
+          caption: "The receipt records deleted Versions and automatically ended test Sessions.",
+        },
+        "5.1": {
+          title: "Agent Resource Detail",
+          view: "settings-agent-detail",
+          caption: "Settings manages Agent resources directly through typed NoraCloud API calls.",
+        },
+        "5.1.2": {
+          title: "Agent Live Change Confirm",
+          view: "settings-agent-live",
+          caption: "Make Live and rollback require direct Settings confirmation.",
+        },
+        "5.1.3": {
+          title: "Delete Agent Confirm",
+          view: "settings-agent-delete",
+          caption: "Delete is confirmed in Settings and checks dependent Devices first.",
+        },
+        "5.1.3.1": {
+          title: "Agent Deleted",
+          view: "settings-agent-deleted",
+          caption: "Settings shows the direct API success state without entering Conversation.",
+        },
+        "5.1.4": {
+          title: "Agent In Use",
+          view: "settings-agent-in-use",
+          caption: "A dependent Device blocks deletion and explains the required next action.",
+        },
+        "5.2": {
+          title: "Device Resource Detail",
+          view: "settings-device-detail",
+          caption: "Track, rebind, rotate, and revoke are direct Settings operations.",
+        },
+        "5.2.2": {
+          title: "Device Rebind Confirm",
+          view: "settings-device-rebind",
+          caption: "Rebind confirms the target Agent and protected delivery impact.",
+        },
+        "5.2.2.1": {
+          title: "Device Rebound",
+          view: "settings-device-rebound",
+          caption: "Settings reports the new ownership and reconnect requirement.",
+        },
+        "5.3": {
+          title: "Cloud Session Detail",
+          view: "settings-session-detail",
+          caption: "Session actions remain account-level Settings controls.",
+        },
+        "5.3.1": {
+          title: "End Session Confirm",
+          view: "settings-session-end",
+          caption: "End Session is confirmed in Settings, not posted to Conversation.",
+        },
+        "5.3.2": {
+          title: "Session Ended",
+          view: "settings-session-ended",
+          caption: "Settings shows the direct API success state and preserves the record.",
+        },
+        "settings-cloud": {
+          title: "Global Cloud Overview In Settings",
+          view: "settings-cloud",
+          caption: "Settings provides browsable account-level Cloud resources and cumulative Recorded Usage.",
+        },
+      };
+
+      function cardShell(title, status, statusClass, body, extraClass = "") {
+        return `<div class="resource-card ${extraClass}"><div class="rhead">${title}<span class="status ${statusClass}">${status}</span></div><div class="rbody">${body}</div></div>`;
+      }
+      function row(key, value, tail = "") {
+        return `<div class="row"><span class="key">${key}</span><span class="value">${value}</span><code>${tail}</code></div>`;
+      }
+      function actions(items) {
+        return `<div class="actions">${items.map((item, index) => `<span class="btn ${index === 0 ? "primary" : ""}">${item}</span>`).join("")}</div>`;
+      }
+      function stage(icon, label, tail, cls = "") {
+        return `<div class="stage-line"><span class="${cls}">${icon}</span><b>${label}</b><code>${tail}</code></div>`;
+      }
+      function toolCall(title, status, expanded = false, body = "") {
+        const running = status === "Running" || status === "Approval required";
+        const blocked = status === "Blocked" || status === "Denied" || status === "Failed" || status === "Source changed";
+        const icon = /NoraCloud|Cloud|Publish|Register|Rebind|Rotate|Revoke|Session/.test(title) ? "☁" : "✎";
+        const statusIcon = running ? "◷" : blocked ? "×" : "✓";
+        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : blocked ? "blocked" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
+      }
+      function cloudEffect(title, detail) {
+        return `<div class="cloud-effect"><span>+</span><div><b>${title}</b><small>${detail}</small></div></div>`;
+      }
+      function instructionFile(state, name, summary, action, unchanged = false) {
+        return `<div class="instruction-file"><span class="file-change ${unchanged ? "unchanged" : ""}">${state}</span><b>${name}</b><em>${summary}</em><span class="review-link">${action} ›</span></div>`;
+      }
+      function publishApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish</span><b>Creates a persistent Agent and makes it Live</b></div><span class="publish-count">4 Cloud changes</span></div><div class="publish-destination"><span>Destination</span><b>NoraCloud Production · Nora User</b><code>desk-weather · unbound</code></div><div class="publish-review-grid"><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Cloud changes</b><span>Runs after approval</span></div>${cloudEffect("Create Agent", "Weather Buddy")}${cloudEffect("Create initial Version", "Immutable definition")}${cloudEffect("Set initial Version Live", "No previous Live Version")}${cloudEffect("Bind Workspace", "desk-weather → new Agent")}</section><section class="publish-review-block"><div class="publish-block-head"><b>Effective Agent definition</b><span class="review-link">View config ›</span></div><div class="definition-pairs"><span>Name</span><b>Weather Buddy</b><span>Description</span><b>Humorous weather assistant</b><span>LLM</span><b>DashScope · qwen-max</b><span>STT</span><b>OpenAI ASR · zh</b><span>TTS</span><b>DashScope · zhixiaobai</b><span>Cron</span><b>None</b></div></section></div><section class="instruction-review"><div class="publish-block-head"><b>Instructions included in this Version</b><span>Review content</span></div>${instructionFile("Modified", "SOUL.md", "Humorous, friendly weather guide", "View diff")}${instructionFile("Modified", "IDENTITY.md", "Name and Weather Buddy identity", "View diff")}${instructionFile("Unchanged", "USER.md", "Workspace user preferences", "View file", true)}</section><div class="publish-exclusions"><b>Not included:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>You are approving the content and Cloud changes shown above.</b><span>The system will reject this approval if any reviewed source changes.</span></div><span class="technical-disclosure">Technical details · noracloud_publish · snapshot protected ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Publish Weather Buddy Agent", "Approval required", true, body)}</div>`;
+      }
+      function publishReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish completed</span><b>Weather Buddy is Live and bound to this Workspace</b></div><span class="publish-count">4 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="publish-block-head"><b>Created resources</b></div><div class="definition-pairs"><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Version</span><b>Ready · ver_…b12</b><span>Live</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="publish-block-head"><b>Workspace result</b></div><div class="definition-pairs"><span>Workspace</span><b>desk-weather</b><span>Binding</span><b>Weather Buddy</b><span>Devices</span><b>None registered</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>This Tool result is the persistent NoraCloud receipt.</b><span>The Cloud panel refreshes from this confirmed result next.</span></div><span class="technical-disclosure">IDs, digest, request · req_…42e ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Agent", "Completed", true, body)}</div>`;
+      }
+
+      function registerDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device registration and initial binding</span><b>Create Desk Display under Weather Buddy</b></div><span class="publish-count">1 Cloud resource</span></div><div class="publish-destination"><span>Target Agent</span><b>Weather Buddy · Live ver_…b12</b><code>agt_…7f2</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="publish-block-head"><b>Device definition</b></div><div class="definition-pairs"><span>Name</span><b>Desk Display</b><span>Track</span><b>Follow Agent Live</b><span>Firmware env</span><b>m5stack-cores3</b><span>Upload port</span><b>/dev/cu.usbmodem2101</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent and local effects</b><span>Runs after approval</span></div>${cloudEffect("Register Device", "Identity is created under agt_…7f2")}${cloudEffect("Issue credential once", "Value never enters Conversation")}${cloudEffect("Write firmware config", "platformio_override.ini")}</section></div><div class="publish-exclusions"><b>Not done yet:</b> firmware rebuild · physical flash · Device connection · Device Session</div><div class="approval-footer"><div><b>Registration is the first Agent binding.</b><span>The Agent ID in this request becomes the Device owner; a later move uses Rebind.</span></div><span class="technical-disclosure">noracloud_device · action register ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Register Desk Display", "Approval required", true, body)}</div>`;
+      }
+
+      function registerDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device registration completed</span><b>Desk Display exists and is bound to Weather Buddy</b></div><span class="publish-count">Provisioned locally</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>Desk Display · dev_…228</b><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Track</span><b>Follow Live</b><span>Connection</span><b>Never connected</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Credential</span><b>Stored securely · not displayed</b><span>Destination</span><b>platformio_override.ini</b><span>Next</span><b>Build and flash</b><span>Request</span><b>req_…6a1</b></div></section></div><div class="approval-footer"><div><b>This receipt proves Cloud creation and local credential delivery.</b><span>It does not claim that the physical Device is running the new configuration yet.</span></div><span class="technical-disclosure">Device ID, masked hint, and request evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Register Desk Display", "Completed", true, body)}</div>`;
+      }
+
+      function rotateDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Routine credential rotation</span><b>Exchange Desk Display credential without changing identity</b></div><span class="publish-count">Mode required</span></div><div class="publish-destination"><span>Device</span><b>Desk Display · Weather Buddy</b><code>dev_…228</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Mode</span><b>Graceful</b><span>Connection</span><b>Connected</b><span>Session</span><b>ses_…91c remains active</b><span>Identity</span><b>Unchanged</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Credential effects</b><span>Runs after approval</span></div>${cloudEffect("Issue replacement", "Returned once; never displayed")}${cloudEffect("Deliver over active channel", "Device persists to NVS and acknowledges")}${cloudEffect("Revoke old credential", "Only after Device acknowledgement")}</section></div><div class="notice"><b>Different emergency mode:</b> Revoke now drops the connection immediately and requires physical re-provisioning; it is never selected implicitly.</div><div class="approval-footer"><div><b>You are approving graceful rotation for this exact Device.</b><span>Device binding, Session, and history are preserved.</span></div><span class="technical-disclosure">noracloud_device · action rotate · mode graceful ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Replace Desk Display Access Credential", "Approval required", true, body)}</div>`;
+      }
+
+      function rotateDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Rotation request completed</span><b>Replacement credential issued; Device acknowledgement is pending</b></div><span class="publish-count">Canonical pending state</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…228 · unchanged</b><span>Agent</span><b>Weather Buddy</b><span>Session</span><b>ses_…91c · active</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Rotation</span><b>Pending Device ack</b><span>Old credential</span><b>Temporarily accepted</b><span>New credential</span><b>Protected</b><span>Request</span><b>req_…c82</b></div></section></div><div class="approval-footer"><div><b>The API call completed; credential exchange is still observable.</b><span>After Device acknowledgement, the old credential is revoked and Rotation returns to None.</span></div><span class="technical-disclosure">masked hint and rotation event evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Replace Desk Display Access Credential", "Completed", true, body)}</div>`;
+      }
+
+      function createTestSessionApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Hardware-free Agent verification</span><b>Create a persistent test Session pinned to ver_…c30</b></div><span class="publish-count">1 Cloud Session</span></div><div class="publish-destination"><span>Target</span><b>Weather Buddy · pre-release Version</b><code>agt_…7f2 · ver_…c30</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>None</b><span>Version</span><b>Pinned · ver_…c30</b><span>Initial turns</span><b>0</b><span>Quota</span><b>1 active test Session</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent effects</b><span>Runs after approval</span></div>${cloudEffect("Create test Session", "Session remains until ended")}${cloudEffect("Record later Turns", "Transcript and Usage accumulate")}</section></div><div class="publish-exclusions"><b>Not created:</b> Device identity · credential · physical connection · firmware flash</div><div class="approval-footer"><div><b>This approval creates the Session only.</b><span>The following test Turn is a separate <code>noracloud_turn</code> call governed by its own policy.</span></div><span class="technical-disclosure">noracloud_session · action create ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Create Weather Buddy Test Session", "Approval required", true, body)}</div>`;
+      }
+
+      function createTestSessionReceiptCall() {
+        const sessionBody = `${row("Session", "ses_…t91 · Active")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Version", "Pinned · ver_…c30")}${row("Device", "None")}${row("Turns", "0")}`;
+        const turnBody = `${row("Tool", "noracloud_turn")}${row("Prompt", "What should I wear in Shanghai today?")}${row("Reply", "A light jacket—Shanghai is cool and breezy today.")}${row("Transcript", "Recorded in ses_…t91")}${row("Usage", "1,240 tokens")}`;
+        return `<div class="tool-stack">${toolCall("Create Weather Buddy Test Session", "Completed", true, sessionBody)}${toolCall("Run first Cloud test Turn", "Completed", true, turnBody)}</div><div class="notice"><b>Turn policy:</b> this example auto-runs the follow-up <code>noracloud_turn</code>; Ask-before-running would pause that second Tool Call independently.</div>`;
+      }
+
+      function updateAgentApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Existing Agent update</span><b>Create one immutable Version and move Live</b></div><span class="publish-count">2 Cloud changes</span></div><div class="publish-destination"><span>Target</span><b>Weather Buddy · NoraCloud Production</b><code>agt_…7f2</code></div><div class="publish-review-grid"><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Cloud changes</b><span>Runs after approval</span></div>${cloudEffect("Create Version", "Shorter responses · immutable")}${cloudEffect("Move Live", "ver_…b12 → new Version")}</section><section class="publish-review-block"><div class="publish-block-head"><b>Runtime impact</b><span class="review-link">View diff ›</span></div><div class="definition-pairs"><span>Source</span><b>SOUL.md modified</b><span>Devices</span><b>2 follow Live</b><span>Switch</span><b>Next turn</b><span>Sessions</span><b>Context preserved</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Agent ID · Device ownership · active Session memory</div><div class="approval-footer"><div><b>You are approving the new Version and Live pointer change.</b><span>A current-Live conflict stops the operation instead of overwriting newer state.</span></div><span class="technical-disclosure">noracloud_publish · CAS protected ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Publish Weather Buddy Update", "Approval required", true, body)}</div>`;
+      }
+
+      function updateAgentReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Agent update completed</span><b>New Version is Live; Session context is preserved</b></div><span class="publish-count">2 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Created</span><b>ver_…c30 · Ready</b><span>Live</span><b>ver_…b12 → ver_…c30</b><span>Source</span><b>SOUL.md snapshot</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Devices</span><b>2 continue following Live</b><span>Sessions</span><b>Context preserved</b><span>Request</span><b>req_…8d1</b></div></section></div><div class="approval-footer"><div><b>This receipt confirms the effective Agent update.</b><span>No mutable Version content was overwritten.</span></div><span class="technical-disclosure">Version digest and CAS evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Update", "Completed", true, body)}</div>`;
+      }
+
+      function rebindDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device ownership change</span><b>Rebind Desk Display to Kitchen Helper</b></div><span class="publish-count">Protected update</span></div><div class="publish-destination"><span>Device</span><b>Desk Display</b><code>dev_…228</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Current</span><b>Weather Buddy</b><span>Target</span><b>Kitchen Helper</b><span>Track</span><b>Follow target Live</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Consequences</b><span>Runs after approval</span></div>${cloudEffect("End current Session", "ses_…91c retains history")}${cloudEffect("Reconnect Device", "Credential remains protected")}</section></div><div class="publish-exclusions"><b>Not changed:</b> Device ID · historical Sessions · credential value is never displayed</div><div class="approval-footer"><div><b>You are approving a memory-ownership change.</b><span>The old Agent immediately loses authorization for new Device activity.</span></div><span class="technical-disclosure">noracloud_device · action rebind ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Rebind Desk Display", "Approval required", true, body)}</div>`;
+      }
+
+      function rebindDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device rebind completed</span><b>Desk Display now belongs to Kitchen Helper</b></div><span class="publish-count">Updated</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…228</b><span>Agent</span><b>Kitchen Helper</b><span>Track</span><b>Follow Live</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…91c · Ended</b><span>Reconnect</span><b>Required</b><span>History</span><b>Retained</b></div></section></div><div class="approval-footer"><div><b>The Device relationship is now canonical.</b><span>Reconnect guidance is available without revealing a credential.</span></div><span class="technical-disclosure">request · req_…2a9 ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Rebind Desk Display", "Completed", true, body)}</div>`;
+      }
+
+      function revokeDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device access removal</span><b>Deactivate Office Display and revoke its credential</b></div><span class="publish-count">Irreversible access change</span></div><div class="publish-destination"><span>Device</span><b>Office Display · Weather Buddy</b><code>dev_…930</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Connection</span><b>Connected</b><span>Session</span><b>ses_…2bf · Active</b><span>Track</span><b>Follow Live</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Consequences</b><span>Runs after approval</span></div>${cloudEffect("Deactivate Device", "Identity can no longer connect")}${cloudEffect("Revoke credential", "Later handshakes are rejected")}${cloudEffect("Stop active work", "In-flight turn is aborted")}</section></div><div class="publish-exclusions"><b>Protected:</b> credential value is never displayed · Session history remains inspectable</div><div class="approval-footer"><div><b>You are approving permanent removal of this Device’s Cloud access.</b><span>Reusing the hardware later requires a new registration and credential.</span></div><span class="technical-disclosure">noracloud_device · action revoke ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Revoke Office Display", "Approval required", true, body)}</div>`;
+      }
+
+      function revokeDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device access revoked</span><b>Office Display can no longer connect to NoraCloud</b></div><span class="publish-count">Revoked</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…930 · Deactivated</b><span>Credential</span><b>Revoked</b><span>Connection</span><b>Closed</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…2bf · Ended</b><span>History</span><b>Retained</b><span>Request</span><b>req_…4f0</b></div></section></div><div class="approval-footer"><div><b>This receipt confirms the terminal Device access state.</b><span>No credential value was returned to Conversation.</span></div><span class="technical-disclosure">request and revoked identity evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Revoke Office Display", "Completed", true, body)}</div>`;
+      }
+
+      function endSessionApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Session terminal action</span><b>Stop future turns while retaining recorded facts</b></div><span class="publish-count">1 Session</span></div><div class="publish-destination"><span>Session</span><b>Desk Display · Weather Buddy</b><code>ses_…91c</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Status</span><b>Active</b><span>Turns</span><b>14</b><span>Version</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>After</span><b>Ended</b><span>Transcript</span><b>Retained</b><span>Export</span><b>Available</b></div></section></div><div class="publish-exclusions"><b>Not deleted:</b> transcript · logs · recorded Usage · related Agent and Device</div><div class="approval-footer"><div><b>You are approving the end of active Session work.</b><span>New interaction starts a new Session; this record stays inspectable.</span></div><span class="technical-disclosure">noracloud_session · action end ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("End Cloud Session", "Approval required", true, body)}</div>`;
+      }
+
+      function endSessionReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Session ended</span><b>No further turns are accepted by ses_…91c</b></div><span class="publish-count">Terminal</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…91c</b><span>Status</span><b>Ended</b><span>Ended</span><b>Just now</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Turns</span><b>14 retained</b><span>Transcript</span><b>Available</b><span>Usage</span><b>24,680 tokens</b></div></section></div><div class="approval-footer"><div><b>The terminal Session receipt is retained.</b><span>Agent, Version, and Device remain unchanged.</span></div><span class="technical-disclosure">request · req_…c14 ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("End Cloud Session", "Completed", true, body)}</div>`;
+      }
+
+      function deleteAgentApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Irreversible resource deletion</span><b>Delete Voice Notes and its immutable Versions</b></div><span class="publish-count">Dependency check passed</span></div><div class="publish-destination"><span>Agent</span><b>Voice Notes</b><code>agt_…91a</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="publish-block-head"><b>Current dependencies</b></div><div class="definition-pairs"><span>Devices</span><b>0 bound</b><span>Versions</span><b>2</b><span>Test Sessions</span><b>1 active</b><span>Workspace</span><b>Not bound</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent effects</b><span>Runs after approval</span></div>${cloudEffect("Delete Agent", "agt_…91a")}${cloudEffect("Delete Versions", "2 immutable Versions")}${cloudEffect("End test Session", "Export first if its data is needed")}</section></div><div class="notice red"><b>Blocked when in use:</b> any bound Device returns <code>409 in_use</code>; no force-delete path is offered.</div><div class="approval-footer"><div><b>This Agent and its Versions cannot be restored.</b><span>Export needed Session data before approving this deletion.</span></div><span class="technical-disclosure">noracloud_agent · action delete ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Delete Voice Notes Agent", "Approval required", true, body)}</div>`;
+      }
+
+      function deleteAgentReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Agent deletion completed</span><b>Voice Notes no longer exists in NoraCloud</b></div><span class="publish-count">Deleted</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Agent</span><b>agt_…91a · Deleted</b><span>Versions</span><b>2 deleted</b><span>Devices</span><b>0 affected</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Test Session</span><b>ses_…72a · Ended automatically</b><span>Request</span><b>req_…de1</b></div></section></div><div class="approval-footer"><div><b>This receipt is the durable deletion outcome.</b><span>The account resource list refreshes outside Conversation.</span></div><span class="technical-disclosure">Deleted IDs and request evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Delete Voice Notes Agent", "Completed", true, body)}</div>`;
+      }
+
+      function conversationContent(kind) {
+        if (kind === "firmware-coding")
+          return `<div class="user-msg">Write a weather application for this device. Show the current temperature and weather condition.</div><div class="assistant">I’ll inspect the existing firmware project, implement the weather screen, and build it for the configured board.</div><div class="tool-stack">${toolCall("Read project files", "Completed")}${toolCall("Edit main/app/user_app.c", "Completed")}${toolCall("Write agent/ui/weather-screen.xml", "Completed")}${toolCall("Build firmware · hw_fw_build", "Completed", true, row("Evidence", "Selected target compiled successfully"))}</div>`;
+        if (kind === "agent-authoring")
+          return `<div class="assistant">The firmware application is ready. Before I configure its NoraCloud Agent, what should the Agent be called, and how should it speak?</div><div class="user-msg">Call it Weather Buddy. Make it humorous and friendly.</div><div class="tool-stack">${toolCall("Read existing Agent definition", "Completed")}${toolCall("Edit agent/SOUL.md", "Completed")}${toolCall("Edit agent/IDENTITY.md", "Completed")}${toolCall("Edit agent/cloud-agent.json", "Completed")}</div><div class="assistant">The firmware and Agent definition are ready. Publishing will create an immutable Version and make it Live.</div>`;
+        if (kind === "approval")
+          return `<div class="assistant">Review the Agent definition and Cloud changes before publishing.</div>${publishApprovalCall()}`;
+        if (kind === "denied")
+          return `<div class="assistant">The publish was denied. Firmware and Agent definition remain local.</div>${toolCall("Publish Weather Buddy Agent", "Denied", true, `${row("Tool", "noracloud_publish")}${row("Cloud mutation", "None")}`)}`;
+        if (kind === "blocked")
+          return `<div class="assistant">Current policy blocks this Cloud operation before execution.</div>${toolCall("Publish Weather Buddy Agent", "Blocked", true, `${row("Tool", "noracloud_publish")}${row("Policy", "Never run / deny all")}`)}`;
+        if (kind === "source-changed")
+          return `<div class="assistant">The approved source changed before execution. The old approval cannot be reused.</div>${toolCall("Publish Weather Buddy Agent", "Source changed", true, `${row("Changed source", "SOUL.md · content modified")}${row("Previous approval", "Canceled")}${row("Cloud mutation", "None")}<div class="notice"><b>Review required:</b> inspect the regenerated definition before approving again.</div><div class="technical-disclosure" style="margin-top:7px">Technical details · snapshot comparison ▸</div>${actions(["Review updated definition", "Stop"])}`)}`;
+        if (kind === "receipt")
+          return publishReceiptCall();
+        if (kind === "conflict")
+          return `<div class="assistant">The Cloud operation hit a current-state conflict. No blind retry is offered.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Conflict", "Workspace binding changed since preparation"))}${actions(["Refresh Cloud state", "Open details"])}`;
+        if (kind === "partial")
+          return `<div class="assistant">The tool returned a partial result. Confirmed sub-operations remain visible.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, `${stage("✓", "Agent created", "agt_…7f2", "done")}${stage("×", "Initial Version failed", "Not created", "failed")}`)}${actions(["Check current state", "Open details"])}`;
+        if (kind === "unknown")
+          return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
+        if (kind === "cloud-refresh")
+          return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>`;
+        if (kind === "device-preflight")
+          return `<div class="user-msg">Connect this physical device to Weather Buddy.</div><div class="assistant">I’ll resolve the exact firmware target and upload port before asking NoraCloud to issue a one-time Device credential.</div><div class="tool-stack">${toolCall("Inspect firmware target · hw_fw_status", "Completed", true, `${row("Project", "desk-weather/firmware")}${row("Environment", "m5stack-cores3")}${row("Harness", "Available")}`)}${toolCall("List physical ports · hw_fw_list_ports", "Completed", true, `${row("Selected", "/dev/cu.usbmodem2101")}${row("Evidence", "Unique USB serial target")}`)}</div><div class="notice"><b>Preflight only:</b> no Device exists in NoraCloud and no credential has been issued.</div>`;
+        if (kind === "device-register-approval")
+          return `<div class="assistant">The physical target is ready. Review where the Device will be registered, bound, and provisioned.</div>${registerDeviceApprovalCall()}`;
+        if (kind === "device-register-receipt")
+          return `<div class="assistant">Desk Display is registered under Weather Buddy. Its credential was written locally without entering the transcript.</div>${registerDeviceReceiptCall()}`;
+        if (kind === "device-connected")
+          return `<div class="assistant">The Cloud identity is ready. Flashing is a separate physical write and needs your authorization.</div><div class="user-msg">Flash Desk Display now.</div><div class="tool-stack">${toolCall("Build provisioned firmware · hw_fw_build", "Completed", true, `${row("Environment", "m5stack-cores3")}${row("Provisioning", "Device ID and protected credential included")}`)}${toolCall("Flash Desk Display · hw_fw_flash", "Completed", true, `${row("Port", "/dev/cu.usbmodem2101")}${row("Port source", "hw_fw_list_ports")}${row("Authorization", "Previous user reply")}${row("Evidence", "Upload and reboot completed")}`)}${toolCall("Read physical Device state · hw_device_state", "Completed", true, `${row("Wi-Fi", "Connected")}${row("Battery", "86%")}${row("Free heap", "182 KB")}`)}${toolCall("Verify Cloud Device relationship", "Completed", true, `${row("Tool", "noracloud_status · read only")}${row("Device", "Desk Display", "dev_…228")}${row("Connection", "Connected")}${row("Resolved Version", "ver_…b12")}${row("Session", "ses_…91c · Active")}`)}</div><div class="assistant">Physical and Cloud checks agree: Desk Display is connected to Weather Buddy, and its first Device Session was created on connection.</div>`;
+        if (kind === "agent-read")
+          return `<div class="user-msg">Show me the Cloud resources related to this Workspace.</div><div class="assistant">I’ll read the current NoraCloud resource graph. This does not change anything.</div>${toolCall("Inspect Workspace Cloud", "Completed", true, `${row("Tool", "noracloud_status")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Live Version", "ver_…b12")}${row("Versions", "5")}${row("Devices", "2 · 1 connected")}${row("Sessions", "1 active · 17 ended")}<div class="notice"><b>Read only:</b> no resource mutation or approval was required.</div>`)}`;
+        if (kind === "agent-update-approval")
+          return `<div class="user-msg">Make Weather Buddy’s responses shorter and publish the change.</div><div class="tool-stack">${toolCall("Edit agent/SOUL.md", "Completed")}</div><div class="assistant">The local definition is ready. Review the new Version and Live change.</div>${updateAgentApprovalCall()}`;
+        if (kind === "agent-update-receipt")
+          return `<div class="assistant">The new definition is Live. Devices following Live will resolve it on their next turn.</div>${updateAgentReceiptCall()}`;
+        if (kind === "agent-device-approval")
+          return `<div class="user-msg">Move Desk Display from Weather Buddy to Kitchen Helper.</div><div class="assistant">This changes Device ownership and ends its current Session. Review the consequences.</div>${rebindDeviceApprovalCall()}`;
+        if (kind === "agent-device-receipt")
+          return `<div class="assistant">Desk Display is rebound. Its previous Session is retained as ended.</div>${rebindDeviceReceiptCall()}`;
+        if (kind === "agent-device-rotate-approval")
+          return `<div class="user-msg">Rotate Desk Display’s credential without interrupting it.</div><div class="assistant">That requires graceful mode. Review how the old and replacement credentials overlap until the Device acknowledges.</div>${rotateDeviceApprovalCall()}`;
+        if (kind === "agent-device-rotate-receipt")
+          return `<div class="assistant">The replacement credential is issued. The Device identity and Session remain unchanged while acknowledgement is pending.</div>${rotateDeviceReceiptCall()}`;
+        if (kind === "agent-device-revoke-approval")
+          return `<div class="user-msg">Remove Office Display from NoraCloud.</div><div class="assistant">This revokes Device access and stops its active work. Review the exact identity and consequences.</div>${revokeDeviceApprovalCall()}`;
+        if (kind === "agent-device-revoke-receipt")
+          return `<div class="assistant">Office Display is deactivated and its credential is revoked.</div>${revokeDeviceReceiptCall()}`;
+        if (kind === "agent-session-approval")
+          return `<div class="user-msg">End the active Desk Display Cloud Session.</div><div class="assistant">The Session will stop accepting turns, but its recorded history remains available.</div>${endSessionApprovalCall()}`;
+        if (kind === "agent-session-receipt")
+          return `<div class="assistant">The Session is ended. Transcript, export, and Usage remain inspectable.</div>${endSessionReceiptCall()}`;
+        if (kind === "agent-test-session-approval")
+          return `<div class="user-msg">Test the unpublished Weather Buddy Version once without using a Device.</div><div class="assistant">I’ll create a hardware-free Session pinned to that Version. Review the persistent Session and quota effect.</div>${createTestSessionApprovalCall()}`;
+        if (kind === "agent-test-session-receipt")
+          return `<div class="assistant">The test Session was created. Your current policy allows the requested first test Turn to run automatically.</div>${createTestSessionReceiptCall()}`;
+        if (kind === "agent-delete-approval")
+          return `<div class="user-msg">Delete the unused Voice Notes Agent.</div><div class="tool-stack">${toolCall("Check Voice Notes dependencies", "Completed")}</div><div class="assistant">No Devices are bound. Review the irreversible Agent and Version deletion.</div>${deleteAgentApprovalCall()}`;
+        if (kind === "agent-delete-receipt")
+          return `<div class="assistant">Voice Notes and its Versions were deleted. Its active test Session ended and remains in history.</div>${deleteAgentReceiptCall()}`;
+        return "";
+      }
+
+      function rightPanel(kind) {
+        if (kind === "device-connected")
+          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Canonical state after the Device connected.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>1 registered</b><code></code></div></div><div class="panel-card"><h5>Desk Display · dev_…228</h5><div class="panel-row"><span>Agent</span><b>Weather Buddy</b><code>bound at registration</code></div><div class="panel-row"><span>Track</span><b>Follow Live</b><code>ver_…b12</code></div><div class="panel-row"><span>Connection</span><b>Connected</b><code>now</code></div><div class="panel-row"><span>Session</span><b>ses_…91c</b><code>active</code></div><span class="panel-link">Open Device in Settings ›</span></div></div>`;
+        if (kind !== "cloud-refresh")
+          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">5 changed files</b><br><br>M &nbsp;main/app/user_app.c<br>M &nbsp;agent/ui/weather-screen.xml<br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/IDENTITY.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
+        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Cloud state used by this Workspace.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code></code></div><span class="panel-link">Manage in Settings ›</span></div><div class="panel-card"><h5>Live configuration · ver_…b12</h5><div class="panel-row"><span>LLM</span><b>qwen-max</b><code>DashScope</code></div><div class="panel-row"><span>STT</span><b>OpenAI ASR</b><code>zh</code></div><div class="panel-row"><span>TTS</span><b>zhixiaobai</b><code>DashScope</code></div><div class="panel-row"><span>Cron</span><b>None</b><code></code></div><div class="panel-subhead">Source snapshot</div><div class="panel-file"><code>cloud-agent.json</code><span>Matches Live</span></div><div class="panel-file"><code>SOUL.md</code><span>Matches Live</span></div><div class="panel-file"><code>IDENTITY.md</code><span>Matches Live</span></div><div class="panel-file"><code>USER.md</code><span>Matches Live</span></div><span class="panel-link">Compare Workspace to Live ›</span></div></div>`;
+      }
+
+      function settingsShell(title, breadcrumb, body) {
+        return `<div class="screen"><div class="scale"><div class="settings-app">
+          <aside class="settings-nav">
+            <div class="settings-back">← Back to app</div>
+            <h5>Settings</h5><p>NoraHarness preferences</p>
+            <div class="settings-nav-item">⚙ General</div>
+            <div class="settings-nav-item on">☁ Cloud <span class="tag" style="margin-left:auto">Proposed</span></div>
+            <div class="settings-nav-item">⌁ Providers</div>
+            <div class="settings-nav-item">◇ Permissions</div>
+            <div class="settings-nav-item">ⓘ About</div>
+          </aside>
+          <main class="settings-main">
+            ${breadcrumb ? `<div class="settings-breadcrumb">${breadcrumb}</div>` : ""}
+            <div class="settings-title"><h6>${title}</h6><span>● NoraCloud connected · Updated just now</span></div>
+            ${body}
+          </main>
+        </div></div></div>`;
+      }
+
+      function settingsFrame(kind) {
+        if (kind === "settings-cloud")
+          return settingsShell("Cloud", "", `<div class="settings-scope"><b>System information.</b> All NoraCloud resources accessible to the signed-in account. This is not limited to the current Workspace.</div>
+            <div class="settings-stat-grid">
+              <div class="settings-stat"><div class="settings-stat-head"><b>Agents</b><strong>3</strong></div><p>Open an Agent to inspect its Live Version, Versions, and Devices</p><span class="settings-stat-link">Open Agents ›</span></div>
+              <div class="settings-stat"><div class="settings-stat-head"><b>Cloud Sessions</b><strong>18</strong></div><p>2 active · latest activity 8m ago</p><span class="settings-stat-link">Open Sessions ›</span></div>
+            </div>
+            <div class="settings-section-card"><h6>Recorded Usage · account total</h6>
+              <div class="settings-usage"><div><strong>184,620</strong><span>LLM tokens</span></div><div><strong>126</strong><span>Cloud turns</span></div><div><strong>18</strong><span>Cloud Sessions</span></div></div>
+              <div class="settings-footnote">NoraCloud-recorded activity · Not billing or remaining quota &nbsp; <b class="settings-link">View by Session ›</b></div>
+            </div>`);
+        if (kind === "settings-agents")
+          return settingsShell("Agents", "Cloud / Agents", `<div class="settings-toolbar"><span class="settings-filter">Search Agents…</span><span class="settings-filter">All Live states⌄</span><span style="margin-left:auto;color:var(--muted);font-size:9px">3 Agents</span></div>
+            <div class="settings-list"><div class="settings-list-head"><span>Agent</span><span>Live Version</span><span>Created</span><span>Updated</span><span></span></div>
+              <div class="settings-list-row"><span><b>Desk Weather</b><br><code>agt_…7f2</code></span><code>ver_…b12</code><span>May 18</span><span>12m ago</span><span class="settings-link">Open ›</span></div>
+              <div class="settings-list-row"><span><b>Kitchen Helper</b><br><code>agt_…2c8</code></span><code>ver_…d40</code><span>Jun 03</span><span>Yesterday</span><span class="settings-link">Open ›</span></div>
+              <div class="settings-list-row"><span><b>Voice Notes</b><br><code>agt_…91a</code></span><span class="settings-pill muted">No Live</span><span>Jun 08</span><span>4d ago</span><span class="settings-link">Open ›</span></div>
+            </div>`);
+        if (kind === "settings-agent-detail")
+          return settingsShell("Desk Weather", "Cloud / Agents / Desk Weather", `<div class="settings-meta-grid"><div class="settings-meta"><span>Agent</span><code>agt_…7f2</code></div><div class="settings-meta"><span>Live Version</span><code>ver_…b12</code></div><div class="settings-meta"><span>Created</span><b>May 18</b></div><div class="settings-meta"><span>Updated</span><b>12m ago</b></div></div>
+            <div class="config-strip"><div class="config-cell"><span>Reasoning · LLM</span><b>DashScope · qwen-max</b></div><div class="config-cell"><span>Listening · STT</span><b>OpenAI ASR · zh</b></div><div class="config-cell"><span>Speaking · TTS</span><b>DashScope · zhixiaobai</b></div></div>
+            <div class="settings-subhead">Versions <span>5 immutable Versions</span></div><div class="settings-list"><div class="settings-list-head"><span>Version</span><span>State</span><span>Description</span><span>Created</span><span></span></div><div class="settings-list-row"><code>ver_…b12</code><span class="settings-pill">Live</span><span>Shorter replies</span><span>12m ago</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><code>ver_…a81</code><span class="settings-pill muted">Non-Live</span><span>Previous behavior</span><span>2d ago</span><span class="settings-link">Open ›</span></div></div>
+            <div class="settings-subhead">Devices <span>2 follow Live</span></div><div class="settings-list"><div class="settings-list-head"><span>Device</span><span>Connection</span><span>Track</span><span>Last seen</span><span></span></div><div class="settings-list-row"><span><b>Desk Display</b><br><code>dev_…228</code></span><span class="settings-pill">Connected</span><span>Follows Live</span><span>Now</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><b>Office Display</b><br><code>dev_…930</code></span><span class="settings-pill muted">Offline</span><span>Follows Live</span><span>3h ago</span><span class="settings-link">Open ›</span></div></div>`);
+        if (kind === "settings-version-detail")
+          return settingsShell("ver_…b12", "Cloud / Agents / Desk Weather / ver_…b12", `<div class="settings-meta-grid"><div class="settings-meta"><span>Agent</span><b>Desk Weather</b></div><div class="settings-meta"><span>State</span><b>Live · Ready</b></div><div class="settings-meta"><span>Created</span><b>12m ago</b></div><div class="settings-meta"><span>Description</span><b>Shorter replies</b></div></div>
+            <div class="settings-subhead">Agent configuration</div><div class="config-strip"><div class="config-cell"><span>Reasoning · LLM</span><b>DashScope · qwen-max</b></div><div class="config-cell"><span>Listening · STT</span><b>OpenAI ASR · zh</b></div><div class="config-cell"><span>Speaking · TTS</span><b>DashScope · zhixiaobai</b></div></div>
+            <div class="settings-footnote" style="padding:0 0 8px">Schedules · None</div>
+            <div class="settings-subhead">Published instruction files <span>Remote content is not returned</span></div><div class="file-list"><div class="file-row"><b>SOUL.md</b><span>Matches Workspace</span><span class="settings-link">Open local file ›</span></div><div class="file-row"><b>IDENTITY.md</b><span>Matches Workspace</span><span class="settings-link">Open local file ›</span></div><div class="file-row"><b>USER.md</b><span>Different locally</span><span class="settings-link">Compare ›</span></div><div class="file-row"><b>skills/weather/SKILL.md</b><span>Not available locally</span><span>—</span></div></div>
+            <div class="settings-actions"><span class="btn">Technical details</span><span class="btn">Back to Agent</span></div>`);
+        if (kind === "settings-device-detail")
+          return settingsShell("Desk Display", "Cloud / Agents / Desk Weather / Desk Display", `<div class="settings-meta-grid"><div class="settings-meta"><span>Device</span><code>dev_…228</code></div><div class="settings-meta"><span>Connection</span><b>Connected</b></div><div class="settings-meta"><span>Last seen</span><b>Just now</b></div><div class="settings-meta"><span>Created</span><b>Jun 02</b></div></div>
+            <div class="settings-section-card"><h6>Runtime relationship</h6><div class="file-row"><b>Owning Agent</b><span>Desk Weather</span><span class="settings-link">Open Agent ›</span></div><div class="file-row"><b>Track</b><span>Follows Live</span><span></span></div><div class="file-row"><b>Resolved Version</b><code>ver_…b12</code><span class="settings-link">Open Version ›</span></div><div class="file-row"><b>Current Session</b><code>ses_…91c</code><span class="settings-link">Open Session ›</span></div></div>
+            <div class="settings-footnote" style="padding-top:10px">No credential value is shown on this resource page.</div>`);
+        if (kind === "settings-sessions")
+          return settingsShell("Cloud Sessions", "Cloud / Sessions", `<div class="settings-toolbar"><span class="settings-filter">Active + ended⌄</span><span class="settings-filter">All Devices⌄</span><span class="settings-filter">Recent activity⌄</span><span style="margin-left:auto;color:var(--muted);font-size:9px">18 Sessions</span></div>
+            <div class="settings-list"><div class="settings-list-head"><span>Session</span><span>Relationship</span><span>Last activity</span><span>Recorded Usage</span><span></span></div><div class="settings-list-row"><span><code>ses_…91c</code><br><span class="settings-pill">Active</span></span><span>Desk Weather · Desk Display</span><span>8m ago · 14 turns</span><span>24,680 tokens</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><code>ses_…72a</code><br><span class="settings-pill muted">Ended</span></span><span>Kitchen Helper · No Device</span><span>Yesterday · 8 turns</span><span>11,240 tokens</span><span class="settings-link">Open ›</span></div><div class="settings-list-row"><span><code>ses_…12f</code><br><span class="settings-pill muted">Ended</span></span><span>Desk Weather · Office Display</span><span>3d ago · 5 turns</span><span>6,420 tokens</span><span class="settings-link">Open ›</span></div></div>
+            <div class="settings-footnote" style="padding-top:10px">Entering through Recorded Usage focuses this same list by Usage; it does not create another resource type.</div>`);
+        if (kind === "settings-session-detail")
+          return settingsShell("ses_…91c", "Cloud / Sessions / ses_…91c", `<div class="settings-meta-grid"><div class="settings-meta"><span>Status</span><b>Active</b></div><div class="settings-meta"><span>Agent</span><b>Desk Weather</b></div><div class="settings-meta"><span>Device</span><b>Desk Display</b></div><div class="settings-meta"><span>Version at start</span><code>ver_…b12</code></div></div><div class="settings-section-card"><h6>Session activity</h6><div class="file-row"><b>Started</b><span>Today · 09:14</span><span></span></div><div class="file-row"><b>Last interaction</b><span>8 minutes ago</span><span></span></div><div class="file-row"><b>Turns</b><span>14</span><span></span></div><div class="file-row"><b>Context tokens</b><span>31,200</span><span></span></div></div><div class="settings-section-card"><h6>Recorded Usage</h6><div class="settings-usage"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>4.8s</strong><span>STT audio</span></div><div><strong>3,240</strong><span>TTS characters</span></div></div></div><div class="settings-actions"><span class="btn">View logs</span><span class="btn">Export Session</span><span class="btn">Open related resources</span></div>`);
+        if (kind === "settings-agent-live")
+          return settingsShell("Make Version Live", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Confirm direct Cloud update</h6>${row("Current Live", "ver_…a81")}${row("New Live", "ver_…b12")}${row("Affected Devices", "2 following Live")}</div><div class="settings-actions">${actions(["Confirm Make Live", "Cancel"])}</div>`);
+        if (kind === "settings-agent-delete")
+          return settingsShell("Delete Agent", "Cloud / Agents / Voice Notes / Actions", `<div class="settings-section-card"><h6>Confirm irreversible deletion</h6>${row("Agent", "Voice Notes", "agt_…91a")}${row("Devices", "None bound")}${row("Versions", "2 will be deleted")}${row("Test Sessions", "1 active · will end")}</div><div class="settings-footnote">Export needed Session data before deleting. A bound Device returns In use.</div><div class="settings-actions">${actions(["Delete Agent", "Cancel"])}</div>`);
+        if (kind === "settings-agent-deleted")
+          return settingsShell("Agent Deleted", "Cloud / Agents", `<div class="settings-section-card"><h6>Updated</h6>${row("Agent", "Voice Notes · Deleted", "agt_…91a")}${row("Versions", "2 deleted")}${row("Test Session", "1 ended automatically")}</div>`);
+        if (kind === "settings-agent-in-use")
+          return settingsShell("Agent In Use", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Cannot delete yet</h6>${row("Blocking dependency", "2 Devices")}${row("Devices", "Desk Display · Office Display")}</div><div class="settings-actions">${actions(["Open Devices", "Cancel"])}</div>`);
+        if (kind === "settings-device-rebind")
+          return settingsShell("Rebind Device", "Cloud / Devices / Desk Display / Actions", `<div class="settings-section-card"><h6>Confirm ownership change</h6>${row("Device", "Desk Display", "dev_…228")}${row("Current Agent", "Desk Weather")}${row("Target Agent", "Kitchen Helper")}${row("Impact", "Reconnect required")}</div><div class="settings-actions">${actions(["Confirm Rebind", "Cancel"])}</div>`);
+        if (kind === "settings-device-rebound")
+          return settingsShell("Device Rebound", "Cloud / Devices / Desk Display", `<div class="settings-section-card"><h6>Updated</h6>${row("Owning Agent", "Kitchen Helper")}${row("Reconnect", "Required")}</div>`);
+        if (kind === "settings-session-end")
+          return settingsShell("End Cloud Session", "Cloud / Sessions / ses_…91c / Actions", `<div class="settings-section-card"><h6>Confirm end</h6>${row("Session", "ses_…91c")}${row("Status", "Active")}${row("Recorded Usage", "24,680 tokens preserved")}</div><div class="settings-actions">${actions(["End Session", "Cancel"])}</div>`);
+        if (kind === "settings-session-ended")
+          return settingsShell("Session Ended", "Cloud / Sessions", `<div class="settings-section-card"><h6>Ended</h6><p>ses_…91c is no longer active. Recorded Usage remains available.</p></div>`);
+        return "";
+      }
+
+      function appFrame(kind) {
+        if (kind.startsWith("settings-")) return settingsFrame(kind);
+        return `<div class="screen"><div class="scale"><div class="app">
+        <aside class="sidebar"><div class="brand"><span class="traffic"><i></i><i></i><i></i></span>NoraHarness <span style="margin-left:auto;color:var(--faint)">◁</span></div><div class="new-conversation"><span style="color:var(--accent)">＋</span> New conversation</div><div class="search">Search conversations…</div><div class="slbl">⌄ Workspaces <span class="controls">⇅ ⇵ ＋</span></div><div class="workspace">⌄ ◫ &nbsp;desk-weather <span style="margin-left:auto">2</span></div><div class="session-tree"><div class="conversation on">Desk Weather <small>now</small></div><div class="conversation">Shorter responses <small>2h</small></div></div><div class="slbl">⌄ Conversations <span class="controls">＋</span></div><div class="conversation">General question <small>1d</small></div><div class="grow"></div><div class="settings-entry">⚙ Settings</div><div class="account"><span>●</span><b>Nora User</b><span style="margin-left:auto">Sign out</span></div></aside>
+        <section class="center"><div class="workspace-bar"><strong>…/desk-weather</strong><span>Edit Agent</span><span class="cloud-chip">Cloud · Proposed</span></div><div class="tabs"><span class="ctab">Desk Weather</span><span style="color:var(--faint);font-size:12px">＋</span></div><div class="stream">${conversationContent(kind)}</div><div class="composer">Assign a task or ask any question &nbsp; <b>NoraHarness</b></div></section>
+        <aside class="right">${rightPanel(kind)}<div class="right-bottom">Terminal &nbsp; Device Log</div></aside>
+      </div></div></div>`;
+      }
+
+      function card(id) {
+        const state = states[id];
+        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "7", "U1", "D1", "C1", "V1", "T1", "S1", "X1", "5.1.4"].includes(id)
+          ? "warning"
+          : "";
+        const maturity = id === "1" ? "Existing pattern" : "Proposed";
+        return `<article class="wire-card ${severity}"><div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">${maturity}</span></div><div class="caption">${state.caption}</div>${appFrame(state.view)}</article>`;
+      }
+      function flow(ids) {
+        return ids
+          .map(
+            (id, index) =>
+              `${index ? `<div class="arrow" aria-hidden="true"></div>` : ""}${card(id)}`,
+          )
+          .join("");
+      }
+
+      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
+      document.getElementById("device-onboarding-flow").innerHTML = flow(["6", "7", "8", "9"]);
+      document.getElementById("agent-read-flow").innerHTML = flow(["R"]);
+      document.getElementById("agent-update-flow").innerHTML = flow(["U1", "U2"]);
+      document.getElementById("agent-device-flow").innerHTML = flow(["D1", "D2"]);
+      document.getElementById("agent-device-rotate-flow").innerHTML = flow(["C1", "C2"]);
+      document.getElementById("agent-device-revoke-flow").innerHTML = flow(["V1", "V2"]);
+      document.getElementById("agent-test-session-flow").innerHTML = flow(["T1", "T2"]);
+      document.getElementById("agent-session-flow").innerHTML = flow(["S1", "S2"]);
+      document.getElementById("agent-delete-flow").innerHTML = flow(["X1", "X2"]);
+      document.getElementById("settings-agent-flow").innerHTML = flow([
+        "5.1",
+        "5.1.2",
+      ]);
+      document.getElementById("settings-agent-delete-flow").innerHTML = flow(["5.1.3", "5.1.3.1"]);
+      document.getElementById("settings-device-flow").innerHTML = flow([
+        "5.2",
+        "5.2.2",
+        "5.2.2.1",
+      ]);
+      document.getElementById("settings-session-flow").innerHTML = flow([
+        "5.3",
+        "5.3.1",
+        "5.3.2",
+      ]);
+      let scale = 0.72,
+        x = 0,
+        y = 0,
+        animationFrame = null;
+      const viewport = document.getElementById("viewport"),
+        stageEl = document.getElementById("stage");
+      function applyNow() {
+        animationFrame = null;
+        stageEl.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+      function apply() {
+        if (!animationFrame) animationFrame = requestAnimationFrame(applyNow);
+      }
+      function clamp(value) {
+        return Math.max(0.12, Math.min(1.25, value));
+      }
+      function zoomAt(clientX, clientY, factor) {
+        const rect = viewport.getBoundingClientRect(),
+          localX = clientX - rect.left,
+          localY = clientY - rect.top,
+          pointX = (localX - x) / scale,
+          pointY = (localY - y) / scale;
+        scale = clamp(scale * factor);
+        x = localX - pointX * scale;
+        y = localY - pointY * scale;
+        apply();
+      }
+      function fit() {
+        const width = viewport.clientWidth - 80,
+          height = viewport.clientHeight - 80;
+        scale = Math.max(
+          0.1,
+          Math.min(
+            width / stageEl.scrollWidth,
+            height / stageEl.scrollHeight,
+            0.5,
+          ),
+        );
+        x = 18;
+        y = 18;
+        apply();
+      }
+      function reset() {
+        scale = 0.72;
+        x = 0;
+        y = 0;
+        apply();
+      }
+      function jump(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        x = -target.offsetLeft * scale + 28;
+        y = -target.offsetTop * scale + 24;
+        apply();
+      }
+      document
+        .getElementById("zoom-in")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 1.12),
+        );
+      document
+        .getElementById("zoom-out")
+        .addEventListener("click", () =>
+          zoomAt(viewport.clientWidth / 2, viewport.clientHeight / 2, 0.88),
+        );
+      document.getElementById("fit").addEventListener("click", fit);
+      document.getElementById("reset").addEventListener("click", reset);
+      document
+        .querySelectorAll("[data-jump]")
+        .forEach((button) =>
+          button.addEventListener("click", () => jump(button.dataset.jump)),
+        );
+      let drag = null;
+      viewport.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button")) return;
+        event.preventDefault();
+        drag = { startX: event.clientX, startY: event.clientY, x, y };
+        viewport.classList.add("dragging");
+        viewport.setPointerCapture(event.pointerId);
+      });
+      viewport.addEventListener("pointermove", (event) => {
+        if (!drag) return;
+        x = drag.x + event.clientX - drag.startX;
+        y = drag.y + event.clientY - drag.startY;
+        apply();
+      });
+      function endDrag(event) {
+        drag = null;
+        viewport.classList.remove("dragging");
+        if (event && viewport.hasPointerCapture(event.pointerId))
+          viewport.releasePointerCapture(event.pointerId);
+      }
+      viewport.addEventListener("pointerup", endDrag);
+      viewport.addEventListener("pointercancel", endDrag);
+      viewport.addEventListener(
+        "wheel",
+        (event) => {
+          event.preventDefault();
+          if (event.ctrlKey || event.metaKey) {
+            zoomAt(
+              event.clientX,
+              event.clientY,
+              Math.exp(-event.deltaY * 0.002),
+            );
+          } else {
+            x -= event.deltaX;
+            y -= event.deltaY;
+            apply();
+          }
+        },
+        { passive: false },
+      );
+      window.addEventListener("resize", apply);
+      apply();
+    </script>
+  </body>
+</html>
