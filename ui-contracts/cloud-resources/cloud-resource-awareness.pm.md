@@ -186,6 +186,11 @@ panel snapshot and performs a silent read outside Conversation; the Agent does n
 `noracloud_status` Tool Call. Opening or manually refreshing Cloud, completing a Settings action, or
 reconnecting may use the same direct UI refresh path and also stays out of Conversation.
 
+Workspace Cloud also keeps the published definition understandable after approval. The panel names
+`cloud-agent.json`, `SOUL.md`, `IDENTITY.md`, and `USER.md`, and compares their local digests with the
+Live Version manifest captured by the publish receipt. It does not claim that NoraCloud returns or
+renders the remote Markdown contents.
+
 The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
 `Approve` shortcut, and separate resource receipt are not part of the proposed end state.
 

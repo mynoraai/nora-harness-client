@@ -1477,6 +1477,23 @@
       .cloud-panel .panel-row code {
         font: 7.5px var(--mono);
       }
+      .cloud-panel .panel-file {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 7px;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee9e2;
+      }
+      .cloud-panel .panel-file code {
+        color: var(--ink);
+        font: 7.8px var(--mono);
+      }
+      .cloud-panel .panel-file span {
+        color: var(--green);
+        font-size: 7.3px;
+        font-weight: 800;
+      }
       .cloud-panel .panel-link {
         display: block;
         padding: 7px 8px;
@@ -1926,7 +1943,7 @@
         const cloudKinds = ["cloud-refresh"];
         if (!cloudKinds.includes(kind))
           return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">5 changed files</b><br><br>M &nbsp;main/app/user_app.c<br>M &nbsp;agent/ui/weather-screen.xml<br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/IDENTITY.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
-        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Cloud state used by this Workspace.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code></code></div><span class="panel-link">Manage in Settings ›</span></div></div>`;
+        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Cloud state used by this Workspace.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code></code></div><span class="panel-link">Manage in Settings ›</span></div><div class="panel-card"><h5>Live configuration · ver_…b12</h5><div class="panel-file"><code>cloud-agent.json</code><span>Matches Live</span></div><div class="panel-file"><code>SOUL.md</code><span>Matches Live</span></div><div class="panel-file"><code>IDENTITY.md</code><span>Matches Live</span></div><div class="panel-file"><code>USER.md</code><span>Matches Live</span></div><span class="panel-link">Compare Workspace to Live ›</span></div></div>`;
       }
 
       function settingsShell(title, breadcrumb, body) {

@@ -24,7 +24,7 @@ historical artifacts and are not part of this PR.
 - The completed receipt triggers a silent Workspace Cloud refresh outside Conversation. Opening Cloud, manual refresh, Settings mutations, and reconnect may use the same UI path; none creates a follow-up `noracloud_status` Tool Call.
 - The review example uses Ask before running so PM can see the control point. Approval and Auto-run both settle the same Tool Call directly to its receipt; the journey does not add a separate progress frame.
 - Settings calls typed NoraCloud APIs directly. Agent rename/live/rollback/delete, Device track/rebind/rotate/revoke, and Session end never enter Conversation or create a visible Tool Call.
-- The right Cloud panel follows the current Workspace and refreshes after the canonical tool receipt. One compact Workspace Cloud card replaces the ambiguous split between Bound Agent and Related Cloud Resources.
+- The right Cloud panel follows the current Workspace and refreshes after the canonical tool receipt. One compact Workspace Cloud card replaces the ambiguous split between Bound Agent and Related Cloud Resources, while a Live configuration card names the published config/instruction files and compares local digests with the receipt manifest.
 - Versions remain immutable and read-only except for Make Live/Rollback from their owning Agent. Rotation never displays a credential value.
 - Account Usage is NoraCloud-recorded activity, not local coding Run Records, billing, balance, or remaining quota.
 

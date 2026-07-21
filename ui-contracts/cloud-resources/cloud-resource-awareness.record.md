@@ -179,10 +179,14 @@ User entry: the completed publish receipt is stored, or the user opens Cloud aft
 User action: reviews the bound Agent and opens Settings when account-level management is needed.
 
 Visible UI state: one compact `Workspace Cloud` card shows the bound Agent, current Live Version,
-Device count, freshness, and `Manage in Settings`. It does not split the same relationship into
-separate `Bound Agent` and `Related Cloud Resources` cards. Settings remains account-scoped and
-does not inherit the coding Conversation. Conversation contains only the Assistant's outcome
-summary; it does not add `Refresh NoraCloud status` or another Tool Call.
+Device count, freshness, and `Manage in Settings`. A neighboring `Live configuration` card names
+`cloud-agent.json`, `SOUL.md`, `IDENTITY.md`, and `USER.md`, shows whether each local source matches
+the published Live snapshot, and offers `Compare Workspace to Live`. The comparison is based on
+the publish receipt manifest and digests; the panel does not imply that NoraCloud returns raw
+instruction contents. It does not split the same relationship into separate `Bound Agent` and
+`Related Cloud Resources` cards. Settings remains account-scoped and does not inherit the coding
+Conversation. Conversation contains only the Assistant's outcome summary; it does not add
+`Refresh NoraCloud status` or another Tool Call.
 
 Client state change: the completed receipt invalidates the last Workspace Cloud snapshot and the
 client silently reloads canonical state outside Conversation. Opening Cloud, manually refreshing
