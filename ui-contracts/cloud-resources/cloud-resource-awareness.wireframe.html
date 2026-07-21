@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      Cloud Resource Awareness — NoraHarness V2 Wireframe
+      Cloud Resource Control — NoraHarness V2 Wireframe
     </title>
     <style>
       :root {
@@ -1298,9 +1298,9 @@
   <body>
     <header class="topbar">
       <div>
-        <h1>Cloud Resource Awareness — Conversation, Workspace + Settings</h1>
+        <h1>Cloud Resource Control — Conversation + Settings</h1>
         <p>
-          Existing local work → one exact Cloud approval → factual resource receipt.
+          Local Workspace edits → NoraCloud Tool Call or permission branch → canonical receipt; Settings manages account resources directly.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1331,8 +1331,7 @@
           <div class="band-title">
             <h3>Main happy path</h3>
             <span
-              >Journey 1 · local Agent change → local result → one Cloud proposal
-              → factual receipt</span
+              >Journey 1 · real local edits → Auto-run NoraCloud Tool → canonical receipt → Workspace refresh</span
             >
           </div>
           <div class="flow" id="main-flow"></div>
@@ -1342,8 +1341,7 @@
           <div class="band-title">
             <h3>Route path</h3>
             <span
-              >Three PM-readable outcomes: approve, defer, or inspect a result
-              that needs attention.</span
+              >Auto-run is the happy path; permission, blocked, conflict, partial, and unknown states are explicit routes.</span
             >
           </div>
           <div id="route-rows"></div>
@@ -1353,100 +1351,58 @@
           <div class="band-title">
             <h3>Detail states</h3>
             <span
-              >Real firmware tool progress, approval input, technical details,
-              the Workspace Cloud overview, and global Cloud system information
-              in Settings.</span
+              >Settings management detail states, permission states, Tool surfaces, and direct resource confirmations.</span
             >
           </div>
           <div class="compact-grid">
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>1.1 Firmware Tool Progress</h4>
-              <ul>
-                <li>The active Build or Flash tool is expanded as Running.</li>
-                <li>Completed file and preview tools stay collapsed.</li>
-                <li>The current tool result is the visible progress source.</li>
-              </ul>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>3.2 Approval Input Method</h4>
-              <ul>
-                <li>Approve can be clicked or sent as a normal reply.</li>
-                <li>Both inputs accept the same pending proposal once.</li>
-                <li>Not now defers only the Cloud update.</li>
-              </ul>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>4.3 Technical Details</h4>
-              <ul>
-                <li>Command summary, structured output, diagnostic, and logs.</li>
-                <li>Product resource stages remain primary.</li>
-                <li>Expanding details changes no Cloud state.</li>
-              </ul>
-            </article>
-            <article class="compact-card">
-              <span class="kind">Detail state</span>
-              <h4>4.2 Open Cloud Overview</h4>
-              <ul>
-                <li>Selects Cloud in the current right workbench.</li>
-                <li>Keeps the conversation active while refreshing.</li>
-                <li>Global inventory remains inside Settings.</li>
-              </ul>
-            </article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.1.1 Rename Agent</h4><ul><li>Settings saves the name inline.</li><li>Updated or actionable error is shown in place.</li><li>No Conversation or Tool Call appears.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.1.4 Agent In Use</h4><ul><li>Delete is blocked by dependent Devices.</li><li>Blocking resources are listed.</li><li>No force-delete action is offered.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.2.1 / 5.2.3 / 5.2.4 Device Actions</h4><ul><li>Track, credential, and revoke actions use direct Settings confirmation.</li><li>Secrets never appear.</li><li>Device and Session state refresh afterward.</li></ul></article>
+            <article class="compact-card"><span class="kind">Detail state</span><h4>5.3 Session End</h4><ul><li>End is confirmed inside Settings.</li><li>Ended facts remain inspectable.</li><li>The action is idempotent.</li></ul></article>
           </div>
           <article class="route-row" style="margin-top: 14px">
-            <div class="route-title"><h4>Settings · Agent and Version</h4><code>4.5 → 4.5.1 → 4.5.1.1 → 4.5.1.1.1</code><span>Browse an account Agent, then inspect one immutable Version.</span></div>
+            <div class="route-title"><h4>Settings · Agent and Version management</h4><code>5.1 → 5.1.2 → 5.1.3 → 5.1.3.1</code><span>Make a Version Live, then delete an Agent only after dependency checks.</span></div>
             <div class="flow" id="settings-agent-flow"></div>
           </article>
           <article class="route-row">
-            <div class="route-title"><h4>Settings · Device</h4><code>4.5.1.1 → 4.5.1.1.2</code><span>Devices stay under their owning Agent.</span></div>
+            <div class="route-title"><h4>Settings · Device management</h4><code>5.2 → 5.2.2 → 5.2.2.1</code><span>Rebind a Device with explicit Session impact and reconnect guidance.</span></div>
             <div class="flow" id="settings-device-flow"></div>
           </article>
           <article class="route-row">
-            <div class="route-title"><h4>Settings · Cloud Session</h4><code>4.5 → 4.5.2 → 4.5.2.1</code><span>Browse account Sessions or enter through Usage.</span></div>
+            <div class="route-title"><h4>Settings · Cloud Session</h4><code>5.3 → 5.3.1 → 5.3.2</code><span>End a Session directly and retain its final facts.</span></div>
             <div class="flow" id="settings-session-flow"></div>
           </article>
+          <div class="compact-grid" style="margin-top:14px"><article class="compact-card"><span class="kind">Proposed Tool surface</span><h4>Eight NoraCloud Tool families</h4><p><code>noracloud_status</code> · <code>noracloud_publish</code> · <code>noracloud_agent</code> · <code>noracloud_version</code> · <code>noracloud_device</code> · <code>noracloud_session</code> · <code>noracloud_turn</code> · <code>noracloud_observe</code></p></article><article class="compact-card"><span class="kind">Engineering readiness</span><h4>Today → Proposed end state</h4><p>Today the Agent uses a partial CLI surface and Settings is browse-only. Proposed: MCP-first Agent operations over one shared contract, plus direct Settings resource management.</p></article></div>
         </section>
 
         <section class="band" id="state-language">
           <div class="band-title">
             <h3>State language</h3>
             <span
-              >Stable terms for operation state, Versions, approval, and secrets.</span
+              >Stable terms for Tool execution, Settings operations, recovery, and secrets.</span
             >
           </div>
           <div class="compact-grid">
             <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.1 Operation Status</h4>
-              <p>
-                Waiting for you · Deferred · Completed · Partial · Outcome
-                unknown.
-              </p>
+              <h4>0.1 Tool execution</h4>
+              <p>Running · Approval required · Blocked · Completed · Denied · Failed.</p>
             </article>
             <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.2 Version Language</h4>
-              <p>
-                Use real <b>ver_…</b> IDs plus Live, Latest non-Live, or
-                Previous Live. Never invent v1/v2 numbering.
-              </p>
+              <h4>0.2 Settings operations</h4>
+              <p>Confirm · Updating · Updated · Conflict · In use · Revoked · Ended.</p>
             </article>
             <article class="compact-card language">
               <span class="kind">State language</span>
-              <h4>0.3 Approval Language</h4>
-              <p>
-                Approve · Not now. Button approval and a typed Approve accept
-                the same one pending proposal.
-              </p>
+              <h4>0.3 Recovery language</h4>
+              <p>Partial and Outcome unknown preserve confirmed facts and stop duplicate mutation.</p>
             </article>
             <article class="compact-card language">
               <span class="kind">State language</span>
               <h4>0.4 Secret Language</h4>
               <p>
-                Show credential type, scope, protected destination, and status.
+                Show credential type, protected destination, reconnect guidance, and status.
                 Never show the secret value.
               </p>
             </article>
@@ -1463,11 +1419,9 @@
           <div class="compact-grid">
             <article class="compact-card recovery">
               <span class="kind">Recovery summary</span>
-              <h4>4.4 Partial And Unknown Outcomes</h4>
+              <h4>4.1 / 4.2 / 4.3 Tool recovery</h4>
               <p>
-                Keep confirmed resources visible. Continue from the failed
-                stage; unknown outcomes pause duplicate mutation until reality
-                is determined.
+                Keep confirmed resources visible. Continue from the failed stage; unknown outcomes pause duplicate mutation until reality is determined.
               </p>
             </article>
           </div>
@@ -1479,87 +1433,162 @@
     <script>
       const states = {
         1: {
-          title: "Local Agent Change In Progress",
+          title: "Local Workspace Changes",
           view: "local",
-          caption: "A normal Agent message plus real tool states shows the current work.",
+          caption: "Workspace edits complete locally; no NoraCloud mutation yet.",
         },
         2: {
-          title: "Local Agent Change Ready",
-          view: "local-ready",
-          caption: "The Assistant explains the local result and what was not changed.",
+          title: "Cloud Intent Requested",
+          view: "intent",
+          caption: "The Agent requests a persistent Cloud operation through MCP.",
         },
         3: {
-          title: "Cloud Update Proposal",
-          view: "proposal",
-          caption: "One exact persistent Cloud result waits for Approve or Not now.",
+          title: "NoraCloud Publish Tool · Running",
+          view: "publish-running",
+          caption: "Auto-run invokes the semantic publish tool; no fake Terminal step.",
         },
         4: {
-          title: "Resource Receipt",
+          title: "NoraCloud Tool Receipt",
           view: "receipt",
-          caption: "The next PM-visible state is the factual result, not an execution screen.",
+          caption: "The completed tool result is the receipt and canonical resource outcome.",
         },
         3.1: {
-          title: "Cloud Update Deferred",
-          view: "deferred",
-          caption: "No Cloud mutation occurs; validated Workspace changes remain available.",
+          title: "Publish Tool · Approval required",
+          view: "approval",
+          caption: "Ask-before-running pauses the same tool call for an explicit decision.",
+        },
+        "3.1.1": {
+          title: "Approved Tool Continues",
+          view: "publish-running",
+          caption: "Approve or Always allow resumes the exact NoraCloud operation.",
+        },
+        "3.1.2": {
+          title: "Publish Tool · Denied",
+          view: "denied",
+          caption: "Deny records no Cloud mutation and leaves local changes available.",
+        },
+        "3.2": {
+          title: "Publish Tool · Blocked",
+          view: "blocked",
+          caption: "Never-run or deny-all policy blocks the Cloud operation before mutation.",
         },
         4.1: {
-          title: "Result Needs Attention",
-          view: "result-attention",
-          caption: "Confirmed facts remain visible while the next safe recovery action is offered.",
+          title: "Publish Conflict",
+          view: "conflict",
+          caption: "The tool reports a current-state conflict without retrying blindly.",
         },
-        4.5: {
+        "4.2": {
+          title: "Partial Tool Result",
+          view: "partial",
+          caption: "Completed and failed sub-operations remain explicit and recoverable.",
+        },
+        "4.3": {
+          title: "Tool Outcome Unknown",
+          view: "unknown",
+          caption: "The client checks current Cloud state before offering a safe next action.",
+        },
+        "5": {
+          title: "Workspace Cloud Refreshed",
+          view: "cloud-refresh",
+          caption: "The right rail reflects canonical Cloud state after the tool receipt.",
+        },
+        "5.1": {
+          title: "Agent Resource Detail",
+          view: "settings-agent-detail",
+          caption: "Settings manages Agent resources directly through typed NoraCloud API calls.",
+        },
+        "5.1.2": {
+          title: "Agent Live Change Confirm",
+          view: "settings-agent-live",
+          caption: "Make Live and rollback require direct Settings confirmation.",
+        },
+        "5.1.3": {
+          title: "Delete Agent Confirm",
+          view: "settings-agent-delete",
+          caption: "Delete is confirmed in Settings and checks dependent Devices first.",
+        },
+        "5.1.3.1": {
+          title: "Agent Deleted",
+          view: "settings-agent-deleted",
+          caption: "Settings shows the direct API success state without entering Conversation.",
+        },
+        "5.1.4": {
+          title: "Agent In Use",
+          view: "settings-agent-in-use",
+          caption: "A dependent Device blocks deletion and explains the required next action.",
+        },
+        "5.2": {
+          title: "Device Resource Detail",
+          view: "settings-device-detail",
+          caption: "Track, rebind, rotate, and revoke are direct Settings operations.",
+        },
+        "5.2.2": {
+          title: "Device Rebind Confirm",
+          view: "settings-device-rebind",
+          caption: "Rebind confirms the target Agent and protected delivery impact.",
+        },
+        "5.2.2.1": {
+          title: "Device Rebound",
+          view: "settings-device-rebound",
+          caption: "Settings reports the new ownership and reconnect requirement.",
+        },
+        "5.3": {
+          title: "Cloud Session Detail",
+          view: "settings-session-detail",
+          caption: "Session actions remain account-level Settings controls.",
+        },
+        "5.3.1": {
+          title: "End Session Confirm",
+          view: "settings-session-end",
+          caption: "End Session is confirmed in Settings, not posted to Conversation.",
+        },
+        "5.3.2": {
+          title: "Session Ended",
+          view: "settings-session-ended",
+          caption: "Settings shows the direct API success state and preserves the record.",
+        },
+        "settings-cloud": {
           title: "Global Cloud Overview In Settings",
           view: "settings-cloud",
           caption: "Settings provides browsable account-level Cloud resources and cumulative Recorded Usage.",
-        },
-        "4.5.1": {
-          title: "Agents List",
-          view: "settings-agents",
-          caption: "Agents are the account-level root for their Versions and Devices.",
-        },
-        "4.5.1.1": {
-          title: "Agent Detail",
-          view: "settings-agent-detail",
-          caption: "One Agent explains its Live configuration, Versions, and Devices together.",
-        },
-        "4.5.1.1.1": {
-          title: "Version Detail",
-          view: "settings-version-detail",
-          caption: "The immutable definition shows configuration and published files without inventing remote Markdown content.",
-        },
-        "4.5.1.1.2": {
-          title: "Device Detail",
-          view: "settings-device-detail",
-          caption: "The Device resolves ownership, track, connection, Version, and current Session.",
-        },
-        "4.5.2": {
-          title: "Cloud Sessions List",
-          view: "settings-sessions",
-          caption: "Account-wide Sessions expose status, relationships, activity, turns, and recorded Usage.",
-        },
-        "4.5.2.1": {
-          title: "Cloud Session Detail",
-          view: "settings-session-detail",
-          caption: "One Session retains its Agent, Device, Version, timestamps, and available Usage fields.",
         },
       };
 
       const routes = [
         {
-          name: "Approve Cloud update",
-          path: ["1", "2", "3", "4"],
-          result: "Button or typed approval leads to the same factual receipt.",
+          name: "Auto-run publish",
+          path: ["1", "2", "3", "4", "5"],
+          result: "The semantic MCP tool runs and its result refreshes Cloud context.",
         },
         {
-          name: "Defer Cloud update",
-          path: ["1", "2", "3", "3.1", "2"],
-          result: "Keep validated local work with no Cloud mutation.",
+          name: "Ask-before-running · approve",
+          path: ["1", "2", "3.1", "3.1.1", "3", "4", "5"],
+          result: "Approve resumes the same tool call; no second proposal is created.",
         },
         {
-          name: "Result needs attention",
-          path: ["1", "2", "3", "4.1"],
-          result: "Keep confirmed facts and avoid unsafe duplicate mutation.",
+          name: "Ask-before-running · deny",
+          path: ["1", "2", "3.1", "3.1.2", "2"],
+          result: "Deny leaves the Workspace result local and records no Cloud mutation.",
+        },
+        {
+          name: "Never-run policy",
+          path: ["1", "2", "3.2", "2"],
+          result: "The tool is blocked before execution; the Agent can continue locally.",
+        },
+        {
+          name: "Conflict / partial / unknown",
+          path: ["1", "2", "3", "4", "4.1", "2"],
+          result: "Recovery starts from the tool outcome and current Cloud state.",
+        },
+        {
+          name: "Device rebind",
+          path: ["5.2", "5.2.2", "5.2.2.1"],
+          result: "Settings direct API confirms ownership change and reconnect impact.",
+        },
+        {
+          name: "End Cloud Session",
+          path: ["5.3", "5.3.1", "5.3.2"],
+          result: "Settings ends the session without a Conversation Tool Call.",
         },
       ];
 
@@ -1576,30 +1605,43 @@
         return `<div class="stage-line"><span class="${cls}">${icon}</span><b>${label}</b><code>${tail}</code></div>`;
       }
       function toolCall(title, status, expanded = false, body = "") {
-        const running = status === "Running";
-        const icon = title === "Terminal" ? "⌘" : "✎";
-        const statusIcon = running ? "◷" : "✓";
-        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
+        const running = status === "Running" || status === "Approval required";
+        const blocked = status === "Blocked" || status === "Denied" || status === "Failed";
+        const icon = /NoraCloud|Publish|Rebind|Session/.test(title) ? "☁" : "✎";
+        const statusIcon = running ? "◷" : blocked ? "×" : "✓";
+        return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : blocked ? "blocked" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
       }
 
       function conversationContent(kind) {
         if (kind === "local")
-          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant">I’ll update the Agent definition in this Workspace, then validate it.<br><span class="secondary">NoraCloud will not change in this step.</span></div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Terminal", "Running", true, '<div class="terminal-line"><span class="prompt">$</span>validate the Agent configuration</div>')}</div>`;
-        if (kind === "local-ready")
-          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="tool-stack" style="margin-top:18px">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}${toolCall("Terminal", "Completed")}</div><div class="assistant">The local Agent configuration is ready. Responses are shorter and the reasoning model is Qwen Max.<br><span class="secondary">Firmware was not modified. NoraCloud was not changed.</span></div>`;
-        if (kind === "proposal")
-          return `<div class="user-msg">Update the Desk Weather Agent with these Workspace changes.</div><div class="assistant">The next step creates a persistent Version and changes which Version is Live.</div>${cardShell("Update Desk Weather Agent", "Waiting for you", "warn", `<div class="scope">Proposed operation</div>${row("Agent", "Desk Weather", "agt_…7f2")}${row("Create", "New Version")}${row("Change Live", "ver_…a81 → new Version")}${row("Affected", "2 Devices follow Live")}<div class="excluded-note"><b>Not included:</b> Firmware build, flash, Device registration, or Cloud test.</div>${actions(["Approve", "Not now"])}<div class="assistant" style="margin:7px 0 0">You can also reply “Approve”.</div>`, "amber")}`;
+          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant">I’ll update the Agent definition in this Workspace.<br><span class="secondary">NoraCloud will not change in this step.</span></div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}</div>`;
+        if (kind === "intent")
+          return `<div class="user-msg">Publish these Workspace changes to the Desk Weather Agent.</div><div class="assistant">I’m starting the NoraCloud Tool Call according to the current permission policy.<br><span class="secondary">The tool result will be the Cloud receipt.</span></div>`;
+        if (kind === "publish-running")
+          return `<div class="assistant">Publishing the Agent through NoraCloud.</div>${toolCall("noracloud_publish", "Running", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Operation", "Create Version + make Live")}${row("Devices", "2 follow Live")}`)}`;
+        if (kind === "approval")
+          return `<div class="assistant">This NoraCloud Tool Call needs approval before it can mutate Cloud resources.</div>${toolCall("noracloud_publish", "Approval required", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Operation", "Create Version + make Live")}${actions(["Approve", "Always allow", "Deny"])}`)}`;
+        if (kind === "denied")
+          return `<div class="assistant">The NoraCloud Tool Call was denied. Workspace changes remain local.</div>${toolCall("noracloud_publish", "Denied", true, row("Cloud mutation", "None") )}`;
+        if (kind === "blocked")
+          return `<div class="assistant">Current policy blocks this Cloud operation before execution.</div>${toolCall("noracloud_publish", "Blocked", true, row("Policy", "Never run / deny all"))}`;
         if (kind === "receipt")
           return `<div class="assistant">The confirmed Cloud update is complete.</div>${cardShell("Desk Weather Agent updated", "Completed", "ok", `<div class="impact-grid"><div class="impact-block created"><h5>Created</h5><div class="impact-item"><span>Version</span><b>ver_…b12</b></div></div><div class="impact-block"><h5>Changed</h5><div class="impact-item"><span>Live</span><b>ver_…a81 → ver_…b12</b></div><div class="impact-item"><span>Devices</span><b>2 continue following Live</b></div></div></div><div class="persist-note"><b>Persists after this chat:</b> ver_…b12 remains Live and following Devices resolve it.</div><div class="excluded-note"><b>Not done:</b> Firmware build or flash, Device registration, or Cloud test.</div>${actions(["Open Cloud overview", "Technical details"])}`)}`;
-        if (kind === "deferred")
-          return `<div class="user-msg">Not now. Keep the changes local.</div><div class="assistant">The Cloud update is deferred. The validated Workspace changes remain available.</div>${cardShell("Update Desk Weather Agent", "Deferred", "warn", `${row("Cloud change", "None")}${row("Workspace changes", "Ready")}${actions(["Continue locally", "Update later"])}`)}`;
-        if (kind === "result-attention")
-          return `<div class="assistant">The Cloud update needs attention. Confirmed resources remain visible.</div>${cardShell("Desk Weather update incomplete", "Partial", "warn", `<div class="stage-list">${stage("✓", "Version created", "ver_…b12", "done")}${stage("×", "Live change failed", "still ver_…a81", "failed")}${stage("○", "Affected Devices", "unchanged")}</div><div class="notice">Resume from the Live change. Do not create another Version.</div>${actions(["Check current state", "Technical details"])}`, "amber")}`;
+        if (kind === "receipt")
+          return `<div class="assistant">NoraCloud completed the publish operation.</div>${toolCall("noracloud_publish", "Completed", true, `${row("Version", "Created", "ver_…b12")}${row("Live", "Changed", "ver_…b12")}${row("Devices", "2 continue following Live")}${row("Request", "req_…42e")}`)}<div class="persist-note"><b>Receipt:</b> the new Version remains Live after this conversation.</div>`;
+        if (kind === "conflict")
+          return `<div class="assistant">The Cloud operation hit a current-state conflict. No blind retry is offered.</div>${toolCall("noracloud_publish", "Failed", true, row("Conflict", "Live Version changed since read"))}${actions(["Refresh Cloud state", "Open details"])}`;
+        if (kind === "partial")
+          return `<div class="assistant">The tool returned a partial result. Confirmed sub-operations remain visible.</div>${toolCall("noracloud_publish", "Failed", true, `${stage("✓", "Version created", "ver_…b12", "done")}${stage("×", "Live change failed", "still ver_…a81", "failed")}`)}${actions(["Check current state", "Open details"])}`;
+        if (kind === "unknown")
+          return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("noracloud_publish", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
+        if (kind === "cloud-refresh")
+          return `<div class="assistant">Cloud context is refreshed from the canonical NoraCloud receipt.</div>${toolCall("noracloud_status", "Completed", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Live", "ver_…b12")}${row("Devices", "2 following Live")}`)}`;
         return "";
       }
 
       function rightPanel(kind) {
-        const cloudKinds = ["receipt", "result-attention"];
+        const cloudKinds = ["receipt", "conflict", "partial", "unknown", "cloud-refresh"];
         if (!cloudKinds.includes(kind))
           return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">2 changed files</b><br><br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
         const complete = kind === "receipt";
@@ -1665,6 +1707,22 @@
             <div class="settings-footnote" style="padding-top:10px">Entering through Recorded Usage focuses this same list by Usage; it does not create another resource type.</div>`);
         if (kind === "settings-session-detail")
           return settingsShell("ses_…91c", "Cloud / Sessions / ses_…91c", `<div class="settings-meta-grid"><div class="settings-meta"><span>Status</span><b>Active</b></div><div class="settings-meta"><span>Agent</span><b>Desk Weather</b></div><div class="settings-meta"><span>Device</span><b>Desk Display</b></div><div class="settings-meta"><span>Version at start</span><code>ver_…b12</code></div></div><div class="settings-section-card"><h6>Session activity</h6><div class="file-row"><b>Started</b><span>Today · 09:14</span><span></span></div><div class="file-row"><b>Last interaction</b><span>8 minutes ago</span><span></span></div><div class="file-row"><b>Turns</b><span>14</span><span></span></div><div class="file-row"><b>Context tokens</b><span>31,200</span><span></span></div></div><div class="settings-section-card"><h6>Recorded Usage</h6><div class="settings-usage"><div><strong>24,680</strong><span>LLM tokens</span></div><div><strong>4.8s</strong><span>STT audio</span></div><div><strong>3,240</strong><span>TTS characters</span></div></div></div><div class="settings-actions"><span class="btn">View logs</span><span class="btn">Export Session</span><span class="btn">Open related resources</span></div>`);
+        if (kind === "settings-agent-live")
+          return settingsShell("Make Version Live", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Confirm direct Cloud update</h6>${row("Current Live", "ver_…a81")}${row("New Live", "ver_…b12")}${row("Affected Devices", "2 following Live")}</div><div class="settings-actions">${actions(["Confirm Make Live", "Cancel"])}</div>`);
+        if (kind === "settings-agent-delete")
+          return settingsShell("Delete Agent", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Confirm deletion</h6>${row("Agent", "Desk Weather", "agt_…7f2")}${row("Dependency check", "No blocking Devices")}</div><div class="settings-actions">${actions(["Delete Agent", "Cancel"])}</div>`);
+        if (kind === "settings-agent-deleted")
+          return settingsShell("Agent Deleted", "Cloud / Agents", `<div class="settings-section-card"><h6>Updated</h6><p>The Agent and its Cloud relationship are deleted. This result stays in Settings.</p></div>`);
+        if (kind === "settings-agent-in-use")
+          return settingsShell("Agent In Use", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Cannot delete yet</h6>${row("Blocking dependency", "2 Devices")}${row("Devices", "Desk Display · Office Display")}</div><div class="settings-actions">${actions(["Open Devices", "Cancel"])}</div>`);
+        if (kind === "settings-device-rebind")
+          return settingsShell("Rebind Device", "Cloud / Devices / Desk Display / Actions", `<div class="settings-section-card"><h6>Confirm ownership change</h6>${row("Device", "Desk Display", "dev_…228")}${row("Current Agent", "Desk Weather")}${row("Target Agent", "Kitchen Helper")}${row("Impact", "Reconnect required")}</div><div class="settings-actions">${actions(["Confirm Rebind", "Cancel"])}</div>`);
+        if (kind === "settings-device-rebound")
+          return settingsShell("Device Rebound", "Cloud / Devices / Desk Display", `<div class="settings-section-card"><h6>Updated</h6>${row("Owning Agent", "Kitchen Helper")}${row("Reconnect", "Required")}</div>`);
+        if (kind === "settings-session-end")
+          return settingsShell("End Cloud Session", "Cloud / Sessions / ses_…91c / Actions", `<div class="settings-section-card"><h6>Confirm end</h6>${row("Session", "ses_…91c")}${row("Status", "Active")}${row("Recorded Usage", "24,680 tokens preserved")}</div><div class="settings-actions">${actions(["End Session", "Cancel"])}</div>`);
+        if (kind === "settings-session-ended")
+          return settingsShell("Session Ended", "Cloud / Sessions", `<div class="settings-section-card"><h6>Ended</h6><p>ses_…91c is no longer active. Recorded Usage remains available.</p></div>`);
         return "";
       }
 
@@ -1679,10 +1737,10 @@
 
       function card(id) {
         const state = states[id];
-        const severity = ["3", "3.1", "4.1"].includes(id)
+        const severity = ["3.1", "3.1.2", "3.2", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
           ? "warning"
           : "";
-        const maturity = ["1", "2"].includes(id) ? "Existing pattern" : "Proposed";
+        const maturity = id === "1" ? "Existing pattern" : "Proposed";
         return `<article class="wire-card ${severity}"><div class="card-head"><span class="id">${id}</span><h4>${state.title}</h4><span class="tag">${maturity}</span></div><div class="caption">${state.caption}</div>${appFrame(state.view)}</article>`;
       }
       function flow(ids) {
@@ -1694,21 +1752,22 @@
           .join("");
       }
 
-      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4"]);
+      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
       document.getElementById("settings-agent-flow").innerHTML = flow([
-        "4.5",
-        "4.5.1",
-        "4.5.1.1",
-        "4.5.1.1.1",
+        "5.1",
+        "5.1.2",
+        "5.1.3",
+        "5.1.3.1",
       ]);
       document.getElementById("settings-device-flow").innerHTML = flow([
-        "4.5.1.1",
-        "4.5.1.1.2",
+        "5.2",
+        "5.2.2",
+        "5.2.2.1",
       ]);
       document.getElementById("settings-session-flow").innerHTML = flow([
-        "4.5",
-        "4.5.2",
-        "4.5.2.1",
+        "5.3",
+        "5.3.1",
+        "5.3.2",
       ]);
       document.getElementById("route-rows").innerHTML = routes
         .map(
