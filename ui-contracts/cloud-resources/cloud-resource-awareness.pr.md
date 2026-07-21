@@ -18,9 +18,9 @@
 - The approval preview exposes the first-publish destination, effective LLM/Voice/Cron values, readable instruction summaries with file/diff access, exact persistent changes, and explicit exclusions. Users approve the displayed meaning and consequences; hashes remain collapsed system evidence that binds execution to the reviewed snapshot.
 - The example is a first publish from an unbound Workspace: it creates the Agent, initial immutable Version, initial Live pointer, and Workspace binding. It does not claim a previous Live Version or affected Devices.
 - The completed Tool result is the canonical receipt. The right panel remains on Changes during completion and refreshes to canonical Cloud state only in the following state; no duplicate proposal or receipt card is required.
-- The review example uses Ask before running so PM can see the control point. Auto-run skips only that state and continues through the same Running and Completed Tool Call.
+- The review example uses Ask before running so PM can see the control point. Approval and Auto-run both settle the same Tool Call directly to its receipt; the journey does not add a separate progress frame.
 - Settings calls typed NoraCloud APIs directly. Agent rename/live/rollback/delete, Device track/rebind/rotate/revoke, and Session end never enter Conversation or create a visible Tool Call.
-- The right Cloud panel follows the current Workspace and refreshes after the canonical tool receipt.
+- The right Cloud panel follows the current Workspace and refreshes after the canonical tool receipt. One compact Workspace Cloud card replaces the ambiguous split between Bound Agent and Related Cloud Resources.
 - Versions remain immutable and read-only except for Make Live/Rollback from their owning Agent. Rotation never displays a credential value.
 - Account Usage is NoraCloud-recorded activity, not local coding Run Records, billing, balance, or remaining quota.
 

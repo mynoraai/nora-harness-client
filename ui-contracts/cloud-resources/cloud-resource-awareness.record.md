@@ -19,8 +19,8 @@ their final renderers are proposed.
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `1` | Main step | Journey 1 | The user requests a weather product and the Agent implements its firmware. | Describes the desired weather experience. | One Conversation turn shows the user's goal, the Agent's concise intent, and real Read/Edit/Write/Build Tool Calls. | Firmware application files change and the selected target builds; NoraCloud is unchanged. | `2` |
-| `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `3.1`, or `3.3` |
-| `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `3.1`, `3.2`, or `3.4` |
+| `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `4`, or `3.2` |
+| `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A compact dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `4`, `3.1`, or `3.3` |
 | `4` | Main step | Journey 1 | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
 | `5` | Main step | Journey 1 | The Agent reports the product outcome and Workspace Cloud reflects canonical state. | Reviews the summary or opens Settings for account management. | The Assistant names the firmware and Agent result; the Workspace Cloud snapshot shows the Live Version and freshness. | The vibe-coding turn closes with local build evidence and a canonical Cloud receipt. | `5.1`, `5.2`, `5.3`, or end |
 
@@ -28,10 +28,9 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `3.1` | Sequential child | `3 Approval Required` | The first-publish Tool Call is executing after approval, or immediately under Auto-run. | Watches the operation or stops the turn if the runtime allows. | The same card becomes `Running` and shows the locked snapshot, Agent creation, initial Version creation, initial Live pointer, and Workspace binding stages. | One first-publish operation is in flight. | `4`, `4.1`, `4.2`, or `4.3` |
-| `3.2` | Branch | `3 Approval Required` | The user denies the pending Tool Call. | Clicks `Deny`. | The same card settles to `Denied`; no receipt claims a Cloud mutation. | Local firmware and Agent files remain available. | `2` or end |
-| `3.3` | Branch | `2 Agent Definition Authored` | The active policy blocks Cloud execution before an approval prompt. | Reads the blocked state and changes policy later if needed. | The Tool Call shows `Blocked`; no API progress is shown. | No Cloud mutation starts. | `2` or end |
-| `3.4` | Recovery state | `3 Approval Required` | A source file changes after the approval snapshot was prepared. | Reviews the regenerated effective definition and decides again. | `Source changed` names the changed file, cancels the prior approval, and returns to a new semantic preview. Digest comparison remains in technical details. | The old approval token cannot execute a different definition. | `3` or end |
+| `3.1` | Branch | `3 Approval Required` | The user denies the pending Tool Call. | Clicks `Deny`. | The same card settles to `Denied`; no receipt claims a Cloud mutation. | Local firmware and Agent files remain available. | `2` or end |
+| `3.2` | Branch | `2 Agent Definition Authored` | The active policy blocks Cloud execution before an approval prompt. | Reads the blocked state and changes policy later if needed. | The Tool Call shows `Blocked`; no API progress is shown. | No Cloud mutation starts. | `2` or end |
+| `3.3` | Recovery state | `3 Approval Required` | A source file changes after the approval snapshot was prepared. | Reviews the regenerated effective definition and decides again. | `Source changed` names the changed file, cancels the prior approval, and returns to a new semantic preview. Digest comparison remains in technical details. | The old approval token cannot execute a different definition. | `3` or end |
 | `4.1` | Recovery state | `4 NoraCloud Tool Receipt` | The resource changed before the Tool Call could apply its premise. | Refreshes current state and decides whether to retry. | `Conflict` names the changed premise and offers read-only refresh before retry. | The client discards stale assumptions and keeps the confirmed current resource. | `2`, `3`, or end |
 | `4.2` | Recovery state | `4 NoraCloud Tool Receipt` | Some effects completed and another stage failed. | Reviews completed IDs and the failed stage. | `Partial` separates confirmed first-publish effects from the unresolved stage and does not offer a duplicate full publish. | Confirmed effects remain recorded; recovery starts from the failed stage. | `5` or `2` |
 | `4.3` | Recovery state | `4 NoraCloud Tool Receipt` | The final outcome cannot be confirmed. | Opens the Cloud snapshot or retries read-only discovery. | `Outcome unknown` pauses mutation retry until NoraCloud state is discovered. | The client keeps the request ID and prevents an unsafe duplicate operation. | `5`, `2`, or end |
@@ -60,7 +59,7 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `0.1` | State language | Journey 1 | Tool execution language. | Reads the Tool card. | `Running`, `Approval required`, `Blocked`, `Completed`, and `Failed` distinguish execution from permission. | None. | Active state |
+| `0.1` | State language | Journey 1 | Publish Tool Call language. | Reads the Tool card. | `Approval required`, `Blocked`, `Completed`, and `Failed` distinguish permission from stable outcomes; transient execution is not a separate journey state. | None. | Active state |
 | `0.2` | State language | Journey 1 | Settings operation language. | Reads a Settings action or confirmation. | `Confirm`, `Updating`, `Updated`, `Conflict`, `In use`, `Revoked`, and `Ended` distinguish direct resource management. | None. | Active state |
 | `0.3` | State language | Journey 1 | Recovery language. | Reads an error or recovery action. | `Partial` and `Outcome unknown` preserve confirmed facts and prevent unsafe duplicate mutation. | None. | Active state |
 | `0.4` | State language | Journey 1 | Secret language. | Reads a credential-related detail. | Credential type, protected destination, reconnect guidance, and status may appear; secret values never appear. | None. | Active state |
@@ -69,7 +68,7 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `3.4` | Recovery summary | `3 Approval Required` | The approval snapshot no longer matches its source files. | Reviews the regenerated definition or stops. | `Source changed` names the changed source and cancels the old approval without requiring the user to compare hashes. | No mutation starts under the stale approval. | `3` or end |
+| `3.3` | Recovery summary | `3 Approval Required` | The approval snapshot no longer matches its source files. | Reviews the regenerated definition or stops. | `Source changed` names the changed source and cancels the old approval without requiring the user to compare hashes. | No mutation starts under the stale approval. | `3` or end |
 | `4.1` | Recovery summary | `4 NoraCloud Tool Receipt` | Conflict after the operation premise became stale. | Refreshes and retries only after reviewing current state. | `Conflict` keeps the last known resource visible and disables blind duplicate execution. | Stale assumptions are discarded. | `2`, `3`, or end |
 | `4.2` | Recovery summary | `4 NoraCloud Tool Receipt` | Partial operation. | Reviews completed IDs and failed stages. | Confirmed effects remain visible; retry starts at the unresolved stage. | The client keeps the receipt and avoids redoing completed work. | `5` or `2` |
 | `4.3` | Recovery summary | `4 NoraCloud Tool Receipt` | Unknown operation outcome. | Performs read-only discovery or stops. | `Outcome unknown` remains visible until the resource state is confirmed. | Duplicate mutation stays blocked. | `5`, `2`, or end |
@@ -79,14 +78,14 @@ their final renderers are proposed.
 
 | Route | Composition | Result / next state |
 | --- | --- | --- |
-| Ask before running, approve | `1 -> 2 -> 3 -> 3.1 -> 4 -> 5` | The example conversation moves from firmware coding through Agent authoring, approval, publish, and outcome. |
-| Auto-run publish | `1 -> 2 -> 3.1 -> 4 -> 5` | Auto-run skips only the approval state and uses the same running Tool Call and receipt. |
-| Ask before running, deny | `1 -> 2 -> 3 -> 3.2 -> 2` | No Cloud mutation occurs; firmware and Agent definition remain local. |
-| Never run policy | `1 -> 2 -> 3.3 -> 2` | Cloud execution is blocked until the user changes policy. |
-| Approval source changed | `1 -> 2 -> 3 -> 3.4 -> 3` | The old approval is invalidated and the regenerated definition must be reviewed again. |
-| Publish conflict | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.1 -> 2` | Current state is refreshed before another operation is attempted. |
-| Partial publish | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.2 -> 5` | Confirmed effects remain visible and retry starts at the unresolved stage. |
-| Unknown publish outcome | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.3 -> 5` | Read-only discovery confirms the state before any retry. |
+| Ask before running, approve | `1 -> 2 -> 3 -> 4 -> 5` | The example moves from firmware coding through Agent authoring and approval directly to the publish receipt and outcome. |
+| Auto-run publish | `1 -> 2 -> 4 -> 5` | Auto-run skips approval and settles the same Tool Call directly to its receipt. |
+| Ask before running, deny | `1 -> 2 -> 3 -> 3.1 -> 2` | No Cloud mutation occurs; firmware and Agent definition remain local. |
+| Never run policy | `1 -> 2 -> 3.2 -> 2` | Cloud execution is blocked until the user changes policy. |
+| Approval source changed | `1 -> 2 -> 3 -> 3.3 -> 3` | The old approval is invalidated and the regenerated definition must be reviewed again. |
+| Publish conflict | `1 -> 2 -> 3 -> 4 -> 4.1 -> 2` | Current state is refreshed before another operation is attempted. |
+| Partial publish | `1 -> 2 -> 3 -> 4 -> 4.2 -> 5` | Confirmed effects remain visible and retry starts at the unresolved stage. |
+| Unknown publish outcome | `1 -> 2 -> 3 -> 4 -> 4.3 -> 5` | Read-only discovery confirms the state before any retry. |
 | Agent rename | `5 -> 5.1 -> 5.1.1 -> 5.1` | Settings directly updates the Agent name and refreshes canonical detail. |
 | Make Live or roll back | `5 -> 5.1 -> 5.1.2 -> 5.1` | Settings directly changes the Live pointer or shows a conflict. |
 | Delete Agent succeeds | `5 -> 5.1 -> 5.1.3 -> 5.1.3.1 -> 5` | The Agent disappears from the refreshed Settings list. |
@@ -126,7 +125,7 @@ summary of the persistent Cloud effect that is ready to run.
 
 Client state change: the local Agent definition becomes complete; no Cloud resource exists yet.
 
-Exit / next state: `3 Approval Required`, `3.1 Publish Running` under Auto-run, or `3.3 Blocked`.
+Exit / next state: `3 Approval Required`, `4 NoraCloud Tool Receipt` under Auto-run, or `3.2 Blocked`.
 
 ### 3 Publish Approval Required
 
@@ -156,7 +155,7 @@ Client state change: no Cloud mutation starts while the Tool Call is awaiting pe
 approval is cryptographically bound to the prepared definition digest; any source change
 invalidates it.
 
-Exit / next state: `3.1 Publish Running`, `3.2 Tool Denied`, or `3.4 Approval Snapshot Changed`.
+Exit / next state: `4 NoraCloud Tool Receipt`, `3.1 Tool Denied`, or `3.3 Approval Snapshot Changed`.
 
 ### 4 NoraCloud Tool Receipt
 
@@ -179,8 +178,10 @@ User entry: the Cloud operation is complete or the user opens Cloud after recove
 
 User action: reviews the bound Agent and opens Settings when account-level management is needed.
 
-Visible UI state: the Workspace Cloud panel shows canonical Agent/Live information, freshness, and
-related resources. Settings is clearly account-scoped and does not inherit the coding Conversation.
+Visible UI state: one compact `Workspace Cloud` card shows the bound Agent, current Live Version,
+Device count, freshness, and `Manage in Settings`. It does not split the same relationship into
+separate `Bound Agent` and `Related Cloud Resources` cards. Settings remains account-scoped and
+does not inherit the coding Conversation.
 
 Client state change: the last trusted Cloud snapshot is replaced by the refreshed canonical state.
 
@@ -188,21 +189,7 @@ Exit / next state: `5.1`, `5.2`, `5.3`, or end.
 
 ## Branch Journeys
 
-### 3.1 Publish Running
-
-Trigger: the user approves the pending Tool Call, or the active policy is Auto-run.
-
-Visible UI state: the same `Publish Weather Buddy Agent` card becomes `Running`. It shows
-`Definition snapshot locked`, `Creating Agent`, `Creating initial Version`, `Setting Version Live`,
-and `Binding Workspace` inside the expanded Tool Call.
-
-Allowed user actions: watch the operation or stop the run if the runtime exposes Stop.
-
-Recovery / next state: `4`, `4.1`, `4.2`, or `4.3`.
-
-Blocks progress: no.
-
-### 3.2 Tool Denied
+### 3.1 Tool Denied
 
 Trigger: the user denies the pending Tool Call.
 
@@ -214,7 +201,7 @@ Recovery / next state: `2` or end.
 
 Blocks progress: only the requested Cloud operation.
 
-### 3.3 Tool Blocked By Policy
+### 3.2 Tool Blocked By Policy
 
 Trigger: the active policy never allows the requested operation.
 
@@ -226,7 +213,7 @@ Recovery / next state: `2` or end.
 
 Blocks progress: only Cloud execution.
 
-### 3.4 Approval Snapshot Changed
+### 3.3 Approval Snapshot Changed
 
 Trigger: `cloud-agent.json` or an included instruction file changes after the approval preview is
 computed and before mutation starts.
@@ -449,8 +436,9 @@ Exit / next state: `5.3` or end.
 
 ### 0.1 Tool Execution Language
 
-`Running`, `Approval required`, `Blocked`, `Completed`, `Denied`, and `Failed` are reserved for the
-semantic NoraCloud Tool Call and its permission state.
+`Approval required`, `Blocked`, `Completed`, `Denied`, and `Failed` are reserved for the semantic
+publish Tool Call. A transient execution phase may exist in runtime events but is not a separate
+user journey frame.
 
 ### 0.2 Settings Operation Language
 

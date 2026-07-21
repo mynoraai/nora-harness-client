@@ -149,7 +149,7 @@ permission profile determines the route:
 
 | Policy behavior | Visible Tool Call route |
 | --- | --- |
-| Auto-run | `Running` → `Completed` or `Failed` |
+| Auto-run | The Tool Call executes without a permission pause and settles to `Completed` or `Failed` |
 | Ask before running | `Approval required` → `Approve once`, `Always allow in this workspace`, or `Deny` → execution or denial |
 | Never run | `Blocked`; no NoraCloud mutation starts |
 
@@ -243,9 +243,9 @@ The revised journey should show:
 1. one readable vibe-coding example from a weather application request through firmware
    Read/Edit/Write/Build activity and user-supplied Agent identity/personality;
 2. an Ask-before-running NoraCloud publish Tool Call as the review example, with Auto-run skipping
-   only the approval state;
-3. approval, running, completed, denied, blocked, conflict, partial, and unknown states on the same
-   semantic Tool Call surface;
+   the approval state and no separate progress frame;
+3. approval, completed, denied, blocked, conflict, partial, and unknown states on the same semantic
+   Tool Call surface;
 4. an expanded first-publish approval preview derived from `cloud-agent.json` and the selected
    instruction files, with digest-bound approval and source-change invalidation;
 5. a Completed Tool receipt that stays inside Conversation while the right panel remains on Changes;

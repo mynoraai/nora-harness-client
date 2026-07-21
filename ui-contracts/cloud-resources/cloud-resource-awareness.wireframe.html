@@ -1108,13 +1108,6 @@
         background: #fff;
         font-family: var(--sans);
       }
-      .publish-tool.running .tool-call {
-        border-color: #b8cfdd;
-      }
-      .publish-tool.running .tool-head,
-      .publish-tool.running .publish-summary {
-        background: var(--blue-soft);
-      }
       .publish-tool.completed .tool-call {
         border-color: #bdd9c5;
       }
@@ -1325,6 +1318,45 @@
         border-color: #b7cfde;
         background: var(--blue-soft);
       }
+      .publish-tool.approval .tool-head {
+        min-height: 38px;
+        padding: 7px 10px;
+      }
+      .publish-tool.approval .tool-body {
+        padding: 9px 10px;
+      }
+      .publish-tool.approval .publish-summary {
+        padding: 6px 8px;
+      }
+      .publish-tool.approval .publish-destination {
+        padding: 6px 2px;
+      }
+      .publish-tool.approval .publish-review-block,
+      .publish-tool.approval .instruction-review {
+        padding: 6px 7px;
+      }
+      .publish-tool.approval .instruction-review {
+        margin-top: 6px;
+      }
+      .publish-tool.approval .cloud-effect {
+        padding: 2px 0;
+      }
+      .publish-tool.approval .instruction-file {
+        min-height: 20px;
+      }
+      .publish-tool.approval .approval-footer {
+        margin-top: 6px;
+        padding: 5px 7px;
+      }
+      .publish-tool.approval .publish-exclusions {
+        margin-top: 5px;
+      }
+      .publish-tool.approval .actions {
+        margin-top: 6px;
+      }
+      .publish-tool.approval .btn {
+        min-height: 24px;
+      }
 
       .right {
         width: 310px;
@@ -1444,6 +1476,14 @@
       }
       .cloud-panel .panel-row code {
         font: 7.5px var(--mono);
+      }
+      .cloud-panel .panel-link {
+        display: block;
+        padding: 7px 8px;
+        border-top: 1px solid var(--line);
+        color: var(--accent);
+        font-size: 8px;
+        font-weight: 800;
       }
       .right-bottom {
         padding: 8px 10px;
@@ -1571,7 +1611,7 @@
           <div class="band-title">
             <h3>Route path</h3>
             <span
-              >The example uses Ask before running; Auto-run skips only the approval state.</span
+              >The example uses Ask before running; Auto-run skips approval and settles directly to a receipt.</span
             >
           </div>
           <div id="route-rows"></div>
@@ -1616,7 +1656,7 @@
             <article class="compact-card language">
               <span class="kind">State language</span>
               <h4>0.1 Tool execution</h4>
-              <p>Running · Approval required · Blocked · Completed · Denied · Failed.</p>
+              <p>Approval required · Blocked · Completed · Denied · Failed.</p>
             </article>
             <article class="compact-card language">
               <span class="kind">State language</span>
@@ -1683,21 +1723,16 @@
           caption: "The completed tool result is the receipt and canonical resource outcome.",
         },
         3.1: {
-          title: "Publish Agent · Running",
-          view: "publish-running",
-          caption: "Approval or Auto-run starts the same Tool Call exactly once.",
-        },
-        "3.2": {
           title: "Publish Tool · Denied",
           view: "denied",
           caption: "Deny records no Cloud mutation and keeps firmware and Agent files local.",
         },
-        "3.3": {
+        "3.2": {
           title: "Publish Tool · Blocked",
           view: "blocked",
           caption: "Never-run or deny-all policy blocks the Cloud operation before mutation.",
         },
-        "3.4": {
+        "3.3": {
           title: "Publish Definition · Source Changed",
           view: "source-changed",
           caption: "A changed source invalidates the old approval and requires a regenerated definition preview.",
@@ -1787,32 +1822,32 @@
       const routes = [
         {
           name: "Ask-before-running · approve",
-          path: ["1", "2", "3", "3.1", "4", "5"],
-          result: "One readable conversation moves from coding through approval and publish.",
+          path: ["1", "2", "3", "4", "5"],
+          result: "The Tool Call moves from approval directly to its stable receipt.",
         },
         {
           name: "Auto-run publish",
-          path: ["1", "2", "3.1", "4", "5"],
-          result: "Auto-run skips only approval and uses the same Tool Call and receipt.",
+          path: ["1", "2", "4", "5"],
+          result: "Auto-run skips approval and settles the same Tool Call to its receipt.",
         },
         {
           name: "Ask-before-running · deny",
-          path: ["1", "2", "3", "3.2", "2"],
+          path: ["1", "2", "3", "3.1", "2"],
           result: "Deny keeps the firmware and Agent definition local.",
         },
         {
           name: "Never-run policy",
-          path: ["1", "2", "3.3", "2"],
+          path: ["1", "2", "3.2", "2"],
           result: "The tool is blocked before execution; the Agent can continue locally.",
         },
         {
           name: "Approval source changed",
-          path: ["1", "2", "3", "3.4", "3"],
+          path: ["1", "2", "3", "3.3", "3"],
           result: "A source change invalidates the old digest and requires a new review.",
         },
         {
           name: "Conflict / partial / unknown",
-          path: ["1", "2", "3", "3.1", "4", "4.1", "2"],
+          path: ["1", "2", "3", "4", "4.1", "2"],
           result: "Recovery starts from the tool outcome and current Cloud state.",
         },
         {
@@ -1856,10 +1891,6 @@
         const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish</span><b>Creates a persistent Agent and makes it Live</b></div><span class="publish-count">4 Cloud changes</span></div><div class="publish-destination"><span>Destination</span><b>NoraCloud Production · Nora User</b><code>desk-weather · unbound</code></div><div class="publish-review-grid"><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Cloud changes</b><span>Runs after approval</span></div>${cloudEffect("Create Agent", "Weather Buddy")}${cloudEffect("Create initial Version", "Immutable definition")}${cloudEffect("Set initial Version Live", "No previous Live Version")}${cloudEffect("Bind Workspace", "desk-weather → new Agent")}</section><section class="publish-review-block"><div class="publish-block-head"><b>Effective Agent definition</b><span class="review-link">View config ›</span></div><div class="definition-pairs"><span>Name</span><b>Weather Buddy</b><span>Description</span><b>Humorous weather assistant</b><span>LLM</span><b>DashScope · qwen-max</b><span>Voice</span><b>zhixiaobai · Chinese</b><span>Cron</span><b>None</b></div></section></div><section class="instruction-review"><div class="publish-block-head"><b>Instructions included in this Version</b><span>Review content</span></div>${instructionFile("Modified", "SOUL.md", "Humorous, friendly weather guide", "View diff")}${instructionFile("Modified", "IDENTITY.md", "Name and Weather Buddy identity", "View diff")}${instructionFile("Unchanged", "USER.md", "Workspace user preferences", "View file", true)}</section><div class="publish-exclusions"><b>Not included:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>You are approving the content and Cloud changes shown above.</b><span>The system will reject this approval if any reviewed source changes.</span></div><span class="technical-disclosure">Technical details · noracloud_publish · snapshot protected ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
         return `<div class="publish-tool approval">${toolCall("Publish Weather Buddy Agent", "Approval required", true, body)}</div>`;
       }
-      function publishRunningCall() {
-        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Approved snapshot</span><b>Publishing Weather Buddy to NoraCloud</b></div><span class="publish-count">In progress</span></div><div class="publish-destination"><span>Destination</span><b>NoraCloud Production · Nora User</b><code>desk-weather</code></div><div class="stage-list">${stage("✓", "Reviewed definition locked", "Snapshot protected", "done")}${stage("◷", "Creating Agent", "Weather Buddy", "active")}${stage("○", "Creating initial Version", "Pending")}${stage("○", "Setting initial Version Live", "Pending")}${stage("○", "Binding Workspace", "Pending")}</div>`;
-        return `<div class="publish-tool running">${toolCall("Publish Weather Buddy Agent", "Running", true, body)}</div>`;
-      }
       function publishReceiptCall() {
         const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish completed</span><b>Weather Buddy is Live and bound to this Workspace</b></div><span class="publish-count">4 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="publish-block-head"><b>Created resources</b></div><div class="definition-pairs"><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Version</span><b>Ready · ver_…b12</b><span>Live</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="publish-block-head"><b>Workspace result</b></div><div class="definition-pairs"><span>Workspace</span><b>desk-weather</b><span>Binding</span><b>Weather Buddy</b><span>Devices</span><b>None registered</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>This Tool result is the persistent NoraCloud receipt.</b><span>The Cloud panel refreshes from this confirmed result next.</span></div><span class="technical-disclosure">IDs, digest, request · req_…42e ▸</span></div>`;
         return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Agent", "Completed", true, body)}</div>`;
@@ -1870,8 +1901,6 @@
           return `<div class="user-msg">Write a weather application for this device. Show the current temperature and weather condition.</div><div class="assistant">I’ll inspect the existing firmware project, implement the weather screen, and build it for the configured board.</div><div class="tool-stack">${toolCall("Read project files", "Completed")}${toolCall("Edit main/app/user_app.c", "Completed")}${toolCall("Write agent/ui/weather-screen.xml", "Completed")}${toolCall("Build firmware · hw_fw_build", "Completed", true, row("Evidence", "Selected target compiled successfully"))}</div>`;
         if (kind === "agent-authoring")
           return `<div class="assistant">The firmware application is ready. Before I configure its NoraCloud Agent, what should the Agent be called, and how should it speak?</div><div class="user-msg">Call it Weather Buddy. Make it humorous and friendly.</div><div class="tool-stack">${toolCall("Read existing Agent definition", "Completed")}${toolCall("Edit agent/SOUL.md", "Completed")}${toolCall("Edit agent/IDENTITY.md", "Completed")}${toolCall("Edit agent/cloud-agent.json", "Completed")}</div><div class="assistant">The firmware and Agent definition are ready. Publishing will create an immutable Version and make it Live.</div>`;
-        if (kind === "publish-running")
-          return publishRunningCall();
         if (kind === "approval")
           return `<div class="assistant">Review the Agent definition and Cloud changes before publishing.</div>${publishApprovalCall()}`;
         if (kind === "denied")
@@ -1897,7 +1926,7 @@
         const cloudKinds = ["cloud-refresh"];
         if (!cloudKinds.includes(kind))
           return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">5 changed files</b><br><br>M &nbsp;main/app/user_app.c<br>M &nbsp;agent/ui/weather-screen.xml<br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/IDENTITY.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
-        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Workspace relationship and last trusted Cloud state.</div><div class="panel-card"><h5>Bound Agent</h5><div class="panel-row"><span>Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Personality</span><b>Humorous · Friendly</b><code></code></div></div><div class="panel-card"><h5>Related Cloud Resources</h5><div class="panel-row"><span>Versions</span><b>1</b><code>›</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code>›</code></div><div class="panel-row"><span>Credentials</span><b>Not configured</b><code>›</code></div></div></div>`;
+        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Cloud state used by this Workspace.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code></code></div><span class="panel-link">Manage in Settings ›</span></div></div>`;
       }
 
       function settingsShell(title, breadcrumb, body) {
@@ -1988,7 +2017,7 @@
 
       function card(id) {
         const state = states[id];
-        const severity = ["3", "3.2", "3.3", "3.4", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
+        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
           ? "warning"
           : "";
         const maturity = id === "1" ? "Existing pattern" : "Proposed";
@@ -2003,7 +2032,7 @@
           .join("");
       }
 
-      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "3.1", "4", "5"]);
+      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
       document.getElementById("settings-agent-flow").innerHTML = flow([
         "5.1",
         "5.1.2",
