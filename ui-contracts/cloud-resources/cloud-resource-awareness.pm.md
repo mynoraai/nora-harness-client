@@ -142,6 +142,23 @@ or dozens of per-action tools.
 Product titles are semantic and action-specific—such as `Publish Desk Weather Agent`, `Rebind
 Kitchen Display`, or `End Cloud Session`—rather than the internal Tool family name.
 
+## Resource Lifecycle Coverage
+
+First publish is one Create example, not the definition of the whole Agent surface. The proposed MCP
+adapter must expose the same NoraCloud resource semantics that the API already supports:
+
+| Resource | Create | Read | Update | Delete / terminal action |
+| --- | --- | --- | --- | --- |
+| Agent | create or first publish | list, get, Workspace status | rename, metadata, move Live | delete; `409 in_use` while a Device is bound |
+| Version | build immutable Version | list and get | no content mutation; move Agent Live instead | no ordinary Version delete surface |
+| Device | register | list, get, telemetry, current Session | rename, track, rebind, rotate | revoke / deactivate |
+| Session | create test Session and submit Turns | list, get, export, logs, transcript | no generic mutable definition | end activity and retain recorded facts |
+
+The wireframe therefore includes Agent-operated examples for cross-resource Read, existing-Agent
+publish/Live Update, Device rebind, Device revoke, Session end, and Agent delete. Settings mirrors
+these resource semantics through direct API actions; it is not a substitute for missing MCP
+capabilities.
+
 ## Conversation Interaction
 
 The Agent directly starts a structured NoraCloud Tool Call after the user requests Cloud work. The
@@ -193,6 +210,11 @@ receipt. It does not claim that NoraCloud returns or renders the remote Markdown
 
 The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
 `Approve` shortcut, and separate resource receipt are not part of the proposed end state.
+
+Agent deletion follows the NoraCloud API contract: any bound Device blocks with `409 in_use`;
+successful deletion removes the Agent and its Versions and automatically ends active test Sessions.
+The UI tells the user to export needed Session data before approving. It never implies that a
+force-delete silently removes Devices.
 
 ## Settings Resource Management
 
@@ -259,9 +281,12 @@ The revised journey should show:
 4. an expanded first-publish approval preview derived from `cloud-agent.json` and the selected
    instruction files, with digest-bound approval and source-change invalidation;
 5. a Completed Tool receipt that stays inside Conversation while the right panel remains on Changes;
-6. direct Settings Agent/Version, Device, and Session management routes;
-7. distinct Conversation permission language and Settings confirmation language;
-8. an Engineering Readiness band that separates today's CLI-first partial implementation from the
+6. a resource lifecycle matrix that separates Agent, immutable Version, Device, and Session semantics;
+7. Agent-operated Read, existing-Agent Update, Device rebind/revoke, Session end, and Agent delete Tool Call examples;
+8. compact permission and safety branches rather than repeated full-screen paths;
+9. direct Settings Agent/Version, Device, and Session management routes;
+10. distinct Conversation permission language and Settings confirmation language;
+11. an Engineering Readiness band that separates today's CLI-first partial implementation from the
    proposed MCP-first end state.
 
 The journey record remains the source of truth for route IDs and visible states before the HTML is

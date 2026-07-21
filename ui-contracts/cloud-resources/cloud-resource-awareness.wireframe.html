@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      Build And Publish A Weather Agent — NoraHarness V2 Wireframe
+      NoraCloud Resource Control — NoraHarness V2 Wireframe
     </title>
     <style>
       :root {
@@ -1587,6 +1587,59 @@
       .compact-card.recovery {
         border-top: 5px solid var(--red);
       }
+      .resource-matrix-card {
+        min-height: 210px;
+        border-top: 5px solid var(--blue);
+      }
+      .resource-matrix-card .resource-name {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        margin: 5px 0 9px;
+      }
+      .resource-matrix-card .resource-name h4 {
+        margin: 0;
+      }
+      .resource-matrix-card .resource-name span {
+        color: var(--amber);
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .resource-op {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 7px;
+        padding: 5px 0;
+        border-top: 1px solid #eee9e2;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+      .resource-op b {
+        color: var(--blue);
+        font: 800 8px var(--mono);
+        letter-spacing: 0.05em;
+      }
+      .resource-op span {
+        color: var(--muted);
+      }
+      .resource-op.na span {
+        color: var(--faint);
+      }
+      .boundary-note {
+        width: 1402px;
+        margin: 0 0 14px;
+        padding: 11px 13px;
+        border: 1px solid #c4d7e5;
+        border-radius: 10px;
+        color: #356681;
+        background: var(--blue-soft);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .boundary-note b {
+        color: var(--ink);
+      }
       .footer-space {
         height: 120px;
       }
@@ -1595,9 +1648,9 @@
   <body>
     <header class="topbar">
       <div>
-        <h1>Build And Publish A Weather Agent — Conversation + Settings</h1>
+        <h1>NoraCloud Resource Control — Agent Tool Calls + Settings</h1>
         <p>
-          Firmware coding → Agent identity → Agent authoring → permission-aware NoraCloud publish → canonical result.
+          First publish is one example; the proposed end state covers Agent, Version, Device, and Session operations through MCP and direct Settings APIs.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1609,9 +1662,10 @@
 
     <nav class="jump">
       <h2>Jump</h2>
-      <button data-jump="main-happy-path">Main happy path</button>
-      <button data-jump="route-path">Route path</button>
-      <button data-jump="detail-states">Detail states</button>
+      <button data-jump="main-happy-path">Build &amp; first publish</button>
+      <button data-jump="agent-lifecycle">Agent-operated resources</button>
+      <button data-jump="route-path">Permission &amp; safety</button>
+      <button data-jump="detail-states">Settings management</button>
       <button data-jump="state-language">State language</button>
       <button data-jump="errors-recovery">Errors and recovery</button>
       <div class="legend">
@@ -1626,29 +1680,56 @@
       <div class="stage" id="stage">
         <section class="band" id="main-happy-path">
           <div class="band-title">
-            <h3>Main happy path</h3>
+            <h3>Build &amp; first publish</h3>
             <span
-              >Journey 1 · firmware coding → Agent identity → Agent authoring → approval-aware publish → result</span
+              >Journey A · one Create example: firmware coding → Agent definition → approval-aware first publish → result</span
             >
           </div>
           <div class="flow" id="main-flow"></div>
         </section>
 
-        <section class="band" id="route-path">
+        <section class="band" id="agent-lifecycle">
           <div class="band-title">
-            <h3>Route path</h3>
+            <h3>Agent-operated Cloud resources</h3>
             <span
-              >The example uses Ask before running; Auto-run skips approval and settles directly to a receipt.</span
+              >Proposed MCP end state · the Agent can operate the same NoraCloud resources that Settings manages directly.</span
             >
           </div>
-          <div id="route-rows"></div>
+          <div class="boundary-note"><b>Implementation boundary:</b> NoraCloud APIs exist and today's CLI covers many operations, but the semantic MCP Tool Calls below are proposed. Settings is a parallel human entry point, not a fallback for missing Agent capabilities.</div>
+          <div class="compact-grid" style="margin-bottom:18px">
+            <article class="compact-card resource-matrix-card"><span class="kind">API exists · MCP proposed</span><div class="resource-name"><h4>Agent</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>First publish or attach</span></div><div class="resource-op"><b>READ</b><span>List, get, status</span></div><div class="resource-op"><b>UPDATE</b><span>Rename, metadata, move Live</span></div><div class="resource-op"><b>DELETE</b><span>Delete; blocked while Devices remain bound</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">Immutable resource</span><div class="resource-name"><h4>Version</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Build validated immutable Version</span></div><div class="resource-op"><b>READ</b><span>List and inspect history</span></div><div class="resource-op"><b>UPDATE</b><span>Move Agent Live pointer; Version content never mutates</span></div><div class="resource-op na"><b>DELETE</b><span>No ordinary Version delete surface</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">API exists · MCP proposed</span><div class="resource-name"><h4>Device</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Register and deliver credential safely</span></div><div class="resource-op"><b>READ</b><span>List, get, telemetry, current Session</span></div><div class="resource-op"><b>UPDATE</b><span>Rename, track, rebind, rotate credential</span></div><div class="resource-op"><b>DELETE</b><span>Revoke / deactivate identity</span></div></article>
+            <article class="compact-card resource-matrix-card"><span class="kind">History retained</span><div class="resource-name"><h4>Session</h4><span>resource</span></div><div class="resource-op"><b>CREATE</b><span>Create test Session and submit Turns</span></div><div class="resource-op"><b>READ</b><span>List, get, export, logs, transcript</span></div><div class="resource-op na"><b>UPDATE</b><span>No generic mutable Session definition</span></div><div class="resource-op"><b>END</b><span>End activity; retain recorded facts</span></div></article>
+          </div>
+          <article class="route-row"><div class="route-title"><h4>Read · inspect the complete resource graph</h4><code>R</code><span>Read-only discovery does not ask for mutation approval.</span></div><div class="flow" id="agent-read-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Update · publish a new immutable Version and move Live</h4><code>U1 → U2</code><span>The Agent shows the semantic update and affected Devices before mutation.</span></div><div class="flow" id="agent-update-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · rebind ownership and end the current Session</h4><code>D1 → D2</code><span>Memory ownership and reconnect effects remain explicit.</span></div><div class="flow" id="agent-device-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · revoke identity and access</h4><code>V1 → V2</code><span>The Device is deactivated, its credential is revoked, and active work stops.</span></div><div class="flow" id="agent-device-revoke-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Session · end activity without deleting history</h4><code>S1 → S2</code><span>Turns stop; transcript, export, and usage remain inspectable.</span></div><div class="flow" id="agent-session-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Delete · remove an Agent only after dependency discovery</h4><code>X1 → X2</code><span>Bound Devices block deletion; successful delete removes Versions and ends active test Sessions.</span></div><div class="flow" id="agent-delete-flow"></div></article>
+        </section>
+
+        <section class="band" id="route-path">
+          <div class="band-title">
+            <h3>Permission &amp; safety branches</h3>
+            <span
+              >These are execution policies and recovery rules, not additional product journeys.</span
+            >
+          </div>
+          <div class="compact-grid">
+            <article class="compact-card"><span class="kind">Permission</span><h4>Auto-run</h4><p>Allowed mutation executes once and settles directly to the same Tool receipt. No artificial approval frame is added.</p></article>
+            <article class="compact-card"><span class="kind">Permission</span><h4>Ask before running</h4><p>The Tool Call pauses on its exact resource effects. Approve once, workspace allow, or Deny resolves that same call.</p></article>
+            <article class="compact-card"><span class="kind">Permission</span><h4>Never run</h4><p>Policy blocks before mutation. The user can continue local work or change policy; no fake API progress appears.</p></article>
+            <article class="compact-card recovery"><span class="kind">Safety</span><h4>Changed / conflict / unknown</h4><p>Changed sources invalidate approval; stale premises conflict; unknown outcomes require read-only discovery before retry.</p></article>
+          </div>
         </section>
 
         <section class="band" id="detail-states">
           <div class="band-title">
-            <h3>Detail states</h3>
+            <h3>Settings resource management</h3>
             <span
-              >Settings management detail states, permission states, Tool surfaces, and direct resource confirmations.</span
+              >The human-operated path calls NoraCloud APIs directly and never creates Conversation Tool Calls.</span
             >
           </div>
           <div class="compact-grid">
@@ -1658,8 +1739,12 @@
             <article class="compact-card"><span class="kind">Detail state</span><h4>5.3 Session End</h4><ul><li>End is confirmed inside Settings.</li><li>Ended facts remain inspectable.</li><li>The action is idempotent.</li></ul></article>
           </div>
           <article class="route-row" style="margin-top: 14px">
-            <div class="route-title"><h4>Settings · Agent and Version management</h4><code>5.1 → 5.1.2 → 5.1.3 → 5.1.3.1</code><span>Make a Version Live, then delete an Agent only after dependency checks.</span></div>
+            <div class="route-title"><h4>Settings · Agent and Version management</h4><code>5.1 → 5.1.2</code><span>Inspect immutable Versions and make one Live through a direct API confirmation.</span></div>
             <div class="flow" id="settings-agent-flow"></div>
+          </article>
+          <article class="route-row">
+            <div class="route-title"><h4>Settings · Delete an unused Agent</h4><code>5.1.3 → 5.1.3.1</code><span>The confirmation names deleted Versions and automatically ended test Sessions; bound Devices block the action.</span></div>
+            <div class="flow" id="settings-agent-delete-flow"></div>
           </article>
           <article class="route-row">
             <div class="route-title"><h4>Settings · Device management</h4><code>5.2 → 5.2.2 → 5.2.2.1</code><span>Rebind a Device with explicit Session impact and reconnect guidance.</span></div>
@@ -1669,7 +1754,7 @@
             <div class="route-title"><h4>Settings · Cloud Session</h4><code>5.3 → 5.3.1 → 5.3.2</code><span>End a Session directly and retain its final facts.</span></div>
             <div class="flow" id="settings-session-flow"></div>
           </article>
-          <div class="compact-grid" style="margin-top:14px"><article class="compact-card"><span class="kind">Proposed Tool surface</span><h4>Eight NoraCloud Tool families</h4><p><code>noracloud_status</code> · <code>noracloud_publish</code> · <code>noracloud_agent</code> · <code>noracloud_version</code> · <code>noracloud_device</code> · <code>noracloud_session</code> · <code>noracloud_turn</code> · <code>noracloud_observe</code></p></article><article class="compact-card"><span class="kind">Engineering readiness</span><h4>Today → Proposed end state</h4><p>Today the Agent uses a partial CLI surface and Settings is browse-only. Proposed: MCP-first Agent operations over one shared contract, plus direct Settings resource management.</p></article></div>
+          <div class="compact-grid" style="margin-top:14px"><article class="compact-card"><span class="kind">Proposed Tool surface</span><h4>Eight NoraCloud Tool families</h4><p><code>noracloud_status</code> · <code>noracloud_publish</code> · <code>noracloud_agent</code> · <code>noracloud_version</code> · <code>noracloud_device</code> · <code>noracloud_session</code> · <code>noracloud_turn</code> · <code>noracloud_observe</code></p></article><article class="compact-card"><span class="kind">Engineering readiness</span><h4>Today → Proposed end state</h4><p>Today: NoraCloud API exists, Agent uses a partial CLI surface, semantic MCP Tools are absent, and Settings is browse-only. Proposed: MCP-first Agent operations plus direct Settings management over one shared contract.</p></article></div>
         </section>
 
         <section class="band" id="state-language">
@@ -1784,6 +1869,61 @@
           view: "cloud-refresh",
           caption: "The completed receipt silently refreshes the right rail; Conversation adds no status Tool Call.",
         },
+        R: {
+          title: "Read Cloud Resource Graph",
+          view: "agent-read",
+          caption: "One read-only Tool Call returns the related Agent, Version, Device, and Session facts without mutation approval.",
+        },
+        U1: {
+          title: "Update Agent · Approval Required",
+          view: "agent-update-approval",
+          caption: "Publishing an existing Agent creates a new immutable Version and proposes moving Live.",
+        },
+        U2: {
+          title: "Update Agent · Tool Receipt",
+          view: "agent-update-receipt",
+          caption: "The receipt confirms the new Version, Live pointer, and Devices that follow Live.",
+        },
+        D1: {
+          title: "Rebind Device · Approval Required",
+          view: "agent-device-approval",
+          caption: "The Device Tool Call explains ownership, Session, and reconnect effects before mutation.",
+        },
+        D2: {
+          title: "Rebind Device · Tool Receipt",
+          view: "agent-device-receipt",
+          caption: "The receipt confirms new ownership, ended Session, and reconnect requirement.",
+        },
+        V1: {
+          title: "Revoke Device · Approval Required",
+          view: "agent-device-revoke-approval",
+          caption: "The Tool Call names the identity, credential, connection, and active-work consequences.",
+        },
+        V2: {
+          title: "Revoke Device · Tool Receipt",
+          view: "agent-device-revoke-receipt",
+          caption: "The receipt confirms deactivation and revoked future access without exposing a secret.",
+        },
+        S1: {
+          title: "End Session · Approval Required",
+          view: "agent-session-approval",
+          caption: "Ending activity is a protected Session operation; retained history is named before execution.",
+        },
+        S2: {
+          title: "End Session · Tool Receipt",
+          view: "agent-session-receipt",
+          caption: "The Session becomes terminal while transcript, export, and Usage remain available.",
+        },
+        X1: {
+          title: "Delete Agent · Approval Required",
+          view: "agent-delete-approval",
+          caption: "Dependency discovery precedes the irreversible Agent deletion request.",
+        },
+        X2: {
+          title: "Delete Agent · Tool Receipt",
+          view: "agent-delete-receipt",
+          caption: "The receipt records deleted Versions and automatically ended test Sessions.",
+        },
         "5.1": {
           title: "Agent Resource Detail",
           view: "settings-agent-detail",
@@ -1846,49 +1986,6 @@
         },
       };
 
-      const routes = [
-        {
-          name: "Ask-before-running · approve",
-          path: ["1", "2", "3", "4", "5"],
-          result: "The Tool Call moves from approval directly to its stable receipt.",
-        },
-        {
-          name: "Auto-run publish",
-          path: ["1", "2", "4", "5"],
-          result: "Auto-run skips approval and settles the same Tool Call to its receipt.",
-        },
-        {
-          name: "Ask-before-running · deny",
-          path: ["1", "2", "3", "3.1", "2"],
-          result: "Deny keeps the firmware and Agent definition local.",
-        },
-        {
-          name: "Never-run policy",
-          path: ["1", "2", "3.2", "2"],
-          result: "The tool is blocked before execution; the Agent can continue locally.",
-        },
-        {
-          name: "Approval source changed",
-          path: ["1", "2", "3", "3.3", "3"],
-          result: "A source change invalidates the old digest and requires a new review.",
-        },
-        {
-          name: "Conflict / partial / unknown",
-          path: ["1", "2", "3", "4", "4.1", "2"],
-          result: "Recovery starts from the tool outcome and current Cloud state.",
-        },
-        {
-          name: "Device rebind",
-          path: ["5.2", "5.2.2", "5.2.2.1"],
-          result: "Settings direct API confirms ownership change and reconnect impact.",
-        },
-        {
-          name: "End Cloud Session",
-          path: ["5.3", "5.3.1", "5.3.2"],
-          result: "Settings ends the session without a Conversation Tool Call.",
-        },
-      ];
-
       function cardShell(title, status, statusClass, body, extraClass = "") {
         return `<div class="resource-card ${extraClass}"><div class="rhead">${title}<span class="status ${statusClass}">${status}</span></div><div class="rbody">${body}</div></div>`;
       }
@@ -1923,6 +2020,56 @@
         return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Agent", "Completed", true, body)}</div>`;
       }
 
+      function updateAgentApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Existing Agent update</span><b>Create one immutable Version and move Live</b></div><span class="publish-count">2 Cloud changes</span></div><div class="publish-destination"><span>Target</span><b>Weather Buddy · NoraCloud Production</b><code>agt_…7f2</code></div><div class="publish-review-grid"><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Cloud changes</b><span>Runs after approval</span></div>${cloudEffect("Create Version", "Shorter responses · immutable")}${cloudEffect("Move Live", "ver_…b12 → new Version")}</section><section class="publish-review-block"><div class="publish-block-head"><b>Runtime impact</b><span class="review-link">View diff ›</span></div><div class="definition-pairs"><span>Source</span><b>SOUL.md modified</b><span>Devices</span><b>2 follow Live</b><span>Switch</span><b>Next turn</b><span>Sessions</span><b>Context preserved</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Agent ID · Device ownership · active Session memory</div><div class="approval-footer"><div><b>You are approving the new Version and Live pointer change.</b><span>A current-Live conflict stops the operation instead of overwriting newer state.</span></div><span class="technical-disclosure">noracloud_publish · CAS protected ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Publish Weather Buddy Update", "Approval required", true, body)}</div>`;
+      }
+
+      function updateAgentReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Agent update completed</span><b>New Version is Live; Session context is preserved</b></div><span class="publish-count">2 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Created</span><b>ver_…c30 · Ready</b><span>Live</span><b>ver_…b12 → ver_…c30</b><span>Source</span><b>SOUL.md snapshot</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Devices</span><b>2 continue following Live</b><span>Sessions</span><b>Context preserved</b><span>Request</span><b>req_…8d1</b></div></section></div><div class="approval-footer"><div><b>This receipt confirms the effective Agent update.</b><span>No mutable Version content was overwritten.</span></div><span class="technical-disclosure">Version digest and CAS evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Update", "Completed", true, body)}</div>`;
+      }
+
+      function rebindDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device ownership change</span><b>Rebind Desk Display to Kitchen Helper</b></div><span class="publish-count">Protected update</span></div><div class="publish-destination"><span>Device</span><b>Desk Display</b><code>dev_…228</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Current</span><b>Weather Buddy</b><span>Target</span><b>Kitchen Helper</b><span>Track</span><b>Follow target Live</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Consequences</b><span>Runs after approval</span></div>${cloudEffect("End current Session", "ses_…91c retains history")}${cloudEffect("Reconnect Device", "Credential remains protected")}</section></div><div class="publish-exclusions"><b>Not changed:</b> Device ID · historical Sessions · credential value is never displayed</div><div class="approval-footer"><div><b>You are approving a memory-ownership change.</b><span>The old Agent immediately loses authorization for new Device activity.</span></div><span class="technical-disclosure">noracloud_device · action rebind ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Rebind Desk Display", "Approval required", true, body)}</div>`;
+      }
+
+      function rebindDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device rebind completed</span><b>Desk Display now belongs to Kitchen Helper</b></div><span class="publish-count">Updated</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…228</b><span>Agent</span><b>Kitchen Helper</b><span>Track</span><b>Follow Live</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…91c · Ended</b><span>Reconnect</span><b>Required</b><span>History</span><b>Retained</b></div></section></div><div class="approval-footer"><div><b>The Device relationship is now canonical.</b><span>Reconnect guidance is available without revealing a credential.</span></div><span class="technical-disclosure">request · req_…2a9 ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Rebind Desk Display", "Completed", true, body)}</div>`;
+      }
+
+      function revokeDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device access removal</span><b>Deactivate Office Display and revoke its credential</b></div><span class="publish-count">Irreversible access change</span></div><div class="publish-destination"><span>Device</span><b>Office Display · Weather Buddy</b><code>dev_…930</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Connection</span><b>Connected</b><span>Session</span><b>ses_…2bf · Active</b><span>Track</span><b>Follow Live</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Consequences</b><span>Runs after approval</span></div>${cloudEffect("Deactivate Device", "Identity can no longer connect")}${cloudEffect("Revoke credential", "Later handshakes are rejected")}${cloudEffect("Stop active work", "In-flight turn is aborted")}</section></div><div class="publish-exclusions"><b>Protected:</b> credential value is never displayed · Session history remains inspectable</div><div class="approval-footer"><div><b>You are approving permanent removal of this Device’s Cloud access.</b><span>Reusing the hardware later requires a new registration and credential.</span></div><span class="technical-disclosure">noracloud_device · action revoke ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Revoke Office Display", "Approval required", true, body)}</div>`;
+      }
+
+      function revokeDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device access revoked</span><b>Office Display can no longer connect to NoraCloud</b></div><span class="publish-count">Revoked</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…930 · Deactivated</b><span>Credential</span><b>Revoked</b><span>Connection</span><b>Closed</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…2bf · Ended</b><span>History</span><b>Retained</b><span>Request</span><b>req_…4f0</b></div></section></div><div class="approval-footer"><div><b>This receipt confirms the terminal Device access state.</b><span>No credential value was returned to Conversation.</span></div><span class="technical-disclosure">request and revoked identity evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Revoke Office Display", "Completed", true, body)}</div>`;
+      }
+
+      function endSessionApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Session terminal action</span><b>Stop future turns while retaining recorded facts</b></div><span class="publish-count">1 Session</span></div><div class="publish-destination"><span>Session</span><b>Desk Display · Weather Buddy</b><code>ses_…91c</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Status</span><b>Active</b><span>Turns</span><b>14</b><span>Version</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>After</span><b>Ended</b><span>Transcript</span><b>Retained</b><span>Export</span><b>Available</b></div></section></div><div class="publish-exclusions"><b>Not deleted:</b> transcript · logs · recorded Usage · related Agent and Device</div><div class="approval-footer"><div><b>You are approving the end of active Session work.</b><span>New interaction starts a new Session; this record stays inspectable.</span></div><span class="technical-disclosure">noracloud_session · action end ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("End Cloud Session", "Approval required", true, body)}</div>`;
+      }
+
+      function endSessionReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Session ended</span><b>No further turns are accepted by ses_…91c</b></div><span class="publish-count">Terminal</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Session</span><b>ses_…91c</b><span>Status</span><b>Ended</b><span>Ended</span><b>Just now</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Turns</span><b>14 retained</b><span>Transcript</span><b>Available</b><span>Usage</span><b>24,680 tokens</b></div></section></div><div class="approval-footer"><div><b>The terminal Session receipt is retained.</b><span>Agent, Version, and Device remain unchanged.</span></div><span class="technical-disclosure">request · req_…c14 ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("End Cloud Session", "Completed", true, body)}</div>`;
+      }
+
+      function deleteAgentApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Irreversible resource deletion</span><b>Delete Voice Notes and its immutable Versions</b></div><span class="publish-count">Dependency check passed</span></div><div class="publish-destination"><span>Agent</span><b>Voice Notes</b><code>agt_…91a</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="publish-block-head"><b>Current dependencies</b></div><div class="definition-pairs"><span>Devices</span><b>0 bound</b><span>Versions</span><b>2</b><span>Test Sessions</span><b>1 active</b><span>Workspace</span><b>Not bound</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent effects</b><span>Runs after approval</span></div>${cloudEffect("Delete Agent", "agt_…91a")}${cloudEffect("Delete Versions", "2 immutable Versions")}${cloudEffect("End test Session", "Export first if its data is needed")}</section></div><div class="notice red"><b>Blocked when in use:</b> any bound Device returns <code>409 in_use</code>; no force-delete path is offered.</div><div class="approval-footer"><div><b>This Agent and its Versions cannot be restored.</b><span>Export needed Session data before approving this deletion.</span></div><span class="technical-disclosure">noracloud_agent · action delete ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Delete Voice Notes Agent", "Approval required", true, body)}</div>`;
+      }
+
+      function deleteAgentReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Agent deletion completed</span><b>Voice Notes no longer exists in NoraCloud</b></div><span class="publish-count">Deleted</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Agent</span><b>agt_…91a · Deleted</b><span>Versions</span><b>2 deleted</b><span>Devices</span><b>0 affected</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Test Session</span><b>ses_…72a · Ended automatically</b><span>Request</span><b>req_…de1</b></div></section></div><div class="approval-footer"><div><b>This receipt is the durable deletion outcome.</b><span>The account resource list refreshes outside Conversation.</span></div><span class="technical-disclosure">Deleted IDs and request evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Delete Voice Notes Agent", "Completed", true, body)}</div>`;
+      }
+
       function conversationContent(kind) {
         if (kind === "firmware-coding")
           return `<div class="user-msg">Write a weather application for this device. Show the current temperature and weather condition.</div><div class="assistant">I’ll inspect the existing firmware project, implement the weather screen, and build it for the configured board.</div><div class="tool-stack">${toolCall("Read project files", "Completed")}${toolCall("Edit main/app/user_app.c", "Completed")}${toolCall("Write agent/ui/weather-screen.xml", "Completed")}${toolCall("Build firmware · hw_fw_build", "Completed", true, row("Evidence", "Selected target compiled successfully"))}</div>`;
@@ -1946,6 +2093,28 @@
           return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "cloud-refresh")
           return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>`;
+        if (kind === "agent-read")
+          return `<div class="user-msg">Show me the Cloud resources related to this Workspace.</div><div class="assistant">I’ll read the current NoraCloud resource graph. This does not change anything.</div>${toolCall("Inspect Workspace Cloud", "Completed", true, `${row("Tool", "noracloud_status")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Live Version", "ver_…b12")}${row("Versions", "5")}${row("Devices", "2 · 1 connected")}${row("Sessions", "1 active · 17 ended")}<div class="notice"><b>Read only:</b> no resource mutation or approval was required.</div>`)}`;
+        if (kind === "agent-update-approval")
+          return `<div class="user-msg">Make Weather Buddy’s responses shorter and publish the change.</div><div class="tool-stack">${toolCall("Edit agent/SOUL.md", "Completed")}</div><div class="assistant">The local definition is ready. Review the new Version and Live change.</div>${updateAgentApprovalCall()}`;
+        if (kind === "agent-update-receipt")
+          return `<div class="assistant">The new definition is Live. Devices following Live will resolve it on their next turn.</div>${updateAgentReceiptCall()}`;
+        if (kind === "agent-device-approval")
+          return `<div class="user-msg">Move Desk Display from Weather Buddy to Kitchen Helper.</div><div class="assistant">This changes Device ownership and ends its current Session. Review the consequences.</div>${rebindDeviceApprovalCall()}`;
+        if (kind === "agent-device-receipt")
+          return `<div class="assistant">Desk Display is rebound. Its previous Session is retained as ended.</div>${rebindDeviceReceiptCall()}`;
+        if (kind === "agent-device-revoke-approval")
+          return `<div class="user-msg">Remove Office Display from NoraCloud.</div><div class="assistant">This revokes Device access and stops its active work. Review the exact identity and consequences.</div>${revokeDeviceApprovalCall()}`;
+        if (kind === "agent-device-revoke-receipt")
+          return `<div class="assistant">Office Display is deactivated and its credential is revoked.</div>${revokeDeviceReceiptCall()}`;
+        if (kind === "agent-session-approval")
+          return `<div class="user-msg">End the active Desk Display Cloud Session.</div><div class="assistant">The Session will stop accepting turns, but its recorded history remains available.</div>${endSessionApprovalCall()}`;
+        if (kind === "agent-session-receipt")
+          return `<div class="assistant">The Session is ended. Transcript, export, and Usage remain inspectable.</div>${endSessionReceiptCall()}`;
+        if (kind === "agent-delete-approval")
+          return `<div class="user-msg">Delete the unused Voice Notes Agent.</div><div class="tool-stack">${toolCall("Check Voice Notes dependencies", "Completed")}</div><div class="assistant">No Devices are bound. Review the irreversible Agent and Version deletion.</div>${deleteAgentApprovalCall()}`;
+        if (kind === "agent-delete-receipt")
+          return `<div class="assistant">Voice Notes and its Versions were deleted. Its active test Session ended and remains in history.</div>${deleteAgentReceiptCall()}`;
         return "";
       }
 
@@ -2017,9 +2186,9 @@
         if (kind === "settings-agent-live")
           return settingsShell("Make Version Live", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Confirm direct Cloud update</h6>${row("Current Live", "ver_…a81")}${row("New Live", "ver_…b12")}${row("Affected Devices", "2 following Live")}</div><div class="settings-actions">${actions(["Confirm Make Live", "Cancel"])}</div>`);
         if (kind === "settings-agent-delete")
-          return settingsShell("Delete Agent", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Confirm deletion</h6>${row("Agent", "Desk Weather", "agt_…7f2")}${row("Dependency check", "No blocking Devices")}</div><div class="settings-actions">${actions(["Delete Agent", "Cancel"])}</div>`);
+          return settingsShell("Delete Agent", "Cloud / Agents / Voice Notes / Actions", `<div class="settings-section-card"><h6>Confirm irreversible deletion</h6>${row("Agent", "Voice Notes", "agt_…91a")}${row("Devices", "None bound")}${row("Versions", "2 will be deleted")}${row("Test Sessions", "1 active · will end")}</div><div class="settings-footnote">Export needed Session data before deleting. A bound Device returns In use.</div><div class="settings-actions">${actions(["Delete Agent", "Cancel"])}</div>`);
         if (kind === "settings-agent-deleted")
-          return settingsShell("Agent Deleted", "Cloud / Agents", `<div class="settings-section-card"><h6>Updated</h6><p>The Agent and its Cloud relationship are deleted. This result stays in Settings.</p></div>`);
+          return settingsShell("Agent Deleted", "Cloud / Agents", `<div class="settings-section-card"><h6>Updated</h6>${row("Agent", "Voice Notes · Deleted", "agt_…91a")}${row("Versions", "2 deleted")}${row("Test Session", "1 ended automatically")}</div>`);
         if (kind === "settings-agent-in-use")
           return settingsShell("Agent In Use", "Cloud / Agents / Desk Weather / Actions", `<div class="settings-section-card"><h6>Cannot delete yet</h6>${row("Blocking dependency", "2 Devices")}${row("Devices", "Desk Display · Office Display")}</div><div class="settings-actions">${actions(["Open Devices", "Cancel"])}</div>`);
         if (kind === "settings-device-rebind")
@@ -2044,7 +2213,7 @@
 
       function card(id) {
         const state = states[id];
-        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
+        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "U1", "D1", "V1", "S1", "X1", "5.1.4"].includes(id)
           ? "warning"
           : "";
         const maturity = id === "1" ? "Existing pattern" : "Proposed";
@@ -2060,12 +2229,17 @@
       }
 
       document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
+      document.getElementById("agent-read-flow").innerHTML = flow(["R"]);
+      document.getElementById("agent-update-flow").innerHTML = flow(["U1", "U2"]);
+      document.getElementById("agent-device-flow").innerHTML = flow(["D1", "D2"]);
+      document.getElementById("agent-device-revoke-flow").innerHTML = flow(["V1", "V2"]);
+      document.getElementById("agent-session-flow").innerHTML = flow(["S1", "S2"]);
+      document.getElementById("agent-delete-flow").innerHTML = flow(["X1", "X2"]);
       document.getElementById("settings-agent-flow").innerHTML = flow([
         "5.1",
         "5.1.2",
-        "5.1.3",
-        "5.1.3.1",
       ]);
+      document.getElementById("settings-agent-delete-flow").innerHTML = flow(["5.1.3", "5.1.3.1"]);
       document.getElementById("settings-device-flow").innerHTML = flow([
         "5.2",
         "5.2.2",
@@ -2076,13 +2250,6 @@
         "5.3.1",
         "5.3.2",
       ]);
-      document.getElementById("route-rows").innerHTML = routes
-        .map(
-          (route, index) =>
-            `<article class="route-row" id="route-${index + 1}"><div class="route-title"><h4>${index + 1}. ${route.name}</h4><code>${route.path.join(" → ")}</code><span>${route.result}</span></div><div class="flow">${flow(route.path)}</div></article>`,
-        )
-        .join("");
-
       let scale = 0.72,
         x = 0,
         y = 0,

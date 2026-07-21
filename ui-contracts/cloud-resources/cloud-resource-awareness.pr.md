@@ -1,6 +1,6 @@
 ## Summary
 
-- Tell one readable vibe-coding story from a weather-app request through firmware tools, Agent identity authoring, and an inspectable NoraCloud publish Tool Call.
+- Tell one readable vibe-coding first-publish story, then show the proposed Agent-operated lifecycle for Agent, immutable Version, Device, and Session resources.
 - Make Settings the direct API control plane for Agent, Device, and Session actions, with confirmations, conflicts, dependency blocking, and protected credential handling.
 - Scope: proposed product interaction; no Electron or NoraCloud runtime implementation is included.
 
@@ -20,6 +20,8 @@ historical artifacts and are not part of this PR.
 - Auto-run completes directly; ask-before-running pauses the same Tool Call for Approve once/Always allow in this workspace/Deny; never-run blocks before mutation. A read-only preparation phase resolves `agent/cloud-agent.json` and its instruction files into the effective definition shown for approval.
 - The approval preview exposes the first-publish destination, effective LLM/STT/TTS/Cron values, readable instruction summaries with file/diff access, exact persistent changes, and explicit exclusions. Users approve the displayed meaning and consequences; hashes remain collapsed system evidence that binds execution to the reviewed snapshot.
 - The example is a first publish from an unbound Workspace: it creates the Agent, initial immutable Version, initial Live pointer, and Workspace binding. It does not claim a previous Live Version or affected Devices.
+- First publish is one Create example, not the entire MCP surface. Separate Tool Call journeys show cross-resource Read, existing-Agent publish/Live Update, Device rebind/revoke, Session end, and Agent delete.
+- Agent deletion performs dependency discovery first, returns `409 in_use` while any Device remains bound, and otherwise names deleted Versions and automatically ended active test Sessions before approval.
 - The completed Tool result is the canonical receipt. The right panel remains on Changes during completion and refreshes to canonical Cloud state only in the following state; no duplicate proposal or receipt card is required.
 - The completed receipt triggers a silent Workspace Cloud refresh outside Conversation. Opening Cloud, manual refresh, Settings mutations, and reconnect may use the same UI path; none creates a follow-up `noracloud_status` Tool Call.
 - The review example uses Ask before running so PM can see the control point. Approval and Auto-run both settle the same Tool Call directly to its receipt; the journey does not add a separate progress frame.
@@ -31,6 +33,8 @@ historical artifacts and are not part of this PR.
 ## Review Focus
 
 - Can PM follow the user goal through firmware coding, the identity question, Agent-file edits, approval, execution, and persistent result without needing implementation context?
+- Does the lifecycle matrix make it clear that Agent, immutable Version, Device, and Session operations are proposed MCP capabilities rather than functionality already implemented in the Agent?
+- Do the Read, Update, Device, Session, and Delete examples prove that Settings is a parallel human API entry point rather than a substitute for Agent Tool coverage?
 - Does the first-publish approval show enough resolved configuration, instruction provenance, effects, exclusions, and snapshot identity for an informed decision?
 - Is the completed tool result sufficient as the canonical receipt without duplicating it in the right Cloud panel?
 - Do Conversation MCP operations and direct Settings API actions remain visibly distinct?
@@ -47,6 +51,6 @@ historical artifacts and are not part of this PR.
 ## Verification
 
 - Parsed the inline wireframe JavaScript successfully.
-- Verified the MCP-first main path, permission/recovery branches, and direct Settings action paths have renderers.
+- Verified the first-publish path, Agent-operated resource examples, compact permission/recovery branches, and direct Settings action paths have renderers.
 - Rendered the static HTML locally and visually checked the canvas, navigation, route rows, and Settings paths.
 - Ran `git diff --check`.

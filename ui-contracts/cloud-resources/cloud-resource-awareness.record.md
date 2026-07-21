@@ -1,28 +1,47 @@
-# Journey 1: Build And Publish A Weather Agent
+# NoraCloud Resource Control Journey Record
 
 This record is the source of truth for `cloud-resource-awareness.wireframe.html`.
 
-The main path is one readable vibe-coding conversation: the user requests a weather application,
-the Agent authors and builds firmware, asks for the missing Agent identity and personality, authors
-the Agent definition, and publishes it through one permission-aware NoraCloud Tool Call. Settings
-remains a separate direct-management surface and does not enter Conversation.
+Journey A is one readable vibe-coding example: the user requests a weather application, the Agent
+authors and builds firmware, completes the Agent definition, and performs a permission-aware first
+publish. That first-publish story demonstrates Create; it is not presented as the whole NoraCloud
+resource-control surface. Separate Agent-operated examples cover Read, Update, Device management,
+Session end, and Agent deletion. Settings remains a parallel direct-management surface and does not
+enter Conversation.
 
-Implementation maturity: **partial today; proposed end state not implemented yet**. Local editing,
-the existing permission surface, Cloud API resources, and browse-only Settings are present in part.
-The semantic NoraCloud Tool families, complete resource lifecycle, direct Settings mutations, and
-their final renderers are proposed.
+Implementation maturity: **partial today; proposed end state not implemented yet**. NoraCloud APIs
+already expose the Agent, Version, Device, and Session operations described here. Today's CLI covers
+many reads and common publish, release, Device, and Session actions but intentionally excludes some
+high-impact operations. Semantic NoraCloud MCP Tool families and direct Settings mutations do not
+yet provide the complete end state drawn here.
 
 ## Numbering And Route Tables
 
-### Main Path States
+### Build And First Publish States
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | Main step | Journey 1 | The user requests a weather product and the Agent implements its firmware. | Describes the desired weather experience. | One Conversation turn shows the user's goal, the Agent's concise intent, and real Read/Edit/Write/Build Tool Calls. | Firmware application files change and the selected target builds; NoraCloud is unchanged. | `2` |
-| `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `4`, or `3.2` |
-| `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A compact dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `4`, `3.1`, or `3.3` |
-| `4` | Main step | Journey 1 | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
-| `5` | Main step | Journey 1 | The completed publish receipt causes Workspace Cloud to reflect canonical state. | Reviews the Assistant summary or opens Settings for account management. | The Assistant names the firmware and Agent result while the right Cloud panel updates automatically. No follow-up status Tool Call appears in Conversation. | The client refreshes Workspace Cloud outside Conversation using the confirmed receipt as the trigger. | `5.1`, `5.2`, `5.3`, or end |
+| `1` | Main step | Journey A | The user requests a weather product and the Agent implements its firmware. | Describes the desired weather experience. | One Conversation turn shows the user's goal, the Agent's concise intent, and real Read/Edit/Write/Build Tool Calls. | Firmware application files change and the selected target builds; NoraCloud is unchanged. | `2` |
+| `2` | Main step | Journey A | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `4`, or `3.2` |
+| `3` | Main step | Journey A | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A compact dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `4`, `3.1`, or `3.3` |
+| `4` | Main step | Journey A | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
+| `5` | Main step | Journey A | The completed publish receipt causes Workspace Cloud to reflect canonical state. | Reviews the Assistant summary or opens Settings for account management. | The Assistant names the firmware and Agent result while the right Cloud panel updates automatically. No follow-up status Tool Call appears in Conversation. | The client refreshes Workspace Cloud outside Conversation using the confirmed receipt as the trigger. | Agent-operated or Settings resource routes, or end |
+
+### Agent-Operated Resource States
+
+| ID | Resource operation | Visible Tool Call behavior | Persistent result |
+| --- | --- | --- | --- |
+| `R` | Read the Workspace resource graph | `noracloud_status` returns Agent, Live Version, Version count, Devices, and Sessions as a completed read-only Tool Call. No mutation approval appears. | None; facts only. |
+| `U1` | Update an existing Agent definition | `noracloud_publish` shows the new immutable Version, Live pointer transition, modified source, two following Devices, and preserved Session context. | Waits for the active permission policy. |
+| `U2` | Agent update receipt | The same Tool Call confirms the new Version and Live pointer. | New immutable Version exists; Agent Live changes; following Devices resolve it on their next turn. |
+| `D1` | Rebind a Device | `noracloud_device` shows current/target Agent, current Session end, reconnect requirement, and protected credential handling. | Waits for the active permission policy. |
+| `D2` | Device rebind receipt | The same Tool Call confirms new ownership, ended Session, retained history, and reconnect state. | Device points to the target Agent; the previous Session is terminal. |
+| `V1` | Revoke a Device | `noracloud_device` names the Device identity, connection, active Session, credential revocation, and in-flight work consequences. | Waits for the active permission policy. |
+| `V2` | Device revoke receipt | The same Tool Call confirms deactivation, revoked credential, closed connection, and ended Session without rendering a secret. | Device can no longer authenticate; history remains inspectable. |
+| `S1` | End a Session | `noracloud_session` identifies the active Session and states that transcript, export, and recorded Usage remain available. | Waits for the active permission policy. |
+| `S2` | Session end receipt | The same Tool Call becomes `Completed` with the terminal status and retained facts. | Further turns stop; Session history remains inspectable. |
+| `X1` | Delete an Agent | `noracloud_agent` first discovers Device, Version, Session, and Workspace dependencies, then shows irreversible effects. Any bound Device blocks with `409 in_use`. | Waits for the active permission policy only after the dependency check passes. |
+| `X2` | Agent deletion receipt | The same Tool Call names the deleted Agent and Versions and the automatically ended active test Session. | Agent and Versions are removed; no Device was silently deleted. |
 
 ### Permission And Operation Branches
 
@@ -42,8 +61,8 @@ their final renderers are proposed.
 | `5.1` | Detail state | `5 Workspace Cloud Refreshed` | Agent and Version management in Settings. | Opens an Agent, a Version, or an Agent action menu. | Agent Detail shows Live, Versions, Devices, and actions; Version Detail shows immutable configuration and `Make Live`/rollback entry points. | Settings selects the account Agent context. | `5.1.1`, `5.1.2`, `5.1.3`, or `5` |
 | `5.1.1` | Sequential child | `5.1 Agent And Version Management` | Rename Agent. | Edits the name and saves. | Inline saving becomes `Updated` or returns an actionable error. | Canonical Agent detail refreshes after the API result. | `5.1` or `5` |
 | `5.1.2` | Sequential child | `5.1 Agent And Version Management` | Make a Version Live or roll back. | Selects `Make Live`, reviews the effect, and confirms. | Confirmation names current Live, target Version, and Devices following Live; success refreshes the Agent. | Live pointer changes only after server confirmation and current-state checks. | `5.1`, `4.1`, or end |
-| `5.1.3` | Sequential child | `5.1 Agent And Version Management` | Delete Agent confirmation. | Selects `Delete Agent`, reviews dependencies, and confirms. | Confirmation names the Agent and warns that the action is persistent. | Delete request is sent only after confirmation. | `5.1.4`, `5.1`, or end |
-| `5.1.3.1` | Sequential child | `5.1.3 Delete Agent Confirmation` | Agent deletion completes. | Reviews the refreshed Agent list. | `Deleted` confirms the Agent is gone; dependent resources are not silently removed. | The deleted Agent is removed from the account list and the Settings context refreshes. | `5`, `5.2`, or end |
+| `5.1.3` | Sequential child | `5.1 Agent And Version Management` | Delete Agent confirmation. | Selects `Delete Agent`, reviews dependencies and irreversible effects, exports needed Session data, and confirms. | Confirmation names the Agent, zero bound Devices, Versions that will be deleted, and active test Sessions that will end. | Delete request is sent only after confirmation; a bound Device returns `In use`. | `5.1.4`, `5.1.3.1`, or end |
+| `5.1.3.1` | Sequential child | `5.1.3 Delete Agent Confirmation` | Agent deletion completes. | Reviews the refreshed Agent list. | `Deleted` confirms the Agent and Versions are gone and names automatically ended test Sessions. | The deleted Agent is removed from the account list and the Settings context refreshes. | `5` or end |
 | `5.1.4` | Sequential child | `5.1.3 Delete Agent Confirmation` | Agent deletion is blocked by dependent Devices. | Opens the dependency details and chooses a safe next action. | `In use` lists the blocking Devices and does not offer an unsafe force-delete path. | Agent remains unchanged. | `5.1`, `5.2`, or end |
 | `5.2` | Detail state | `5 Workspace Cloud Refreshed` | Device management in Settings. | Opens a Device from its owning Agent. | Device Detail shows ownership, connection, track, resolved Version, last seen, Session, and management actions. | Settings selects the Device context without showing credentials. | `5.2.1`, `5.2.2`, `5.2.3`, or `5.2.4` |
 | `5.2.1` | Sequential child | `5.2 Device Management` | Follow Live or pin a Version. | Selects a track and confirms when the change affects resolution. | The detail shows current track, target Version, and `Updating`/`Updated`. | Device track is refreshed from canonical state. | `5.2`, `4.1`, or end |
@@ -59,10 +78,10 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `0.1` | State language | Journey 1 | Publish Tool Call language. | Reads the Tool card. | `Approval required`, `Blocked`, `Completed`, and `Failed` distinguish permission from stable outcomes; transient execution is not a separate journey state. | None. | Active state |
-| `0.2` | State language | Journey 1 | Settings operation language. | Reads a Settings action or confirmation. | `Confirm`, `Updating`, `Updated`, `Conflict`, `In use`, `Revoked`, and `Ended` distinguish direct resource management. | None. | Active state |
-| `0.3` | State language | Journey 1 | Recovery language. | Reads an error or recovery action. | `Partial` and `Outcome unknown` preserve confirmed facts and prevent unsafe duplicate mutation. | None. | Active state |
-| `0.4` | State language | Journey 1 | Secret language. | Reads a credential-related detail. | Credential type, protected destination, reconnect guidance, and status may appear; secret values never appear. | None. | Active state |
+| `0.1` | State language | All Agent-operated routes | Semantic NoraCloud Tool Call language. | Reads the Tool card. | `Approval required`, `Blocked`, `Completed`, and `Failed` distinguish permission from stable outcomes; transient execution is not a separate journey state. | None. | Active state |
+| `0.2` | State language | Settings routes | Settings operation language. | Reads a Settings action or confirmation. | `Confirm`, `Updating`, `Updated`, `Conflict`, `In use`, `Revoked`, and `Ended` distinguish direct resource management. | None. | Active state |
+| `0.3` | State language | All routes | Recovery language. | Reads an error or recovery action. | `Partial` and `Outcome unknown` preserve confirmed facts and prevent unsafe duplicate mutation. | None. | Active state |
+| `0.4` | State language | All routes | Secret language. | Reads a credential-related detail. | Credential type, protected destination, reconnect guidance, and status may appear; secret values never appear. | None. | Active state |
 
 ### Errors And Recovery
 
@@ -86,6 +105,12 @@ their final renderers are proposed.
 | Publish conflict | `1 -> 2 -> 3 -> 4 -> 4.1 -> 2` | Current state is refreshed before another operation is attempted. |
 | Partial publish | `1 -> 2 -> 3 -> 4 -> 4.2 -> 5` | Confirmed effects remain visible and retry starts at the unresolved stage. |
 | Unknown publish outcome | `1 -> 2 -> 3 -> 4 -> 4.3 -> 5` | Read-only discovery confirms the state before any retry. |
+| Agent reads Cloud resources | `R` | A read-only Tool Call returns the Agent/Version/Device/Session graph without approval. |
+| Agent publishes an update | `U1 -> U2` | A new immutable Version is created and made Live; Session context is preserved. |
+| Agent rebinds a Device | `D1 -> D2` | Device ownership changes, the prior Session ends, and reconnect guidance is returned. |
+| Agent revokes a Device | `V1 -> V2` | Device identity is deactivated, credential access is revoked, and active work stops. |
+| Agent ends a Session | `S1 -> S2` | The Session becomes terminal while transcript, export, and recorded Usage remain available. |
+| Agent deletes an unused Agent | `X1 -> X2` | Dependency discovery precedes approval; Agent and Versions are deleted only when no Device remains bound. |
 | Agent rename | `5 -> 5.1 -> 5.1.1 -> 5.1` | Settings directly updates the Agent name and refreshes canonical detail. |
 | Make Live or roll back | `5 -> 5.1 -> 5.1.2 -> 5.1` | Settings directly changes the Live pointer or shows a conflict. |
 | Delete Agent succeeds | `5 -> 5.1 -> 5.1.3 -> 5.1.3.1 -> 5` | The Agent disappears from the refreshed Settings list. |
@@ -96,7 +121,7 @@ their final renderers are proposed.
 | Device revoke | `5 -> 5.2 -> 5.2.4 -> 5.2` | Settings revokes access and refreshes Device/Session state. |
 | Session end | `5 -> 5.3 -> 5.3.1 -> 5.3.2 -> 5.3` | The Session becomes ended and retained facts remain inspectable. |
 
-## Main Path
+## Build And First Publish
 
 ### 1 Firmware Application Authored
 
@@ -194,6 +219,92 @@ Cloud, completing a Settings resource action, or reconnecting may also refresh t
 creating a Conversation Tool Call.
 
 Exit / next state: `5.1`, `5.2`, `5.3`, or end.
+
+## Agent-Operated Cloud Resource Journeys
+
+These examples define the proposed MCP end state. They do not claim that semantic NoraCloud MCP
+Tool Calls exist today. NoraCloud APIs already provide the underlying resource operations; the CLI
+covers many but not all of them. Settings and MCP are parallel adapters over the same operation
+contract.
+
+### R Read Cloud Resource Graph
+
+Trigger: the user asks the Agent what Cloud resources are related to the current Workspace.
+
+Visible UI state: one completed read-only `Inspect Workspace Cloud` Tool Call returns the bound
+Agent, Live Version, Version count, Device summary, and active/ended Session summary. It names
+`noracloud_status` only as technical detail.
+
+Authorization: ordinary read policy; no mutation approval appears.
+
+Persistent effect: none.
+
+### U1 / U2 Update Existing Agent
+
+Trigger: the user changes a local Agent source such as `SOUL.md` and asks the Agent to publish it.
+
+Visible UI state: `Publish Weather Buddy Update` shows that the operation creates one new immutable
+Version, moves Live from the current Version to the new Version, and affects two Devices following
+Live. It explicitly says active Session context is preserved. Approval or Auto-run settles that same
+Tool Call to a receipt containing the new Version, Live transition, Device behavior, and request ID.
+
+Authorization: current Agent permission profile. A current-Live mismatch returns conflict instead
+of overwriting a newer pointer.
+
+Persistent effect: a new Version exists and Agent Live points to it; Version content is never
+mutated in place.
+
+### D1 / D2 Rebind Device
+
+Trigger: the user asks the Agent to move a Device from one Agent to another.
+
+Visible UI state: `Rebind Desk Display` shows Device ID, current Agent, target Agent, target track,
+the current Session that will end, and reconnect requirements. Credential values never render. The
+receipt confirms ownership, ended Session, retained history, and reconnect state.
+
+Authorization: current Agent permission profile; this is a protected memory-ownership mutation.
+
+Persistent effect: Device ownership changes and the old active Session becomes terminal.
+
+### V1 / V2 Revoke Device
+
+Trigger: the user asks the Agent to remove a Device from NoraCloud.
+
+Visible UI state: `Revoke Office Display` names the Device, owning Agent, current connection and
+Session, and the exact effects: deactivate identity, revoke credential, close access, and abort
+in-flight work. The credential value is never rendered. The receipt confirms terminal access state
+and retained Session history.
+
+Authorization: current Agent permission profile; this is an irreversible access mutation.
+
+Persistent effect: the Device can no longer authenticate. Reusing the hardware requires a new
+registration and credential.
+
+### S1 / S2 End Session
+
+Trigger: the user asks the Agent to end an active Cloud Session.
+
+Visible UI state: `End Cloud Session` names the Session, status, turn count, Version, and retained
+transcript/export/Usage facts. The receipt shows `Ended` and no longer offers another end mutation.
+
+Authorization: current Agent permission profile.
+
+Persistent effect: further turns stop; Agent, Version, Device, and retained Session facts remain.
+
+### X1 / X2 Delete Agent
+
+Trigger: the user asks the Agent to delete an unused Agent.
+
+Visible UI state: a read-only dependency check runs first. `Delete Voice Notes Agent` then names the
+Agent ID, zero bound Devices, two Versions that will be deleted, one active test Session that will
+end automatically, and the irreversible consequence. The user is told to export needed Session
+data before approval. Any bound Device yields `409 in_use`; no force-delete route appears.
+
+Authorization: current Agent permission profile. Ask-before-running pauses on the exact deletion;
+Auto-run may execute directly only when policy allows it.
+
+Persistent effect: Agent and Versions are deleted; the active test Session ends automatically; no
+Device is silently deleted.
 
 ## Branch Journeys
 
@@ -316,18 +427,20 @@ Exit / next state: `5.1`, `4.1`, or end.
 
 Trigger: the user chooses Delete Agent.
 
-Visible UI state: confirmation names the Agent, persistent consequence, and dependent-resource check.
+Visible UI state: confirmation names the Agent, zero bound Devices, Versions that will be deleted,
+active test Sessions that will end automatically, and the need to export data before deletion.
 
-Allowed user actions: confirm, cancel, or open dependent Devices.
+Allowed user actions: export needed Session data, confirm, cancel, or open dependent Devices when
+the dependency check reports them.
 
-Exit / next state: `5.1.4`, `5.1`, or end.
+Exit / next state: `5.1.3.1`, `5.1.4`, `5.1`, or end.
 
 ### 5.1.3.1 Agent Deleted
 
 Trigger: the user confirms Delete Agent and NoraCloud reports success.
 
-Visible UI state: the Settings list shows `Deleted` feedback and removes the Agent from the current
-account inventory. Dependent resources are not silently removed.
+Visible UI state: the Settings list shows `Deleted` feedback, removes the Agent from the current
+account inventory, and reports deleted Versions and automatically ended test Sessions.
 
 Allowed user actions: return to the Cloud overview, open another Agent, or stop.
 
@@ -444,8 +557,8 @@ Exit / next state: `5.3` or end.
 
 ### 0.1 Tool Execution Language
 
-`Approval required`, `Blocked`, `Completed`, `Denied`, and `Failed` are reserved for the semantic
-publish Tool Call. A transient execution phase may exist in runtime events but is not a separate
+`Approval required`, `Blocked`, `Completed`, `Denied`, and `Failed` are reserved for semantic
+NoraCloud Tool Calls. A transient execution phase may exist in runtime events but is not a separate
 user journey frame.
 
 ### 0.2 Settings Operation Language
