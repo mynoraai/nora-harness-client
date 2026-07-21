@@ -24,7 +24,9 @@ resource-control model before implementation planning begins.
 
 Today, coding Agents reach NoraCloud by running the `noracloud` CLI. The CLI covers publishing,
 Live changes, test turns, observation, and part of the Agent, Version, Device, and Session
-lifecycle. It does not yet expose the full resource lifecycle supported by NoraCloud.
+lifecycle. In particular, `noracloud device register` creates a Device under the Workspace-bound Agent and
+writes its one-time credential into local firmware configuration; the CLI still excludes rebind,
+rotate, and revoke. It does not expose the full resource lifecycle supported by NoraCloud.
 
 NoraHarness already has a shared Agent permission model that can automatically allow, ask before,
 or block protected work. However, NoraCloud does not yet provide the proposed structured MCP tools.
@@ -154,10 +156,11 @@ adapter must expose the same NoraCloud resource semantics that the API already s
 | Device | register | list, get, telemetry, current Session | rename, track, rebind, rotate | revoke / deactivate |
 | Session | create test Session and submit Turns | list, get, export, logs, transcript | no generic mutable definition | end activity and retain recorded facts |
 
-The wireframe therefore includes Agent-operated examples for cross-resource Read, existing-Agent
-publish/Live Update, Device rebind, Device revoke, Session end, and Agent delete. Settings mirrors
-these resource semantics through direct API actions; it is not a substitute for missing MCP
-capabilities.
+The wireframe therefore includes Agent-operated examples for physical Device registration and
+initial binding, cross-resource Read, existing-Agent publish/Live Update, credential rotation,
+Device rebind/revoke, hardware-free test Session creation and first Turn, Session end, and Agent
+delete. Settings mirrors post-creation resource semantics through direct API actions; it is not a
+substitute for missing MCP capabilities.
 
 ## Conversation Interaction
 
@@ -202,6 +205,38 @@ The completed receipt itself triggers that Workspace Cloud refresh. The client i
 panel snapshot and performs a silent read outside Conversation; the Agent does not issue a second
 `noracloud_status` Tool Call. Opening or manually refreshing Cloud, completing a Settings action, or
 reconnecting may use the same direct UI refresh path and also stays out of Conversation.
+
+## Device Registration And Physical Provisioning
+
+First publish intentionally ends with `Devices: None registered`. A Device is not part of the Agent
+publish transaction and does not become bound merely because firmware was built. The user starts a
+separate physical onboarding request after an Agent has a Live Version.
+
+The Agent first uses real read-only firmware tools to resolve the project, build environment, and
+physical upload port. Only then may `noracloud_device(action: register)` request approval. Its review must
+show Device name, target Agent, Follow Live or pinned track, physical target, protected credential
+destination, and these exact boundaries:
+
+- `POST /v1/agents/{agent_id}/devices` creates the Device identity and performs the initial Agent
+  binding in one operation;
+- NoraCloud returns the credential once, and a trusted adapter writes it to
+  `platformio_override.ini` without placing it in Conversation or visible Tool output;
+- registration does not prove firmware rebuild, physical flash, connection, or Session creation;
+- physical flashing requires its own immediately preceding user authorization under the firmware
+  tool contract;
+- a Device Session is born automatically when the provisioned Device first authenticates and
+  connects; a hardware-free test Session instead uses `noracloud_session create` explicitly.
+
+The registration receipt must distinguish `Registered · Never connected` from a physically verified
+Device. After build and flash, `hw_device_state` supplies physical device evidence while a separate
+read-only `noracloud_status` supplies the Cloud relationship, resolved Version, and first active
+Session. The client then refreshes the right Cloud panel from those canonical facts.
+
+The user-facing action is `Replace Device Access Credential`; the API/operation term `rotate`
+remains technical detail. Replacement is mode-explicit. `graceful` preserves identity, binding, Session, and
+history while old and replacement credentials coexist until Device acknowledgement. `revoke_now`
+invalidates access immediately and requires physical re-provisioning; the product never guesses a
+mode. Both paths protect credential values.
 
 Workspace Cloud also keeps the published definition understandable after approval. The panel shows
 the effective LLM, STT, TTS, and Cron values, names `cloud-agent.json`, `SOUL.md`, `IDENTITY.md`, and
@@ -281,12 +316,15 @@ The revised journey should show:
 4. an expanded first-publish approval preview derived from `cloud-agent.json` and the selected
    instruction files, with digest-bound approval and source-change invalidation;
 5. a Completed Tool receipt that stays inside Conversation while the right panel remains on Changes;
-6. a resource lifecycle matrix that separates Agent, immutable Version, Device, and Session semantics;
-7. Agent-operated Read, existing-Agent Update, Device rebind/revoke, Session end, and Agent delete Tool Call examples;
-8. compact permission and safety branches rather than repeated full-screen paths;
-9. direct Settings Agent/Version, Device, and Session management routes;
-10. distinct Conversation permission language and Settings confirmation language;
-11. an Engineering Readiness band that separates today's CLI-first partial implementation from the
+6. physical Device preflight, registration/initial binding approval, protected credential receipt,
+   separately authorized build/flash, connected Device evidence, and automatic Device Session birth;
+7. a resource lifecycle matrix that separates Agent, immutable Version, Device, and Session semantics;
+8. Agent-operated Read, existing-Agent Update, credential rotation, Device rebind/revoke,
+   hardware-free test Session and Turn, Session end, and Agent delete Tool Call examples;
+9. compact permission and safety branches rather than repeated full-screen paths;
+10. direct Settings Agent/Version, Device, and Session management routes;
+11. distinct Conversation permission language and Settings confirmation language;
+12. an Engineering Readiness band that separates today's CLI-first partial implementation from the
    proposed MCP-first end state.
 
 The journey record remains the source of truth for route IDs and visible states before the HTML is
@@ -299,6 +337,9 @@ redrawn.
   free-form Tool text.
 - The permission renderer needs a trusted normalized preview and must bind approval to the exact
   source digest so changed local files cannot reuse stale approval.
+- Device registration must preflight the firmware target before issuing the one-time credential and
+  preserve a recoverable partial receipt if Cloud creation succeeds but protected local delivery fails.
+- Physical flash authorization remains separate from Cloud Device registration authorization.
 - CLI behavior and error compatibility need an explicit migration contract when implementations
   move behind the shared core.
 - Settings credential rotation needs a protected destination and recovery path before shipping.

@@ -3,11 +3,11 @@
 This record is the source of truth for `cloud-resource-awareness.wireframe.html`.
 
 Journey A is one readable vibe-coding example: the user requests a weather application, the Agent
-authors and builds firmware, completes the Agent definition, and performs a permission-aware first
-publish. That first-publish story demonstrates Create; it is not presented as the whole NoraCloud
-resource-control surface. Separate Agent-operated examples cover Read, Update, Device management,
-Session end, and Agent deletion. Settings remains a parallel direct-management surface and does not
-enter Conversation.
+authors and builds firmware, completes and publishes the Agent definition, registers a physical
+Device under that Agent, securely provisions it, and performs a separately authorized flash. The
+Device's first connection creates its first Device Session. Separate Agent-operated examples cover
+Read, Update, credential rotation, Device management, hardware-free test Sessions, Session end, and
+Agent deletion. Settings remains a parallel direct-management surface and does not enter Conversation.
 
 Implementation maturity: **partial today; proposed end state not implemented yet**. NoraCloud APIs
 already expose the Agent, Version, Device, and Session operations described here. Today's CLI covers
@@ -17,7 +17,7 @@ yet provide the complete end state drawn here.
 
 ## Numbering And Route Tables
 
-### Build And First Publish States
+### Build, First Publish, And Device Connection States
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -25,7 +25,11 @@ yet provide the complete end state drawn here.
 | `2` | Main step | Journey A | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `4`, or `3.2` |
 | `3` | Main step | Journey A | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A compact dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `4`, `3.1`, or `3.3` |
 | `4` | Main step | Journey A | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
-| `5` | Main step | Journey A | The completed publish receipt causes Workspace Cloud to reflect canonical state. | Reviews the Assistant summary or opens Settings for account management. | The Assistant names the firmware and Agent result while the right Cloud panel updates automatically. No follow-up status Tool Call appears in Conversation. | The client refreshes Workspace Cloud outside Conversation using the confirmed receipt as the trigger. | Agent-operated or Settings resource routes, or end |
+| `5` | Main step | Journey A | The completed publish receipt causes Workspace Cloud to reflect canonical state. | Reviews the Assistant summary or continues to connect the physical Device. | The Assistant names the firmware and Agent result while the right Cloud panel updates automatically to `Devices: None registered`. No follow-up status Tool Call appears in Conversation. | The client refreshes Workspace Cloud outside Conversation using the confirmed receipt as the trigger. | `6` or another Agent-operated/Settings route |
+| `6` | Main step | Journey A | The Agent prepares the exact physical provisioning target before requesting a one-time credential. | Asks to connect the physical Device. | Real `hw_fw_status` and `hw_fw_list_ports` Tool Calls show the firmware project, environment, Harness availability, selected port, and port provenance. | No NoraCloud Device exists and no credential is issued. | `7` |
+| `7` | Main step | Journey A | Device registration and initial Agent binding await permission. | Reviews Device name, Agent, track, firmware target, upload port, credential destination, and exclusions, then approves or denies. | `Register Desk Display` explains that `POST /agents/{agent_id}/devices` creates the identity already owned by Weather Buddy and writes the one-time credential to protected local firmware configuration. | No Device exists until the semantic `noracloud_device` call executes. | `8`, deny, or blocked |
+| `8` | Main step | Journey A | Registration returns a canonical Device receipt. | Reviews the new Device and the required physical next step. | The same Tool Call confirms Device ID, owning Agent, Follow Live track, `Never connected`, protected credential destination, and request ID; secret text never appears. | Device identity is created and bound to Weather Buddy; the credential is written to `platformio_override.ini`. | `9` |
+| `9` | Main step | Journey A | Provisioned firmware is rebuilt, flashed, and verified physically and in NoraCloud. | Gives a separate reply immediately authorizing the physical flash. | Real `hw_fw_build`, `hw_fw_flash`, and `hw_device_state` Tool Calls prove the build, physical write, and device-side state; a read-only `noracloud_status` call separately proves Cloud connection, resolved Version, and first active Session. | Firmware runs with the Device credential; connection creates the Device Session and refreshes Workspace Cloud outside Conversation. | Agent-operated or Settings resource routes, or end |
 
 ### Agent-Operated Resource States
 
@@ -36,8 +40,12 @@ yet provide the complete end state drawn here.
 | `U2` | Agent update receipt | The same Tool Call confirms the new Version and Live pointer. | New immutable Version exists; Agent Live changes; following Devices resolve it on their next turn. |
 | `D1` | Rebind a Device | `noracloud_device` shows current/target Agent, current Session end, reconnect requirement, and protected credential handling. | Waits for the active permission policy. |
 | `D2` | Device rebind receipt | The same Tool Call confirms new ownership, ended Session, retained history, and reconnect state. | Device points to the target Agent; the previous Session is terminal. |
+| `C1` | Replace a Device access credential | `noracloud_device` uses the technical `rotate` action, requires an explicit `graceful` or `revoke_now` mode, and explains identity, connection, Session, and delivery consequences. | Waits for the active permission policy. |
+| `C2` | Access credential replacement receipt | Graceful mode confirms that the replacement is protected and exposes `pending Device ack` without showing either credential. | Device ID, binding, Session, and history stay intact; the old credential remains temporarily valid until acknowledgement. |
 | `V1` | Revoke a Device | `noracloud_device` names the Device identity, connection, active Session, credential revocation, and in-flight work consequences. | Waits for the active permission policy. |
 | `V2` | Device revoke receipt | The same Tool Call confirms deactivation, revoked credential, closed connection, and ended Session without rendering a secret. | Device can no longer authenticate; history remains inspectable. |
+| `T1` | Create a hardware-free test Session | `noracloud_session` names the Agent, pinned Version, absence of a Device, persistent Session record, and active-test quota effect. | Waits for the active permission policy. |
+| `T2` | Test Session and first Turn result | The Session receipt is followed by a separate `noracloud_turn` under its own policy; this example auto-runs that requested Turn and shows reply, transcript, and Usage. | An active Device-free Session contains one recorded Turn. |
 | `S1` | End a Session | `noracloud_session` identifies the active Session and states that transcript, export, and recorded Usage remain available. | Waits for the active permission policy. |
 | `S2` | Session end receipt | The same Tool Call becomes `Completed` with the terminal status and retained facts. | Further turns stop; Session history remains inspectable. |
 | `X1` | Delete an Agent | `noracloud_agent` first discovers Device, Version, Session, and Workspace dependencies, then shows irreversible effects. Any bound Device blocks with `409 in_use`. | Waits for the active permission policy only after the dependency check passes. |
@@ -98,6 +106,7 @@ yet provide the complete end state drawn here.
 | Route | Composition | Result / next state |
 | --- | --- | --- |
 | Ask before running, approve | `1 -> 2 -> 3 -> 4 -> 5` | The example moves from firmware coding through Agent authoring and approval directly to the publish receipt and outcome. |
+| Register, provision, and connect Device | `5 -> 6 -> 7 -> 8 -> 9` | Registration creates the Device already bound to Weather Buddy, writes the credential locally, and a separately authorized flash leads to connection and the first Device Session. |
 | Auto-run publish | `1 -> 2 -> 4 -> 5` | Auto-run skips approval and settles the same Tool Call directly to its receipt. |
 | Ask before running, deny | `1 -> 2 -> 3 -> 3.1 -> 2` | No Cloud mutation occurs; firmware and Agent definition remain local. |
 | Never run policy | `1 -> 2 -> 3.2 -> 2` | Cloud execution is blocked until the user changes policy. |
@@ -108,7 +117,9 @@ yet provide the complete end state drawn here.
 | Agent reads Cloud resources | `R` | A read-only Tool Call returns the Agent/Version/Device/Session graph without approval. |
 | Agent publishes an update | `U1 -> U2` | A new immutable Version is created and made Live; Session context is preserved. |
 | Agent rebinds a Device | `D1 -> D2` | Device ownership changes, the prior Session ends, and reconnect guidance is returned. |
+| Agent replaces a Device access credential | `C1 -> C2` | The technical rotate action uses explicit graceful mode, preserving identity and Session while the replacement waits for Device acknowledgement. |
 | Agent revokes a Device | `V1 -> V2` | Device identity is deactivated, credential access is revoked, and active work stops. |
+| Agent creates a test Session and runs a Turn | `T1 -> T2` | A Device-free Session is pinned to a Version; its separately governed first Turn returns reply, transcript, and Usage evidence. |
 | Agent ends a Session | `S1 -> S2` | The Session becomes terminal while transcript, export, and recorded Usage remain available. |
 | Agent deletes an unused Agent | `X1 -> X2` | Dependency discovery precedes approval; Agent and Versions are deleted only when no Device remains bound. |
 | Agent rename | `5 -> 5.1 -> 5.1.1 -> 5.1` | Settings directly updates the Agent name and refreshes canonical detail. |
@@ -121,7 +132,7 @@ yet provide the complete end state drawn here.
 | Device revoke | `5 -> 5.2 -> 5.2.4 -> 5.2` | Settings revokes access and refreshes Device/Session state. |
 | Session end | `5 -> 5.3 -> 5.3.1 -> 5.3.2 -> 5.3` | The Session becomes ended and retained facts remain inspectable. |
 
-## Build And First Publish
+## Build, First Publish, And Connect The Device
 
 ### 1 Firmware Application Authored
 
@@ -218,7 +229,73 @@ client silently reloads canonical state outside Conversation. Opening Cloud, man
 Cloud, completing a Settings resource action, or reconnecting may also refresh this panel without
 creating a Conversation Tool Call.
 
-Exit / next state: `5.1`, `5.2`, `5.3`, or end.
+Exit / next state: `6 Physical Device Prepared`, another Agent-operated route, Settings, or end.
+
+### 6 Physical Device Prepared
+
+User entry: after first publish, the user asks to connect the physical desk display to Weather Buddy.
+
+User action: identifies the intended hardware when needed; no Cloud approval is requested yet.
+
+Visible UI state: real `hw_fw_status` and `hw_fw_list_ports` calls resolve the `desk-weather/firmware`
+project, `m5stack-cores3` environment, Harness availability, `/dev/cu.usbmodem2101`, and unique
+USB-port evidence. The UI explicitly says this is a read-only preflight: no Device exists and no
+credential has been issued.
+
+Client state change: the exact local project and physical upload target become inputs to the later
+registration approval. NoraCloud remains unchanged.
+
+Exit / next state: `7 Register Device Approval Required`.
+
+### 7 Register Device Approval Required
+
+User entry: preflight has established a safe provisioning target.
+
+User action: reviews and approves once, always allows this operation in the Workspace, or denies.
+
+Visible UI state: `Register Desk Display` shows the target Weather Buddy Agent, Live Version,
+Device name, Follow Live track, firmware environment, upload port, and protected destination
+`platformio_override.ini`. Its exact effects are `Register Device`, `Issue credential once`, and
+`Write firmware config`. The card explains that `POST /v1/agents/{agent_id}/devices` performs the
+initial Agent binding; physical build, flash, connection, and Session creation are excluded.
+
+Client state change: none while approval is pending. Approval binds the Device request and local
+credential destination; it does not authorize the later physical flash.
+
+Exit / next state: `8 Device Registration Receipt`, denied, or blocked.
+
+### 8 Device Registration Receipt
+
+User entry: the registration Tool Call reaches a stable result.
+
+User action: reviews the Device identity, Agent binding, track, and required next step.
+
+Visible UI state: the same Tool Call shows `Completed`, `dev_…228`, Weather Buddy ownership,
+Follow Live, `Never connected`, the protected `platformio_override.ini` destination, and request
+ID. The one-time credential value never appears in Conversation or technical details.
+
+Client state change: NoraCloud creates the Device under Weather Buddy and returns a credential once;
+the trusted adapter writes it locally. No claim of build, flash, connection, or Session is made.
+
+Exit / next state: `9 Firmware Flashed And Device Connected`.
+
+### 9 Firmware Flashed And Device Connected
+
+User entry: Device registration and local provisioning are complete.
+
+User action: gives a separate reply immediately authorizing `hw_fw_flash` for the resolved physical
+port.
+
+Visible UI state: `hw_fw_build` proves the provisioned firmware links, `hw_fw_flash` names the exact
+port, port source, and immediately preceding authorization, and `hw_device_state` reports physical
+Wi-Fi, battery, and heap facts. A separate read-only `noracloud_status` Tool Call reports Desk Display
+as connected on `ver_…b12` with active `ses_…91c`. The right Cloud panel then shows one registered
+Device, the registration-time Agent binding, Follow Live, connection, and Session.
+
+Client state change: provisioned firmware runs on the physical Device. Its authenticated connection
+creates the first Device Session automatically; the client refreshes Cloud state outside Conversation.
+
+Exit / next state: another Agent-operated route, Settings, or end.
 
 ## Agent-Operated Cloud Resource Journeys
 
@@ -266,6 +343,23 @@ Authorization: current Agent permission profile; this is a protected memory-owne
 
 Persistent effect: Device ownership changes and the old active Session becomes terminal.
 
+### C1 / C2 Replace Device Access Credential
+
+Trigger: the user asks for routine credential rotation without interrupting the Device.
+
+Visible UI state: `Replace Desk Display Access Credential` requires the explicit `graceful` mode and names
+the Device, Agent, active connection, Session preservation, one-time replacement, protected delivery,
+and old-credential revocation after Device acknowledgement. It separately explains that
+`revoke_now` immediately disconnects and requires physical re-provisioning; no mode is inferred.
+The receipt reports the canonical `pending Device ack` state and never shows old or new secrets.
+
+Authorization: current Agent permission profile; credential mode and destination are part of the
+approved parameters.
+
+Persistent effect: the Device identity, binding, Session, and history remain. In graceful mode the
+old credential coexists until the Device persists and acknowledges the replacement, after which the
+old credential is revoked.
+
 ### V1 / V2 Revoke Device
 
 Trigger: the user asks the Agent to remove a Device from NoraCloud.
@@ -279,6 +373,22 @@ Authorization: current Agent permission profile; this is an irreversible access 
 
 Persistent effect: the Device can no longer authenticate. Reusing the hardware requires a new
 registration and credential.
+
+### T1 / T2 Create Test Session And Run First Turn
+
+Trigger: the user asks to test an unpublished Weather Buddy Version once without hardware.
+
+Visible UI state: `Create Weather Buddy Test Session` names the Agent, pinned Version, `Device: None`,
+zero initial Turns, persistent Session record, and active-test quota effect. Approval creates only
+the Session. The following `noracloud_turn` remains a separate Tool Call under its own permission
+policy; this example auto-runs the requested first Turn and shows its prompt, reply, transcript, and
+recorded Usage alongside the active Session receipt.
+
+Authorization: current Agent permission profile for `noracloud_session`; the later
+`noracloud_turn` is evaluated independently and would pause separately under Ask-before-running.
+
+Persistent effect: an active hardware-free Session pinned to `ver_…c30` contains one recorded Turn.
+No Device identity, credential, firmware flash, or physical connection is created.
 
 ### S1 / S2 End Session
 
@@ -385,6 +495,22 @@ Allowed user actions: refresh Cloud state or stop; a duplicate mutation is not o
 Recovery / next state: `5`, `2`, or end.
 
 Blocks progress: related mutation retry until state is confirmed.
+
+### Device Provisioning Partial
+
+If NoraCloud creates the Device but protected local credential delivery fails, the Tool Call keeps
+the confirmed Device ID and reports `Partial`. It must not register another Device blindly. Recovery
+first discovers the Device, then uses a protected re-provisioning path or revokes/deletes the unused
+identity according to the confirmed credential state.
+
+If build, flash, or connection verification fails after successful provisioning, the Device remains
+`Never connected`. Recovery retries only the physical stage; it does not create another Device or
+issue another credential.
+
+### Test Turn Conflict
+
+NoraCloud returns `409 turn_in_progress` rather than queueing a second Turn. The active test Session
+and current Turn remain visible, and retry is offered only after read-only Session discovery.
 
 ## Detail States
 

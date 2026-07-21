@@ -1,6 +1,6 @@
 ## Summary
 
-- Tell one readable vibe-coding first-publish story, then show the proposed Agent-operated lifecycle for Agent, immutable Version, Device, and Session resources.
+- Tell one readable vibe-coding story through first publish, physical Device registration/binding, protected provisioning, flash, connection, and the first Device Session, then show the proposed Agent-operated resource lifecycle.
 - Make Settings the direct API control plane for Agent, Device, and Session actions, with confirmations, conflicts, dependency blocking, and protected credential handling.
 - Scope: proposed product interaction; no Electron or NoraCloud runtime implementation is included.
 
@@ -20,7 +20,11 @@ historical artifacts and are not part of this PR.
 - Auto-run completes directly; ask-before-running pauses the same Tool Call for Approve once/Always allow in this workspace/Deny; never-run blocks before mutation. A read-only preparation phase resolves `agent/cloud-agent.json` and its instruction files into the effective definition shown for approval.
 - The approval preview exposes the first-publish destination, effective LLM/STT/TTS/Cron values, readable instruction summaries with file/diff access, exact persistent changes, and explicit exclusions. Users approve the displayed meaning and consequences; hashes remain collapsed system evidence that binds execution to the reviewed snapshot.
 - The example is a first publish from an unbound Workspace: it creates the Agent, initial immutable Version, initial Live pointer, and Workspace binding. It does not claim a previous Live Version or affected Devices.
-- First publish is one Create example, not the entire MCP surface. Separate Tool Call journeys show cross-resource Read, existing-Agent publish/Live Update, Device rebind/revoke, Session end, and Agent delete.
+- First publish ends honestly at `Devices: None registered`. A continued main path resolves the physical target, approves `noracloud_device(action: register)`, creates the Device already bound to Weather Buddy, writes the one-time credential to protected local firmware configuration, and keeps build/flash/connection excluded from that Cloud receipt.
+- Physical flashing has a separate immediately preceding user authorization. Real `hw_fw_build`, `hw_fw_flash`, and `hw_device_state` cards prove provisioned firmware, the physical write, and device-side state; a separate read-only `noracloud_status` proves Cloud connection, resolved Version, and automatic Device Session creation.
+- First publish is one Agent Create example, not the entire MCP surface. Separate Tool Call journeys show cross-resource Read, existing-Agent publish/Live Update, credential rotation, Device rebind/revoke, hardware-free test Session plus first Turn, Session end, and Agent delete.
+- `Replace Device Access Credential` is the user-facing title for the technical rotate action. It requires an explicit `graceful` or `revoke_now` mode; the graceful receipt exposes pending Device acknowledgement while preserving identity, binding, Session, and history, and no secret value appears.
+- A hardware-free test Session and its first `noracloud_turn` remain separate Tool Calls under independent permission evaluation, even when the example policy auto-runs the requested Turn.
 - Agent deletion performs dependency discovery first, returns `409 in_use` while any Device remains bound, and otherwise names deleted Versions and automatically ended active test Sessions before approval.
 - The completed Tool result is the canonical receipt. The right panel remains on Changes during completion and refreshes to canonical Cloud state only in the following state; no duplicate proposal or receipt card is required.
 - The completed receipt triggers a silent Workspace Cloud refresh outside Conversation. Opening Cloud, manual refresh, Settings mutations, and reconnect may use the same UI path; none creates a follow-up `noracloud_status` Tool Call.
@@ -32,13 +36,14 @@ historical artifacts and are not part of this PR.
 
 ## Review Focus
 
-- Can PM follow the user goal through firmware coding, the identity question, Agent-file edits, approval, execution, and persistent result without needing implementation context?
+- Can PM follow the user goal through firmware coding, Agent authoring/publish, physical Device registration and initial binding, protected credential delivery, separately authorized flash, connection, and first Session without needing implementation context?
 - Does the lifecycle matrix make it clear that Agent, immutable Version, Device, and Session operations are proposed MCP capabilities rather than functionality already implemented in the Agent?
 - Do the Read, Update, Device, Session, and Delete examples prove that Settings is a parallel human API entry point rather than a substitute for Agent Tool coverage?
 - Does the first-publish approval show enough resolved configuration, instruction provenance, effects, exclusions, and snapshot identity for an informed decision?
 - Is the completed tool result sufficient as the canonical receipt without duplicating it in the right Cloud panel?
 - Do Conversation MCP operations and direct Settings API actions remain visibly distinct?
 - Are Agent, Version, Device, and Session controls explicit about dependencies, reconnect impact, and secret non-disclosure?
+- Is it clear that Device registration performs the first Agent binding, while Rebind is only a later ownership change?
 
 ## Files
 
@@ -51,6 +56,6 @@ historical artifacts and are not part of this PR.
 ## Verification
 
 - Parsed the inline wireframe JavaScript successfully.
-- Verified the first-publish path, Agent-operated resource examples, compact permission/recovery branches, and direct Settings action paths have renderers.
+- Verified the first-publish and four-state Device onboarding path, credential rotation, test Session/Turn, other Agent-operated resource examples, compact permission/recovery branches, and direct Settings action paths have renderers.
 - Rendered the static HTML locally and visually checked the canvas, navigation, route rows, and Settings paths.
 - Ran `git diff --check`.

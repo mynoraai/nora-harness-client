@@ -1648,9 +1648,9 @@
   <body>
     <header class="topbar">
       <div>
-        <h1>NoraCloud Resource Control — Agent Tool Calls + Settings</h1>
+        <h1>NoraCloud Resource Control — Build, Connect, Operate + Settings</h1>
         <p>
-          First publish is one example; the proposed end state covers Agent, Version, Device, and Session operations through MCP and direct Settings APIs.
+          Firmware build → Agent publish → physical Device registration and flash → Agent, Version, Device, and Session operations.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1662,7 +1662,7 @@
 
     <nav class="jump">
       <h2>Jump</h2>
-      <button data-jump="main-happy-path">Build &amp; first publish</button>
+      <button data-jump="main-happy-path">Build, publish &amp; connect</button>
       <button data-jump="agent-lifecycle">Agent-operated resources</button>
       <button data-jump="route-path">Permission &amp; safety</button>
       <button data-jump="detail-states">Settings management</button>
@@ -1680,12 +1680,16 @@
       <div class="stage" id="stage">
         <section class="band" id="main-happy-path">
           <div class="band-title">
-            <h3>Build &amp; first publish</h3>
+            <h3>Build, first publish &amp; connect a Device</h3>
             <span
-              >Journey A · one Create example: firmware coding → Agent definition → approval-aware first publish → result</span
+              >Journey A · firmware coding → Agent definition → first publish → Device registration → build, flash, and first Session</span
             >
           </div>
           <div class="flow" id="main-flow"></div>
+          <article class="route-row" style="margin-top: 18px">
+            <div class="route-title"><h4>Journey A continued · onboard the physical Device</h4><code>6 → 7 → 8 → 9</code><span>Registration creates the Device and binds it to the Agent; firmware provisioning and flashing make that relationship real on hardware.</span></div>
+            <div class="flow" id="device-onboarding-flow"></div>
+          </article>
         </section>
 
         <section class="band" id="agent-lifecycle">
@@ -1705,7 +1709,9 @@
           <article class="route-row"><div class="route-title"><h4>Read · inspect the complete resource graph</h4><code>R</code><span>Read-only discovery does not ask for mutation approval.</span></div><div class="flow" id="agent-read-flow"></div></article>
           <article class="route-row"><div class="route-title"><h4>Update · publish a new immutable Version and move Live</h4><code>U1 → U2</code><span>The Agent shows the semantic update and affected Devices before mutation.</span></div><div class="flow" id="agent-update-flow"></div></article>
           <article class="route-row"><div class="route-title"><h4>Device · rebind ownership and end the current Session</h4><code>D1 → D2</code><span>Memory ownership and reconnect effects remain explicit.</span></div><div class="flow" id="agent-device-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Device · replace its Cloud access credential</h4><code>C1 → C2</code><span>The technical <code>rotate</code> action keeps Device identity intact; its required mode distinguishes graceful exchange from emergency revocation.</span></div><div class="flow" id="agent-device-rotate-flow"></div></article>
           <article class="route-row"><div class="route-title"><h4>Device · revoke identity and access</h4><code>V1 → V2</code><span>The Device is deactivated, its credential is revoked, and active work stops.</span></div><div class="flow" id="agent-device-revoke-flow"></div></article>
+          <article class="route-row"><div class="route-title"><h4>Session · create a hardware-free test and run one Turn</h4><code>T1 → T2</code><span>The test Session targets an Agent Version without registering a Device; the first Turn returns reply and Usage evidence.</span></div><div class="flow" id="agent-test-session-flow"></div></article>
           <article class="route-row"><div class="route-title"><h4>Session · end activity without deleting history</h4><code>S1 → S2</code><span>Turns stop; transcript, export, and usage remain inspectable.</span></div><div class="flow" id="agent-session-flow"></div></article>
           <article class="route-row"><div class="route-title"><h4>Delete · remove an Agent only after dependency discovery</h4><code>X1 → X2</code><span>Bound Devices block deletion; successful delete removes Versions and ends active test Sessions.</span></div><div class="flow" id="agent-delete-flow"></div></article>
         </section>
@@ -1806,6 +1812,9 @@
                 Keep confirmed resources visible. Continue from the failed stage; unknown outcomes pause duplicate mutation until reality is determined.
               </p>
             </article>
+            <article class="compact-card recovery"><span class="kind">Device provisioning</span><h4>Cloud created · local delivery failed</h4><p>Keep the Device ID as a partial receipt. Never register blindly again; revoke/re-provision or delete the unused Device after discovery.</p></article>
+            <article class="compact-card recovery"><span class="kind">Physical verification</span><h4>Flash or connection failed</h4><p>The registered Device remains `Never connected`. Retry build/flash or inspect hardware without creating another Device identity.</p></article>
+            <article class="compact-card recovery"><span class="kind">Test Session</span><h4>Turn already in progress</h4><p>A `409 turn_in_progress` does not queue or duplicate the Turn. Preserve the active Session and retry only after current state is read.</p></article>
           </div>
         </section>
         <div class="footer-space"></div>
@@ -1869,6 +1878,26 @@
           view: "cloud-refresh",
           caption: "The completed receipt silently refreshes the right rail; Conversation adds no status Tool Call.",
         },
+        6: {
+          title: "Physical Device Prepared",
+          view: "device-preflight",
+          caption: "Read-only firmware tools resolve the exact project, environment, and physical upload port before NoraCloud issues a one-time credential.",
+        },
+        7: {
+          title: "Register Device · Approval Required",
+          view: "device-register-approval",
+          caption: "Registration creates the Device already bound to the target Agent and names the protected local credential destination.",
+        },
+        8: {
+          title: "Device Registration Receipt",
+          view: "device-register-receipt",
+          caption: "The receipt confirms Device identity, Agent binding, track, and secure provisioning without displaying the credential.",
+        },
+        9: {
+          title: "Firmware Flashed · Device Connected",
+          view: "device-connected",
+          caption: "A separately authorized flash installs the provisioned firmware; connection creates the Device's first Cloud Session.",
+        },
         R: {
           title: "Read Cloud Resource Graph",
           view: "agent-read",
@@ -1894,6 +1923,16 @@
           view: "agent-device-receipt",
           caption: "The receipt confirms new ownership, ended Session, and reconnect requirement.",
         },
+        C1: {
+          title: "Replace Device Access Credential · Approval Required",
+          view: "agent-device-rotate-approval",
+          caption: "The required rotation mode makes zero-touch graceful exchange and immediate compromise response visibly different.",
+        },
+        C2: {
+          title: "Replace Device Access Credential · Tool Receipt",
+          view: "agent-device-rotate-receipt",
+          caption: "The receipt preserves Device identity and history while exposing whether the new credential awaits Device acknowledgement.",
+        },
         V1: {
           title: "Revoke Device · Approval Required",
           view: "agent-device-revoke-approval",
@@ -1913,6 +1952,16 @@
           title: "End Session · Tool Receipt",
           view: "agent-session-receipt",
           caption: "The Session becomes terminal while transcript, export, and Usage remain available.",
+        },
+        T1: {
+          title: "Create Test Session · Approval Required",
+          view: "agent-test-session-approval",
+          caption: "A hardware-free Session names its Agent, pinned Version, persistent record, and quota effect before creation.",
+        },
+        T2: {
+          title: "Test Session · First Turn Result",
+          view: "agent-test-session-receipt",
+          caption: "The created Session and subsequent test Turn return reply, transcript, and Usage evidence without a Device.",
         },
         X1: {
           title: "Delete Agent · Approval Required",
@@ -2001,7 +2050,7 @@
       function toolCall(title, status, expanded = false, body = "") {
         const running = status === "Running" || status === "Approval required";
         const blocked = status === "Blocked" || status === "Denied" || status === "Failed" || status === "Source changed";
-        const icon = /NoraCloud|Publish|Rebind|Session/.test(title) ? "☁" : "✎";
+        const icon = /NoraCloud|Cloud|Publish|Register|Rebind|Rotate|Revoke|Session/.test(title) ? "☁" : "✎";
         const statusIcon = running ? "◷" : blocked ? "×" : "✓";
         return `<div class="tool-call ${expanded ? "active" : ""}"><div class="tool-head"><div class="tool-main"><span class="tool-icon">${icon}</span><span class="tool-title">${title}</span><span class="tool-status ${running ? "running" : blocked ? "blocked" : ""}">${statusIcon} ${status}</span></div><span class="chevron">${expanded ? "⌃" : "⌄"}</span></div>${expanded ? `<div class="tool-body">${body}</div>` : ""}</div>`;
       }
@@ -2018,6 +2067,37 @@
       function publishReceiptCall() {
         const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>First publish completed</span><b>Weather Buddy is Live and bound to this Workspace</b></div><span class="publish-count">4 confirmed changes</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="publish-block-head"><b>Created resources</b></div><div class="definition-pairs"><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Version</span><b>Ready · ver_…b12</b><span>Live</span><b>ver_…b12</b></div></section><section class="publish-review-block"><div class="publish-block-head"><b>Workspace result</b></div><div class="definition-pairs"><span>Workspace</span><b>desk-weather</b><span>Binding</span><b>Weather Buddy</b><span>Devices</span><b>None registered</b></div></section></div><div class="publish-exclusions"><b>Not changed:</b> Device registration · Cloud turn verification · firmware flash</div><div class="approval-footer"><div><b>This Tool result is the persistent NoraCloud receipt.</b><span>The Cloud panel refreshes from this confirmed result next.</span></div><span class="technical-disclosure">IDs, digest, request · req_…42e ▸</span></div>`;
         return `<div class="publish-tool completed">${toolCall("Publish Weather Buddy Agent", "Completed", true, body)}</div>`;
+      }
+
+      function registerDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device registration and initial binding</span><b>Create Desk Display under Weather Buddy</b></div><span class="publish-count">1 Cloud resource</span></div><div class="publish-destination"><span>Target Agent</span><b>Weather Buddy · Live ver_…b12</b><code>agt_…7f2</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="publish-block-head"><b>Device definition</b></div><div class="definition-pairs"><span>Name</span><b>Desk Display</b><span>Track</span><b>Follow Agent Live</b><span>Firmware env</span><b>m5stack-cores3</b><span>Upload port</span><b>/dev/cu.usbmodem2101</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent and local effects</b><span>Runs after approval</span></div>${cloudEffect("Register Device", "Identity is created under agt_…7f2")}${cloudEffect("Issue credential once", "Value never enters Conversation")}${cloudEffect("Write firmware config", "platformio_override.ini")}</section></div><div class="publish-exclusions"><b>Not done yet:</b> firmware rebuild · physical flash · Device connection · Device Session</div><div class="approval-footer"><div><b>Registration is the first Agent binding.</b><span>The Agent ID in this request becomes the Device owner; a later move uses Rebind.</span></div><span class="technical-disclosure">noracloud_device · action register ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Register Desk Display", "Approval required", true, body)}</div>`;
+      }
+
+      function registerDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Device registration completed</span><b>Desk Display exists and is bound to Weather Buddy</b></div><span class="publish-count">Provisioned locally</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>Desk Display · dev_…228</b><span>Agent</span><b>Weather Buddy · agt_…7f2</b><span>Track</span><b>Follow Live</b><span>Connection</span><b>Never connected</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Credential</span><b>Stored securely · not displayed</b><span>Destination</span><b>platformio_override.ini</b><span>Next</span><b>Build and flash</b><span>Request</span><b>req_…6a1</b></div></section></div><div class="approval-footer"><div><b>This receipt proves Cloud creation and local credential delivery.</b><span>It does not claim that the physical Device is running the new configuration yet.</span></div><span class="technical-disclosure">Device ID, masked hint, and request evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Register Desk Display", "Completed", true, body)}</div>`;
+      }
+
+      function rotateDeviceApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Routine credential rotation</span><b>Exchange Desk Display credential without changing identity</b></div><span class="publish-count">Mode required</span></div><div class="publish-destination"><span>Device</span><b>Desk Display · Weather Buddy</b><code>dev_…228</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Mode</span><b>Graceful</b><span>Connection</span><b>Connected</b><span>Session</span><b>ses_…91c remains active</b><span>Identity</span><b>Unchanged</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Credential effects</b><span>Runs after approval</span></div>${cloudEffect("Issue replacement", "Returned once; never displayed")}${cloudEffect("Deliver over active channel", "Device persists to NVS and acknowledges")}${cloudEffect("Revoke old credential", "Only after Device acknowledgement")}</section></div><div class="notice"><b>Different emergency mode:</b> Revoke now drops the connection immediately and requires physical re-provisioning; it is never selected implicitly.</div><div class="approval-footer"><div><b>You are approving graceful rotation for this exact Device.</b><span>Device binding, Session, and history are preserved.</span></div><span class="technical-disclosure">noracloud_device · action rotate · mode graceful ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Replace Desk Display Access Credential", "Approval required", true, body)}</div>`;
+      }
+
+      function rotateDeviceReceiptCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Rotation request completed</span><b>Replacement credential issued; Device acknowledgement is pending</b></div><span class="publish-count">Canonical pending state</span></div><div class="publish-review-grid" style="margin-top:8px"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>dev_…228 · unchanged</b><span>Agent</span><b>Weather Buddy</b><span>Session</span><b>ses_…91c · active</b></div></section><section class="publish-review-block"><div class="definition-pairs"><span>Rotation</span><b>Pending Device ack</b><span>Old credential</span><b>Temporarily accepted</b><span>New credential</span><b>Protected</b><span>Request</span><b>req_…c82</b></div></section></div><div class="approval-footer"><div><b>The API call completed; credential exchange is still observable.</b><span>After Device acknowledgement, the old credential is revoked and Rotation returns to None.</span></div><span class="technical-disclosure">masked hint and rotation event evidence ▸</span></div>`;
+        return `<div class="publish-tool completed">${toolCall("Replace Desk Display Access Credential", "Completed", true, body)}</div>`;
+      }
+
+      function createTestSessionApprovalCall() {
+        const body = `<div class="publish-summary"><div class="publish-summary-copy"><span>Hardware-free Agent verification</span><b>Create a persistent test Session pinned to ver_…c30</b></div><span class="publish-count">1 Cloud Session</span></div><div class="publish-destination"><span>Target</span><b>Weather Buddy · pre-release Version</b><code>agt_…7f2 · ver_…c30</code></div><div class="publish-review-grid"><section class="publish-review-block"><div class="definition-pairs"><span>Device</span><b>None</b><span>Version</span><b>Pinned · ver_…c30</b><span>Initial turns</span><b>0</b><span>Quota</span><b>1 active test Session</b></div></section><section class="publish-review-block cloud-effects"><div class="publish-block-head"><b>Persistent effects</b><span>Runs after approval</span></div>${cloudEffect("Create test Session", "Session remains until ended")}${cloudEffect("Record later Turns", "Transcript and Usage accumulate")}</section></div><div class="publish-exclusions"><b>Not created:</b> Device identity · credential · physical connection · firmware flash</div><div class="approval-footer"><div><b>This approval creates the Session only.</b><span>The following test Turn is a separate <code>noracloud_turn</code> call governed by its own policy.</span></div><span class="technical-disclosure">noracloud_session · action create ▸</span></div>${actions(["Approve once", "Always allow in this workspace", "Deny"])}`;
+        return `<div class="publish-tool approval">${toolCall("Create Weather Buddy Test Session", "Approval required", true, body)}</div>`;
+      }
+
+      function createTestSessionReceiptCall() {
+        const sessionBody = `${row("Session", "ses_…t91 · Active")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Version", "Pinned · ver_…c30")}${row("Device", "None")}${row("Turns", "0")}`;
+        const turnBody = `${row("Tool", "noracloud_turn")}${row("Prompt", "What should I wear in Shanghai today?")}${row("Reply", "A light jacket—Shanghai is cool and breezy today.")}${row("Transcript", "Recorded in ses_…t91")}${row("Usage", "1,240 tokens")}`;
+        return `<div class="tool-stack">${toolCall("Create Weather Buddy Test Session", "Completed", true, sessionBody)}${toolCall("Run first Cloud test Turn", "Completed", true, turnBody)}</div><div class="notice"><b>Turn policy:</b> this example auto-runs the follow-up <code>noracloud_turn</code>; Ask-before-running would pause that second Tool Call independently.</div>`;
       }
 
       function updateAgentApprovalCall() {
@@ -2093,6 +2173,14 @@
           return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "cloud-refresh")
           return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>`;
+        if (kind === "device-preflight")
+          return `<div class="user-msg">Connect this physical device to Weather Buddy.</div><div class="assistant">I’ll resolve the exact firmware target and upload port before asking NoraCloud to issue a one-time Device credential.</div><div class="tool-stack">${toolCall("Inspect firmware target · hw_fw_status", "Completed", true, `${row("Project", "desk-weather/firmware")}${row("Environment", "m5stack-cores3")}${row("Harness", "Available")}`)}${toolCall("List physical ports · hw_fw_list_ports", "Completed", true, `${row("Selected", "/dev/cu.usbmodem2101")}${row("Evidence", "Unique USB serial target")}`)}</div><div class="notice"><b>Preflight only:</b> no Device exists in NoraCloud and no credential has been issued.</div>`;
+        if (kind === "device-register-approval")
+          return `<div class="assistant">The physical target is ready. Review where the Device will be registered, bound, and provisioned.</div>${registerDeviceApprovalCall()}`;
+        if (kind === "device-register-receipt")
+          return `<div class="assistant">Desk Display is registered under Weather Buddy. Its credential was written locally without entering the transcript.</div>${registerDeviceReceiptCall()}`;
+        if (kind === "device-connected")
+          return `<div class="assistant">The Cloud identity is ready. Flashing is a separate physical write and needs your authorization.</div><div class="user-msg">Flash Desk Display now.</div><div class="tool-stack">${toolCall("Build provisioned firmware · hw_fw_build", "Completed", true, `${row("Environment", "m5stack-cores3")}${row("Provisioning", "Device ID and protected credential included")}`)}${toolCall("Flash Desk Display · hw_fw_flash", "Completed", true, `${row("Port", "/dev/cu.usbmodem2101")}${row("Port source", "hw_fw_list_ports")}${row("Authorization", "Previous user reply")}${row("Evidence", "Upload and reboot completed")}`)}${toolCall("Read physical Device state · hw_device_state", "Completed", true, `${row("Wi-Fi", "Connected")}${row("Battery", "86%")}${row("Free heap", "182 KB")}`)}${toolCall("Verify Cloud Device relationship", "Completed", true, `${row("Tool", "noracloud_status · read only")}${row("Device", "Desk Display", "dev_…228")}${row("Connection", "Connected")}${row("Resolved Version", "ver_…b12")}${row("Session", "ses_…91c · Active")}`)}</div><div class="assistant">Physical and Cloud checks agree: Desk Display is connected to Weather Buddy, and its first Device Session was created on connection.</div>`;
         if (kind === "agent-read")
           return `<div class="user-msg">Show me the Cloud resources related to this Workspace.</div><div class="assistant">I’ll read the current NoraCloud resource graph. This does not change anything.</div>${toolCall("Inspect Workspace Cloud", "Completed", true, `${row("Tool", "noracloud_status")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Live Version", "ver_…b12")}${row("Versions", "5")}${row("Devices", "2 · 1 connected")}${row("Sessions", "1 active · 17 ended")}<div class="notice"><b>Read only:</b> no resource mutation or approval was required.</div>`)}`;
         if (kind === "agent-update-approval")
@@ -2103,6 +2191,10 @@
           return `<div class="user-msg">Move Desk Display from Weather Buddy to Kitchen Helper.</div><div class="assistant">This changes Device ownership and ends its current Session. Review the consequences.</div>${rebindDeviceApprovalCall()}`;
         if (kind === "agent-device-receipt")
           return `<div class="assistant">Desk Display is rebound. Its previous Session is retained as ended.</div>${rebindDeviceReceiptCall()}`;
+        if (kind === "agent-device-rotate-approval")
+          return `<div class="user-msg">Rotate Desk Display’s credential without interrupting it.</div><div class="assistant">That requires graceful mode. Review how the old and replacement credentials overlap until the Device acknowledges.</div>${rotateDeviceApprovalCall()}`;
+        if (kind === "agent-device-rotate-receipt")
+          return `<div class="assistant">The replacement credential is issued. The Device identity and Session remain unchanged while acknowledgement is pending.</div>${rotateDeviceReceiptCall()}`;
         if (kind === "agent-device-revoke-approval")
           return `<div class="user-msg">Remove Office Display from NoraCloud.</div><div class="assistant">This revokes Device access and stops its active work. Review the exact identity and consequences.</div>${revokeDeviceApprovalCall()}`;
         if (kind === "agent-device-revoke-receipt")
@@ -2111,6 +2203,10 @@
           return `<div class="user-msg">End the active Desk Display Cloud Session.</div><div class="assistant">The Session will stop accepting turns, but its recorded history remains available.</div>${endSessionApprovalCall()}`;
         if (kind === "agent-session-receipt")
           return `<div class="assistant">The Session is ended. Transcript, export, and Usage remain inspectable.</div>${endSessionReceiptCall()}`;
+        if (kind === "agent-test-session-approval")
+          return `<div class="user-msg">Test the unpublished Weather Buddy Version once without using a Device.</div><div class="assistant">I’ll create a hardware-free Session pinned to that Version. Review the persistent Session and quota effect.</div>${createTestSessionApprovalCall()}`;
+        if (kind === "agent-test-session-receipt")
+          return `<div class="assistant">The test Session was created. Your current policy allows the requested first test Turn to run automatically.</div>${createTestSessionReceiptCall()}`;
         if (kind === "agent-delete-approval")
           return `<div class="user-msg">Delete the unused Voice Notes Agent.</div><div class="tool-stack">${toolCall("Check Voice Notes dependencies", "Completed")}</div><div class="assistant">No Devices are bound. Review the irreversible Agent and Version deletion.</div>${deleteAgentApprovalCall()}`;
         if (kind === "agent-delete-receipt")
@@ -2119,8 +2215,9 @@
       }
 
       function rightPanel(kind) {
-        const cloudKinds = ["cloud-refresh"];
-        if (!cloudKinds.includes(kind))
+        if (kind === "device-connected")
+          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Canonical state after the Device connected.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>1 registered</b><code></code></div></div><div class="panel-card"><h5>Desk Display · dev_…228</h5><div class="panel-row"><span>Agent</span><b>Weather Buddy</b><code>bound at registration</code></div><div class="panel-row"><span>Track</span><b>Follow Live</b><code>ver_…b12</code></div><div class="panel-row"><span>Connection</span><b>Connected</b><code>now</code></div><div class="panel-row"><span>Session</span><b>ses_…91c</b><code>active</code></div><span class="panel-link">Open Device in Settings ›</span></div></div>`;
+        if (kind !== "cloud-refresh")
           return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">5 changed files</b><br><br>M &nbsp;main/app/user_app.c<br>M &nbsp;agent/ui/weather-screen.xml<br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/IDENTITY.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
         return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh">Fresh · now</span></div><div class="panel-note">Cloud state used by this Workspace.</div><div class="panel-card"><h5>Workspace Cloud</h5><div class="panel-row"><span>Bound Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live Version</span><b>ver_…b12</b><code>current</code></div><div class="panel-row"><span>Devices</span><b>None registered</b><code></code></div><span class="panel-link">Manage in Settings ›</span></div><div class="panel-card"><h5>Live configuration · ver_…b12</h5><div class="panel-row"><span>LLM</span><b>qwen-max</b><code>DashScope</code></div><div class="panel-row"><span>STT</span><b>OpenAI ASR</b><code>zh</code></div><div class="panel-row"><span>TTS</span><b>zhixiaobai</b><code>DashScope</code></div><div class="panel-row"><span>Cron</span><b>None</b><code></code></div><div class="panel-subhead">Source snapshot</div><div class="panel-file"><code>cloud-agent.json</code><span>Matches Live</span></div><div class="panel-file"><code>SOUL.md</code><span>Matches Live</span></div><div class="panel-file"><code>IDENTITY.md</code><span>Matches Live</span></div><div class="panel-file"><code>USER.md</code><span>Matches Live</span></div><span class="panel-link">Compare Workspace to Live ›</span></div></div>`;
       }
@@ -2213,7 +2310,7 @@
 
       function card(id) {
         const state = states[id];
-        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "U1", "D1", "V1", "S1", "X1", "5.1.4"].includes(id)
+        const severity = ["3", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "7", "U1", "D1", "C1", "V1", "T1", "S1", "X1", "5.1.4"].includes(id)
           ? "warning"
           : "";
         const maturity = id === "1" ? "Existing pattern" : "Proposed";
@@ -2229,10 +2326,13 @@
       }
 
       document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
+      document.getElementById("device-onboarding-flow").innerHTML = flow(["6", "7", "8", "9"]);
       document.getElementById("agent-read-flow").innerHTML = flow(["R"]);
       document.getElementById("agent-update-flow").innerHTML = flow(["U1", "U2"]);
       document.getElementById("agent-device-flow").innerHTML = flow(["D1", "D2"]);
+      document.getElementById("agent-device-rotate-flow").innerHTML = flow(["C1", "C2"]);
       document.getElementById("agent-device-revoke-flow").innerHTML = flow(["V1", "V2"]);
+      document.getElementById("agent-test-session-flow").innerHTML = flow(["T1", "T2"]);
       document.getElementById("agent-session-flow").innerHTML = flow(["S1", "S2"]);
       document.getElementById("agent-delete-flow").innerHTML = flow(["X1", "X2"]);
       document.getElementById("settings-agent-flow").innerHTML = flow([
