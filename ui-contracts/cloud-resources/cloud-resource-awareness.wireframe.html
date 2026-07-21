@@ -1755,7 +1755,7 @@
         "5": {
           title: "Workspace Cloud Refreshed",
           view: "cloud-refresh",
-          caption: "The right rail reflects canonical Cloud state after the tool receipt.",
+          caption: "The completed receipt silently refreshes the right rail; Conversation adds no status Tool Call.",
         },
         "5.1": {
           title: "Agent Resource Detail",
@@ -1918,7 +1918,7 @@
         if (kind === "unknown")
           return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("Publish Weather Buddy Agent", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "cloud-refresh")
-          return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>${toolCall("Refresh NoraCloud status", "Completed", true, `${row("Tool", "noracloud_status")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Live", "ver_…b12")}${row("Versions", "1")}${row("Devices", "None registered")}`)}`;
+          return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>`;
         return "";
       }
 

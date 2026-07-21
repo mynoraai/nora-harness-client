@@ -181,6 +181,11 @@ initial Version ID/status/digest, Live Version, Workspace binding, exclusions, s
 separate NoraCloud receipt card or in the right Cloud panel. That panel refreshes only in the next
 outcome state.
 
+The completed receipt itself triggers that Workspace Cloud refresh. The client invalidates the last
+panel snapshot and performs a silent read outside Conversation; the Agent does not issue a second
+`noracloud_status` Tool Call. Opening or manually refreshing Cloud, completing a Settings action, or
+reconnecting may use the same direct UI refresh path and also stays out of Conversation.
+
 The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
 `Approve` shortcut, and separate resource receipt are not part of the proposed end state.
 

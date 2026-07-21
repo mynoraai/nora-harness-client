@@ -22,7 +22,7 @@ their final renderers are proposed.
 | `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `4`, or `3.2` |
 | `3` | Main step | Journey 1 | The example permission profile requires approval for the first publish of a new Agent. | Reviews the normalized definition and exact persistent effects, then chooses `Approve once`, `Always allow in this workspace`, or `Deny`. | A compact dedicated `Publish Weather Buddy Agent` approval shows the destination, four Cloud changes, effective Agent values, readable instruction summaries with `View file`/`View diff`, exclusions, and approval actions. Hashes stay inside collapsed technical details. | No Cloud mutation starts. The system binds approval to the hidden definition digest. | `4`, `3.1`, or `3.3` |
 | `4` | Main step | Journey 1 | The Tool Call returns a stable first-publish receipt. | Reviews the result and affected resources. | The same expanded Tool Call becomes `Completed` or `Failed` and shows Agent ID, Version ID/status/digest, Live Version, Workspace binding, exclusions, and request ID. The right panel remains on Changes; there is no duplicate receipt card or Cloud summary. | `5`, `4.1`, `4.2`, or `4.3` |
-| `5` | Main step | Journey 1 | The Agent reports the product outcome and Workspace Cloud reflects canonical state. | Reviews the summary or opens Settings for account management. | The Assistant names the firmware and Agent result; the Workspace Cloud snapshot shows the Live Version and freshness. | The vibe-coding turn closes with local build evidence and a canonical Cloud receipt. | `5.1`, `5.2`, `5.3`, or end |
+| `5` | Main step | Journey 1 | The completed publish receipt causes Workspace Cloud to reflect canonical state. | Reviews the Assistant summary or opens Settings for account management. | The Assistant names the firmware and Agent result while the right Cloud panel updates automatically. No follow-up status Tool Call appears in Conversation. | The client refreshes Workspace Cloud outside Conversation using the confirmed receipt as the trigger. | `5.1`, `5.2`, `5.3`, or end |
 
 ### Permission And Operation Branches
 
@@ -174,16 +174,20 @@ Exit / next state: `5 Workspace Cloud Refreshed`, or a recovery branch.
 
 ### 5 Workspace Cloud Refreshed
 
-User entry: the Cloud operation is complete or the user opens Cloud after recovery.
+User entry: the completed publish receipt is stored, or the user opens Cloud after recovery.
 
 User action: reviews the bound Agent and opens Settings when account-level management is needed.
 
 Visible UI state: one compact `Workspace Cloud` card shows the bound Agent, current Live Version,
 Device count, freshness, and `Manage in Settings`. It does not split the same relationship into
 separate `Bound Agent` and `Related Cloud Resources` cards. Settings remains account-scoped and
-does not inherit the coding Conversation.
+does not inherit the coding Conversation. Conversation contains only the Assistant's outcome
+summary; it does not add `Refresh NoraCloud status` or another Tool Call.
 
-Client state change: the last trusted Cloud snapshot is replaced by the refreshed canonical state.
+Client state change: the completed receipt invalidates the last Workspace Cloud snapshot and the
+client silently reloads canonical state outside Conversation. Opening Cloud, manually refreshing
+Cloud, completing a Settings resource action, or reconnecting may also refresh this panel without
+creating a Conversation Tool Call.
 
 Exit / next state: `5.1`, `5.2`, `5.3`, or end.
 
