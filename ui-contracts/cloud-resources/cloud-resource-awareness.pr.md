@@ -1,6 +1,6 @@
 ## Summary
 
-- Replace the CLI-shaped Cloud update proposal with semantic NoraCloud MCP Tool Calls, permission-aware branches, and tool receipts.
+- Tell one readable vibe-coding story from a weather-app request through firmware tools, Agent identity authoring, and a semantic NoraCloud publish Tool Call.
 - Make Settings the direct API control plane for Agent, Device, and Session actions, with confirmations, conflicts, dependency blocking, and protected credential handling.
 - Scope: proposed product interaction; no Electron or NoraCloud runtime implementation is included.
 
@@ -15,6 +15,7 @@
 
 - Agent/LLM uses `noracloud_status`, `noracloud_publish`, `noracloud_agent`, `noracloud_version`, `noracloud_device`, `noracloud_session`, `noracloud_turn`, and `noracloud_observe` through the shared NoraCloud operation contract.
 - Auto-run completes directly; ask-before-running pauses the same Tool Call for Approve/Always allow/Deny; never-run blocks before mutation. The tool result is the receipt; no duplicate proposal or receipt card is required.
+- The review example uses Ask before running so PM can see the control point. Auto-run skips only that state and continues through the same Running and Completed Tool Call.
 - Settings calls typed NoraCloud APIs directly. Agent rename/live/rollback/delete, Device track/rebind/rotate/revoke, and Session end never enter Conversation or create a visible Tool Call.
 - The right Cloud panel follows the current Workspace and refreshes from the canonical tool receipt.
 - Versions remain immutable and read-only except for Make Live/Rollback from their owning Agent. Rotation never displays a credential value.
@@ -22,7 +23,7 @@
 
 ## Review Focus
 
-- Does the same semantic Tool Call remain understandable across auto-run, approval, denial, blocked, conflict, partial, and unknown outcomes?
+- Can PM follow the user goal through firmware coding, the identity question, Agent-file edits, approval, execution, and persistent result without needing implementation context?
 - Is the tool result sufficient as the canonical receipt without a second proposal or execution dashboard?
 - Do Conversation MCP operations and direct Settings API actions remain visibly distinct?
 - Are Agent, Version, Device, and Session controls explicit about dependencies, reconnect impact, and secret non-disclosure?

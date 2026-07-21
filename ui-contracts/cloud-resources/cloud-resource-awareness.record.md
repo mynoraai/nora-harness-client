@@ -1,11 +1,11 @@
-# Journey 1: Cloud Resource Control Across Conversation And Settings
+# Journey 1: Build And Publish A Weather Agent
 
 This record is the source of truth for `cloud-resource-awareness.wireframe.html`.
 
-The journey describes the proposed end state: a coding Agent uses NoraCloud Tools for Cloud work,
-the Agent's permission policy determines whether a Tool Call runs or waits, and Settings directly
-manages account resources without entering Conversation. Local editing, the Cloud Tool surface, and
-Settings resource actions have different visible states and recovery paths.
+The main path is one readable vibe-coding conversation: the user requests a weather application,
+the Agent authors and builds firmware, asks for the missing Agent identity and personality, authors
+the Agent definition, and publishes it through one permission-aware NoraCloud Tool Call. Settings
+remains a separate direct-management surface and does not enter Conversation.
 
 Implementation maturity: **partial today; proposed end state not implemented yet**. Local editing,
 the existing permission surface, Cloud API resources, and browse-only Settings are present in part.
@@ -18,20 +18,19 @@ their final renderers are proposed.
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | Main step | Journey 1 | Local Workspace changes are being made. | Asks the Agent to change behavior or the reasoning model. | Real Edit Tool cards show completed or running file work. No fabricated validation command appears. NoraCloud is unchanged. | Workspace files change; Cloud and firmware remain unchanged. | `2` |
-| `2` | Main step | Journey 1 | The user requests a persistent Cloud action. | Asks the Agent to publish the current Workspace changes. | The Agent explains the requested Cloud effect and starts one semantic NoraCloud Tool Call according to the active permission policy. | The operation enters `3`, `3.1`, or `3.2`. | `3`, `3.1`, or `3.2` |
-| `3` | Main step | Journey 1 | The publish Tool Call is executing. | Watches the operation or stops the turn if the runtime allows. | `Publish Desk Weather Agent` shows `Running`; the card names the Agent, Version creation, Live movement, and affected Devices. | `4` or `4.1`/`4.2`/`4.3` |
+| `1` | Main step | Journey 1 | The user requests a weather product and the Agent implements its firmware. | Describes the desired weather experience. | One Conversation turn shows the user's goal, the Agent's concise intent, and real Read/Edit/Write/Build Tool Calls. | Firmware application files change and the selected target builds; NoraCloud is unchanged. | `2` |
+| `2` | Main step | Journey 1 | The Agent collects the missing identity and personality, then authors the Agent definition. | Provides the Agent name and desired tone. | The Conversation shows the Agent question, the user's answer, and Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`. | The local Agent definition becomes ready to publish. | `3`, `3.1`, or `3.3` |
+| `3` | Main step | Journey 1 | The example permission profile requires approval for the publish Tool Call. | Reviews the exact persistent effect and chooses `Approve`, `Always allow`, or `Deny`. | `Publish Weather Buddy Agent` is `Approval required`; `noracloud_publish` appears as secondary technical detail. | No Cloud mutation starts until permission resolves. | `3.1` or `3.2` |
 | `4` | Main step | Journey 1 | The Tool Call returns a stable receipt. | Reviews the result and any affected resources. | The same Tool Call becomes `Completed` or `Failed` and shows resource IDs, before/after state, effects, and request ID. There is no duplicate receipt card. | `5`, `4.1`, `4.2`, or `4.3` |
-| `5` | Main step | Journey 1 | Workspace Cloud reflects canonical NoraCloud state. | Reviews the refreshed Cloud panel or opens Settings for account management. | The Workspace Cloud snapshot refreshes from NoraCloud and shows freshness. Settings remains account-scoped. | `5.1`, `5.2`, `5.3`, or end |
+| `5` | Main step | Journey 1 | The Agent reports the product outcome and Workspace Cloud reflects canonical state. | Reviews the summary or opens Settings for account management. | The Assistant names the firmware and Agent result; the Workspace Cloud snapshot shows the Live Version and freshness. | The vibe-coding turn closes with local build evidence and a canonical Cloud receipt. | `5.1`, `5.2`, `5.3`, or end |
 
 ### Permission And Operation Branches
 
 | ID | Type | Parent step | What it represents | User action | Visible UI state | Client state change | Exit / next state |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `3.1` | Branch | `2 Cloud Intent Requested` | The Agent policy requires approval before the Tool Call runs. | Reviews the semantic operation and chooses `Approve`, `Always allow`, or `Deny`. | The same Tool Call is `Approval required`; it names the resource and visible impact. | The Tool Call remains pending; no Cloud mutation starts. | `3.1.1` or `3.1.2` |
-| `3.1.1` | Sequential child | `3.1 Approval Required` | The user approves the pending Tool Call. | Clicks `Approve` or the offered remembered-approval option. | The card changes to `Running`; the approved operation is not duplicated. | The runtime resumes the pending Tool Call once. | `3` |
-| `3.1.2` | Sequential child | `3.1 Approval Required` | The user denies the pending Tool Call. | Clicks `Deny`. | The Tool Call settles to `Blocked` or `Denied`; no Cloud mutation occurs. | The pending permission is resolved as denied and local changes remain. | `2` or end |
-| `3.2` | Branch | `2 Cloud Intent Requested` | The Agent policy blocks Cloud execution. | Reads the blocked result and changes policy later if needed. | The Tool Call shows `Blocked`; no approval action or API progress is shown. | No Cloud mutation starts. | `2` or end |
+| `3.1` | Sequential child | `3 Approval Required` | The publish Tool Call is executing after approval, or immediately under Auto-run. | Watches the operation or stops the turn if the runtime allows. | The same `Publish Weather Buddy Agent` card becomes `Running` and shows Version, Live, and affected Device progress. | One publish operation is in flight with its request identifier. | `4`, `4.1`, `4.2`, or `4.3` |
+| `3.2` | Branch | `3 Approval Required` | The user denies the pending Tool Call. | Clicks `Deny`. | The same card settles to `Denied`; no receipt claims a Cloud mutation. | Local firmware and Agent files remain available. | `2` or end |
+| `3.3` | Branch | `2 Agent Definition Authored` | The active policy blocks Cloud execution before an approval prompt. | Reads the blocked state and changes policy later if needed. | The Tool Call shows `Blocked`; no API progress is shown. | No Cloud mutation starts. | `2` or end |
 | `4.1` | Recovery state | `4 NoraCloud Tool Receipt` | The resource changed before the Tool Call could apply its premise. | Refreshes current state and decides whether to retry. | `Conflict` names the changed premise and offers read-only refresh before retry. | The client discards stale assumptions and keeps the confirmed current resource. | `2`, `3`, or end |
 | `4.2` | Recovery state | `4 NoraCloud Tool Receipt` | Some effects completed and another stage failed. | Reviews completed IDs and the failed stage. | `Partial` separates confirmed Version/Live/Device effects and does not offer a duplicate full publish. | Confirmed effects remain recorded; recovery starts from the failed stage. | `5` or `2` |
 | `4.3` | Recovery state | `4 NoraCloud Tool Receipt` | The final outcome cannot be confirmed. | Opens the Cloud snapshot or retries read-only discovery. | `Outcome unknown` pauses mutation retry until NoraCloud state is discovered. | The client keeps the request ID and prevents an unsafe duplicate operation. | `5`, `2`, or end |
@@ -78,13 +77,13 @@ their final renderers are proposed.
 
 | Route | Composition | Result / next state |
 | --- | --- | --- |
-| Auto-run publish | `1 -> 2 -> 3 -> 4 -> 5` | The publish Tool Call runs without a prompt and ends with a canonical receipt. |
-| Ask before running, approve | `1 -> 2 -> 3.1 -> 3.1.1 -> 3 -> 4 -> 5` | The same Tool Call resumes once after approval. |
-| Ask before running, deny | `1 -> 2 -> 3.1 -> 3.1.2 -> 2` | No Cloud mutation occurs; local Workspace changes remain available. |
-| Never run policy | `1 -> 2 -> 3.2 -> 2` | Cloud execution is blocked until the user changes policy. |
-| Publish conflict | `1 -> 2 -> 3 -> 4 -> 4.1 -> 2` | Current state is refreshed before another operation is attempted. |
-| Partial publish | `1 -> 2 -> 3 -> 4 -> 4.2 -> 5` | Confirmed effects remain visible and retry starts at the unresolved stage. |
-| Unknown publish outcome | `1 -> 2 -> 3 -> 4 -> 4.3 -> 5` | Read-only discovery confirms the state before any retry. |
+| Ask before running, approve | `1 -> 2 -> 3 -> 3.1 -> 4 -> 5` | The example conversation moves from firmware coding through Agent authoring, approval, publish, and outcome. |
+| Auto-run publish | `1 -> 2 -> 3.1 -> 4 -> 5` | Auto-run skips only the approval state and uses the same running Tool Call and receipt. |
+| Ask before running, deny | `1 -> 2 -> 3 -> 3.2 -> 2` | No Cloud mutation occurs; firmware and Agent definition remain local. |
+| Never run policy | `1 -> 2 -> 3.3 -> 2` | Cloud execution is blocked until the user changes policy. |
+| Publish conflict | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.1 -> 2` | Current state is refreshed before another operation is attempted. |
+| Partial publish | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.2 -> 5` | Confirmed effects remain visible and retry starts at the unresolved stage. |
+| Unknown publish outcome | `1 -> 2 -> 3 -> 3.1 -> 4 -> 4.3 -> 5` | Read-only discovery confirms the state before any retry. |
 | Agent rename | `5 -> 5.1 -> 5.1.1 -> 5.1` | Settings directly updates the Agent name and refreshes canonical detail. |
 | Make Live or roll back | `5 -> 5.1 -> 5.1.2 -> 5.1` | Settings directly changes the Live pointer or shows a conflict. |
 | Delete Agent succeeds | `5 -> 5.1 -> 5.1.3 -> 5.1.3.1 -> 5` | The Agent disappears from the refreshed Settings list. |
@@ -97,48 +96,48 @@ their final renderers are proposed.
 
 ## Main Path
 
-### 1 Local Workspace Changes
+### 1 Firmware Application Authored
 
-User entry: the user asks the Agent to change local Agent behavior or the reasoning model.
+User entry: the user asks for a weather application that shows current temperature and condition.
 
-User action: watches real file Edit Tool cards and may inspect completed work.
+User action: watches the Agent inspect the existing project, edit the application and weather UI,
+and build the selected firmware target.
 
-Visible UI state: `Edit SOUL.md` and `Edit cloud-agent.json` use the existing tool-card hierarchy.
-No fake validation command or Cloud operation appears. The Assistant states that NoraCloud is not
-changed during the local step.
+Visible UI state: a normal Assistant message states the intended work. Real `Read`, `Edit`, `Write`,
+and `Build Firmware` Tool Calls show their actual completion states. The build is labeled as build
+evidence, not physical-device proof. NoraCloud is unchanged.
 
-Client state change: Workspace files change; Cloud and firmware remain unchanged.
+Client state change: firmware application files change and the selected target build completes.
 
-Exit / next state: `2 Cloud Intent Requested` after the user asks for a persistent Cloud update, or
-the local journey ends.
+Exit / next state: `2 Agent Definition Authored`.
 
-### 2 Cloud Intent Requested
+### 2 Agent Definition Authored
 
-User entry: local changes are ready and the user asks to publish them to the bound Agent.
+User entry: firmware is ready and the Agent still needs a user-facing name and personality.
 
-User action: confirms the intended Cloud action in normal conversation.
+User action: answers the Agent's question, for example `Weather Buddy` and `humorous and friendly`.
 
-Visible UI state: the Assistant names the Agent, the immutable Version that will be created, the
-Live transition, affected Devices, and work that is not included. It then starts one semantic
-NoraCloud Tool Call according to the active permission policy.
+Visible UI state: the question and answer remain in normal Conversation messages. The Agent then
+uses Read/Edit Tool Calls for `SOUL.md`, `IDENTITY.md`, and `cloud-agent.json`, followed by a concise
+summary of the persistent Cloud effect that is ready to run.
 
-Client state change: the Tool Call receives an operation request; no separate proposal resource is
-created.
+Client state change: the local Agent definition becomes complete; no Cloud resource exists yet.
 
-Exit / next state: `3`, `3.1`, or `3.2`.
+Exit / next state: `3 Approval Required`, `3.1 Publish Running` under Auto-run, or `3.3 Blocked`.
 
-### 3 NoraCloud Publish Tool Running
+### 3 Publish Approval Required
 
-User entry: the active policy allows the Tool Call to run immediately, or the user approved it.
+User entry: the example permission profile asks before protected Cloud execution.
 
-User action: watches the semantic Tool Call.
+User action: reviews the resource effect and selects `Approve`, `Always allow`, or `Deny`.
 
-Visible UI state: `Publish Desk Weather Agent` shows `Running`, resource scope, and progress. The
-card is not labeled Terminal and does not show a shell command.
+Visible UI state: one semantic Tool Call is titled `Publish Weather Buddy Agent`, shows
+`noracloud_publish` as secondary technical detail, and names Version creation, Live movement, and
+affected Devices. It is not a separate proposal card.
 
-Client state change: the operation is in flight with its request identifier.
+Client state change: no Cloud mutation starts while the Tool Call is awaiting permission.
 
-Exit / next state: `4 NoraCloud Tool Receipt`, `4.1 Conflict`, `4.2 Partial`, or `4.3 Outcome Unknown`.
+Exit / next state: `3.1 Publish Running` or `3.2 Tool Denied`.
 
 ### 4 NoraCloud Tool Receipt
 
@@ -170,32 +169,20 @@ Exit / next state: `5.1`, `5.2`, `5.3`, or end.
 
 ## Branch Journeys
 
-### 3.1 Approval Required
+### 3.1 Publish Running
 
-Trigger: the active Agent policy asks before protected Tool execution.
+Trigger: the user approves the pending Tool Call, or the active policy is Auto-run.
 
-Visible UI state: the semantic Tool Call is `Approval required`, identifies the target and effect,
-and offers `Approve`, `Always allow` when the runtime offers it, and `Deny`.
-
-Allowed user actions: approve once, choose the offered remembered approval, or deny.
-
-Recovery / next state: approval goes to `3.1.1`; denial goes to `3.1.2`.
-
-Blocks progress: yes, until the user chooses.
-
-### 3.1.1 Approved Tool Continues
-
-Trigger: the user approves the pending Tool Call.
-
-Visible UI state: the same card changes to `Running`; no second operation card appears.
+Visible UI state: the same `Publish Weather Buddy Agent` card becomes `Running`; Version creation,
+Live movement, and Device refresh progress remain inside the card.
 
 Allowed user actions: watch the operation or stop the run if the runtime exposes Stop.
 
-Recovery / next state: `3`.
+Recovery / next state: `4`, `4.1`, `4.2`, or `4.3`.
 
-Blocks progress: no, after the permission response resolves.
+Blocks progress: no.
 
-### 3.1.2 Tool Denied
+### 3.2 Tool Denied
 
 Trigger: the user denies the pending Tool Call.
 
@@ -207,7 +194,7 @@ Recovery / next state: `2` or end.
 
 Blocks progress: only the requested Cloud operation.
 
-### 3.2 Tool Blocked By Policy
+### 3.3 Tool Blocked By Policy
 
 Trigger: the active policy never allows the requested operation.
 

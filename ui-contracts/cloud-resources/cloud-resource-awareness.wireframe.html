@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      Cloud Resource Control — NoraHarness V2 Wireframe
+      Build And Publish A Weather Agent — NoraHarness V2 Wireframe
     </title>
     <style>
       :root {
@@ -1298,9 +1298,9 @@
   <body>
     <header class="topbar">
       <div>
-        <h1>Cloud Resource Control — Conversation + Settings</h1>
+        <h1>Build And Publish A Weather Agent — Conversation + Settings</h1>
         <p>
-          Local Workspace edits → NoraCloud Tool Call or permission branch → canonical receipt; Settings manages account resources directly.
+          Firmware coding → Agent identity → Agent authoring → permission-aware NoraCloud publish → canonical result.
         </p>
       </div>
       <div class="spacer"></div>
@@ -1331,7 +1331,7 @@
           <div class="band-title">
             <h3>Main happy path</h3>
             <span
-              >Journey 1 · real local edits → Auto-run NoraCloud Tool → canonical receipt → Workspace refresh</span
+              >Journey 1 · firmware coding → Agent identity → Agent authoring → approval-aware publish → result</span
             >
           </div>
           <div class="flow" id="main-flow"></div>
@@ -1341,7 +1341,7 @@
           <div class="band-title">
             <h3>Route path</h3>
             <span
-              >Auto-run is the happy path; permission, blocked, conflict, partial, and unknown states are explicit routes.</span
+              >The example uses Ask before running; Auto-run skips only the approval state.</span
             >
           </div>
           <div id="route-rows"></div>
@@ -1433,19 +1433,19 @@
     <script>
       const states = {
         1: {
-          title: "Local Workspace Changes",
-          view: "local",
-          caption: "Workspace edits complete locally; no NoraCloud mutation yet.",
+          title: "Firmware Application Authored",
+          view: "firmware-coding",
+          caption: "The user's product goal becomes real firmware edits and build evidence.",
         },
         2: {
-          title: "Cloud Intent Requested",
-          view: "intent",
-          caption: "The Agent requests a persistent Cloud operation through MCP.",
+          title: "Agent Definition Authored",
+          view: "agent-authoring",
+          caption: "The Agent asks for missing identity and personality, then authors the local definition.",
         },
         3: {
-          title: "NoraCloud Publish Tool · Running",
-          view: "publish-running",
-          caption: "Auto-run invokes the semantic publish tool; no fake Terminal step.",
+          title: "Publish Agent · Approval Required",
+          view: "approval",
+          caption: "The semantic Tool Call itself pauses and explains its persistent resource effect.",
         },
         4: {
           title: "NoraCloud Tool Receipt",
@@ -1453,21 +1453,16 @@
           caption: "The completed tool result is the receipt and canonical resource outcome.",
         },
         3.1: {
-          title: "Publish Tool · Approval required",
-          view: "approval",
-          caption: "Ask-before-running pauses the same tool call for an explicit decision.",
-        },
-        "3.1.1": {
-          title: "Approved Tool Continues",
+          title: "Publish Agent · Running",
           view: "publish-running",
-          caption: "Approve or Always allow resumes the exact NoraCloud operation.",
-        },
-        "3.1.2": {
-          title: "Publish Tool · Denied",
-          view: "denied",
-          caption: "Deny records no Cloud mutation and leaves local changes available.",
+          caption: "Approval or Auto-run starts the same Tool Call exactly once.",
         },
         "3.2": {
+          title: "Publish Tool · Denied",
+          view: "denied",
+          caption: "Deny records no Cloud mutation and keeps firmware and Agent files local.",
+        },
+        "3.3": {
           title: "Publish Tool · Blocked",
           view: "blocked",
           caption: "Never-run or deny-all policy blocks the Cloud operation before mutation.",
@@ -1556,28 +1551,28 @@
 
       const routes = [
         {
-          name: "Auto-run publish",
-          path: ["1", "2", "3", "4", "5"],
-          result: "The semantic MCP tool runs and its result refreshes Cloud context.",
+          name: "Ask-before-running · approve",
+          path: ["1", "2", "3", "3.1", "4", "5"],
+          result: "One readable conversation moves from coding through approval and publish.",
         },
         {
-          name: "Ask-before-running · approve",
-          path: ["1", "2", "3.1", "3.1.1", "3", "4", "5"],
-          result: "Approve resumes the same tool call; no second proposal is created.",
+          name: "Auto-run publish",
+          path: ["1", "2", "3.1", "4", "5"],
+          result: "Auto-run skips only approval and uses the same Tool Call and receipt.",
         },
         {
           name: "Ask-before-running · deny",
-          path: ["1", "2", "3.1", "3.1.2", "2"],
-          result: "Deny leaves the Workspace result local and records no Cloud mutation.",
+          path: ["1", "2", "3", "3.2", "2"],
+          result: "Deny keeps the firmware and Agent definition local.",
         },
         {
           name: "Never-run policy",
-          path: ["1", "2", "3.2", "2"],
+          path: ["1", "2", "3.3", "2"],
           result: "The tool is blocked before execution; the Agent can continue locally.",
         },
         {
           name: "Conflict / partial / unknown",
-          path: ["1", "2", "3", "4", "4.1", "2"],
+          path: ["1", "2", "3", "3.1", "4", "4.1", "2"],
           result: "Recovery starts from the tool outcome and current Cloud state.",
         },
         {
@@ -1613,22 +1608,20 @@
       }
 
       function conversationContent(kind) {
-        if (kind === "local")
-          return `<div class="user-msg">Make responses shorter and change the reasoning model.</div><div class="assistant">I’ll update the Agent definition in this Workspace.<br><span class="secondary">NoraCloud will not change in this step.</span></div><div class="tool-stack">${toolCall("Edit SOUL.md", "Completed")}${toolCall("Edit cloud-agent.json", "Completed")}</div>`;
-        if (kind === "intent")
-          return `<div class="user-msg">Publish these Workspace changes to the Desk Weather Agent.</div><div class="assistant">I’m starting the NoraCloud Tool Call according to the current permission policy.<br><span class="secondary">The tool result will be the Cloud receipt.</span></div>`;
+        if (kind === "firmware-coding")
+          return `<div class="user-msg">Write a weather application for this device. Show the current temperature and weather condition.</div><div class="assistant">I’ll inspect the existing firmware project, implement the weather screen, and build it for the configured board.</div><div class="tool-stack">${toolCall("Read project files", "Completed")}${toolCall("Edit main/app/user_app.c", "Completed")}${toolCall("Write agent/ui/weather-screen.xml", "Completed")}${toolCall("Build firmware · hw_fw_build", "Completed", true, row("Evidence", "Selected target compiled successfully"))}</div>`;
+        if (kind === "agent-authoring")
+          return `<div class="assistant">The firmware application is ready. Before I configure its NoraCloud Agent, what should the Agent be called, and how should it speak?</div><div class="user-msg">Call it Weather Buddy. Make it humorous and friendly.</div><div class="tool-stack">${toolCall("Read existing Agent definition", "Completed")}${toolCall("Edit agent/SOUL.md", "Completed")}${toolCall("Edit agent/IDENTITY.md", "Completed")}${toolCall("Edit agent/cloud-agent.json", "Completed")}</div><div class="assistant">The firmware and Agent definition are ready. Publishing will create an immutable Version and make it Live.</div>`;
         if (kind === "publish-running")
-          return `<div class="assistant">Publishing the Agent through NoraCloud.</div>${toolCall("noracloud_publish", "Running", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Operation", "Create Version + make Live")}${row("Devices", "2 follow Live")}`)}`;
+          return `${toolCall("Publish Weather Buddy Agent", "Running", true, `${row("Tool", "noracloud_publish")}${row("Create", "New immutable Version")}${row("Change", "Make new Version Live")}${row("Affected", "2 Devices follow Live")}`)}`;
         if (kind === "approval")
-          return `<div class="assistant">This NoraCloud Tool Call needs approval before it can mutate Cloud resources.</div>${toolCall("noracloud_publish", "Approval required", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Operation", "Create Version + make Live")}${actions(["Approve", "Always allow", "Deny"])}`)}`;
+          return `<div class="assistant">This publish needs approval because it creates persistent NoraCloud resources.</div>${toolCall("Publish Weather Buddy Agent", "Approval required", true, `${row("Tool", "noracloud_publish")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Create", "New immutable Version")}${row("Change", "Make new Version Live")}${row("Affected", "2 Devices follow Live")}${actions(["Approve", "Always allow", "Deny"])}`)}`;
         if (kind === "denied")
-          return `<div class="assistant">The NoraCloud Tool Call was denied. Workspace changes remain local.</div>${toolCall("noracloud_publish", "Denied", true, row("Cloud mutation", "None") )}`;
+          return `<div class="assistant">The publish was denied. Firmware and Agent definition remain local.</div>${toolCall("Publish Weather Buddy Agent", "Denied", true, `${row("Tool", "noracloud_publish")}${row("Cloud mutation", "None")}`)}`;
         if (kind === "blocked")
-          return `<div class="assistant">Current policy blocks this Cloud operation before execution.</div>${toolCall("noracloud_publish", "Blocked", true, row("Policy", "Never run / deny all"))}`;
+          return `<div class="assistant">Current policy blocks this Cloud operation before execution.</div>${toolCall("Publish Weather Buddy Agent", "Blocked", true, `${row("Tool", "noracloud_publish")}${row("Policy", "Never run / deny all")}`)}`;
         if (kind === "receipt")
-          return `<div class="assistant">The confirmed Cloud update is complete.</div>${cardShell("Desk Weather Agent updated", "Completed", "ok", `<div class="impact-grid"><div class="impact-block created"><h5>Created</h5><div class="impact-item"><span>Version</span><b>ver_…b12</b></div></div><div class="impact-block"><h5>Changed</h5><div class="impact-item"><span>Live</span><b>ver_…a81 → ver_…b12</b></div><div class="impact-item"><span>Devices</span><b>2 continue following Live</b></div></div></div><div class="persist-note"><b>Persists after this chat:</b> ver_…b12 remains Live and following Devices resolve it.</div><div class="excluded-note"><b>Not done:</b> Firmware build or flash, Device registration, or Cloud test.</div>${actions(["Open Cloud overview", "Technical details"])}`)}`;
-        if (kind === "receipt")
-          return `<div class="assistant">NoraCloud completed the publish operation.</div>${toolCall("noracloud_publish", "Completed", true, `${row("Version", "Created", "ver_…b12")}${row("Live", "Changed", "ver_…b12")}${row("Devices", "2 continue following Live")}${row("Request", "req_…42e")}`)}<div class="persist-note"><b>Receipt:</b> the new Version remains Live after this conversation.</div>`;
+          return `${toolCall("Publish Weather Buddy Agent", "Completed", true, `${row("Tool", "noracloud_publish")}${row("Version", "Created", "ver_…b12")}${row("Live", "Changed", "ver_…a81 → ver_…b12")}${row("Devices", "2 continue following Live")}${row("Request", "req_…42e")}`)}<div class="persist-note"><b>Receipt:</b> this Tool result is the persistent NoraCloud resource receipt.</div>`;
         if (kind === "conflict")
           return `<div class="assistant">The Cloud operation hit a current-state conflict. No blind retry is offered.</div>${toolCall("noracloud_publish", "Failed", true, row("Conflict", "Live Version changed since read"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "partial")
@@ -1636,17 +1629,17 @@
         if (kind === "unknown")
           return `<div class="assistant">The outcome is unknown. I’ll check current Cloud state before suggesting a retry.</div>${toolCall("noracloud_publish", "Failed", true, row("Request", "req_…42e · status unknown"))}${actions(["Refresh Cloud state", "Open details"])}`;
         if (kind === "cloud-refresh")
-          return `<div class="assistant">Cloud context is refreshed from the canonical NoraCloud receipt.</div>${toolCall("noracloud_status", "Completed", true, `${row("Agent", "Desk Weather", "agt_…7f2")}${row("Live", "ver_…b12")}${row("Devices", "2 following Live")}`)}`;
+          return `<div class="assistant">Weather Buddy is now Live on NoraCloud. The firmware shows weather information, and the Agent uses its humorous and friendly personality.</div>${toolCall("Refresh NoraCloud status", "Completed", true, `${row("Tool", "noracloud_status")}${row("Agent", "Weather Buddy", "agt_…7f2")}${row("Live", "ver_…b12")}${row("Devices", "2 following Live")}`)}`;
         return "";
       }
 
       function rightPanel(kind) {
         const cloudKinds = ["receipt", "conflict", "partial", "unknown", "cloud-refresh"];
         if (!cloudKinds.includes(kind))
-          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">2 changed files</b><br><br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
-        const complete = kind === "receipt";
+          return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab on">Changes</span><span class="rtab">Device</span><span class="rtab proposed">Cloud</span><span class="rtab">Preview</span></div><div class="tree"><b style="color:var(--ink)">6 changed files</b><br><br>M &nbsp;main/app/user_app.c<br>M &nbsp;agent/ui/weather-screen.xml<br>M &nbsp;agent/SOUL.md<br>M &nbsp;agent/IDENTITY.md<br>M &nbsp;agent/cloud-agent.json<br><br><span style="color:var(--accent)">Open diff ›</span></div>`;
+        const complete = kind === "receipt" || kind === "cloud-refresh";
         const version = complete ? "ver_…b12" : "ver_…a81";
-        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh ${complete ? "" : "refreshing"}">${complete ? "Fresh · now" : "Refreshing…"}</span></div><div class="panel-note">Workspace relationship and last trusted Cloud state.</div><div class="panel-card"><h5>Bound Agent</h5><div class="panel-row"><span>Agent</span><b>Desk Weather</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live</span><b>${version}</b><code>${complete ? "current" : "trusted"}</code></div><div class="panel-row"><span>Definition</span><b>Concise · Qwen Max</b><code></code></div></div><div class="panel-card"><h5>Related Cloud Resources</h5><div class="panel-row"><span>Versions</span><b>${complete ? "5" : "4"}</b><code>›</code></div><div class="panel-row"><span>Devices</span><b>2 follow Live</b><code>›</code></div><div class="panel-row"><span>Credentials</span><b>Ready</b><code>›</code></div></div></div>`;
+        return `<div class="right-tabs"><span class="rtab">All Files</span><span class="rtab">Changes</span><span class="rtab">Device</span><span class="rtab on proposed">Cloud</span><span class="rtab">Preview</span></div><div class="cloud-panel"><div class="panel-head"><b>Cloud</b><span class="fresh ${complete ? "" : "refreshing"}">${complete ? "Fresh · now" : "Refreshing…"}</span></div><div class="panel-note">Workspace relationship and last trusted Cloud state.</div><div class="panel-card"><h5>Bound Agent</h5><div class="panel-row"><span>Agent</span><b>Weather Buddy</b><code>agt_…7f2</code></div><div class="panel-row"><span>Live</span><b>${version}</b><code>${complete ? "current" : "trusted"}</code></div><div class="panel-row"><span>Personality</span><b>Humorous · Friendly</b><code></code></div></div><div class="panel-card"><h5>Related Cloud Resources</h5><div class="panel-row"><span>Versions</span><b>${complete ? "5" : "4"}</b><code>›</code></div><div class="panel-row"><span>Devices</span><b>2 follow Live</b><code>›</code></div><div class="panel-row"><span>Credentials</span><b>Ready</b><code>›</code></div></div></div>`;
       }
 
       function settingsShell(title, breadcrumb, body) {
@@ -1737,7 +1730,7 @@
 
       function card(id) {
         const state = states[id];
-        const severity = ["3.1", "3.1.2", "3.2", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
+        const severity = ["3", "3.2", "3.3", "4.1", "4.2", "4.3", "5.1.4"].includes(id)
           ? "warning"
           : "";
         const maturity = id === "1" ? "Existing pattern" : "Proposed";
@@ -1752,7 +1745,7 @@
           .join("");
       }
 
-      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "4", "5"]);
+      document.getElementById("main-flow").innerHTML = flow(["1", "2", "3", "3.1", "4", "5"]);
       document.getElementById("settings-agent-flow").innerHTML = flow([
         "5.1",
         "5.1.2",

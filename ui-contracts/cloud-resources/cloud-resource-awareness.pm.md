@@ -220,9 +220,12 @@ Migration is staged:
 
 The revised journey should show:
 
-1. real local Edit Tool activity without a fabricated validation command;
-2. an Auto-run NoraCloud publish Tool Call as the main happy path;
-3. approval-required, blocked, failed, conflict, partial, and unknown Tool Call routes;
+1. one readable vibe-coding example from a weather application request through firmware
+   Read/Edit/Write/Build activity and user-supplied Agent identity/personality;
+2. an Ask-before-running NoraCloud publish Tool Call as the review example, with Auto-run skipping
+   only the approval state;
+3. approval, running, completed, denied, blocked, conflict, partial, and unknown states on the same
+   semantic Tool Call surface;
 4. direct Settings Agent/Version, Device, and Session management routes;
 5. distinct Conversation permission language and Settings confirmation language;
 6. an Engineering Readiness band that separates today's CLI-first partial implementation from the
