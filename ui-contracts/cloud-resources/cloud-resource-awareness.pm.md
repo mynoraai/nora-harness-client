@@ -1,130 +1,268 @@
-# Cloud Resource Awareness PM Review
+# Cloud Resource Control PM Review
 
-## Product Decision
+## PM Decision To Unblock
 
-NoraHarness needs to make NoraCloud mutations and persistent resources understandable at the point
-where the user is working. The final proposal separates three information scopes:
+Define the proposed end state in which coding Agents use structured NoraCloud tools for the full
+Cloud workflow, while Settings directly manages account resources through NoraCloud.
 
-1. Conversation: the requested Cloud mutation, the user's approval, and the factual receipt.
-2. Workspace: the local Agent definition, NoraCloud binding, and last trusted Cloud state relevant
-   to that Workspace.
-3. Settings: the signed-in account's browsable NoraCloud resources and cumulative recorded Usage.
+This decision supersedes the earlier proposal that kept the Agent Cloud surface CLI-only and made
+Settings browse-only.
 
-Cloud resources are not owned by a coding Conversation. A Conversation records what it requested
-and what happened; the remote Agent, Versions, Devices, and Cloud Sessions persist independently.
+## Intended Audience
 
-## Existing And Proposed Behavior
+Product owners, design PMs, engineering owners, and reviewers deciding the final NoraHarness Cloud
+resource-control model before implementation planning begins.
 
-Local file edits, validation, firmware builds, flash, Terminal, Device Log, Device, and Preview
-continue to use existing Agent messages and tool calls. Editing a Markdown or configuration file
-does not create a new resource-awareness card.
+## Required Review Links
 
-The following surfaces are proposed:
+- [Pull request](https://github.com/mynoraai/nora-harness-client/pull/13)
+- [PM document](https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.pm.md)
+- [Current journey record](https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.record.md)
+- [Current wireframe preview](https://htmlpreview.github.io/?https://github.com/mynoraai/nora-harness-client/blob/pm/workspace-cloud-awareness-v2/ui-contracts/cloud-resources/cloud-resource-awareness.wireframe.html)
 
-- one approval card immediately before a persistent NoraCloud mutation;
-- one factual receipt after the mutation reaches a stable result;
-- one Workspace-scoped right-workbench Cloud tab;
-- one account-scoped Cloud category inside Settings with resource drill-down.
+## Current State
 
-There is no additional product-level execution screen between approval and receipt. Underlying CLI
-and tool progress may remain available in technical details.
+Today, coding Agents reach NoraCloud by running the `noracloud` CLI. The CLI covers publishing,
+Live changes, test turns, observation, and part of the Agent, Version, Device, and Session
+lifecycle. It does not yet expose the full resource lifecycle supported by NoraCloud.
 
-## Conversation Interaction
+NoraHarness already has a shared Agent permission model that can automatically allow, ask before,
+or block protected work. However, NoraCloud does not yet provide the proposed structured MCP tools.
+The current Tool Call presentation therefore cannot show semantic Cloud actions such as `Rebind
+Device` or `Publish Agent` as dedicated resource operations.
 
-When the user asks to update an existing Agent from Workspace changes, the proposal states:
+Settings does not yet provide the proposed account-level Cloud resource management. The existing
+PR draft shows browse-only Agents, Versions, Devices, Sessions, and Recorded Usage.
 
-- the Agent and current Live Version;
-- that a new immutable Version will be created;
-- the resulting Live transition;
-- how many Devices follow Live;
-- work outside the operation, such as firmware build, flash, Device registration, or Cloud test.
+## Implementation Maturity
 
-The only visible actions are `Approve` and `Not now`. A normal reply of `Approve` accepts the same
-single pending proposal as the button. The card does not expose CLI flags, `Candidate`, or a generic
-`Change scope` action.
+**Partial overall; proposed interaction not implemented yet.**
 
-After approval, the next product state is a factual receipt. It separates the created Version,
-Live transition, affected Devices, persistent consequences, and excluded work. Partial and unknown
-outcomes retain confirmed identifiers and prevent unsafe duplicate mutation.
+- NoraCloud already owns the account resources and much of the required resource API behavior.
+- The `noracloud` CLI and Agent permission profiles exist, but CLI resource coverage is incomplete.
+- The proposed shared operation core, NoraCloud MCP tools, semantic Cloud Tool Call renderer, and
+  Settings resource mutations do not yet exist as one end-to-end product flow.
 
-## Workspace Cloud
+## Discussion Boundaries
 
-The right `Cloud` tab is scoped to the current Workspace, not the currently selected coding
-Conversation. Switching Conversations inside the same Workspace leaves the panel unchanged;
-switching Workspaces changes it.
+PM should decide and review:
 
-The panel shows:
+- how Agent-initiated and Settings-initiated Cloud operations differ;
+- which MCP Tool families form the final Agent surface;
+- how the Agent permission profile changes the visible Tool Call path;
+- which post-creation resource actions Settings exposes;
+- which current PR frames must be replaced to describe the proposed end state honestly.
 
-- the bound Agent and current Live Version;
-- readable Agent configuration such as identity, behavior, LLM, listening, and speaking;
-- the status of important local definition files such as `SOUL.md`, `IDENTITY.md`, `USER.md`, and
-  `cloud-agent.json`;
-- related Devices, Cloud Session state when relevant, and NoraCloud access readiness;
-- freshness and refresh state.
+Engineering constraints already fixed for this review:
 
-Coding Agent token totals and Run Records are not shown here as Cloud Usage.
-
-## Settings Cloud
-
-Cloud remains inside Settings as account-level system information. The overview provides two
-browsable resource roots plus cumulative recorded Usage:
-
-- `Agents`: opens the account Agent list. Opening an Agent reveals its current Live configuration,
-  Versions, and Devices.
-- `Cloud Sessions`: opens account Sessions with status, relationships, activity, turns, and
-  available recorded Usage.
-- `Recorded Usage`: shows NoraCloud-recorded account totals and opens the same Sessions list focused
-  by Usage. It is not billing, balance, or remaining quota, and it never substitutes local coding
-  Run Records.
-
-Versions and Devices are children of their owning Agent rather than unsupported account-wide
-categories. The global overview does not repeat credential inventory.
-
-### Agent And Version Detail
-
-Agent Detail shows identity, current Live, creation/update time, readable Live configuration,
-Versions, and Devices. Version Detail shows the immutable Version's status, description, LLM, STT,
-TTS, schedules, and published instruction filenames.
-
-The current NoraCloud read surface returns instruction filename, size, and digest rather than full
-remote Markdown content. Therefore the product may open a matching local file or compare a changed
-local file, but it must not fabricate or present unavailable remote Markdown bodies.
-
-### Device And Session Detail
-
-Device Detail shows ownership, connection, follow-Live or pinned track, resolved Version, last seen,
-and current Session. It never displays credential material.
-
-Session Detail shows status, Agent, optional Device, Version at start, timestamps, turn count,
-context tokens, and available LLM/STT/TTS Usage. Logs and export are secondary read surfaces. This
-proposal does not add destructive controls such as deleting resources or ending a Session.
-
-## Scope Rules
-
-| Surface | Scope | Primary question |
-| --- | --- | --- |
-| Conversation proposal and receipt | One requested NoraCloud mutation | What will persist, may affect Devices, and actually happened? |
-| Right `Cloud` tab | Current Workspace | Which Agent is this Workspace linked to and what is the current relevant Cloud truth? |
-| Settings `Cloud` | Signed-in NoraCloud account | Which persistent resources exist overall and what recorded Cloud Usage is available? |
+- Version objects remain immutable;
+- secrets never enter the Conversation, Agent context, ordinary logs, or visible Tool output;
+- NoraCloud remains the final authority for account access, resource ownership, dependencies,
+  concurrency, idempotency, and audit;
+- CLI and MCP must not develop separate resource semantics.
 
 ## Non-Goals
 
-- No resource card for ordinary local build, cache, CPU, disk, or Preview activity.
-- No `Used By This Coding Session` resource inventory.
-- No coding-session token Usage in the right Cloud tab.
-- No separate Candidate resource type or unsupported `Change scope` control.
-- No account-wide Version or Device category detached from its Agent.
-- No secret values or full remote Markdown body.
-- No direct create, delete, release, rollback, reset, or Session termination controls in Settings.
-- No claim that recorded Usage is billing or remaining quota.
+- Removing the `noracloud` CLI from the product.
+- Making Settings operations pass through a Conversation or coding Agent.
+- Forcing every mutation through a visible plan-and-apply sequence.
+- Adding a second NoraCloud-specific approval system beside Agent tool permissions.
+- Allowing Settings to edit an immutable Version or author a Version without Workspace content.
+- Showing raw device credentials, machine credentials, or full unavailable remote Markdown bodies.
+- Treating Recorded Usage as billing, balance, or remaining quota.
+
+## Decisions
+
+<table>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>PM decision:</strong> Agent and LLM Cloud work uses NoraCloud MCP Tools as the proposed primary path.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>PM decision:</strong> MCP and CLI are adapters over one shared NoraCloud operation core.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>PM decision:</strong> Agent permission policy—not a NoraCloud-specific proposal card—decides whether a Tool Call runs, waits, or is blocked.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>PM decision:</strong> Settings performs selected resource-management operations directly through NoraCloud, without entering Conversation.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#fff3cd"><strong>PM decision:</strong> CLI remains a supported interface for people, scripts, CI, headless use, and troubleshooting, but the final Agent Skill teaches Tool Calls instead of shell commands.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#f8d7da"><strong>Release-impacting decision:</strong> The older principles of “zero Cloud MCP tools” and “no destructive Agent resource operations” must be explicitly replaced rather than left contradictory.</td>
+  </tr>
+</table>
+
+## Proposed Product Model
+
+The proposed end state has two user-visible control paths and one shared resource contract.
+
+| Entry | User intent | Execution surface | Authorization experience | Result surface |
+| --- | --- | --- | --- | --- |
+| Conversation | Ask an Agent to build, publish, test, inspect, or manage NoraCloud | NoraCloud MCP Tool Call | Current Agent permission policy | The same Tool Call reaches Completed, Failed, or Blocked |
+| Settings | Directly manage a known account resource | Settings resource action | User click plus confirmation when impact requires it | Updated resource detail plus success or error feedback |
+| CLI | Human, script, CI, headless, or troubleshooting work | `noracloud` command | CLI caller identity and NoraCloud authorization | Human-readable or structured command result |
+
+Settings does not display Tool Calls. Conversation does not imitate Settings dialogs. Both paths
+use the same NoraCloud operation definitions and reach the same server-side safety rules.
+
+## Shared Operation Contract
+
+One shared operation registry defines each Cloud action:
+
+- operation identifier;
+- input and result shapes;
+- read or write effect;
+- MCP Tool family;
+- CLI command mapping;
+- idempotency behavior;
+- secret-handling policy;
+- stable error and request identifiers.
+
+The adapters only translate their input and output. They do not independently decide resource
+semantics. NoraCloud rechecks authorization and current resource state when the operation executes.
+
+## Proposed MCP Tool Families
+
+The Agent surface uses a small set of resource and workflow families instead of one universal tool
+or dozens of per-action tools.
+
+| Tool | Responsibility | Example operations |
+| --- | --- | --- |
+| `noracloud_status` | Cloud and Workspace readiness | auth state, binding, current Live summary |
+| `noracloud_publish` | Version creation and Live movement | publish Workspace, set Live, rollback |
+| `noracloud_agent` | Agent resource lifecycle | list, get, create, rename, metadata, delete |
+| `noracloud_version` | Immutable Version discovery | list, get |
+| `noracloud_device` | Device resource lifecycle | register, get, rename, follow Live, pin, rebind, rotate, revoke |
+| `noracloud_session` | Cloud Session lifecycle | list, get, create test Session, end |
+| `noracloud_turn` | Cloud Agent test interaction | run one test turn |
+| `noracloud_observe` | Operational evidence | logs, transcript, schedules |
+
+Product titles are semantic and action-specific—such as `Publish Desk Weather Agent`, `Rebind
+Kitchen Display`, or `End Cloud Session`—rather than the internal Tool family name.
+
+## Conversation Interaction
+
+The Agent directly starts a structured NoraCloud Tool Call after the user requests Cloud work. The
+permission profile determines the route:
+
+| Policy behavior | Visible Tool Call route |
+| --- | --- |
+| Auto-run | `Running` → `Completed` or `Failed` |
+| Ask before running | `Approval required` → `Approve`, `Always allow`, or `Deny` → execution or denial |
+| Never run | `Blocked`; no NoraCloud mutation starts |
+
+There is no mandatory visible `plan` Tool Call followed by an `apply` Tool Call. An Agent may read
+current state before a complex operation, but that is normal Agent behavior rather than a forced
+two-stage protocol.
+
+The completed Tool output is the factual receipt. It retains resource identifiers, before/after
+state, affected resources, stable status, and `request_id`. The Assistant may summarize the result,
+but the product does not duplicate it in a separate NoraCloud receipt card.
+
+The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
+`Approve` shortcut, and separate resource receipt are not part of the proposed end state.
+
+## Settings Resource Management
+
+Settings remains account-scoped and retains browsing, detail, refresh, freshness, and Recorded
+Usage. It adds post-creation management at the resource detail level.
+
+### Agent And Version
+
+- Rename an Agent.
+- Make an immutable Version Live.
+- Roll back by making an older Version Live.
+- Delete an Agent when no Device dependency blocks deletion.
+- Inspect Versions, but never edit or delete an immutable Version.
+
+### Device
+
+- Rename a Device.
+- Follow Live or pin a Version.
+- Rebind to another Agent.
+- Rotate the Device credential through a protected delivery path.
+- Revoke the Device.
+
+### Cloud Session
+
+- End an active Session idempotently.
+- Keep ended Session facts available for inspection according to retention policy.
+
+Rename may save directly. Live changes, rollback, pin, rebind, rotate, revoke, end, and delete use a
+Settings confirmation dialog that names the target and visible impact. Confirmation is the user's
+authorization for that Settings action; it is not an Agent permission response.
+
+## Result And Recovery Rules
+
+- **Success:** refresh from canonical NoraCloud state before presenting the stable result.
+- **Conflict:** show that the resource changed after the displayed premise; refresh before retry.
+- **In use:** show the relationships that block deletion and the relevant next management action.
+- **Unauthorized:** keep readable details visible while disabling or rejecting the operation.
+- **Partial:** retain confirmed identifiers and completed effects; do not repeat completed work.
+- **Outcome unknown:** perform read-only discovery before offering retry.
+- **Secret-bearing result:** route secret material through a protected destination; never render it
+  in Agent context, Conversation, ordinary logs, or general Settings history.
+
+## Agent Skill Migration
+
+Migration is staged:
+
+1. **MCP preferred:** the Agent Skill uses a NoraCloud MCP Tool whenever the matching capability is
+   present; CLI remains a temporary fallback for missing Tool coverage.
+2. **MCP parity:** all current CLI Agent capabilities and the required resource lifecycle exist in
+   the eight Tool families; CLI fallback and shell examples leave the Agent Skill.
+3. **Tool-only Agent guidance:** the Agent Skill teaches intent-to-Tool selection. CLI documentation
+   remains available separately for human and non-LLM automation.
+
+## Wireframe Revision Scope
+
+The revised journey should show:
+
+1. real local Edit Tool activity without a fabricated validation command;
+2. an Auto-run NoraCloud publish Tool Call as the main happy path;
+3. approval-required, blocked, failed, conflict, partial, and unknown Tool Call routes;
+4. direct Settings Agent/Version, Device, and Session management routes;
+5. distinct Conversation permission language and Settings confirmation language;
+6. an Engineering Readiness band that separates today's CLI-first partial implementation from the
+   proposed MCP-first end state.
+
+The journey record remains the source of truth for route IDs and visible states before the HTML is
+redrawn.
 
 ## Dependencies And Risks
 
-- Electron needs structured NoraCloud operation results to render approval consequences and factual
-  receipts without parsing prose.
-- Remote Live may change outside the current Workspace; approval premises must be rechecked before
-  mutation.
-- Workspace-to-Agent binding and local-file digests are required for safe local/open/compare actions.
-- Resource and Usage refreshes need explicit freshness, stale, and unavailable states.
-- The product must preserve the distinction between a NoraHarness Conversation and a NoraCloud
-  runtime Session.
+- A shared operation core and registry must be defined without weakening NoraCloud server checks.
+- MCP Tool effect classification must come from the shared operation definition, not untrusted
+  free-form Tool text.
+- CLI behavior and error compatibility need an explicit migration contract when implementations
+  move behind the shared core.
+- Settings credential rotation needs a protected destination and recovery path before shipping.
+- Agent Skill migration must not remove CLI fallback until MCP coverage is proven complete.
+- A broad Auto-run profile can execute Cloud mutations without pausing; the UI must make the active
+  policy understandable, while NoraCloud continues enforcing authorization and consistency.
+
+## Benefits
+
+- LLMs receive structured Cloud capabilities and results without composing shell commands.
+- Human and automated CLI users retain a stable, scriptable interface.
+- Conversation uses the same permission behavior as other Agent tools.
+- Settings becomes a real account management surface without routing direct human actions through
+  a coding Agent.
+- Shared operation definitions reduce drift among MCP, CLI, Settings, and NoraCloud behavior.
+
+## Downsides And Tradeoffs
+
+- The product adds an MCP surface that the earlier CLI-only design intentionally avoided.
+- The shared core and adapter migration add engineering work before the Tool-first Skill can become
+  authoritative.
+- Semantic Tool rendering and direct Settings management are separate client experiences that both
+  require state and error coverage.
+- Auto-run optimizes expert workflows but increases the importance of visible permission settings,
+  server-side constraints, idempotency, and audit.
+
+## Open Questions
+
+No PM question blocks the journey-record rewrite. Detailed credential-delivery mechanics,
+operation schema versioning, and implementation sequencing remain engineering design work.
