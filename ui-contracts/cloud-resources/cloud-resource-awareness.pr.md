@@ -1,6 +1,6 @@
 ## Summary
 
-- Tell one readable vibe-coding story from a weather-app request through firmware tools, Agent identity authoring, and a semantic NoraCloud publish Tool Call.
+- Tell one readable vibe-coding story from a weather-app request through firmware tools, Agent identity authoring, and a digest-bound NoraCloud publish Tool Call.
 - Make Settings the direct API control plane for Agent, Device, and Session actions, with confirmations, conflicts, dependency blocking, and protected credential handling.
 - Scope: proposed product interaction; no Electron or NoraCloud runtime implementation is included.
 
@@ -14,17 +14,21 @@
 ## Product Decisions Captured
 
 - Agent/LLM uses `noracloud_status`, `noracloud_publish`, `noracloud_agent`, `noracloud_version`, `noracloud_device`, `noracloud_session`, `noracloud_turn`, and `noracloud_observe` through the shared NoraCloud operation contract.
-- Auto-run completes directly; ask-before-running pauses the same Tool Call for Approve/Always allow/Deny; never-run blocks before mutation. The tool result is the receipt; no duplicate proposal or receipt card is required.
+- Auto-run completes directly; ask-before-running pauses the same Tool Call for Approve/Always allow/Deny; never-run blocks before mutation. A read-only preparation phase resolves `agent/cloud-agent.json` and its instruction files into the effective definition shown for approval.
+- The approval preview exposes the first-publish destination, effective LLM/Voice/Cron values, instruction-file manifest and digests, exact persistent changes, and explicit exclusions. Approval is bound to the displayed definition digest; a source change invalidates it.
+- The example is a first publish from an unbound Workspace: it creates the Agent, initial immutable Version, initial Live pointer, and Workspace binding. It does not claim a previous Live Version or affected Devices.
+- The completed Tool result is the canonical receipt. The right panel remains on Changes during completion and refreshes to canonical Cloud state only in the following state; no duplicate proposal or receipt card is required.
 - The review example uses Ask before running so PM can see the control point. Auto-run skips only that state and continues through the same Running and Completed Tool Call.
 - Settings calls typed NoraCloud APIs directly. Agent rename/live/rollback/delete, Device track/rebind/rotate/revoke, and Session end never enter Conversation or create a visible Tool Call.
-- The right Cloud panel follows the current Workspace and refreshes from the canonical tool receipt.
+- The right Cloud panel follows the current Workspace and refreshes after the canonical tool receipt.
 - Versions remain immutable and read-only except for Make Live/Rollback from their owning Agent. Rotation never displays a credential value.
 - Account Usage is NoraCloud-recorded activity, not local coding Run Records, billing, balance, or remaining quota.
 
 ## Review Focus
 
 - Can PM follow the user goal through firmware coding, the identity question, Agent-file edits, approval, execution, and persistent result without needing implementation context?
-- Is the tool result sufficient as the canonical receipt without a second proposal or execution dashboard?
+- Does the first-publish approval show enough resolved configuration, instruction provenance, effects, exclusions, and snapshot identity for an informed decision?
+- Is the completed tool result sufficient as the canonical receipt without duplicating it in the right Cloud panel?
 - Do Conversation MCP operations and direct Settings API actions remain visibly distinct?
 - Are Agent, Version, Device, and Session controls explicit about dependencies, reconnect impact, and secret non-disclosure?
 

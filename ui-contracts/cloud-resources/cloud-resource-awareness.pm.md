@@ -157,9 +157,24 @@ There is no mandatory visible `plan` Tool Call followed by an `apply` Tool Call.
 current state before a complex operation, but that is normal Agent behavior rather than a forced
 two-stage protocol.
 
-The completed Tool output is the factual receipt. It retains resource identifiers, before/after
-state, affected resources, stable status, and `request_id`. The Assistant may summarize the result,
-but the product does not duplicate it in a separate NoraCloud receipt card.
+`noracloud_publish` does have one internal read-only preparation phase. It resolves the local Agent
+config and selected instruction files into the effective Version definition, computes the file,
+bundle, and definition digests, and reads the destination Cloud/Workspace binding. Ask-before-running
+renders that normalized preview inside the same Tool Call before mutation. Approval binds to the
+definition digest; a source change invalidates the approval and requires a regenerated preview.
+
+The review example is specifically a first publish from an unbound Workspace. Its approval preview
+must show the destination Cloud/account, unbound Workspace, new Agent name, initial immutable
+Version, initial Live behavior, Workspace binding, effective LLM/Voice/Cron values, instruction
+manifest with sizes/digests, and excluded work. It must not show an old Live Version or affected
+Devices, because those resources do not exist in this first-publish story. Candidate creation and
+promotion of an existing Agent remain separate routes.
+
+The completed Tool output is the factual receipt. For first publish it retains the created Agent ID,
+initial Version ID/status/digest, Live Version, Workspace binding, exclusions, stable status, and
+`request_id`. The Assistant may summarize the result, but the product does not duplicate it in a
+separate NoraCloud receipt card or in the right Cloud panel. That panel refreshes only in the next
+outcome state.
 
 The existing wireframe's fabricated validation Terminal, standalone Cloud proposal, typed
 `Approve` shortcut, and separate resource receipt are not part of the proposed end state.
@@ -226,9 +241,12 @@ The revised journey should show:
    only the approval state;
 3. approval, running, completed, denied, blocked, conflict, partial, and unknown states on the same
    semantic Tool Call surface;
-4. direct Settings Agent/Version, Device, and Session management routes;
-5. distinct Conversation permission language and Settings confirmation language;
-6. an Engineering Readiness band that separates today's CLI-first partial implementation from the
+4. an expanded first-publish approval preview derived from `cloud-agent.json` and the selected
+   instruction files, with digest-bound approval and source-change invalidation;
+5. a Completed Tool receipt that stays inside Conversation while the right panel remains on Changes;
+6. direct Settings Agent/Version, Device, and Session management routes;
+7. distinct Conversation permission language and Settings confirmation language;
+8. an Engineering Readiness band that separates today's CLI-first partial implementation from the
    proposed MCP-first end state.
 
 The journey record remains the source of truth for route IDs and visible states before the HTML is
@@ -239,6 +257,8 @@ redrawn.
 - A shared operation core and registry must be defined without weakening NoraCloud server checks.
 - MCP Tool effect classification must come from the shared operation definition, not untrusted
   free-form Tool text.
+- The permission renderer needs a trusted normalized preview and must bind approval to the exact
+  source digest so changed local files cannot reuse stale approval.
 - CLI behavior and error compatibility need an explicit migration contract when implementations
   move behind the shared core.
 - Settings credential rotation needs a protected destination and recovery path before shipping.
