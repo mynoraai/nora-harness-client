@@ -1,7 +1,7 @@
-# Settings Workspace
+# Settings Workspace Files
 
 Source rows: `SET-03`
-Entry path: Settings -> Workspace
+Entry path: Settings -> Workspace Files
 Status: Draft
 
 ## User Journey
@@ -21,7 +21,7 @@ Status: Draft
 
 ### Preconditions
 
-- Settings dialog is open on the Workspace tab.
+- Settings dialog is open on the Workspace Files tab.
 - Gateway agent file RPCs can list, read, and write files for agent id `main`.
 - The user is editing one of the fixed workspace Markdown files.
 
@@ -31,7 +31,7 @@ Status: Draft
 journey
   title Settings workspace file journey
   section Load files
-    Open Workspace tab: 5: User
+    Open Workspace Files tab: 5: User
     Wait for file status list: 3: User
     Pick a file tab: 5: User
   section Edit
@@ -48,7 +48,7 @@ journey
 
 #### Step 1: Load workspace files
 
-**User action:** The user opens Workspace.
+**User action:** The user opens Workspace Files.
 **System response:** The tab loads file status for the fixed file list and then reads the selected file content.
 **Success criteria:**
 
@@ -117,7 +117,7 @@ Future L3 scenario: `SET-03 edits SOUL.md, saves, switches to AGENTS.md, and rec
 
 ```text
 +--------------------------------------------------------------------------------+
-| Workspace                                                        [Refresh]      |
+| Workspace Files                                                  [Refresh]      |
 | Edit your agent's personality and configuration files.                          |
 +--------------------------------------------------------------------------------+
 | [SOUL ✓] [IDENTITY Empty] [USER ✓] [AGENTS ✓] [TOOLS ✓] [HEARTBEAT] [MEMORY]   |
@@ -142,8 +142,8 @@ Future L3 scenario: `SET-03 edits SOUL.md, saves, switches to AGENTS.md, and rec
 
 | User action             | UI precondition                                                 | UI result                                                                                                       | Backend/API path                                                                                                                             | Evidence                                                                                                                                                                                                                                                                                                   | Test coverage                                                                                                                                |
 | ----------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Load workspace files    | Workspace tab mounts.                                           | Loading state appears until file list resolves; error state shows Retry if initial list fails.                  | `client.workspaceFilesList('main')`.                                                                                                         | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:44`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:139`; `apps/electron/src/renderer/src/lib/electron-gateway-client.ts:372`                                                                                   | No focused WorkspaceTab test.                                                                                                                |
-| Refresh workspace files | Workspace tab is loaded.                                        | Refresh button disables and spins, file list reloads, success toast may appear.                                 | `client.workspaceFilesList('main')`.                                                                                                         | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:191`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:194`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:196`                                                                            | No focused WorkspaceTab test.                                                                                                                |
+| Load workspace files    | Workspace Files tab mounts.                                     | Loading state appears until file list resolves; error state shows Retry if initial list fails.                  | `client.workspaceFilesList('main')`.                                                                                                         | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:44`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:139`; `apps/electron/src/renderer/src/lib/electron-gateway-client.ts:372`                                                                                   | No focused WorkspaceTab test.                                                                                                                |
+| Refresh workspace files | Workspace Files tab is loaded.                                  | Refresh button disables and spins, file list reloads, success toast may appear.                                 | `client.workspaceFilesList('main')`.                                                                                                         | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:191`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:194`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:196`                                                                            | No focused WorkspaceTab test.                                                                                                                |
 | Select file tab         | File tabs are visible.                                          | Selected file changes; dirty current content is saved before switching.                                         | Current file: `client.workspaceFilesSet('main', selectedFile, content)` when dirty; next file: `client.workspaceFilesGet('main', fileName)`. | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:123`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:130`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:217`; `apps/electron/src/renderer/src/lib/electron-gateway-client.ts:382`       | No focused WorkspaceTab test.                                                                                                                |
 | Edit Markdown content   | A file is selected and content loaded.                          | Content updates, Unsaved marker appears, autosave timer schedules a save after 2 seconds.                       | Local state then `client.workspaceFilesSet('main', selectedFile, content)`.                                                                  | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:104`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:112`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:243`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:263` | Markdown editor has separate tests in `apps/electron/src/renderer/src/components/ui/markdown-editor.test.tsx`; WorkspaceTab flow is No test. |
 | Click Save              | Current content differs from original and not currently saving. | Save button disables while saving; original content updates; file list reloads; toast shows success or failure. | `client.workspaceFilesSet('main', selectedFile, content)`.                                                                                   | `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:83`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:91`; `apps/electron/src/renderer/src/components/settings/WorkspaceTab.tsx:245`                                                                              | No focused WorkspaceTab test.                                                                                                                |
@@ -157,6 +157,6 @@ Future L3 scenario: `SET-03 edits SOUL.md, saves, switches to AGENTS.md, and rec
 
 ## Gaps
 
-- No L2 test for Workspace tab loading, retry, file switching, autosave, or Save behavior.
+- No L2 test for Workspace Files tab loading, retry, file switching, autosave, or Save behavior.
 - No stable selectors for file tabs, status markers, Save, Refresh, or the editor container.
 - Autosave timer behavior is not documented by a test and should be covered with fake timers before L3 relies on it.

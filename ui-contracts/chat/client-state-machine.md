@@ -28,10 +28,11 @@ This file sits between the visible Chat UI and the streaming transport. Use it a
 2. If the session is still a draft, the store turns it into a saved session and records the old/new key relationship.
 3. If this is a Code-mode chat without a workspace path, the native directory picker must supply one before submit continues.
 4. `OpenClawChatTransport` sends the message to the gateway and exposes status back to `useChat`.
-5. `DualStreamHandler` converts incoming text, reasoning, tool, slash-command, and final events into reducer chunks.
+5. `DualStreamHandler` converts incoming text, reasoning, tool, approval, slash-command, and final events into reducer chunks.
 6. `useChat` updates message parts and visible status; `ChatMessages` renders the result.
 7. If snapshots are replacements instead of appends, the transport marks history dirty and refreshes canonical history at the terminal event.
-8. Stop reasons are normalized into UI finish reasons before the run is considered complete.
+8. When the runtime emits an approval request, the reducer keeps the conversation paused until the user sends `/approve <id> allow-once` or `/approve <id> deny` through the normal composer.
+9. Stop reasons are normalized into UI finish reasons before the run is considered complete.
 
 ## UI To Transport Call Chain
 
@@ -90,6 +91,10 @@ stateDiagram-v2
   ready --> submitted: send
   submitted --> streaming: first chunk
   streaming --> streaming: update
+  streaming --> awaitingApproval: approval requested
+  awaitingApproval --> submitted: user sends /approve allow-once
+  awaitingApproval --> submitted: user sends /approve deny
+  submitted --> streaming: approval response accepted
   streaming --> ready: finish
   streaming --> ready: abort
   streaming --> error: fail
@@ -104,6 +109,7 @@ State responsibilities:
 | `ready`     | No active send is blocking the composer.                              | The user can edit and submit a prompt.                                              |
 | `submitted` | The UI accepted the prompt and is waiting for the first stream chunk. | The message list can show optimistic user state before assistant output exists.     |
 | `streaming` | At least one stream chunk has arrived.                                | Message parts can grow, tool cards can update, and stop controls should be visible. |
+| `awaitingApproval` | Runtime has paused on a command/tool approval request.          | The message list must show approval details and the composer must remain the response surface for `/approve <id> allow-once` or `/approve <id> deny`. |
 | `error`     | A terminal failure was exposed to the hook.                           | The UI can show recovery affordances and avoid pretending the run succeeded.        |
 
 | Transition                  | Renderer effect                                                                   | Evidence                                                   | Coverage |
@@ -111,6 +117,7 @@ State responsibilities:
 | `sendMessage()`             | Starts a submitted run and registers pending user state.                          | `apps/electron/src/renderer/src/hooks/use-chat.ts:291`     | Covered  |
 | `text-*` / `reasoning-*`    | Moves status to streaming and appends/updates text or reasoning parts.            | `apps/electron/src/renderer/src/hooks/use-chat.ts:480`     | Covered  |
 | `data-tool-*` / tool chunks | Creates or updates tool cards keyed by `toolCallId`.                              | `apps/electron/src/renderer/src/hooks/use-chat.ts:526`     | Covered  |
+| approval request / response | Shows approval request, accepts `/approve ...` as a user message, then resumes or denies the tool path. | `electron-user-journeys-hierarchy-v2/06-runtime-model-permission/runtime-model-permission.pm.md` | L3 planned |
 | `data-history-refresh`      | Replaces in-memory messages with canonical history after terminal reconciliation. | `apps/electron/src/renderer/src/hooks/use-chat.ts:557`     | Covered  |
 | `finish`, `abort`, `error`  | Transitions status and updates `useSessionStreamingStore`.                        | `apps/electron/src/renderer/src/hooks/use-chat.ts:582`     | Covered  |
 | `regenerate`                | Throws because the gateway transport does not implement regenerate.               | `apps/electron/src/renderer/src/lib/protocol-bridge.ts:96` | Partial  |
@@ -206,6 +213,7 @@ The reducer preserves previously known fields on each keyed tool card. A progres
 | Reasoning                  | `{ type: "reasoning", text, state? }`                                                                 | Collapsible reasoning disclosure.                                                               | `apps/electron/src/renderer/src/hooks/use-chat.ts:513`; `apps/electron/src/renderer/src/lib/format-converters.ts:145`             |
 | File                       | `{ type: "file", mediaType, url, filename? }`                                                         | Inline attachment preview/chip.                                                                 | `apps/electron/src/renderer/src/components/chat/ChatArea.tsx:38`; `apps/electron/src/renderer/src/lib/format-converters.ts:230`   |
 | Native tool                | `NativeToolPart` with `type: "tool-<name>"`, `toolCallId`, `state`, optional `input/output/errorText` | Tool card or grouped tool card.                                                                 | `apps/electron/src/renderer/src/hooks/use-chat.ts:358`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:362`     |
+| Conversation approval      | Approval request text plus user `/approve <id> allow-once` or `/approve <id> deny` message            | Request details, approval guidance, submitted approval confirmation, then executed output or denied result in the same conversation. | `electron-user-journeys-hierarchy-v2/06-runtime-model-permission/runtime-model-permission.pm.md`; user-provided approval screenshots |
 | Command result             | Chunk `data-command-result`, stored as `CommandResult` state instead of a message part                | Dismissible slash-command card below the message list; not saved to history.                    | `apps/electron/src/renderer/src/hooks/use-chat.ts:699`; `apps/electron/src/renderer/src/components/chat/CommandResultCard.tsx:10` |
 | ACP tool/status/permission | `data-acp-tool`, `data-acp-status`, `data-acp-permission`, `data-acp-modified-files`                  | ACP-specific blocks inside the same message list.                                               | `apps/electron/src/renderer/src/hooks/use-chat.ts:715`; `apps/electron/src/renderer/src/components/chat/ChatMessages.tsx:313`     |
 | History refresh            | Chunk `data-history-refresh` with canonical `OpenClawUIMessage[]`                                     | In-memory messages are replaced or merged with canonical history after terminal reconciliation. | `apps/electron/src/renderer/src/hooks/use-chat.ts:723`; `apps/electron/src/renderer/src/lib/protocol-bridge.ts:490`               |
